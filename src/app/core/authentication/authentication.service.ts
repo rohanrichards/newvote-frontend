@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export interface Credentials {
 	// Customize received credentials here
-	user: any;
+	user?: any;
 }
 
 export interface LoginContext {
@@ -15,7 +15,8 @@ export interface LoginContext {
 }
 
 const routes = {
-	signin: () => `/auth/signin`
+	signin: () => `/auth/signin`,
+	randomGet: () => `/topics`
 };
 
 const credentialsKey = 'credentials';
@@ -36,6 +37,17 @@ export class AuthenticationService {
 		}
 	}
 
+	randomGet() {
+		return this.httpClient
+			.get(routes.randomGet())
+			.pipe(
+				map((res) => {
+					// this.setCredentials(res, context.remember);
+					return res;
+				})
+			);
+	}
+
 	/**
 	 * Authenticates the user.
 	 * @param context The login parameters.
@@ -43,13 +55,12 @@ export class AuthenticationService {
 	 */
 	login(context: LoginContext): Observable<Credentials> {
 		return this.httpClient
-			.post(routes.signin(), context)
+			.post<Credentials>(routes.signin(), context)
 			.pipe(
-				map((body: any) => {
-					this.setCredentials(body, context.remember);
-					return body;
-				}),
-				catchError(() => of('Error, something went wrong while signing in.'))
+				map((res) => {
+					this.setCredentials(res, context.remember);
+					return res;
+				})
 			);
 	}
 

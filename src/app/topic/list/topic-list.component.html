@@ -1,0 +1,28 @@
+<mat-toolbar color="primary"
+    class="header-info-panel">
+	<span class="mat-subheading-2"
+	    translate>Topics arrange the current issues into broader categories. Select a topic below to learn more about it and explore relevant issues being discussed.</span>
+</mat-toolbar>
+
+<div class="container">
+	<app-loader [isLoading]="isLoading"
+	    size="1.5"></app-loader>
+	<mat-grid-list cols="3"
+	    gutterSize="15px">
+		<mat-grid-tile *ngFor="let topic of topics">
+			<mat-card class="topic-card">
+				<img mat-card-image
+				    src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+				    alt="Photo of a Shiba Inu">
+				<mat-card-content>
+					<p translate>
+						<!-- {{topic.name}} -->
+					</p>
+					<mat-card-subtitle>
+						<mat-card-title translate>{{topic.name}}</mat-card-title>
+					</mat-card-subtitle>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
+	</mat-grid-list>
+</div>

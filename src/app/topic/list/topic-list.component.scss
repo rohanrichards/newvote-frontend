@@ -1,0 +1,28 @@
+.container {
+  text-align: center;
+  padding: 1em;
+}
+
+.logo {
+  width: 150px;
+  margin: 0 auto;
+}
+
+q {
+  font-style: italic;
+  topics: "« " " »";
+}
+
+//global overrides for mat-toolbar
+.header-info-panel {
+	white-space: normal !important;
+	padding-top: 16px;
+	height: auto;
+	min-height: 32px;
+	line-height: 32px;
+}
+
+.topic-card {
+	height: 100%;
+	width: 100%;
+}

@@ -21,27 +21,27 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
-    FormsModule,
-    HttpClientModule,
-    TranslateModule.forRoot(),
-    BrowserAnimationsModule,
-    MaterialModule,
-    CoreModule,
-    SharedModule,
-    ShellModule,
-    HomeModule,
-    LoginModule,
-    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-    AppRoutingModule // must be imported as the last module as it contains the fallback route
-  ],
-  declarations: [AppComponent],
-  providers: [
-    StatusBar,
-    SplashScreen
-  ],
-  bootstrap: [AppComponent]
+	imports: [
+		BrowserModule,
+		ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+		FormsModule,
+		HttpClientModule,
+		TranslateModule.forRoot(),
+		BrowserAnimationsModule,
+		MaterialModule,
+		CoreModule,
+		SharedModule,
+		ShellModule,
+		HomeModule,
+		LoginModule,
+		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+		AppRoutingModule // must be imported as the last module as it contains the fallback route
+	],
+	declarations: [AppComponent],
+	providers: [
+		StatusBar,
+		SplashScreen
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

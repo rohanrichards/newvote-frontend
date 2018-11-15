@@ -28,7 +28,9 @@ export class LoginComponent implements OnInit {
 		this.createForm();
 	}
 
-	ngOnInit() { }
+	ngOnInit() {
+		this.authenticationService.randomGet().subscribe(res => console.log(res));
+	}
 
 	login() {
 		this.isLoading = true;
