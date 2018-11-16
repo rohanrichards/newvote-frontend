@@ -1,0 +1,22 @@
+<mat-toolbar color="primary"
+    class="header-info-panel"
+	*ngIf="topic">
+	<div fxLayout="column" fxFill>
+		<div class="image-container" [style.background-image]="'url(' + topic.imageUrl + ')'">
+		</div>
+		<div class="mat-headline"
+		    translate>{{topic.name}}</div>
+		<span class="mat-body-1"
+		    [innerHtml]="topic.description"
+		    translate></span>
+	</div>
+</mat-toolbar>
+
+<div class="container">
+	<app-loader [isLoading]="isLoading"
+	    size="1.5"></app-loader>
+
+	<app-grid-list *ngIf="topic"
+	    path="/issues"
+	    [items]=topic.issues></app-grid-list>
+</div>

@@ -5,7 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 
 const routes = {
 	list: (c: TopicContext) => `/topics`,
-	get: (c: TopicContext) => `/topics/${c.id}`,
+	view: (c: TopicContext) => `/topics/${c.id}`,
 	create: (c: TopicContext) => `topics/`,
 	update: (c: TopicContext) => `/topics/${c.id}`,
 	delete: (c: TopicContext) => `/topics/${c.id}`
@@ -33,10 +33,10 @@ export class TopicService {
 			);
 	}
 
-	get(context: TopicContext): Observable<any> {
+	view(context: TopicContext): Observable<any> {
 		return this.httpClient
 			.cache()
-			.get(routes.get(context))
+			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
 				catchError(() => of({}))

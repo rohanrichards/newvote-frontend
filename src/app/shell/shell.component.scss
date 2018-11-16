@@ -8,6 +8,26 @@
   max-width: 28%;
 }
 
+.sticky-toolbar {
+	position: fixed;
+	top: 0px;
+	z-index: 200;
+}
+
+.with-sidenav {
+	width: calc(100% - 270px);
+}
+
+// need a spacer because the toolbar is fixed now
+router-outlet::after {
+	min-height: 64px;
+	content:"";
+	display: block;
+	@media screen and (max-width: 599px) {
+		min-height: 44px;
+	}
+}
+
 .has-border {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
 }

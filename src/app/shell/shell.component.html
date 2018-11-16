@@ -4,7 +4,8 @@
 		    [mode]="isMobile ? 'over' : 'side'"
 		    [opened]="!isMobile"
 		    [disableClose]="!isMobile"
-		    ngClass.gt-sm="has-border">
+		    ngClass.gt-sm="has-border"
+			fixedInViewport="true">
 			<mat-toolbar color="primary">
 				<span translate>APP_NAME</span>
 				<div fxFlex></div>
@@ -37,7 +38,8 @@
 		</mat-sidenav>
 		<mat-sidenav-content>
 			<mat-toolbar color="primary"
-			    class="">
+			    class="sticky-toolbar"
+			    ngClass.gt-sm="with-sidenav">
 				<button class="menu-button"
 				    mat-icon-button
 				    (click)="sidenav.toggle()"

@@ -1,0 +1,22 @@
+.mat-progress-spinner {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.message {
+  margin-left: 0.5em;
+}
+
+.item-card-row {
+	margin-bottom: 32px;
+}
+
+.item-card {
+	.image-container {
+		min-height: 200px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+	cursor: pointer;
+}

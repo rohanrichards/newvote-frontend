@@ -1,0 +1,23 @@
+<div fxLayout="column">
+	<div fxLayout="row wrap"
+		fxLayout.xs="column"
+		fxLayoutAlign="flex-start"
+		fxLayoutAlign.xs="center stretch"
+		fxLayoutGap="32px">
+		<div class="item-card-row"
+			fxFlex="0 1 calc(33.3% - 32px)"
+			fxFlex.lt-md="0 1 calc(50% - 32px)"
+			fxFlex.lt-sm="100%"
+			*ngFor="let item of items">
+			<mat-card class="item-card" routerLink="{{path}}/{{item._id}}">
+				<div mat-card-image class="image-container" [style.background-image]="'url(' + item.imageUrl + ')'">
+				</div>
+				<mat-card-content>
+					<mat-card-subtitle>
+						<mat-card-title translate>{{item.name}}</mat-card-title>
+					</mat-card-subtitle>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>

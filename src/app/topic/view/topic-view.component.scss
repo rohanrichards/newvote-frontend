@@ -21,3 +21,13 @@ q {
 	min-height: 32px;
 	line-height: 32px;
 }
+
+.image-container {
+	height: 350px !important;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	width: calc(100% + 32px);
+	margin: -16px -16px 16px -16px;
+}

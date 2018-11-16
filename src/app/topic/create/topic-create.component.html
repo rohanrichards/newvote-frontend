@@ -1,0 +1,38 @@
+<div class="container"
+    fxLayout="row"
+    fxLayoutAlign="center center">
+	<mat-card fxFlex.gt-sm="60"
+	    fxFlex="100">
+		<form [formGroup]="topicForm"
+		    fxLayout="column">
+			<mat-form-field>
+				<!-- {{topicForm.status}} -->
+				<input matInput
+				    placeholder="Enter a name for the topic"
+				    formControlName="name"
+				    [errorStateMatcher]="matcher"
+				    required>
+				<mat-error *ngIf="topicForm.hasError('required', 'name')">
+					Email is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<!-- {{topicForm.status}} -->
+				<input matInput
+				    placeholder="Enter a description for the topic"
+				    formControlName="description"
+				    [errorStateMatcher]="matcher"
+				    required>
+				<mat-error *ngIf="topicForm.hasError('required', 'name')">
+					Email is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+			
+			<button mat-flat-button
+				type="submit"
+				[disabled]="!topicForm.valid"
+			    color="primary">Primary</button>
+		</form>
+	</mat-card>
+</div>
