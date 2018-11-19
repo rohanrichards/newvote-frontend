@@ -3,10 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+import { ITopic } from '@app/core/models/topic.model';
+
 const routes = {
 	list: (c: TopicContext) => `/topics`,
 	view: (c: TopicContext) => `/topics/${c.id}`,
-	create: (c: TopicContext) => `topics/`,
+	create: (c: TopicContext) => `/topics`,
 	update: (c: TopicContext) => `/topics/${c.id}`,
 	delete: (c: TopicContext) => `/topics/${c.id}`
 };
@@ -15,7 +17,7 @@ export interface TopicContext {
 	// The topic's category: 'dev', 'explicit'...
 	orgs?: Array<string>; // users organisations
 	id?: string; // id of object to find/modify
-	entity?: any; // the object being created or edited
+	entity?: ITopic; // the object being created or edited
 }
 
 @Injectable()

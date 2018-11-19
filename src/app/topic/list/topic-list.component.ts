@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { TopicService } from '../topic.service';
+import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
 	selector: 'app-topic',

@@ -1,19 +1,19 @@
 .container {
-  text-align: center;
-  padding: 1em;
+	text-align: center;
+	padding: 1em;
 }
 
 .logo {
-  width: 150px;
-  margin: 0 auto;
+	width: 150px;
+	margin: 0 auto;
 }
 
 q {
-  font-style: italic;
-  topics: "« " " »";
+	font-style: italic;
+	topics: "« " " »";
 }
-
 //global overrides for mat-toolbar
+
 .header-info-panel {
 	white-space: normal !important;
 	padding-top: 16px;
@@ -27,7 +27,17 @@ q {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-
 	width: calc(100% + 32px);
-	margin: -16px -16px 16px -16px;
+	margin: -16px -16px 16px;
+}
+
+.quill-editor-container {
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+
+::ng-deep {	
+	.ql-container {
+		height: 250px !important;
+	}
 }

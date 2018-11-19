@@ -3,6 +3,11 @@
  * Component-specific style should not go here and be included directly as part of the components.
  */
 
+// Import the quill css for ngx-quill
+ @import '~quill/dist/quill.core.css';
+ @import '~quill/dist/quill.bubble.css';
+ @import '~quill/dist/quill.snow.css';
+
 // Theme variables, must be included before the libraries to allow overriding defaults
 @import "theme/theme-variables";
 

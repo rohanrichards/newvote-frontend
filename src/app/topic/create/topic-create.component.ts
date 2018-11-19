@@ -1,15 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { TopicService } from '../topic.service';
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-		const isSubmitted = form && form.submitted;
-		return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-	}
-}
+import { ITopic } from '@app/core/models/topic.model';
+import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
 	selector: 'app-topic',
@@ -18,23 +11,46 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class TopicCreateComponent implements OnInit {
 
-	topic: any;
+	topic: ITopic;
 	isLoading: boolean;
+	imageUrl: any;
 	topicForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
-		description: new FormControl('', [Validators.required])
-		// image: new FormControl('', [Validators.required])
+		description: new FormControl('', [Validators.required]),
+		imageUrl: new FormControl('', [Validators.required])
 	});
-	matcher = new MyErrorStateMatcher();
 
 	constructor(
 		private topicService: TopicService
 	) { }
 
-	ngOnInit() { }
+	ngOnInit() {
+		this.topicForm.get('imageUrl').valueChanges.subscribe(val => this.onImageChange(val));
+	}
 
-	save() {
+	// get the Image File as a DataURL for previewing on the page
+	onImageChange(image: any) {
+		if (image.files && image.files[0]) {
+			const reader = new FileReader();
 
+			reader.onload = (pe: ProgressEvent) => {
+				this.imageUrl = (<FileReader>pe.target).result;
+			};
+
+			reader.readAsDataURL(image.files[0]);
+		}
+	}
+
+	onSave() {
+		this.topic = <ITopic>this.topicForm.value;
+		console.log(this.topic);
+
+		// need to upload the image to cloudinary via a service first
+		// grab the https URL provided and store that in imageUrl
+
+		this.topicService.create({ entity: this.topic }).subscribe(t => {
+			console.log(t);
+		});
 	}
 
 }

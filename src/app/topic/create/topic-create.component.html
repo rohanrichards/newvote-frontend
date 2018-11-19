@@ -4,34 +4,42 @@
 	<mat-card fxFlex.gt-sm="60"
 	    fxFlex="100">
 		<form [formGroup]="topicForm"
-		    fxLayout="column">
+		    fxLayout="column"
+		    (ngSubmit)="onSave()"
+		    novalidate>
 			<mat-form-field>
 				<!-- {{topicForm.status}} -->
 				<input matInput
 				    placeholder="Enter a name for the topic"
 				    formControlName="name"
-				    [errorStateMatcher]="matcher"
 				    required>
-				<mat-error *ngIf="topicForm.hasError('required', 'name')">
+				<mat-error *ngIf="topicForm.hasError('required', ['name'])">
 					Email is <strong>required</strong>
 				</mat-error>
 			</mat-form-field>
 
+			<div class="quill-editor-container cf">
+				<quill-editor formControlName="description"></quill-editor>
+			</div>
+
 			<mat-form-field>
-				<!-- {{topicForm.status}} -->
-				<input matInput
-				    placeholder="Enter a description for the topic"
-				    formControlName="description"
-				    [errorStateMatcher]="matcher"
-				    required>
-				<mat-error *ngIf="topicForm.hasError('required', 'name')">
-					Email is <strong>required</strong>
+				<ngx-mat-file-input formControlName="imageUrl"
+				    placeholder="Select an image for the topic"
+				    required></ngx-mat-file-input>
+				<mat-icon matSuffix>folder</mat-icon>
+				<mat-error *ngIf="topicForm.hasError('required', ['imageUrl'])">
+					Image is <strong>required</strong>
 				</mat-error>
 			</mat-form-field>
-			
+
+			<div class="image-preview">
+				<img *ngIf="imageUrl"
+				    [src]="imageUrl" />
+			</div>
+
 			<button mat-flat-button
-				type="submit"
-				[disabled]="!topicForm.valid"
+			    type="submit"
+			    [disabled]="!topicForm.valid"
 			    color="primary">Primary</button>
 		</form>
 	</mat-card>
