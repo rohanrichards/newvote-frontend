@@ -28,14 +28,24 @@
 			    ng2FileSelect
 			    [uploader]="uploader"
 			    (change)="onFileChange($event)"
-			    formControlName="imageUrl"
 			    hidden
 			    autoComplete="off" />
 
+			<input matInput
+			    hidden
+			    placeholder="Enter a name for the topic"
+			    formControlName="imageUrl"
+			    required>
+
 			<div class="image-select">
 				<button mat-flat-button
+				    type="button"
 				    color="primary"
 				    (click)="fileInput.click()">Select Image</button>
+				<button mat-flat-button
+				    type="button"
+				    color="primary"
+				    (click)="onResetImage()">Reset Image</button>
 				<div class="image-preview"
 				    *ngIf="imageUrl">
 					<img [src]="imageUrl" />
@@ -44,8 +54,8 @@
 
 			<button mat-flat-button
 			    type="submit"
-			    [disabled]="!topicForm.valid"
-			    color="primary">Create</button>
+			    [disabled]="!topicForm.valid || isLoading"
+			    color="primary">Update</button>
 		</form>
 	</mat-card>
 </div>

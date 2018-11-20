@@ -12,6 +12,12 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
+import { Cloudinary } from 'cloudinary-core';
+import { CloudinaryModule } from '@cloudinary/angular-5.x';
+export const cloudinaryLib = {
+	Cloudinary: Cloudinary
+};
+
 import { environment } from '@env/environment';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
@@ -37,9 +43,12 @@ import { AppRoutingModule } from './app-routing.module';
 		HomeModule,
 		LoginModule,
 		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		AppRoutingModule // must be imported as the last module as it contains the fallback route
 	],
-	declarations: [AppComponent],
+	declarations: [
+		AppComponent
+	],
 	providers: [
 		StatusBar,
 		SplashScreen

@@ -1,20 +1,26 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from 'ng2-file-upload';
+import { MatSnackBar } from '@angular/material';
+import { merge } from 'lodash';
 
 import { ITopic } from '@app/core/models/topic.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
 	selector: 'app-topic',
-	templateUrl: './topic-create.component.html',
-	styleUrls: ['./topic-create.component.scss']
+	templateUrl: './topic-edit.component.html',
+	styleUrls: ['./topic-edit.component.scss']
 })
-export class TopicCreateComponent implements OnInit {
+export class TopicEditComponent implements OnInit {
 
 	topic: ITopic;
 	isLoading: boolean;
 	imageUrl: any;
+	imageFile: File;
+	newImage = false;
 	uploader: FileUploader;
 	topicForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
@@ -23,10 +29,25 @@ export class TopicCreateComponent implements OnInit {
 	});
 
 	constructor(
-		private topicService: TopicService
+		private topicService: TopicService,
+		private route: ActivatedRoute,
+		public snackBar: MatSnackBar,
+		private router: Router
 	) { }
 
 	ngOnInit() {
+		this.isLoading = true;
+		this.route.paramMap.subscribe(params => {
+			const ID = params.get('id');
+			this.topicService.view({ id: ID, orgs: [] })
+				.pipe(finalize(() => { this.isLoading = false; }))
+				.subscribe(topic => {
+					this.topicForm.patchValue(topic);
+					this.imageUrl = topic.imageUrl;
+					this.topic = topic;
+				});
+		});
+
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
 			// Upload files automatically upon addition to upload queue
@@ -59,9 +80,12 @@ export class TopicCreateComponent implements OnInit {
 	}
 
 	onFileChange(event: any) {
+		this.newImage = true;
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
 			const reader = new FileReader();
+
+			this.imageFile = file;
 
 			reader.onload = (pe: ProgressEvent) => {
 				this.imageUrl = (<FileReader>pe.target).result;
@@ -71,26 +95,53 @@ export class TopicCreateComponent implements OnInit {
 		}
 	}
 
+	onResetImage() {
+		this.newImage = false;
+		this.imageUrl = this.topicForm.get('imageUrl').value;
+	}
+
 	onSave() {
-		this.topic = <ITopic>this.topicForm.value;
-		console.log(this.topic);
+		this.isLoading = true;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 		};
 
-		this.uploader.onCompleteItem = (item: any, response: string, status: number, headers: ParsedResponseHeaders) => {
+		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
+				merge(this.topic, <ITopic>this.topicForm.value);
 				const res = JSON.parse(response);
 				this.topic.imageUrl = res.secure_url;
-
-				this.topicService.create({ entity: this.topic }).subscribe(t => {
-					console.log(t);
-				});
+				this.updateWithApi();
 			}
 		};
 
-		this.uploader.uploadAll();
+		if (this.newImage) {
+			this.uploader.uploadAll();
+		} else {
+			merge(this.topic, <ITopic>this.topicForm.value);
+			this.updateWithApi();
+		}
+	}
+
+	updateWithApi() {
+		this.topicService.update({ id: this.topic._id, entity: this.topic })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				if (t.error) {
+					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+				} else {
+					this.openSnackBar('Succesfully updated', 'OK');
+					this.router.navigate(['/topics']);
+				}
+			});
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 2000,
+			horizontalPosition: 'center'
+		});
 	}
 
 }

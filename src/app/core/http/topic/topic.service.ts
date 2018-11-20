@@ -31,7 +31,7 @@ export class TopicService {
 			.get(routes.list(context))
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError(() => of([]))
+				catchError((e) => of([{error: e}]))
 			);
 	}
 
@@ -41,7 +41,7 @@ export class TopicService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError(() => of({}))
+				catchError((e) => of({error: e}))
 			);
 	}
 
@@ -51,7 +51,7 @@ export class TopicService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError(() => of({}))
+				catchError((e) => of({error: e}))
 			);
 	}
 
@@ -61,7 +61,7 @@ export class TopicService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError(() => of({}))
+				catchError((e) => of({error: e}))
 			);
 	}
 
@@ -71,7 +71,7 @@ export class TopicService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError(() => of({}))
+				catchError((e) => of({error: e}))
 			);
 	}
 

@@ -8,12 +8,12 @@ import { Angulartics2Module } from 'angulartics2';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
-import { TopicCreateComponent } from './topic-create.component';
+import { TopicEditComponent } from './topic-edit.component';
 import { TopicService } from '@app/core/http/topic/topic.service';
 
 describe('TopicComponent', () => {
-	let component: TopicCreateComponent;
-	let fixture: ComponentFixture<TopicCreateComponent>;
+	let component: TopicEditComponent;
+	let fixture: ComponentFixture<TopicEditComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
@@ -27,14 +27,14 @@ describe('TopicComponent', () => {
 				SharedModule,
 				HttpClientTestingModule
 			],
-			declarations: [TopicCreateComponent],
+			declarations: [TopicEditComponent],
 			providers: [TopicService]
 		})
 			.compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TopicCreateComponent);
+		fixture = TestBed.createComponent(TopicEditComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

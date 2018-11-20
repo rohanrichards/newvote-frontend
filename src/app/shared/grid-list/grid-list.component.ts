@@ -14,4 +14,10 @@ export class GridListComponent implements OnInit {
 
 	ngOnInit() { }
 
+	delete() {
+		// open confirmation dialog
+		// determine what service to use
+		// delete with API
+	}
+
 }
