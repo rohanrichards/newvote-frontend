@@ -1,0 +1,24 @@
+.span-container {
+	overflow: hidden;
+}
+
+.fade {
+	content: '\200C';
+	position: relative;
+	top: -64px;
+	left: 0;
+	display: block;
+	text-align: center;
+	height: 64px;
+	pointer-events: none;
+}
+
+.button-container {
+	margin-top: -64px;
+	margin-bottom: 16px;
+}
+
+.button-container-more {
+	margin-top: 0px;
+	margin-bottom: 16px;
+}

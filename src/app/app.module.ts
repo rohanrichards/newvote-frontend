@@ -21,6 +21,7 @@ export const cloudinaryLib = {
 import { environment } from '@env/environment';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { LoginModule } from './login/login.module';
@@ -48,6 +49,9 @@ import { AppRoutingModule } from './app-routing.module';
 	],
 	declarations: [
 		AppComponent
+	],
+	entryComponents: [
+		ConfirmDialogComponent
 	],
 	providers: [
 		StatusBar,

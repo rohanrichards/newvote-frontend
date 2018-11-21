@@ -1,12 +1,22 @@
 <mat-toolbar color="primary"
     class="header-info-panel">
-	<span class="mat-subheading-2"
-	    translate>Topics arrange the current issues into broader categories. Select a topic below to learn more about it and explore relevant issues being discussed.</span>
+	<div fxLayout="column">
+		<span class="mat-subheading-2"
+		    translate>Topics arrange the current issues into broader categories. Select a topic below to learn more about it and explore relevant issues being discussed.</span>
+
+		<div>
+			<button mat-raised-button
+			    color="accent"
+			    routerLink="/topics/create">New Topic</button>
+		</div>
+	</div>
 </mat-toolbar>
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
 
 <div class="container">
-	<app-loader [isLoading]="isLoading"
-	    size="1.5"></app-loader>
-
-	<app-grid-list path="/topics" [items]=topics></app-grid-list>
+	<app-grid-list path="/topics"
+	    [items]=topics
+	    model="Topic"
+	    (delete)="onDelete($event)"></app-grid-list>
 </div>

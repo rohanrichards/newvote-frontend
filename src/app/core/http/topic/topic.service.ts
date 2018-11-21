@@ -18,6 +18,7 @@ export interface TopicContext {
 	orgs?: Array<string>; // users organisations
 	id?: string; // id of object to find/modify
 	entity?: ITopic; // the object being created or edited
+	forceUpdate?: boolean;
 }
 
 @Injectable()
@@ -27,7 +28,7 @@ export class TopicService {
 
 	list(context: TopicContext): Observable<any[]> {
 		return this.httpClient
-			.cache()
+			.cache(context.forceUpdate)
 			.get(routes.list(context))
 			.pipe(
 				map((res: Array<any>) => res),
@@ -37,7 +38,7 @@ export class TopicService {
 
 	view(context: TopicContext): Observable<any> {
 		return this.httpClient
-			.cache()
+			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
@@ -47,7 +48,7 @@ export class TopicService {
 
 	create(context: TopicContext): Observable<any> {
 		return this.httpClient
-			.cache()
+			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
@@ -57,7 +58,7 @@ export class TopicService {
 
 	update(context: TopicContext): Observable<any> {
 		return this.httpClient
-			.cache()
+			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
@@ -67,7 +68,7 @@ export class TopicService {
 
 	delete(context: TopicContext): Observable<any> {
 		return this.httpClient
-			.cache()
+			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),

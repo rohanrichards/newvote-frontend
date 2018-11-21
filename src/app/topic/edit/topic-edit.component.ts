@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from 'ng2-file-upload';
+import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
 import { merge } from 'lodash';
 
@@ -105,6 +105,7 @@ export class TopicEditComponent implements OnInit {
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
+			this.isLoading = false;
 		};
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {

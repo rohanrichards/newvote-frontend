@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
 
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
@@ -13,13 +15,31 @@ export class TopicListComponent implements OnInit {
 	topics: Array<any>;
 	isLoading: boolean;
 
-	constructor(private topicService: TopicService) { }
+	constructor(private topicService: TopicService,
+		public auth: AuthenticationService,
+		private route: ActivatedRoute,
+		private router: Router
+	) { }
 
 	ngOnInit() {
+		this.route.paramMap.subscribe(params => {
+			const force: boolean = !!params.get('forceUpdate');
+			this.fetchData(force);
+		});
+	}
+
+	fetchData(force?: boolean) {
 		this.isLoading = true;
-		this.topicService.list({ orgs: [] })
+		this.topicService.list({ orgs: [], forceUpdate: force })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(topics => { this.topics = topics; });
+	}
+
+	onDelete(event: any) {
+		this.topicService.delete({ id: event._id }).subscribe(() => {
+			console.log('done');
+			this.fetchData(true);
+		});
 	}
 
 }

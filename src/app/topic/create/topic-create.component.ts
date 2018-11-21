@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from 'ng2-file-upload';
+import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
+import { finalize } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
 
 import { ITopic } from '@app/core/models/topic.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
@@ -23,7 +26,9 @@ export class TopicCreateComponent implements OnInit {
 	});
 
 	constructor(
-		private topicService: TopicService
+		private topicService: TopicService,
+		public snackBar: MatSnackBar,
+		private router: Router
 	) { }
 
 	ngOnInit() {
@@ -72,25 +77,40 @@ export class TopicCreateComponent implements OnInit {
 	}
 
 	onSave() {
+		this.isLoading = true;
 		this.topic = <ITopic>this.topicForm.value;
-		console.log(this.topic);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
+			this.isLoading = false;
 		};
 
-		this.uploader.onCompleteItem = (item: any, response: string, status: number, headers: ParsedResponseHeaders) => {
+		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
 				const res = JSON.parse(response);
 				this.topic.imageUrl = res.secure_url;
 
-				this.topicService.create({ entity: this.topic }).subscribe(t => {
-					console.log(t);
-				});
+				this.topicService.create({ entity: this.topic })
+					.pipe(finalize(() => { this.isLoading = false; }))
+					.subscribe(t => {
+						if (t.error) {
+							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+						} else {
+							this.openSnackBar('Succesfully created', 'OK');
+							this.router.navigate(['/topics', {forceUpdate: true}]);
+						}
+					});
 			}
 		};
 
 		this.uploader.uploadAll();
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 2000,
+			horizontalPosition: 'center'
+		});
 	}
 
 }

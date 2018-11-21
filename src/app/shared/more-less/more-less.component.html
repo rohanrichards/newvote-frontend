@@ -1,0 +1,18 @@
+<div #spanContainer
+    class="span-container">
+	<span class="mat-body-1"
+	    [innerHtml]="displayText"
+	    translate></span>
+</div>
+<div #fadeContainer
+    class="fade fade-container"
+    *ngIf="!showing">
+</div>
+<div #buttonContainer
+    class="button-container"
+    [ngClass]="{'button-container-more': showing}">
+	<button #moreLessButton
+	    mat-flat-button
+	    (click)="onToggleShow()"
+	    color="primary">... show {{showing ? 'less' : 'more'}}</button>
+</div>

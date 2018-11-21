@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+
+@mixin more-less-fade-theme($theme) {
+	$primary: map-get($theme, primary);
+
+	.fade {
+		background: linear-gradient(to bottom, rgba(mat-color($primary), 0) 0%, mat-color($primary) 80%);
+	}
+}

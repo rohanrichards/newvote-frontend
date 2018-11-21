@@ -15,9 +15,7 @@
 // hue.
 $app-primary: mat-palette($mat-teal, 700, 400, 900);
 $app-accent:  mat-palette($mat-light-blue, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$app-warn:    mat-palette($mat-deep-orange);
+$app-warn:   mat-palette($mat-deep-orange);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);

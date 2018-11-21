@@ -1,4 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
 
 @Component({
 	selector: 'app-grid-list',
@@ -8,16 +12,29 @@ import { Component, OnInit, Input } from '@angular/core';
 export class GridListComponent implements OnInit {
 
 	@Input() path: string;
+	@Input() model: string;
 	@Input() items: Array<any>;
+	@Output() delete = new EventEmitter();
 
-	constructor() { }
+	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	ngOnInit() { }
 
-	delete() {
-		// open confirmation dialog
-		// determine what service to use
-		// delete with API
-	}
+	onDelete(item: any, event: any) {
+		event.stopPropagation();
 
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Delete ${this.model}`,
+				message: `Are you sure you want to delete ${item.name}? This action cannot be undone.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.delete.emit(item);
+			}
+		});
+	}
 }

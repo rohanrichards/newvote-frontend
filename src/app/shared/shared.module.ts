@@ -7,6 +7,9 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from '@app/material.module';
 import { LoaderComponent } from './loader/loader.component';
 import { GridListComponent } from './grid-list/grid-list.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+
+import { MoreLessComponent } from './more-less/more-less.component';
 
 @NgModule({
 	imports: [
@@ -18,11 +21,15 @@ import { GridListComponent } from './grid-list/grid-list.component';
 	],
 	declarations: [
 		LoaderComponent,
-		GridListComponent
+		GridListComponent,
+		ConfirmDialogComponent,
+		MoreLessComponent
 	],
 	exports: [
 		LoaderComponent,
-		GridListComponent
+		GridListComponent,
+		ConfirmDialogComponent,
+		MoreLessComponent
 	]
 })
 export class SharedModule { }

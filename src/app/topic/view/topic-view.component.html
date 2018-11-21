@@ -1,21 +1,48 @@
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
+
 <mat-toolbar color="primary"
     class="header-info-panel"
-	*ngIf="topic">
-	<div fxLayout="column" fxFill>
-		<div class="image-container" [style.background-image]="'url(' + topic.imageUrl + ')'">
+    *ngIf="topic">
+	<div fxLayout="column"
+	    fxFill>
+		<div class="image-container"
+		    [style.background-image]="'url(' + topic.imageUrl + ')'">
+			<div class="admin-panel"
+				*ngIf="auth.isAdmin()"
+			    fxLayout="column"
+			    fxLayoutAlign="center end">
+				<div class="button-panel">
+					<button mat-icon-button
+        				matTooltip="Add a new Issue"
+					    color="accent"
+						routerLink="/issues/create">
+    					<mat-icon aria-label="Add a new issue">playlist_add</mat-icon>
+  					</button>
+					<button mat-icon-button
+        				matTooltip="Edit this Topic"
+					    color="accent"
+						routerLink="/topics/edit/{{topic._id}}">
+    					<mat-icon aria-label="Edit the topic">edit</mat-icon>
+  					</button>
+					<button mat-icon-button
+        				matTooltip="Delete this Topic"
+					    color="warn"
+						(click)="onDelete()">
+    					<mat-icon aria-label="Delete the topic forever">delete_forever</mat-icon>
+  					</button>
+				</div>
+			</div>
 		</div>
 		<div class="mat-headline"
 		    translate>{{topic.name}}</div>
-		<span class="mat-body-1"
-		    [innerHtml]="topic.description"
-		    translate></span>
+		<app-more-less [displayText]="topic.description"
+		    maxHeight="200">
+		</app-more-less>
 	</div>
 </mat-toolbar>
 
 <div class="container">
-	<app-loader [isLoading]="isLoading"
-	    size="1.5"></app-loader>
-
 	<app-grid-list *ngIf="topic"
 	    path="/issues"
 	    [items]=topic.issues></app-grid-list>

@@ -28,5 +28,8 @@
 // that you are using.
 @include angular-material-theme($app-theme);
 
+@import 'app/shared/more-less/more-less.component.theme';
+@include more-less-fade-theme($app-theme);
+
 // Theme customization
 @import "theme/theme";

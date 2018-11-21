@@ -31,3 +31,10 @@ q {
 	width: calc(100% + 32px);
 	margin: -16px -16px 16px -16px;
 }
+
+.admin-panel {
+	.button-panel {
+		background-color: rgba(0, 0, 0, 0.6);
+		border-bottom-left-radius: 15px;
+	}
+}

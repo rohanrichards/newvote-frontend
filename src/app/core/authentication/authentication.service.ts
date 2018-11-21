@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {includes as _includes} from 'lodash';
 
 export interface Credentials {
 	// Customize received credentials here
@@ -80,6 +81,18 @@ export class AuthenticationService {
 	 */
 	isAuthenticated(): boolean {
 		return !!this.credentials;
+	}
+
+	/**
+	 * Checks is the user is an admin.
+	 * @return True if the user is an admin.
+	 */
+	isAdmin(): boolean {
+		return _includes(this.credentials.user.roles, 'admin');
+	}
+
+	hasRole(role: string): boolean {
+		return _includes(this.credentials.user.roles, role);
 	}
 
 	/**

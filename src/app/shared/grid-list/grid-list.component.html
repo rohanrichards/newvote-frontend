@@ -14,18 +14,18 @@
 				<div mat-card-image
 				    class="image-container"
 				    [style.background-image]="'url(' + item.imageUrl + ')'">
-					<div class="button-panel">
+					<div class="button-panel" *ngIf="auth.isAdmin()">
 						<button color="accent" mat-icon-button (click)="$event.stopPropagation()" routerLink='{{path}}/edit/{{item._id}}'>
-    						<mat-icon aria-label="Edit the topic">edit</mat-icon>
+    						<mat-icon aria-label="Edit the content">edit</mat-icon>
   						</button>
-						<button color="warn" mat-icon-button (click)="$event.stopPropagation()">
-    						<mat-icon aria-label="Delete topic forever">delete_forever</mat-icon>
+						<button color="warn" mat-icon-button (click)="onDelete(item, $event)">
+    						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
   						</button>
 					</div>
 				</div>
 				<mat-card-content>
 					<mat-card-subtitle>
-						<mat-card-title translate>{{item.name}}</mat-card-title>
+						<mat-card-title translate>{{item.name}} ({{item.constructor.modelName}})</mat-card-title>
 					</mat-card-subtitle>
 				</mat-card-content>
 			</mat-card>
