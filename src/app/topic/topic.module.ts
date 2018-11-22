@@ -15,6 +15,7 @@ import { TopicCreateComponent } from './create/topic-create.component';
 import { TopicEditComponent } from './edit/topic-edit.component';
 
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { IssueService } from '@app/core/http/issue/issue.service';
 import { SharedModule } from '@app/shared';
 
 @NgModule({
@@ -38,7 +39,8 @@ import { SharedModule } from '@app/shared';
 		TopicEditComponent
 	],
 	providers: [
-		TopicService
+		TopicService,
+		IssueService
 	]
 })
 export class TopicModule { }

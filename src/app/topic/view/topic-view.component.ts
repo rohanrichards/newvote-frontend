@@ -7,6 +7,9 @@ import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { IssueService } from '@app/core/http/issue/issue.service';
+
+import { ITopic } from '@app/core/models/topic.model';
 
 @Component({
 	selector: 'app-topic',
@@ -15,11 +18,13 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 })
 export class TopicViewComponent implements OnInit {
 
-	topic: any;
+	topic: ITopic;
+	issues: Array<any>;
 	isLoading: boolean;
 
 	constructor(
 		private topicService: TopicService,
+		private issueService: IssueService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -31,10 +36,22 @@ export class TopicViewComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.topicService.view({ id: ID, orgs: [] })
-				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(topic => { this.topic = topic; });
+			this.getTopic(ID);
 		});
+	}
+
+	getTopic(id: string) {
+		this.topicService.view({ id: id, orgs: [] })
+			.subscribe((topic: ITopic) => {
+				this.topic = topic;
+				this.getIssues(topic._id);
+			});
+	}
+
+	getIssues(id: string) {
+		this.issueService.list({ params: { topicId: id } })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((issues: Array<any>) => { this.issues = issues; });
 	}
 
 	onDelete() {
