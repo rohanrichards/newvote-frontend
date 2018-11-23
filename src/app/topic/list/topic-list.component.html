@@ -1,26 +1,15 @@
-<mat-toolbar color="primary"
-    class="header-info-panel">
-	<div fxLayout="row wrap"
-	    fxLayoutAlign="center start">
-		<div fxFlex.gt-sm="690px">
-			<span class="mat-subheading-2"
-			    translate>Topics arrange the current issues into broader categories. Select a topic below to learn more about it and explore relevant issues being discussed.</span>
+<app-header-bar [title]="headerTitle"
+    [text]="headerText"
+    [buttons]="headerButtons">
+</app-header-bar>
 
-			<div>
-				<button mat-raised-button
-				    color="accent"
-				    routerLink="/topics/create">New Topic</button>
-			</div>
-		</div>
-	</div>
-</mat-toolbar>
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
 
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px">
+	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
 		<app-grid-list path="/topics"
 		    [items]=topics
 		    model="Topic"

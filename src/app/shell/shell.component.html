@@ -5,14 +5,16 @@
 		    [opened]="!isMobile"
 		    [disableClose]="!isMobile"
 		    ngClass.gt-sm="has-border"
-			fixedInViewport="true">
-			<mat-toolbar color="primary">
-				<span translate>APP_NAME</span>
-				<div fxFlex></div>
-			</mat-toolbar>
+		    fixedInViewport="true">
+			<div color="primary">
+				<p>
+					<img class="logo"
+					    src="assets/logo@256.png"
+					    alt="angular logo" />
+				</p>
+			</div>
 			<nav>
-				<mat-list>
-					<mat-divider></mat-divider>
+				<mat-list layoutAlign="center center">
 					<a mat-list-item
 					    routerLink="/home"
 					    routerLinkActive="active"
@@ -25,14 +27,31 @@
 					    (click)="isMobile && sidenav.close()">
             			<span translate>Topics</span>
           			</a>
-					<mat-divider></mat-divider>
 					<a mat-list-item
-					    routerLink="/about"
+					    routerLink="/topics"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-            			<span translate>About</span>
+            			<span translate>Issues</span>
+          			</a>
+					<a mat-list-item
+					    routerLink="/topics"
+					    routerLinkActive="active"
+					    (click)="isMobile && sidenav.close()">
+            			<span translate>Vote Now</span>
           			</a>
 					<mat-divider></mat-divider>
+					<a mat-list-item
+					    routerLink="/topics"
+					    routerLinkActive="active"
+					    (click)="isMobile && sidenav.close()">
+            			<span translate>About NewVote</span>
+          			</a>
+					<a mat-list-item
+					    routerLink="/topics"
+					    routerLinkActive="active"
+					    (click)="isMobile && sidenav.close()">
+            			<span translate>Help</span>
+          			</a>
 				</mat-list>
 			</nav>
 		</mat-sidenav>

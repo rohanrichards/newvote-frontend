@@ -1,0 +1,10 @@
+//global overrides for mat-toolbar
+.header-bar {
+	white-space: normal !important;
+	padding-top: 16px;
+	height: auto;
+	min-height: 32px;
+	line-height: 32px;
+	padding-bottom: 16px;
+	display: block;
+}

@@ -31,5 +31,11 @@
 @import 'app/shared/more-less/more-less.component.theme';
 @include more-less-fade-theme($app-theme);
 
+@import 'app/shared/header-bar/header-bar.component.theme';
+@include header-bar-theme($app-theme);
+
+@import 'app/shared/themes/header-info-panel.component.theme';
+@include header-info-panel($app-theme);
+
 // Theme customization
 @import "theme/theme";

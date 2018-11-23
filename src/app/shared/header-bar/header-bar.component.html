@@ -1,0 +1,20 @@
+<mat-toolbar color="primary"
+    class="header-bar">
+	<div fxLayout="row wrap"
+	    fxLayoutAlign="center start">
+		<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+			<div class="mat-display-1"
+			    translate
+				[innerHtml]="title"></div>
+			<div class="mat-subheading-2"
+			    translate
+			    [innerHtml]="text"></div>
+			<div>
+				<button mat-raised-button
+				    *ngFor="let button of buttons"
+				    [color]="button.color"
+				    [routerLink]="button.routerLink">{{button.text}}</button>
+			</div>
+		</div>
+	</div>
+</mat-toolbar>

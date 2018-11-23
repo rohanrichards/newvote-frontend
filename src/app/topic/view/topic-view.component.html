@@ -34,8 +34,8 @@
 	</div>
 	<div fxLayout="row wrap"
 	    fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px">
-			<div class="mat-headline"
+		<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+			<div class="mat-display-1"
 			    translate>{{topic.name}}</div>
 			<app-more-less [displayText]="topic.description"
 			    maxHeight="200">
@@ -47,7 +47,7 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px">
+	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
 		<app-grid-list *ngIf="topic"
 		    path="/issues"
 			model="Issue"

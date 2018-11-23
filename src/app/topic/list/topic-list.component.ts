@@ -14,6 +14,14 @@ export class TopicListComponent implements OnInit {
 
 	topics: Array<any>;
 	isLoading: boolean;
+	headerTitle = 'Browse By Topic';
+	headerText = 'Topics arrange the current issues into broader categories. \
+		Select a topic below to learn more about it and explore relevant issues being discussed.';
+	headerButtons = [{
+		text: 'New Topic',
+		color: 'accent',
+		routerLink: '/topics/create'
+	}];
 
 	constructor(private topicService: TopicService,
 		public auth: AuthenticationService,

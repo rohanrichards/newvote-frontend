@@ -8,6 +8,7 @@ import { MaterialModule } from '@app/material.module';
 import { LoaderComponent } from './loader/loader.component';
 import { GridListComponent } from './grid-list/grid-list.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { HeaderBarComponent } from './header-bar/header-bar.component';
 
 import { MoreLessComponent } from './more-less/more-less.component';
 
@@ -23,13 +24,15 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		LoaderComponent,
 		GridListComponent,
 		ConfirmDialogComponent,
-		MoreLessComponent
+		MoreLessComponent,
+		HeaderBarComponent
 	],
 	exports: [
 		LoaderComponent,
 		GridListComponent,
 		ConfirmDialogComponent,
-		MoreLessComponent
+		MoreLessComponent,
+		HeaderBarComponent
 	]
 })
 export class SharedModule { }
