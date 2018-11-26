@@ -5,24 +5,21 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 
-import { ITopic } from '@app/core/models/topic.model';
+import { IIssue } from '@app/core/models/issue.model';
 
 @Component({
-	selector: 'app-topic',
-	templateUrl: './topic-view.component.html',
-	styleUrls: ['./topic-view.component.scss']
+	selector: 'app-issue',
+	templateUrl: './issue-view.component.html',
+	styleUrls: ['./issue-view.component.scss']
 })
-export class TopicViewComponent implements OnInit {
+export class IssueViewComponent implements OnInit {
 
-	topic: ITopic;
-	issues: Array<any>;
+	issue: IIssue;
 	isLoading: boolean;
 
 	constructor(
-		private topicService: TopicService,
 		private issueService: IssueService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -35,38 +32,39 @@ export class TopicViewComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.getTopic(ID);
+			this.getIssue(ID);
 		});
 	}
 
-	getTopic(id: string) {
-		this.topicService.view({ id: id, orgs: [] })
-			.subscribe((topic: ITopic) => {
-				this.topic = topic;
-				this.getIssues(topic._id);
+	getIssue(id: string) {
+		this.issueService.view({ id: id, orgs: [] })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((issue: IIssue) => {
+				this.issue = issue;
+				// get child solutions here
 			});
 	}
 
-	getIssues(id: string) {
-		this.issueService.list({ params: { topicId: id } })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((issues: Array<any>) => { this.issues = issues; });
-	}
+	// TODO: get child solutions
+	// getSolutions(id: string) {
+	// 	this.topicService.list({ params: { issueId: id } })
+	// 		.subscribe((issues: Array<any>) => { this.issues = issues; });
+	// }
 
 	onDelete() {
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
 			data: {
-				title: `Delete Topic?`,
-				message: `Are you sure you want to delete ${this.topic.name}? This action cannot be undone.`
+				title: `Delete Issue?`,
+				message: `Are you sure you want to delete ${this.issue.name}? This action cannot be undone.`
 			}
 		});
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.topicService.delete({ id: this.topic._id }).subscribe(() => {
+				this.issueService.delete({ id: this.issue._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/topics', { forceUpdate: true }]);
+					this.router.navigate(['/issues', { forceUpdate: true }]);
 				});
 			}
 		});

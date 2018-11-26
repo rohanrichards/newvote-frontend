@@ -18,6 +18,7 @@ export interface TopicContext {
 	orgs?: Array<string>; // users organisations
 	id?: string; // id of object to find/modify
 	entity?: ITopic; // the object being created or edited
+	params?: any;
 	forceUpdate?: boolean;
 }
 

@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TranslateModule } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,6 +22,8 @@ import { environment } from '@env/environment';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { ShareModule } from '@ngx-share/core';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { LoginModule } from './login/login.module';
@@ -35,6 +37,7 @@ import { AppRoutingModule } from './app-routing.module';
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
+		HttpClientJsonpModule,
 		TranslateModule.forRoot(),
 		BrowserAnimationsModule,
 		MaterialModule,
@@ -43,6 +46,8 @@ import { AppRoutingModule } from './app-routing.module';
 		ShellModule,
 		HomeModule,
 		LoginModule,
+		ShareModule.forRoot(),
+		AngularFontAwesomeModule,
 		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
 		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		AppRoutingModule // must be imported as the last module as it contains the fallback route

@@ -1,0 +1,9 @@
+<div>
+	<mat-chip-list>
+		<mat-chip class="cursor truncate"
+		    *ngFor="let topic of topics"
+		    [matTooltip]="topic.name"
+		    matTooltipPosition="above"
+		    routerLink="/topics/{{topic._id}}">{{topic.name.toUpperCase()}}</mat-chip>
+	</mat-chip-list>
+</div>

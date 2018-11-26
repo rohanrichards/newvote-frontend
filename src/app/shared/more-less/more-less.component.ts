@@ -25,7 +25,6 @@ export class MoreLessComponent implements OnInit, AfterViewInit {
 	ngAfterViewInit(): void {
 		const rect = this.el.nativeElement.getBoundingClientRect();
 		const currentHeight = rect.height;
-		console.log(currentHeight);
 
 		if (currentHeight > this.maxHeight) {
 			this.spanContainer.nativeElement.style.maxHeight = this.maxHeight + 'px';

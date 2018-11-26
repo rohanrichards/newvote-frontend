@@ -1,0 +1,12 @@
+.cursor {
+	cursor: pointer;
+}
+
+.truncate {
+	display: inline-block;
+	max-width: 120px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	line-height: 18px;
+}

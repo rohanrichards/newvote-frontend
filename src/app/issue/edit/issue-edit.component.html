@@ -1,0 +1,63 @@
+<app-loader [isLoading]="isLoading"
+	size="1.5"></app-loader>
+<div class="container"
+    fxLayout="row"
+    fxLayoutAlign="center center">
+	<mat-card fxFlex.gt-sm="60"
+	    fxFlex="100">
+		<form [formGroup]="issueForm"
+		    fxLayout="column"
+		    (ngSubmit)="onSave()"
+		    novalidate>
+			<mat-form-field>
+				<!-- {{issueForm.status}} -->
+				<input matInput
+				    placeholder="Enter a name for the issue"
+				    formControlName="name"
+				    required>
+				<mat-error *ngIf="issueForm.hasError('required', ['name'])">
+					Email is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<div class="quill-editor-container cf">
+				<quill-editor formControlName="description"></quill-editor>
+			</div>
+
+			<input type="file"
+			    id="fileupload"
+			    #fileInput
+			    ng2FileSelect
+			    [uploader]="uploader"
+			    (change)="onFileChange($event)"
+			    hidden
+			    autoComplete="off" />
+
+			<input matInput
+			    hidden
+			    placeholder="Enter a name for the issue"
+			    formControlName="imageUrl"
+			    required>
+
+			<div class="image-select">
+				<button mat-flat-button
+				    type="button"
+				    color="primary"
+				    (click)="fileInput.click()">Select Image</button>
+				<button mat-flat-button
+				    type="button"
+				    color="primary"
+				    (click)="onResetImage()">Reset Image</button>
+				<div class="image-preview"
+				    *ngIf="imageUrl">
+					<img [src]="imageUrl" />
+				</div>
+			</div>
+
+			<button mat-flat-button
+			    type="submit"
+			    [disabled]="!issueForm.valid || isLoading"
+			    color="primary">Update</button>
+		</form>
+	</mat-card>
+</div>

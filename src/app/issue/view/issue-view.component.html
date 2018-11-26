@@ -3,10 +3,10 @@
 
 <mat-toolbar color="primary"
     class="header-info-panel"
-    *ngIf="topic">
+    *ngIf="issue">
 	<div class="image-container"
 		fxLayout="column"
-	    [style.background-image]="'url(' + topic.imageUrl + ')'">
+	    [style.background-image]="'url(' + issue.imageUrl + ')'">
 		<div class="admin-panel"
 		    *ngIf="auth.isAdmin()"
 		    fxLayout="column"
@@ -19,16 +19,16 @@
     					<mat-icon aria-label="Add a new issue">playlist_add</mat-icon>
   					</button>
 				<button mat-icon-button
-				    matTooltip="Edit this Topic"
+				    matTooltip="Edit this Issue"
 				    color="accent"
-				    routerLink="/topics/edit/{{topic._id}}">
-    					<mat-icon aria-label="Edit the topic">edit</mat-icon>
+				    routerLink="/issues/edit/{{issue._id}}">
+    					<mat-icon aria-label="Edit the issue">edit</mat-icon>
   					</button>
 				<button mat-icon-button
-				    matTooltip="Delete this Topic"
+				    matTooltip="Delete this Issue"
 				    color="warn"
 				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete the topic forever">delete_forever</mat-icon>
+    					<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
   					</button>
 			</div>
 		</div>
@@ -49,8 +49,9 @@
 		<div fxFlex.gt-sm="690px"
 		    fxFlex.gt-md="800px">
 			<div class="mat-display-1"
-			    translate>{{topic.name}}</div>
-			<app-more-less [displayText]="topic.description"
+			    translate>{{issue.name}}</div>
+			<app-topic-tags [topics]="issue.topics"></app-topic-tags>
+			<app-more-less [displayText]="issue.description"
 			    maxHeight="200">
 			</app-more-less>
 		</div>
@@ -62,9 +63,5 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<app-grid-list *ngIf="topic"
-		    path="/issues"
-		    model="Issue"
-		    [items]=issues></app-grid-list>
 	</div>
 </div>

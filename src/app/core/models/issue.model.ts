@@ -3,6 +3,9 @@ export interface IIssue {
 	name: string;
 	imageUrl: string;
 	description: string;
+	user?: any;
+	topics?: Array<any>;
+	created?: Date;
 }
 
 export class Issue implements IIssue {
