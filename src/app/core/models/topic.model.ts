@@ -3,6 +3,8 @@ export interface ITopic {
 	name: string;
 	imageUrl: string;
 	description: string;
+	user?: any;
+	created?: Date;
 }
 
 export class Topic implements ITopic {

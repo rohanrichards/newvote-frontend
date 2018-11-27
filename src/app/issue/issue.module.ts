@@ -16,6 +16,7 @@ import { IssueEditComponent } from './edit/issue-edit.component';
 
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 import { SharedModule } from '@app/shared';
 
 @NgModule({
@@ -40,6 +41,7 @@ import { SharedModule } from '@app/shared';
 	],
 	providers: [
 		TopicService,
+		SolutionService,
 		IssueService
 	]
 })

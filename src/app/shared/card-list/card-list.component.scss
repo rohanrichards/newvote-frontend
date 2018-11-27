@@ -1,0 +1,41 @@
+.mat-progress-spinner {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.message {
+	margin-left: 0.5em;
+}
+
+.item-card-row {
+	margin-bottom: 32px;
+}
+
+.item-card {
+	.image-container {
+		min-height: 200px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+	cursor: pointer;
+}
+
+.button-panel {
+	text-align: right;
+	background-color: rgba(0, 0, 0, 0.6);
+	border-top-right-radius: inherit;
+	border-top-left-radius: inherit;
+}
+
+.truncate-container {
+	max-width: 100%;
+	overflow: hidden;
+	.truncate {
+		display: inline-block;
+		max-width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

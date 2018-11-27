@@ -4,6 +4,7 @@ export interface IIssue {
 	imageUrl: string;
 	description: string;
 	user?: any;
+	solutionMetaData?: any;
 	topics?: Array<any>;
 	created?: Date;
 }

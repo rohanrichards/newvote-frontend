@@ -6,8 +6,10 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 
 import { IIssue } from '@app/core/models/issue.model';
+import { Solution } from '@app/core/models/solution.model';
 
 @Component({
 	selector: 'app-issue',
@@ -17,10 +19,12 @@ import { IIssue } from '@app/core/models/issue.model';
 export class IssueViewComponent implements OnInit {
 
 	issue: IIssue;
+	solutions: Array<Solution>;
 	isLoading: boolean;
 
 	constructor(
 		private issueService: IssueService,
+		private solutionService: SolutionService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -41,15 +45,14 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((issue: IIssue) => {
 				this.issue = issue;
-				// get child solutions here
+				this.getSolutions(issue._id);
 			});
 	}
 
-	// TODO: get child solutions
-	// getSolutions(id: string) {
-	// 	this.topicService.list({ params: { issueId: id } })
-	// 		.subscribe((issues: Array<any>) => { this.issues = issues; });
-	// }
+	getSolutions(id: string) {
+		this.solutionService.list({ params: { issueId: id } })
+			.subscribe((solutions: Array<Solution>) => { this.solutions = solutions; });
+	}
 
 	onDelete() {
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
