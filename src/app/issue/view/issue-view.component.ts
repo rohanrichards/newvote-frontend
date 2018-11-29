@@ -7,9 +7,11 @@ import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
+import { VoteService } from '@app/core/http/vote/vote.service';
 
 import { IIssue } from '@app/core/models/issue.model';
 import { Solution } from '@app/core/models/solution.model';
+import { Vote } from '@app/core/models/vote.model';
 
 @Component({
 	selector: 'app-issue',
@@ -25,6 +27,7 @@ export class IssueViewComponent implements OnInit {
 	constructor(
 		private issueService: IssueService,
 		private solutionService: SolutionService,
+		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -49,9 +52,25 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
-	getSolutions(id: string) {
-		this.solutionService.list({ params: { issueId: id } })
-			.subscribe((solutions: Array<Solution>) => { this.solutions = solutions; });
+	getSolutions(id: string, forceUpdate?: boolean) {
+		this.solutionService.list({ params: { issueId: id }, forceUpdate })
+			.subscribe((solutions: Array<Solution>) => {
+				this.solutions = solutions;
+			});
+	}
+
+	onVote(voteData: any) {
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, 'Solution', voteValue);
+		const existingVote = item.votes.currentUser;
+
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote }).subscribe(res => {
+			this.getSolutions(this.issue._id, true);
+		});
 	}
 
 	onDelete() {
@@ -71,6 +90,25 @@ export class IssueViewComponent implements OnInit {
 				});
 			}
 		});
+	}
+
+	onDeleteSolution() {
+		// const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+		// 	width: '250px',
+		// 	data: {
+		// 		title: `Delete Solution?`,
+		// 		message: `Are you sure you want to delete ${this.issue.name}? This action cannot be undone.`
+		// 	}
+		// });
+		//
+		// dialogRef.afterClosed().subscribe((confirm: boolean) => {
+		// 	if (confirm) {
+		// 		this.issueService.delete({ id: this.issue._id }).subscribe(() => {
+		// 			this.openSnackBar('Succesfully deleted', 'OK');
+		// 			this.router.navigate(['/issues', { forceUpdate: true }]);
+		// 		});
+		// 	}
+		// });
 	}
 
 	openSnackBar(message: string, action: string) {

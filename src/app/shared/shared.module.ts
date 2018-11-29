@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { ChartsModule } from 'ng2-charts';
 
 import { MaterialModule } from '@app/material.module';
 import { ShareModule } from '@ngx-share/core';
@@ -25,6 +26,7 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		CommonModule,
 		ShareModule,
 		AngularFontAwesomeModule,
+		ChartsModule,
 		RouterModule
 	],
 	declarations: [

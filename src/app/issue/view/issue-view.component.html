@@ -66,6 +66,7 @@
 			<app-card-list path="/solutions"
 			    [items]=solutions
 			    model="Solution"
-			    (delete)="onDeleteSolution($event)"></app-card-list>
+			    (delete)="onDeleteSolution()"
+				(vote)="onVote($event)"></app-card-list>
 	</div>
 </div>

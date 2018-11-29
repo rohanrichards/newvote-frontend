@@ -31,6 +31,7 @@
 .truncate-container {
 	max-width: 100%;
 	overflow: hidden;
+
 	.truncate {
 		display: inline-block;
 		max-width: 100%;
@@ -38,4 +39,48 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+}
+
+mat-card-actions {
+	padding: 8px;
+	padding-top: 16px;
+	margin-bottom: 0px !important;
+}
+
+.vote-button {
+	margin-right: 8px !important;
+}
+
+.chart-container {
+	position: relative;
+	height: 40px !important;
+	width: 40px !important;
+	z-index: 100;
+	margin-right: 8px !important;
+}
+
+.chart-score {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 40px;
+	width: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 14px;
+}
+
+.vote-total {
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+}
+
+.grey-circle {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 100%;
 }

@@ -15,6 +15,33 @@ export class CardListComponent implements OnInit {
 	@Input() model: string;
 	@Input() items: Array<any>;
 	@Output() delete = new EventEmitter();
+	@Output() vote = new EventEmitter();
+
+	// Radar
+	public chartLabels: string[] = ['For', 'Against'];
+	public pieChartType = 'pie';
+	public chartColors = [
+		{
+			backgroundColor: ['rgba(0,255,0,0.8)', 'rgba(255,0,0,0.8)'],
+			pointBackgroundColor: ['rgba(0,255,0,0.5)', 'rgba(255,0,0,0.5)'],
+			pointHoverBackgroundColor: ['rgba(77,83,96,1)', 'rgba(255,0,0,0.6)'],
+			borderColor: ['rgba(77,83,96,1)', 'rgba(255,0,0,0.6)'],
+			pointBorderColor: ['#fff', 'rgba(255,0,0,0.6)'],
+			pointHoverBorderColor: ['rgba(77,83,96,0.8)', 'rgba(255,0,0,0.6)']
+		}
+	];
+	public chartOptions = {
+		elements: {
+			arc: {
+				borderWidth: 0
+			}
+		},
+		responsive: true,
+		legend: {
+			display: false
+		}
+	};
+
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
@@ -36,5 +63,11 @@ export class CardListComponent implements OnInit {
 				this.delete.emit(item);
 			}
 		});
+	}
+
+	onVote(item: any, voteValue: number, event: any) {
+		event.stopPropagation();
+
+		this.vote.emit({item, voteValue});
 	}
 }

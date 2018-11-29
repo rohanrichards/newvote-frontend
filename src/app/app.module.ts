@@ -24,6 +24,7 @@ import { SharedModule } from '@app/shared';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { ShareModule } from '@ngx-share/core';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { ChartsModule } from 'ng2-charts';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { LoginModule } from './login/login.module';
@@ -48,6 +49,7 @@ import { AppRoutingModule } from './app-routing.module';
 		LoginModule,
 		ShareModule.forRoot(),
 		AngularFontAwesomeModule,
+		ChartsModule,
 		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
 		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		AppRoutingModule // must be imported as the last module as it contains the fallback route

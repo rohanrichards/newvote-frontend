@@ -30,7 +30,38 @@
 					</div>
 					<mat-card-subtitle [innerHtml]="item.description"></mat-card-subtitle>
 				</mat-card-title>
+				<mat-divider></mat-divider>
 			</mat-card-content>
+			<mat-card-actions fxLayout="row">
+				<button mat-raised-button
+					[color]="item.votes.currentUser.voteValue === 1 ? 'accent' : null"
+				    class="vote-button"
+				    (click)="onVote(item, 1, $event)"><mat-icon>arrow_upward</mat-icon>VOTE UP</button>
+
+				<div class="chart-container">
+					<canvas baseChart
+					    [data]="[item.votes.up, item.votes.down]"
+					    [labels]="chartLabels"
+					    [colors]="chartColors"
+					    [options]="chartOptions"
+					    chartType="pie"
+					    (chartHover)="chartHovered($event)"
+					    (chartClick)="chartClicked($event)"
+					    height="100%"
+					    width="100%">
+					</canvas>
+					<div class="chart-score" matTooltip="{{'For: ' + item.votes.up + ' Against: ' + item.votes.down}}">
+						<span>{{item.votes.total == 0 ? 0 : item.votes.up / (item.votes.up + item.votes.down) * 100 | number: 0}}%</span>
+					</div>
+				</div>
+				<div class="vote-total grey-circle" matTooltip="Total Votes">
+					{{item.votes.total}}
+				</div>
+				<button mat-raised-button
+					[color]="item.votes.currentUser.voteValue === -1 ? 'accent' : null"
+				    class="vote-button"
+				    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon>VOTE DOWN</button>
+			</mat-card-actions>
 		</mat-card>
 	</div>
 </div>
