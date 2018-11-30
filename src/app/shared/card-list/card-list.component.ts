@@ -14,8 +14,12 @@ export class CardListComponent implements OnInit {
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
+	@Input() showChildren: boolean;
+	@Input() childPath: string;
+	@Input() childName: string;
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
+	@Output() childVote = new EventEmitter();
 
 	// Radar
 	public chartLabels: string[] = ['For', 'Against'];
@@ -45,7 +49,8 @@ export class CardListComponent implements OnInit {
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
-	ngOnInit() { }
+	ngOnInit() {
+	}
 
 	onDelete(item: any, event: any) {
 		event.stopPropagation();
@@ -65,9 +70,11 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
-	onVote(item: any, voteValue: number, event: any) {
-		event.stopPropagation();
+	onVote(event: any) {
+		this.vote.emit(event);
+	}
 
-		this.vote.emit({item, voteValue});
+	onChildVote(event: any) {
+		this.childVote.emit(event);
 	}
 }

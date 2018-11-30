@@ -20,6 +20,33 @@
 				</mat-error>
 			</mat-form-field>
 
+			<mat-form-field class="example-chip-list">
+				<mat-chip-list #chipList>
+					<mat-chip *ngFor="let topic of topics"
+						[selectable]="false"
+						[removable]="true"
+						(removed)="topicRemoved(topic)">
+						{{topic.name}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="New topic..."
+						#topicInput
+						formControlName="topics"
+						[matAutocomplete]="auto"
+						[matChipInputFor]="chipList"
+						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						[matChipInputAddOnBlur]="true"
+						(matChipInputTokenEnd)="add($event)">
+				</mat-chip-list>
+				<mat-autocomplete #auto="matAutocomplete"
+					(optionSelected)="topicSelected($event)">
+					<mat-option *ngFor="let topic of filteredTopics | async"
+						[value]="topic">
+						{{topic.name}}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+
 			<div class="quill-editor-container cf">
 				<quill-editor formControlName="description"></quill-editor>
 			</div>

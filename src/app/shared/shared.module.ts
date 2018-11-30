@@ -12,6 +12,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { ShareButtonsComponent } from './share-buttons/share-buttons.component';
 import { GridListComponent } from './grid-list/grid-list.component';
 import { CardListComponent } from './card-list/card-list.component';
+import { VoteButtonsComponent } from './vote-buttons/vote-buttons.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { HeaderBarComponent } from './header-bar/header-bar.component';
 import { TopicTagsComponent } from './topic-tags/topic-tags.component';
@@ -34,6 +35,7 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ShareButtonsComponent,
 		GridListComponent,
 		CardListComponent,
+		VoteButtonsComponent,
 		ConfirmDialogComponent,
 		MoreLessComponent,
 		HeaderBarComponent,
@@ -44,6 +46,7 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ShareButtonsComponent,
 		GridListComponent,
 		CardListComponent,
+		VoteButtonsComponent,
 		ConfirmDialogComponent,
 		MoreLessComponent,
 		HeaderBarComponent,

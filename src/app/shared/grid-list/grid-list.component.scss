@@ -30,11 +30,13 @@
 
 .truncate-container {
 	max-width: 100%;
-	overflow: hidden;
+	min-width: 0;
+
 	.truncate {
+		min-width: 0;
 		display: inline-block;
-		max-width: 100%;
-		white-space: nowrap;
+		width: 100%;
+		height: 28px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}

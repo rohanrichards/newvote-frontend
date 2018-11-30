@@ -1,13 +1,13 @@
 <div fxLayout="column">
 	<div fxLayout="row wrap"
-	    fxLayout.xs="column"
-	    fxLayoutAlign="flex-start"
-	    fxLayoutAlign.xs="center stretch"
+		fxLayout.lt-sm="column"
+	    fxLayoutAlign="start start"
+		fxLayoutAlign.lt-sm="start stretch"
 	    fxLayoutGap="32px">
 		<div class="item-card-row"
 		    fxFlex="0 0 calc(33.3% - 32px)"
 		    fxFlex.lt-md="0 0 calc(50% - 32px)"
-		    fxFlex.lt-sm="100%"
+		    fxFlex.lt-sm="1 1 100%"
 		    *ngFor="let item of items">
 			<mat-card class="item-card"
 			    routerLink="{{path}}/{{item._id}}">

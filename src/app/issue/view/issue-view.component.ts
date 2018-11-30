@@ -45,7 +45,6 @@ export class IssueViewComponent implements OnInit {
 
 	getIssue(id: string) {
 		this.issueService.view({ id: id, orgs: [] })
-			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((issue: IIssue) => {
 				this.issue = issue;
 				this.getSolutions(issue._id);
@@ -54,8 +53,10 @@ export class IssueViewComponent implements OnInit {
 
 	getSolutions(id: string, forceUpdate?: boolean) {
 		this.solutionService.list({ params: { issueId: id }, forceUpdate })
+			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solutions: Array<Solution>) => {
 				this.solutions = solutions;
+				console.log(solutions);
 			});
 	}
 

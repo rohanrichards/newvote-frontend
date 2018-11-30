@@ -1,13 +1,17 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
-import { merge } from 'lodash';
+import { Observable } from 'rxjs';
+import { merge, startWith } from 'lodash';
 
 import { IIssue } from '@app/core/models/issue.model';
+import { ITopic } from '@app/core/models/topic.model';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
 	selector: 'app-issue',
@@ -17,6 +21,10 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 export class IssueEditComponent implements OnInit {
 
 	issue: IIssue;
+	allTopics: Array<ITopic> = [];
+	topics: Array<ITopic> = [];
+	filteredTopics: Observable<ITopic[]>;
+	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
 	imageUrl: any;
 	imageFile: File;
@@ -25,6 +33,7 @@ export class IssueEditComponent implements OnInit {
 	issueForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
+		topics: new FormControl(''),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
@@ -33,7 +42,11 @@ export class IssueEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
-	) { }
+	) {
+		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
+			startWith(''),
+			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+	}
 
 	ngOnInit() {
 		this.isLoading = true;
@@ -143,6 +156,36 @@ export class IssueEditComponent implements OnInit {
 			duration: 2000,
 			horizontalPosition: 'center'
 		});
+	}
+
+	topicSelected(event: any) {
+		console.log(event);
+		this.topics.push(event.option.value);
+		this.issueForm.get('topics').setValue('');
+		this.fruitInput.nativeElement.value = '';
+	}
+
+	topicRemoved(topic: any) {
+		const index = this.topics.indexOf(topic);
+
+		if (index >= 0) {
+			this.topics.splice(index, 1);
+		}
+	}
+
+	add(event: any) {
+		console.log(event);
+	}
+
+	private _filter(value: any): ITopic[] {
+		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
+
+		const filterVal = this.allTopics.filter(topic => {
+			const name = topic.name.toLowerCase();
+			const compare = name.indexOf(filterValue) !== -1;
+			return compare;
+		});
+		return filterVal;
 	}
 
 }
