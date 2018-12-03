@@ -6,78 +6,66 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
-import { merge } from 'lodash';
 
+import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';
-import { ITopic } from '@app/core/models/topic.model';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
-import { TopicService } from '@app/core/http/topic/topic.service';
 
 @Component({
-	selector: 'app-issue',
-	templateUrl: './issue-edit.component.html',
-	styleUrls: ['./issue-edit.component.scss']
+	selector: 'app-solution',
+	templateUrl: './solution-create.component.html',
+	styleUrls: ['./solution-create.component.scss']
 })
-export class IssueEditComponent implements OnInit {
+export class SolutionCreateComponent implements OnInit {
 
-	issue: IIssue;
-	allTopics: Array<ITopic> = [];
-	topics: Array<ITopic> = [];
-	filteredTopics: Observable<ITopic[]>;
+	solution: ISolution;
+	allIssues: Array<IIssue> = [];
+	issues: Array<IIssue> = [];
+	filteredIssues: Observable<IIssue[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
-	isLoading: boolean;
+	isLoading = true;
 	imageUrl: any;
-	imageFile: File;
-	newImage = false;
 	uploader: FileUploader;
-	issueForm = new FormGroup({
-		name: new FormControl('', [Validators.required]),
+	solutionForm = new FormGroup({
+		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
-		topics: new FormControl(''),
+		issues: new FormControl(''),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
-	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
+	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
+		private solutionService: SolutionService,
 		private issueService: IssueService,
-		private topicService: TopicService,
-		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
+		private route: ActivatedRoute,
 		private router: Router
 	) {
-		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
+		this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
 			startWith(''),
-			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+			map((issue: string) => issue ? this._filter(issue) : this.allIssues.slice()));
 	}
 
 	ngOnInit() {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.issueService.view({ id: ID, orgs: [] })
-				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(issue => {
-					this.imageUrl = issue.imageUrl;
-					this.issue = issue;
-					for (let i = 0; i < issue.topics.length; i++) {
-						const topic = issue.topics[i];
-						this.topics.push(topic);
-					}
-					this.issueForm.setValue({
-						'name': issue.name,
-						'description': issue.description,
-						'imageUrl': issue.imageUrl,
-						'topics': ''
+			if (ID) {
+				this.issueService.view({ id: ID, orgs: [] })
+					.pipe(finalize(() => { this.isLoading = false; }))
+					.subscribe(issue => {
+						if (issue) {
+							this.issues.push(issue);
+						}
 					});
-				});
+			} else {
+				this.isLoading = false;
+			}
 		});
 
-		this.topicService.list({})
-			.subscribe(topics => this.allTopics = topics);
-
-		// set up the file uploader
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
 			// Upload files automatically upon addition to upload queue
@@ -107,15 +95,15 @@ export class IssueEditComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+
+		this.issueService.list({})
+			.subscribe(issues => this.allIssues = issues);
 	}
 
 	onFileChange(event: any) {
-		this.newImage = true;
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
 			const reader = new FileReader();
-
-			this.imageFile = file;
 
 			reader.onload = (pe: ProgressEvent) => {
 				this.imageUrl = (<FileReader>pe.target).result;
@@ -125,13 +113,11 @@ export class IssueEditComponent implements OnInit {
 		}
 	}
 
-	onResetImage() {
-		this.newImage = false;
-		this.imageUrl = this.issueForm.get('imageUrl').value;
-	}
-
 	onSave() {
 		this.isLoading = true;
+		this.solution = <ISolution>this.solutionForm.value;
+		this.solution.issues = this.issues;
+		console.log(this.solution);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
@@ -140,33 +126,23 @@ export class IssueEditComponent implements OnInit {
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.issue, <IIssue>this.issueForm.value);
 				const res = JSON.parse(response);
-				this.issue.imageUrl = res.secure_url;
-				this.updateWithApi();
+				this.solution.imageUrl = res.secure_url;
+
+				this.solutionService.create({ entity: this.solution })
+					.pipe(finalize(() => { this.isLoading = false; }))
+					.subscribe(t => {
+						if (t.error) {
+							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+						} else {
+							this.openSnackBar('Succesfully created', 'OK');
+							this.router.navigate(['/solutions', { forceUpdate: true }]);
+						}
+					});
 			}
 		};
 
-		if (this.newImage) {
-			this.uploader.uploadAll();
-		} else {
-			merge(this.issue, <IIssue>this.issueForm.value);
-			this.updateWithApi();
-		}
-	}
-
-	updateWithApi() {
-		this.issue.topics = this.topics;
-		this.issueService.update({ id: this.issue._id, entity: this.issue })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
-					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues']);
-				}
-			});
+		this.uploader.uploadAll();
 	}
 
 	openSnackBar(message: string, action: string) {
@@ -176,36 +152,36 @@ export class IssueEditComponent implements OnInit {
 		});
 	}
 
-	topicSelected(event: any) {
+	issueSelected(event: any) {
 		const selectedItem = event.option.value;
-
-		if (!this.topics.some(topic => topic._id === selectedItem._id)) {
-			this.topics.push(event.option.value);
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+		// have to make sure the item isn't already in the list
+		if (!this.issues.some(issue => issue._id === selectedItem._id)) {
+			this.issues.push(event.option.value);
+			this.solutionForm.get('issues').setValue('');
+			this.issueInput.nativeElement.value = '';
 		} else {
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+			this.solutionForm.get('issues').setValue('');
+			this.issueInput.nativeElement.value = '';
 		}
 	}
 
-	topicRemoved(topic: any) {
-		const index = this.topics.indexOf(topic);
+	issueRemoved(issue: any) {
+		const index = this.issues.indexOf(issue);
 
 		if (index >= 0) {
-			this.topics.splice(index, 1);
+			this.issues.splice(index, 1);
 		}
 	}
 
 	add(event: any) {
-		// console.log(event);
+		console.log(event);
 	}
 
-	private _filter(value: any): ITopic[] {
+	private _filter(value: any): IIssue[] {
 		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 
-		const filterVal = this.allTopics.filter(topic => {
-			const name = topic.name.toLowerCase();
+		const filterVal = this.allIssues.filter(issue => {
+			const name = issue.name.toLowerCase();
 			const compare = name.indexOf(filterValue) !== -1;
 			return compare;
 		});

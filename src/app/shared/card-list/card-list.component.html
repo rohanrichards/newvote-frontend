@@ -39,9 +39,10 @@
 				</app-vote-buttons>
 			</mat-card-actions>
 		</mat-card>
-		<div *ngIf="showChildren">
+		<div *ngIf="showChildren && item[childPath].length > 0">
 			<span class="mat-headline">Vote on {{childName}}</span>
-			<div *ngFor="let child of item[childPath]">
+			<div *ngFor="let child of item[childPath]"
+			    routerLink="/{{childPath}}/{{child._id}}">
 				<div class='mini-proposal'>
 					<div fxLayout="column"
 					    class="point-area">
@@ -54,7 +55,8 @@
 							<span class="mat-title"
 							    [innerHtml]="child.title"></span>
 						</div>
-						<app-vote-buttons class="buttons" [item]="child"
+						<app-vote-buttons class="buttons"
+						    [item]="child"
 						    (vote)=onChildVote($event)>
 						</app-vote-buttons>
 					</div>

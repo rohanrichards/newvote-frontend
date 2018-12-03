@@ -14,7 +14,7 @@ export class CardListComponent implements OnInit {
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
-	@Input() showChildren: boolean;
+	@Input() showChildren = false;
 	@Input() childPath: string;
 	@Input() childName: string;
 	@Output() delete = new EventEmitter();

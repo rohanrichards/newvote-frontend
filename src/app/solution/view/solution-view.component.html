@@ -1,0 +1,82 @@
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
+
+<mat-toolbar color="primary"
+    class="header-info-panel"
+    *ngIf="solution">
+	<div class="image-container"
+	    fxLayout="column"
+	    [style.background-image]="'url(' + solution.imageUrl + ')'">
+		<div class="admin-panel"
+		    *ngIf="auth.isAdmin()"
+		    fxLayout="column"
+		    fxLayoutAlign="center end">
+			<div class="button-panel">
+				<button mat-icon-button
+				    matTooltip="Add a new Solution"
+				    color="accent"
+				    routerLink="/solutions/create">
+    					<mat-icon aria-label="Add a new solution">playlist_add</mat-icon>
+  					</button>
+				<button mat-icon-button
+				    matTooltip="Edit this Solution"
+				    color="accent"
+				    routerLink="/solutions/edit/{{solution._id}}">
+    					<mat-icon aria-label="Edit the solution">edit</mat-icon>
+  					</button>
+				<button mat-icon-button
+				    matTooltip="Delete this Solution"
+				    color="warn"
+				    (click)="onDelete()">
+    					<mat-icon aria-label="Delete the solution forever">delete_forever</mat-icon>
+  					</button>
+			</div>
+		</div>
+		<div fxLayout="row"
+		    fxFlex></div>
+		<!-- <div fxLayout="column"
+		    fxLayoutAlign="start start">
+		</div> -->
+		<div fxLayout="row wrap"
+		    fxLayoutAlign="center center">
+			<div fxFlex.gt-sm="690px"
+			    fxFlex.gt-md="800px">
+				<app-share-buttons></app-share-buttons>
+			</div>
+		</div>
+	</div>
+	<div fxLayout="row wrap"
+	    fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+		    fxFlex.gt-md="800px">
+			<div class="mat-display-1"
+			    translate>{{solution.title}}</div>
+			<app-topic-tags [topics]="solution.topics"></app-topic-tags>
+			<app-more-less [displayText]="solution.description"
+			    maxHeight="200">
+			</app-more-less>
+			<div class="buttons">
+			    <app-vote-buttons [item]="solution"
+				    (vote)=onVote($event)>
+				</app-vote-buttons>
+			</div>
+		</div>
+	</div>
+
+</mat-toolbar>
+
+<div class="container"
+    *ngIf="solution"
+    fxLayout="row wrap"
+    fxLayoutAlign="center start">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<span class="mat-headline">Vote on Proposals</span>
+		<app-card-list path="/proposals"
+		    [items]="solution.proposals"
+		    model="Proposal"
+		    [showChildren]="false"
+		    (delete)="onDeleteProposal()"
+		    (vote)="onVote($event)"></app-card-list>
+	</div>
+</div>

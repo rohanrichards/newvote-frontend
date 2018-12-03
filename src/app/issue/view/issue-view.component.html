@@ -16,8 +16,14 @@
 				    matTooltip="Add a new Issue"
 				    color="accent"
 				    routerLink="/issues/create">
-    					<mat-icon aria-label="Add a new issue">playlist_add</mat-icon>
-  					</button>
+    					<mat-icon aria-label="Add a new issue">add</mat-icon>
+  				</button>
+				<button mat-icon-button
+					matTooltip="Add Solution for this Issue"
+					color="accent"
+					routerLink="/solutions/create/{{issue._id}}">
+						<mat-icon aria-label="Add a new issue">playlist_add</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Edit this Issue"
 				    color="accent"
@@ -63,10 +69,11 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
+		<span class="mat-headline">Vote on Solutions</span>
 			<app-card-list path="/solutions"
 			    [items]=solutions
 			    model="Solution"
-				showChildren="true"
+				[showChildren]="true"
 				childPath="proposals"
 				childName="Proposals"
 			    (delete)="onDeleteSolution()"

@@ -8,74 +8,74 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
 import { merge } from 'lodash';
 
-import { IIssue } from '@app/core/models/issue.model';
-import { ITopic } from '@app/core/models/topic.model';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { TopicService } from '@app/core/http/topic/topic.service';
+import { IProposal } from '@app/core/models/proposal.model';
+import { ISolution } from '@app/core/models/solution.model';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 
 @Component({
-	selector: 'app-issue',
-	templateUrl: './issue-edit.component.html',
-	styleUrls: ['./issue-edit.component.scss']
+	selector: 'app-proposal',
+	templateUrl: './proposal-edit.component.html',
+	styleUrls: ['./proposal-edit.component.scss']
 })
-export class IssueEditComponent implements OnInit {
+export class ProposalEditComponent implements OnInit {
 
-	issue: IIssue;
-	allTopics: Array<ITopic> = [];
-	topics: Array<ITopic> = [];
-	filteredTopics: Observable<ITopic[]>;
+	proposal: IProposal;
+	allSolutions: Array<ISolution> = [];
+	solutions: Array<ISolution> = [];
+	filteredSolutions: Observable<ISolution[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
 	imageUrl: any;
 	imageFile: File;
 	newImage = false;
 	uploader: FileUploader;
-	issueForm = new FormGroup({
-		name: new FormControl('', [Validators.required]),
+	proposalForm = new FormGroup({
+		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
-		topics: new FormControl(''),
+		solutions: new FormControl(''),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
-	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
+	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
-		private issueService: IssueService,
-		private topicService: TopicService,
+		private proposalService: ProposalService,
+		private solutionService: SolutionService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
 	) {
-		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
+		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
 			startWith(''),
-			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+			map((solution: string) => solution ? this._filter(solution) : this.allSolutions.slice()));
 	}
 
 	ngOnInit() {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.issueService.view({ id: ID, orgs: [] })
+			this.proposalService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(issue => {
-					this.imageUrl = issue.imageUrl;
-					this.issue = issue;
-					for (let i = 0; i < issue.topics.length; i++) {
-						const topic = issue.topics[i];
-						this.topics.push(topic);
+				.subscribe(proposal => {
+					this.imageUrl = proposal.imageUrl;
+					this.proposal = proposal;
+					for (let i = 0; i < proposal.solutions.length; i++) {
+						const solution = proposal.solutions[i];
+						this.solutions.push(solution);
 					}
-					this.issueForm.setValue({
-						'name': issue.name,
-						'description': issue.description,
-						'imageUrl': issue.imageUrl,
-						'topics': ''
+					this.proposalForm.setValue({
+						'title': proposal.title,
+						'description': proposal.description,
+						'imageUrl': proposal.imageUrl,
+						'solutions': ''
 					});
 				});
 		});
 
-		this.topicService.list({})
-			.subscribe(topics => this.allTopics = topics);
+		this.solutionService.list({})
+			.subscribe(solutions => this.allSolutions = solutions);
 
 		// set up the file uploader
 		const uploaderOptions: FileUploaderOptions = {
@@ -127,7 +127,7 @@ export class IssueEditComponent implements OnInit {
 
 	onResetImage() {
 		this.newImage = false;
-		this.imageUrl = this.issueForm.get('imageUrl').value;
+		this.imageUrl = this.proposalForm.get('imageUrl').value;
 	}
 
 	onSave() {
@@ -140,9 +140,9 @@ export class IssueEditComponent implements OnInit {
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.issue, <IIssue>this.issueForm.value);
+				merge(this.proposal, <IProposal>this.proposalForm.value);
 				const res = JSON.parse(response);
-				this.issue.imageUrl = res.secure_url;
+				this.proposal.imageUrl = res.secure_url;
 				this.updateWithApi();
 			}
 		};
@@ -150,21 +150,22 @@ export class IssueEditComponent implements OnInit {
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.issue, <IIssue>this.issueForm.value);
+			merge(this.proposal, <IProposal>this.proposalForm.value);
 			this.updateWithApi();
 		}
 	}
 
 	updateWithApi() {
-		this.issue.topics = this.topics;
-		this.issueService.update({ id: this.issue._id, entity: this.issue })
+		this.proposal.solutions = this.solutions;
+		console.log('would update with: ', this.proposal);
+		this.proposalService.update({ id: this.proposal._id, entity: this.proposal })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
 				if (t.error) {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues']);
+					this.router.navigate(['/proposals']);
 				}
 			});
 	}
@@ -176,24 +177,24 @@ export class IssueEditComponent implements OnInit {
 		});
 	}
 
-	topicSelected(event: any) {
+	solutionSelected(event: any) {
 		const selectedItem = event.option.value;
-
-		if (!this.topics.some(topic => topic._id === selectedItem._id)) {
-			this.topics.push(event.option.value);
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+		// have to make sure the item isn't already in the list
+		if (!this.solutions.some(solution => solution._id === selectedItem._id)) {
+			this.solutions.push(event.option.value);
+			this.proposalForm.get('solutions').setValue('');
+			this.solutionInput.nativeElement.value = '';
 		} else {
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+			this.proposalForm.get('solutions').setValue('');
+			this.solutionInput.nativeElement.value = '';
 		}
 	}
 
-	topicRemoved(topic: any) {
-		const index = this.topics.indexOf(topic);
+	solutionRemoved(solution: any) {
+		const index = this.solutions.indexOf(solution);
 
 		if (index >= 0) {
-			this.topics.splice(index, 1);
+			this.solutions.splice(index, 1);
 		}
 	}
 
@@ -201,11 +202,11 @@ export class IssueEditComponent implements OnInit {
 		// console.log(event);
 	}
 
-	private _filter(value: any): ITopic[] {
+	private _filter(value: any): ISolution[] {
 		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 
-		const filterVal = this.allTopics.filter(topic => {
-			const name = topic.name.toLowerCase();
+		const filterVal = this.allSolutions.filter(solution => {
+			const name = solution.title.toLowerCase();
 			const compare = name.indexOf(filterValue) !== -1;
 			return compare;
 		});

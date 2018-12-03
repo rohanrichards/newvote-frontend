@@ -1,54 +1,71 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
 
-import { IIssue } from '@app/core/models/issue.model';
-import { ITopic } from '@app/core/models/topic.model';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { TopicService } from '@app/core/http/topic/topic.service';
+import { IProposal } from '@app/core/models/proposal.model';
+import { ISolution } from '@app/core/models/solution.model';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 
 @Component({
-	selector: 'app-issue',
-	templateUrl: './issue-create.component.html',
-	styleUrls: ['./issue-create.component.scss']
+	selector: 'app-proposal',
+	templateUrl: './proposal-create.component.html',
+	styleUrls: ['./proposal-create.component.scss']
 })
-export class IssueCreateComponent implements OnInit {
+export class ProposalCreateComponent implements OnInit {
 
-	issue: IIssue;
-	allTopics: Array<ITopic> = [];
-	topics: Array<ITopic> = [];
-	filteredTopics: Observable<ITopic[]>;
+	proposal: IProposal;
+	allSolutions: Array<ISolution> = [];
+	solutions: Array<ISolution> = [];
+	filteredSolutions: Observable<ISolution[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
-	isLoading: boolean;
+	isLoading = true;
 	imageUrl: any;
 	uploader: FileUploader;
-	issueForm = new FormGroup({
-		name: new FormControl('', [Validators.required]),
+	proposalForm = new FormGroup({
+		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
-		topics: new FormControl(''),
+		solutions: new FormControl(''),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
-	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
+	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
-		private issueService: IssueService,
-		private topicService: TopicService,
+		private proposalService: ProposalService,
+		private solutionService: SolutionService,
 		public snackBar: MatSnackBar,
+		private route: ActivatedRoute,
 		private router: Router
 	) {
-		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
+		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
 			startWith(''),
-			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+			map((solution: string) => solution ? this._filter(solution) : this.allSolutions.slice()));
 	}
 
 	ngOnInit() {
+		this.isLoading = true;
+		this.route.paramMap.subscribe(params => {
+			const ID = params.get('id');
+			if (ID) {
+				this.solutionService.view({ id: ID, orgs: [] })
+					.pipe(finalize(() => { this.isLoading = false; }))
+					.subscribe(solution => {
+						if (solution) {
+							this.solutions.push(solution);
+						}
+					});
+			} else {
+				this.isLoading = false;
+			}
+		});
+
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
 			// Upload files automatically upon addition to upload queue
@@ -79,8 +96,8 @@ export class IssueCreateComponent implements OnInit {
 			return { fileItem, form };
 		};
 
-		this.topicService.list({})
-			.subscribe(topics => this.allTopics = topics);
+		this.solutionService.list({})
+			.subscribe(solutions => this.allSolutions = solutions);
 	}
 
 	onFileChange(event: any) {
@@ -98,9 +115,9 @@ export class IssueCreateComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.issue = <IIssue>this.issueForm.value;
-		this.issue.topics = this.topics;
-		console.log(this.issue);
+		this.proposal = <IProposal>this.proposalForm.value;
+		this.proposal.solutions = this.solutions;
+		console.log(this.proposal);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
@@ -110,16 +127,16 @@ export class IssueCreateComponent implements OnInit {
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
 				const res = JSON.parse(response);
-				this.issue.imageUrl = res.secure_url;
+				this.proposal.imageUrl = res.secure_url;
 
-				this.issueService.create({ entity: this.issue })
+				this.proposalService.create({ entity: this.proposal })
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
 						if (t.error) {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/issues', { forceUpdate: true }]);
+							this.router.navigate(['/proposals', { forceUpdate: true }]);
 						}
 					});
 			}
@@ -135,24 +152,24 @@ export class IssueCreateComponent implements OnInit {
 		});
 	}
 
-	topicSelected(event: any) {
+	solutionSelected(event: any) {
 		const selectedItem = event.option.value;
-
-		if (!this.topics.some(topic => topic._id === selectedItem._id)) {
-			this.topics.push(event.option.value);
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+		// have to make sure the item isn't already in the list
+		if (!this.solutions.some(solution => solution._id === selectedItem._id)) {
+			this.solutions.push(event.option.value);
+			this.proposalForm.get('solutions').setValue('');
+			this.solutionInput.nativeElement.value = '';
 		} else {
-			this.issueForm.get('topics').setValue('');
-			this.topicInput.nativeElement.value = '';
+			this.proposalForm.get('solutions').setValue('');
+			this.solutionInput.nativeElement.value = '';
 		}
 	}
 
-	topicRemoved(topic: any) {
-		const index = this.topics.indexOf(topic);
+	solutionRemoved(solution: any) {
+		const index = this.solutions.indexOf(solution);
 
 		if (index >= 0) {
-			this.topics.splice(index, 1);
+			this.solutions.splice(index, 1);
 		}
 	}
 
@@ -160,11 +177,11 @@ export class IssueCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	private _filter(value: any): ITopic[] {
+	private _filter(value: any): ISolution[] {
 		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 
-		const filterVal = this.allTopics.filter(topic => {
-			const name = topic.name.toLowerCase();
+		const filterVal = this.allSolutions.filter(solution => {
+			const name = solution.title.toLowerCase();
 			const compare = name.indexOf(filterValue) !== -1;
 			return compare;
 		});
