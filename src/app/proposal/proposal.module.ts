@@ -15,7 +15,7 @@ import { ProposalCreateComponent } from './create/proposal-create.component';
 import { ProposalEditComponent } from './edit/proposal-edit.component';
 
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
-import { IssueService } from '@app/core/http/issue/issue.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
@@ -42,7 +42,7 @@ import { SharedModule } from '@app/shared';
 	providers: [
 		ProposalService,
 		VoteService,
-		IssueService
+		SolutionService
 	]
 })
 export class ProposalModule { }

@@ -136,7 +136,7 @@ export class ProposalCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/proposals', { forceUpdate: true }]);
+							this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`, { forceUpdate: true }]);
 						}
 					});
 			}
@@ -178,7 +178,7 @@ export class ProposalCreateComponent implements OnInit {
 	}
 
 	private _filter(value: any): ISolution[] {
-		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
+		const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase();
 
 		const filterVal = this.allSolutions.filter(solution => {
 			const name = solution.title.toLowerCase();

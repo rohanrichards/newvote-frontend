@@ -23,16 +23,16 @@
 
 			<mat-form-field class="example-chip-list">
 				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let issue of issues"
+					<mat-chip *ngFor="let solution of solutions"
 					    [selectable]="false"
 					    [removable]="true"
-					    (removed)="issueRemoved(issue)">
-						{{issue.name}}
+					    (removed)="solutionRemoved(solution)">
+						{{solution.title}}
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
-					<input placeholder="New issue..."
-					    #issueInput
-					    formControlName="issues"
+					<input placeholder="New solution..."
+					    #solutionInput
+					    formControlName="solutions"
 					    [matAutocomplete]="auto"
 					    [matChipInputFor]="chipList"
 					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -40,10 +40,10 @@
 					    (matChipInputTokenEnd)="add($event)">
 				</mat-chip-list>
 				<mat-autocomplete #auto="matAutocomplete"
-				    (optionSelected)="issueSelected($event)">
-					<mat-option *ngFor="let issue of filteredIssues | async"
-					    [value]="issue">
-						{{issue.name}}
+				    (optionSelected)="solutionSelected($event)">
+					<mat-option *ngFor="let solution of filteredSolutions | async"
+					    [value]="solution">
+						{{solution.title}}
 					</mat-option>
 				</mat-autocomplete>
 			</mat-form-field>

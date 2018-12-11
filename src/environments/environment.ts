@@ -6,14 +6,15 @@
 import env from './.env';
 
 export const environment = {
-  production: false,
-  version: env.npm_package_version + '-dev',
-  serverUrl: '/api',
-  defaultLanguage: 'en-US',
-  supportedLanguages: [
-    'en-US',
-    'fr-FR'
-  ]
+	production: false,
+	version: env.npm_package_version + '-dev',
+	serverUrl: '/api',
+	defaultLanguage: 'en-US',
+	supportedLanguages: [
+		'en-US',
+		'fr-FR'
+	],
+	recaptchaSitekey: '6Lca03AUAAAAALXV7A5FK-noIdCDZ7bpYwWoR2yy'
 };
 
 /*

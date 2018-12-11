@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.authenticationService.randomGet().subscribe(res => console.log(res));
+		// this.authenticationService.randomGet().subscribe(res => console.log(res));
 	}
 
 	login() {

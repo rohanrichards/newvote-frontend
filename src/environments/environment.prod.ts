@@ -2,12 +2,13 @@
 import env from './.env';
 
 export const environment = {
-  production: true,
-  version: env.npm_package_version,
-  serverUrl: 'https://api.chucknorris.io',
-  defaultLanguage: 'en-US',
-  supportedLanguages: [
-    'en-US',
-    'fr-FR'
-  ]
+	production: true,
+	version: env.npm_package_version,
+	serverUrl: 'https://uq.newvote.org',
+	defaultLanguage: 'en-US',
+	supportedLanguages: [
+		'en-US',
+		'fr-FR'
+	],
+	recaptchaSitekey: '6Lca03AUAAAAALXV7A5FK-noIdCDZ7bpYwWoR2yy'
 };

@@ -2,8 +2,9 @@
 
 @mixin more-less-fade-theme($theme) {
 	$primary: map-get($theme, primary);
+	$accent: map-get($theme, accent);
 
 	.fade {
-		background: linear-gradient(to bottom, rgba(mat-color($primary, 800), 0) 0%, mat-color($primary, 800) 80%);
+		background: linear-gradient(to bottom, rgba(mat-color($accent), 0) 0%, mat-color($accent) 80%);
 	}
 }

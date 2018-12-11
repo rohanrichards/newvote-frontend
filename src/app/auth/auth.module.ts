@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { RecaptchaModule } from 'ng-recaptcha';
+import { RecaptchaFormsModule } from 'ng-recaptcha/forms';
 
 import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
-import { LoginRoutingModule } from './login-routing.module';
-import { LoginComponent } from './login.component';
+import { AuthRoutingModule } from './auth-routing.module';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
 	imports: [
@@ -17,10 +20,13 @@ import { LoginComponent } from './login.component';
 		SharedModule,
 		FlexLayoutModule,
 		MaterialModule,
-		LoginRoutingModule
+		RecaptchaModule,
+		RecaptchaFormsModule,
+		AuthRoutingModule
 	],
 	declarations: [
-		LoginComponent
+		LoginComponent,
+		SignupComponent
 	]
 })
-export class LoginModule { }
+export class AuthModule { }

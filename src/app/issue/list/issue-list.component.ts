@@ -19,7 +19,7 @@ export class IssueListComponent implements OnInit {
 		Select a issue below to learn more about it and explore relevant issues being discussed.';
 	headerButtons = [{
 		text: 'New Issue',
-		color: 'accent',
+		color: 'warn',
 		routerLink: '/issues/create'
 	}];
 

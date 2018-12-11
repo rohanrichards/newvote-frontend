@@ -27,9 +27,9 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { ChartsModule } from 'ng2-charts';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
-import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
 @NgModule({
 	imports: [
@@ -46,7 +46,6 @@ import { AppRoutingModule } from './app-routing.module';
 		SharedModule,
 		ShellModule,
 		HomeModule,
-		LoginModule,
 		ShareModule.forRoot(),
 		AngularFontAwesomeModule,
 		ChartsModule,
@@ -62,7 +61,11 @@ import { AppRoutingModule } from './app-routing.module';
 	],
 	providers: [
 		StatusBar,
-		SplashScreen
+		SplashScreen,
+		{
+			provide: RECAPTCHA_SETTINGS,
+			useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
+		},
 	],
 	bootstrap: [AppComponent]
 })

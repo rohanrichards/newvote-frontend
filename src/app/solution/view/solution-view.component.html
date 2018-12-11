@@ -13,22 +13,28 @@
 		    fxLayoutAlign="center end">
 			<div class="button-panel">
 				<button mat-icon-button
-				    matTooltip="Add a new Solution"
-				    color="accent"
-				    routerLink="/solutions/create">
-    					<mat-icon aria-label="Add a new solution">playlist_add</mat-icon>
-  					</button>
+					matTooltip="Create a new Solution"
+					color="accent"
+					routerLink="/solutions/create">
+						<mat-icon aria-label="Create a new Solution">add</mat-icon>
+				</button>
+				<button mat-icon-button
+					matTooltip="Add a Proposal for this Solution"
+					color="accent"
+					routerLink="/proposals/create/{{solution._id}}">
+						<mat-icon aria-label="Add a Proposal for this Solution">playlist_add</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Edit this Solution"
 				    color="accent"
 				    routerLink="/solutions/edit/{{solution._id}}">
-    					<mat-icon aria-label="Edit the solution">edit</mat-icon>
+    					<mat-icon aria-label="Edit this solution">edit</mat-icon>
   					</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Solution"
 				    color="warn"
 				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete the solution forever">delete_forever</mat-icon>
+    					<mat-icon aria-label="Delete this solution forever">delete_forever</mat-icon>
   					</button>
 			</div>
 		</div>

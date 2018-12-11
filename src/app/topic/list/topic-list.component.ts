@@ -19,7 +19,7 @@ export class TopicListComponent implements OnInit {
 		Select a topic below to learn more about it and explore relevant issues being discussed.';
 	headerButtons = [{
 		text: 'New Topic',
-		color: 'accent',
+		color: 'warn',
 		routerLink: '/topics/create'
 	}];
 

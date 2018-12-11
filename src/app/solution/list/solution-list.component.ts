@@ -23,7 +23,7 @@ export class SolutionListComponent implements OnInit {
 		Select a solution below to learn more about it and explore relevant solutions being discussed.';
 	headerButtons = [{
 		text: 'New Solution',
-		color: 'accent',
+		color: 'warn',
 		routerLink: '/solutions/create'
 	}];
 

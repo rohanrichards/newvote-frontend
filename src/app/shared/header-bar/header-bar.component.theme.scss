@@ -2,9 +2,10 @@
 
 @mixin header-bar-theme($theme) {
 	$primary: map-get($theme, primary);
+	$accent: map-get($theme, accent);
 
 	.header-bar {
 		// background: linear-gradient(to bottom, mat-color($primary, 500) 0%, mat-color($primary, 700) 80%) !important;
-		background: mat-color($primary, 800) !important;
+		background: mat-color($accent) !important;
 	}
 }

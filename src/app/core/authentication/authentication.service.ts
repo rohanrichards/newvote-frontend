@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {includes as _includes} from 'lodash';
+import { includes as _includes } from 'lodash';
 
 export interface Credentials {
 	// Customize received credentials here
 	user?: any;
+	token: string;
 }
 
 export interface LoginContext {
@@ -17,6 +18,7 @@ export interface LoginContext {
 
 const routes = {
 	signin: () => `/auth/signin`,
+	signup: () => `/auth/signup`,
 	randomGet: () => `/topics`
 };
 
@@ -66,6 +68,22 @@ export class AuthenticationService {
 	}
 
 	/**
+	 * Creates a new user.
+	 * @param context The signup parameters.
+	 * @return The user credentials.
+	 */
+	signup(context: LoginContext): Observable<Credentials> {
+		return this.httpClient
+			.post<Credentials>(routes.signup(), context)
+			.pipe(
+				map((res) => {
+					this.setCredentials(res, context.remember);
+					return res;
+				})
+			);
+	}
+
+	/**
 	 * Logs out the user and clear credentials.
 	 * @return True if the user was logged out successfully.
 	 */
@@ -88,11 +106,15 @@ export class AuthenticationService {
 	 * @return True if the user is an admin.
 	 */
 	isAdmin(): boolean {
-		return _includes(this.credentials.user.roles, 'admin');
+		if (this._credentials) {
+			return _includes(this._credentials.user.roles, 'admin');
+		}
 	}
 
 	hasRole(role: string): boolean {
-		return _includes(this.credentials.user.roles, role);
+		if (this._credentials) {
+			return _includes(this._credentials.user.roles, role);
+		}
 	}
 
 	/**

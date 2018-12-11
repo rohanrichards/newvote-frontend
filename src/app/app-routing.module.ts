@@ -4,6 +4,7 @@ import { Shell } from '@app/shell/shell.service';
 
 const routes: Routes = [
 	Shell.childRoutes([
+		{ path: 'auth', loadChildren: 'app/auth/auth.module#AuthModule' },
 		{ path: 'about', loadChildren: 'app/about/about.module#AboutModule' },
 		{ path: 'topics', loadChildren: 'app/topic/topic.module#TopicModule' },
 		{ path: 'issues', loadChildren: 'app/issue/issue.module#IssueModule' },

@@ -23,7 +23,7 @@ export class ProposalListComponent implements OnInit {
 		Select a proposal below to learn more about it and explore relevant proposals being discussed.';
 	headerButtons = [{
 		text: 'New Proposal',
-		color: 'accent',
+		color: 'warn',
 		routerLink: '/proposals/create'
 	}];
 

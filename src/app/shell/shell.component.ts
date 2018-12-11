@@ -34,6 +34,10 @@ export class ShellComponent implements OnInit {
 		return credentials ? credentials.user.username : null;
 	}
 
+	get isAuthenticated(): boolean {
+		return this.authenticationService.isAuthenticated();
+	}
+
 	get languages(): string[] {
 		return this.i18nService.supportedLanguages;
 	}

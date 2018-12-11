@@ -24,6 +24,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
 			// Do something with the error
 			log.error('Request error', response);
 		}
+
 		throw response;
 	}
 

@@ -1,0 +1,64 @@
+<div fxFill
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="1.5rem"
+    class="mat-typography">
+	<div class="signup-container"
+	    fxLayout="row"
+	    fxLayoutAlign="center">
+		<mat-card fxFlex="90%"
+		    fxFlex.sm="66%"
+		    fxFlex.md="50%"
+		    fxFlex.gt-md="33%"
+		    class="signup-box">
+			<form (ngSubmit)="signup()"
+			    [formGroup]="signupForm"
+			    novalidate>
+				<div class="signup-error"
+				    [hidden]="!error || isLoading"
+				    translate>
+					Username or password incorrect.
+				</div>
+				<br/>
+				<div fxLayout="column">
+					<mat-form-field>
+						<input type="text"
+						    matInput
+						    formControlName="email"
+						    autocomplete="email"
+						    [placeholder]="'Username' | translate" />
+						<mat-error *ngIf="signupForm.controls.email.valid || signupForm.controls.email.untouched">
+							<span translate>Username is required</span>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<input type="password"
+						    matInput
+						    formControlName="password"
+						    autocomplete="current-password"
+						    [placeholder]="'Password' | translate"
+						    required/>
+						<mat-error *ngIf="signupForm.controls.password.valid || signupForm.controls.password.untouched">
+							<span translate>Password is required</span>
+						</mat-error>
+					</mat-form-field>
+
+					<re-captcha class="recaptcha" formControlName="recaptchaResponse"></re-captcha>
+
+					<mat-slide-toggle color="accent"
+						class="remember-toggle"
+					    formControlName="remember"
+					    translate>Remember me</mat-slide-toggle>
+					<br/>
+					<button mat-raised-button
+					    color="primary"
+					    type="submit"
+					    [disabled]="signupForm.invalid || isLoading">
+            <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+            <span translate>Signup</span>
+          </button>
+				</div>
+			</form>
+		</mat-card>
+	</div>
+</div>
