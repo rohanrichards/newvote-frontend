@@ -36,4 +36,12 @@ export class OrganizationService {
 				catchError((e) => of({ error: e }))
 			);
 	}
+
+	get org() {
+		return this._org || null;
+	}
+
+	get subdomain() {
+		return this._subdomain;
+	}
 }

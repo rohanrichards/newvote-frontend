@@ -12,6 +12,7 @@ import { HttpService } from './http/http.service';
 import { HttpCacheService } from './http/http-cache.service';
 import { ApiPrefixInterceptor } from './http/api-prefix.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
+import { OganizationHeaderInterceptor } from './http/organization-header.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
 
@@ -46,6 +47,7 @@ export function tokenGetter() {
 		ApiPrefixInterceptor,
 		ErrorHandlerInterceptor,
 		CacheInterceptor,
+		OganizationHeaderInterceptor,
 		{
 			provide: HttpClient,
 			useClass: HttpService
