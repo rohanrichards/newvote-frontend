@@ -8,6 +8,8 @@ import { merge } from 'lodash';
 
 import { ITopic } from '@app/core/models/topic.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-topic',
@@ -17,6 +19,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 export class TopicEditComponent implements OnInit {
 
 	topic: ITopic;
+	organization: Organization;
 	isLoading: boolean;
 	imageUrl: any;
 	imageFile: File;
@@ -30,6 +33,7 @@ export class TopicEditComponent implements OnInit {
 
 	constructor(
 		private topicService: TopicService,
+		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
@@ -77,6 +81,9 @@ export class TopicEditComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+
+
+				this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -102,6 +109,7 @@ export class TopicEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
+		this.topic.organizations = [this.organization];
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

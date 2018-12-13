@@ -23,7 +23,7 @@ export class OganizationHeaderInterceptor implements HttpInterceptor {
 			// const headers = request.headers;
 			const req = request.clone({ setParams: { organization: org } });
 			// request.headers.append('organization', org.url);
-			console.log(req);
+			// console.log(req);
 			return next.handle(req);
 		} else {
 			return next.handle(request);

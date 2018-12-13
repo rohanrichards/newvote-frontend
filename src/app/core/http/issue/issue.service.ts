@@ -59,7 +59,6 @@ export class IssueService {
 
 	create(context: IssueContext): Observable<any> {
 		return this.httpClient
-			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
@@ -69,7 +68,6 @@ export class IssueService {
 
 	update(context: IssueContext): Observable<any> {
 		return this.httpClient
-			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
@@ -79,7 +77,6 @@ export class IssueService {
 
 	delete(context: IssueContext): Observable<any> {
 		return this.httpClient
-			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),

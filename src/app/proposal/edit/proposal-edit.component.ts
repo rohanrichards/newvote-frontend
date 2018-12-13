@@ -12,6 +12,8 @@ import { IProposal } from '@app/core/models/proposal.model';
 import { ISolution } from '@app/core/models/solution.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -23,6 +25,7 @@ export class ProposalEditComponent implements OnInit {
 	proposal: IProposal;
 	allSolutions: Array<ISolution> = [];
 	solutions: Array<ISolution> = [];
+	organization: Organization;
 	filteredSolutions: Observable<ISolution[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
@@ -43,6 +46,7 @@ export class ProposalEditComponent implements OnInit {
 	constructor(
 		private proposalService: ProposalService,
 		private solutionService: SolutionService,
+		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
@@ -74,9 +78,6 @@ export class ProposalEditComponent implements OnInit {
 				});
 		});
 
-		this.solutionService.list({})
-			.subscribe(solutions => this.allSolutions = solutions);
-
 		// set up the file uploader
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -107,6 +108,11 @@ export class ProposalEditComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+
+		this.solutionService.list({})
+			.subscribe(solutions => this.allSolutions = solutions);
+
+		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -132,6 +138,7 @@ export class ProposalEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
+		this.proposal.organizations = [this.organization];
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

@@ -11,6 +11,8 @@ import { IProposal } from '@app/core/models/proposal.model';
 import { ISolution } from '@app/core/models/solution.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -22,6 +24,7 @@ export class ProposalCreateComponent implements OnInit {
 	proposal: IProposal;
 	allSolutions: Array<ISolution> = [];
 	solutions: Array<ISolution> = [];
+	organization: Organization;
 	filteredSolutions: Observable<ISolution[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading = true;
@@ -40,6 +43,7 @@ export class ProposalCreateComponent implements OnInit {
 	constructor(
 		private proposalService: ProposalService,
 		private solutionService: SolutionService,
+		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
 		private router: Router
@@ -98,6 +102,8 @@ export class ProposalCreateComponent implements OnInit {
 
 		this.solutionService.list({})
 			.subscribe(solutions => this.allSolutions = solutions);
+
+					this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -117,6 +123,7 @@ export class ProposalCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.proposal = <IProposal>this.proposalForm.value;
 		this.proposal.solutions = this.solutions;
+		this.proposal.organizations = [this.organization];
 		console.log(this.proposal);
 
 		this.uploader.onCompleteAll = () => {

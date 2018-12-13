@@ -12,6 +12,8 @@ import { IIssue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-issue',
@@ -21,6 +23,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 export class IssueEditComponent implements OnInit {
 
 	issue: IIssue;
+	organization: Organization;
 	allTopics: Array<ITopic> = [];
 	topics: Array<ITopic> = [];
 	filteredTopics: Observable<ITopic[]>;
@@ -43,6 +46,7 @@ export class IssueEditComponent implements OnInit {
 	constructor(
 		private issueService: IssueService,
 		private topicService: TopicService,
+		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
@@ -76,6 +80,9 @@ export class IssueEditComponent implements OnInit {
 
 		this.topicService.list({})
 			.subscribe(topics => this.allTopics = topics);
+
+
+		this.organizationService.get().subscribe(org => this.organization = org);
 
 		// set up the file uploader
 		const uploaderOptions: FileUploaderOptions = {
@@ -132,6 +139,7 @@ export class IssueEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
+		this.issue.organizations = [this.organization];
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

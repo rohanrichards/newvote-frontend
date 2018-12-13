@@ -5,8 +5,14 @@ export interface ITopic {
 	description: string;
 	user?: any;
 	created?: Date;
+	organizations: Array<any>;
 }
 
 export class Topic implements ITopic {
-	public constructor(public name: string = '', public imageUrl: string = '', public description: string = '') { }
+	public constructor(
+		public name: string = '',
+		public imageUrl: string = '',
+		public description: string = '',
+		public organizations: Array<any> = []
+	) { }
 }

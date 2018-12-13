@@ -12,6 +12,8 @@ import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-solution',
@@ -23,6 +25,7 @@ export class SolutionEditComponent implements OnInit {
 	solution: ISolution;
 	allIssues: Array<IIssue> = [];
 	issues: Array<IIssue> = [];
+	organization: Organization;
 	filteredIssues: Observable<IIssue[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
@@ -43,6 +46,7 @@ export class SolutionEditComponent implements OnInit {
 	constructor(
 		private solutionService: SolutionService,
 		private issueService: IssueService,
+		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router
@@ -74,9 +78,6 @@ export class SolutionEditComponent implements OnInit {
 				});
 		});
 
-		this.issueService.list({})
-			.subscribe(issues => this.allIssues = issues);
-
 		// set up the file uploader
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -107,6 +108,11 @@ export class SolutionEditComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+
+		this.issueService.list({})
+			.subscribe(issues => this.allIssues = issues);
+
+		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -132,6 +138,7 @@ export class SolutionEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
+		this.solution.organizations = [this.organization];
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

@@ -6,7 +6,9 @@ import { finalize } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 
 import { ITopic } from '@app/core/models/topic.model';
+import { Organization } from '@app/core/models/organization.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-topic',
@@ -16,6 +18,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 export class TopicCreateComponent implements OnInit {
 
 	topic: ITopic;
+	organization: Organization;
 	isLoading: boolean;
 	imageUrl: any;
 	uploader: FileUploader;
@@ -27,6 +30,7 @@ export class TopicCreateComponent implements OnInit {
 
 	constructor(
 		private topicService: TopicService,
+		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private router: Router
 	) { }
@@ -61,6 +65,8 @@ export class TopicCreateComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+
+		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -79,6 +85,7 @@ export class TopicCreateComponent implements OnInit {
 	onSave() {
 		this.isLoading = true;
 		this.topic = <ITopic>this.topicForm.value;
+		this.topic.organizations = [this.organization];
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
@@ -97,7 +104,7 @@ export class TopicCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/topics', {forceUpdate: true}]);
+							this.router.navigate(['/topics', { forceUpdate: true }]);
 						}
 					});
 			}

@@ -11,6 +11,8 @@ import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 @Component({
 	selector: 'app-solution',
@@ -22,6 +24,7 @@ export class SolutionCreateComponent implements OnInit {
 	solution: ISolution;
 	allIssues: Array<IIssue> = [];
 	issues: Array<IIssue> = [];
+	organization: Organization;
 	filteredIssues: Observable<IIssue[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading = true;
@@ -40,6 +43,7 @@ export class SolutionCreateComponent implements OnInit {
 	constructor(
 		private solutionService: SolutionService,
 		private issueService: IssueService,
+		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
 		private router: Router
@@ -98,6 +102,8 @@ export class SolutionCreateComponent implements OnInit {
 
 		this.issueService.list({})
 			.subscribe(issues => this.allIssues = issues);
+
+		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -117,6 +123,7 @@ export class SolutionCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.solution = <ISolution>this.solutionForm.value;
 		this.solution.issues = this.issues;
+		this.solution.organizations = [this.organization];
 		console.log(this.solution);
 
 		this.uploader.onCompleteAll = () => {

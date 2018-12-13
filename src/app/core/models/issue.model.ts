@@ -7,8 +7,14 @@ export interface IIssue {
 	solutionMetaData?: any;
 	topics?: Array<any>;
 	created?: Date;
+	organizations: Array<any>;
 }
 
 export class Issue implements IIssue {
-	public constructor(public name: string = '', public imageUrl: string = '', public description: string = '') { }
+	public constructor(
+		public name: string = '',
+		public imageUrl: string = '',
+		public description: string = '',
+		public organizations: Array<any> = []
+	) { }
 }

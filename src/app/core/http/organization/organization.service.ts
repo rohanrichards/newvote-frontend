@@ -29,7 +29,7 @@ export class OrganizationService {
 			.get('/organizations', { params })
 			.pipe(
 				map((res: Array<Organization>) => {
-					// console.log(res);
+					console.log(res);
 					this._org = res[0];
 					return res[0];
 				}),
