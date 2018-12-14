@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminGuard } from '@app/core/authentication/admin.guard';
 
 import { extract } from '@app/core';
 import { IssueListComponent } from './list/issue-list.component';
@@ -9,9 +10,23 @@ import { IssueEditComponent } from './edit/issue-edit.component';
 
 const routes: Routes = [
 	{ path: '', component: IssueListComponent, data: { title: extract('All Issues') } },
-	{ path: 'create', component: IssueCreateComponent, data: { title: extract('New Issue') } },
-	{ path: 'edit/:id', component: IssueEditComponent, data: { title: extract('Edit Issue') } },
-	{ path: ':id', component: IssueViewComponent, data: { title: extract('Issue') } },
+	{
+		path: 'create',
+		component: IssueCreateComponent,
+		data: { title: extract('New Issue') },
+		canActivate: [AdminGuard]
+	},
+	{
+		path: 'edit/:id',
+		component: IssueEditComponent,
+		data: { title: extract('Edit Issue') },
+		canActivate: [AdminGuard]
+	},
+	{
+		path: ':id',
+		component: IssueViewComponent,
+		data: { title: extract('Issue') }
+	},
 ];
 
 @NgModule({

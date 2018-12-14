@@ -13,34 +13,74 @@ export class VoteButtonsComponent implements OnInit {
 	@Output() vote = new EventEmitter();
 
 	// Radar
-	public chartLabels: string[] = ['For', 'Against'];
-	public pieChartType = 'pie';
+	public chartLabels: any = [];
+	public data: any = [[(10 / 12) * 100], [(2 / 12) * 100]];
+	public chartType = 'horizontalBar';
 	public chartColors = [
 		{
-			backgroundColor: ['rgba(0,255,0,0.8)', 'rgba(255,0,0,0.8)'],
-			pointBackgroundColor: ['rgba(0,255,0,0.5)', 'rgba(255,0,0,0.5)'],
-			pointHoverBackgroundColor: ['rgba(77,83,96,1)', 'rgba(255,0,0,0.6)'],
-			borderColor: ['rgba(77,83,96,1)', 'rgba(255,0,0,0.6)'],
-			pointBorderColor: ['#fff', 'rgba(255,0,0,0.6)'],
-			pointHoverBorderColor: ['rgba(77,83,96,0.8)', 'rgba(255,0,0,0.6)']
+			backgroundColor: '#0277bd',
+			pointBorderColor: '#212121',
+			borderColor: '#212121',
+			hoverBorderColor: '#212121'
+		},
+		{
+			backgroundColor: '#ECEFF1',
+			pointBorderColor: '#212121',
+			borderColor: '#212121'
 		}
 	];
 	public chartOptions = {
-		elements: {
-			arc: {
-				borderWidth: 0
-			}
-		},
 		responsive: true,
+		maintainAspectRatio: false,
 		legend: {
 			display: false
+		},
+		title: {
+			display: false
+		},
+		tooltips: {
+			enabled: false
+		},
+		// elements: { rectangle: { borderWidth: '1', borderSkipped: 'right' } },
+		scales: {
+			xAxes: [{
+				display: false,
+				stacked: true,
+				gridLines: { display: false }
+			}],
+			yAxes: [{
+				display: false,
+				stacked: true,
+				gridLines: { display: false }
+			}]
 		}
 	};
+	public dataSetOverride: any;
 
 
 	constructor(private auth: AuthenticationService) { }
 
 	ngOnInit() {
+		this.dataSetOverride = [
+			{
+				borderWidth: 0,
+				borderSkipped: 'top',
+				data: [this.upVotesAsPercent()]
+			},
+			{
+				borderWidth: 0,
+				borderSkipped: 'top',
+				data: [this.downVotesAsPercent()]
+			}
+		];
+	}
+
+	upVotesAsPercent() {
+		return this.getPercentage(this.item);
+	}
+
+	downVotesAsPercent() {
+		return 100 - this.getPercentage(this.item);
 	}
 
 	getPercentage(item: any) {

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminGuard } from '@app/core/authentication/admin.guard';
 
 import { extract } from '@app/core';
 import { TopicListComponent } from './list/topic-list.component';
@@ -9,9 +10,23 @@ import { TopicEditComponent } from './edit/topic-edit.component';
 
 const routes: Routes = [
 	{ path: '', component: TopicListComponent, data: { title: extract('All Topics') } },
-	{ path: 'create', component: TopicCreateComponent, data: { title: extract('New Topic') } },
-	{ path: 'edit/:id', component: TopicEditComponent, data: { title: extract('Edit Topic') } },
-	{ path: ':id', component: TopicViewComponent, data: { title: extract('Topic') } },
+	{
+		path: 'create',
+		component: TopicCreateComponent,
+		data: { title: extract('New Topic') },
+		canActivate: [AdminGuard]
+	},
+	{
+		path: 'edit/:id',
+		component: TopicEditComponent,
+		data: { title: extract('Edit Topic') },
+		canActivate: [AdminGuard]
+	},
+	{
+		path: ':id',
+		component: TopicViewComponent,
+		data: { title: extract('Topic') }
+	},
 ];
 
 @NgModule({

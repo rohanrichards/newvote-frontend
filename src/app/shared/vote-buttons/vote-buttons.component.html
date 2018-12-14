@@ -1,30 +1,29 @@
-<div fxLayout="row" class="container">
-	<button mat-raised-button
-	    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'accent' : null"
-	    class="vote-button"
-	    (click)="onVote(item, 1, $event)"><mat-icon>arrow_upward</mat-icon>VOTE UP</button>
+<div fxLayout="row wrap"
+    class="container">
+	<div>
+		<button mat-raised-button
+		    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'accent' : null"
+		    class="vote-button"
+		    (click)="onVote(item, 1, $event)"><mat-icon>arrow_upward</mat-icon>VOTE UP</button>
 
+		<button mat-raised-button
+		    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'accent' : null"
+		    class="vote-button"
+		    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon>VOTE DOWN</button>
+	</div>
 	<div class="chart-container">
-		<canvas baseChart
-		    [data]="[item.votes.up, item.votes.down]"
-		    [labels]="chartLabels"
+		<canvas class="chart-canvas"
+		    baseChart
 		    [colors]="chartColors"
 		    [options]="chartOptions"
-		    chartType="pie"
-		    height="100%"
-		    width="100%">
-	</canvas>
+		    [chartType]="chartType"
+			[datasets]="dataSetOverride"
+		    height="40px">
+		</canvas>
 		<div class="chart-score"
-		    matTooltip="{{'For: ' + item.votes.up + ' Against: ' + item.votes.down}}">
-			<span>{{getPercentage(item) | number: 0}}%</span>
+		    fxLayout="row">
+			<span>{{item.votes.up}} Votes</span>
+			<span fxFlex></span>
+			<span>{{item.votes.down}} Votes</span>
 		</div>
 	</div>
-	<div class="vote-total grey-circle"
-	    matTooltip="Total Votes">
-		{{item.votes.up + item.votes.down}}
-	</div>
-	<button mat-raised-button
-	    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'accent' : null"
-	    class="vote-button"
-	    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon>VOTE DOWN</button>
-</div>

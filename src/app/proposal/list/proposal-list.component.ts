@@ -24,7 +24,8 @@ export class ProposalListComponent implements OnInit {
 	headerButtons = [{
 		text: 'New Proposal',
 		color: 'warn',
-		routerLink: '/proposals/create'
+		routerLink: '/proposals/create',
+		role: 'admin'
 	}];
 
 	constructor(private proposalService: ProposalService,

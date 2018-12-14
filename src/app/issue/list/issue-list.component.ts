@@ -20,7 +20,8 @@ export class IssueListComponent implements OnInit {
 	headerButtons = [{
 		text: 'New Issue',
 		color: 'warn',
-		routerLink: '/issues/create'
+		routerLink: '/issues/create',
+		role: 'admin'
 	}];
 
 	constructor(private issueService: IssueService,

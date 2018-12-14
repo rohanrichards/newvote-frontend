@@ -9,11 +9,11 @@
 			<div class="mat-subheading-2"
 			    translate
 			    [innerHtml]="text"></div>
-			<div>
+			<div *ngFor="let button of buttons">
 				<button mat-raised-button
-				    *ngFor="let button of buttons"
 				    [color]="button.color"
-				    [routerLink]="button.routerLink">{{button.text}}</button>
+				    [routerLink]="button.routerLink"
+					*ngIf="auth.hasRole((button.role || 'user'))">{{button.text}}</button>
 			</div>
 		</div>
 	</div>

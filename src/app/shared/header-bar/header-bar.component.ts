@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
+
 export interface IButtonTemplate {
 	text: string;
 	color: string;
@@ -17,7 +19,7 @@ export class HeaderBarComponent implements OnInit {
 	@Input() text: string;
 	@Input() buttons: Array<IButtonTemplate>;
 
-	constructor() { }
+	constructor(public auth: AuthenticationService) { }
 
 	ngOnInit() { }
 

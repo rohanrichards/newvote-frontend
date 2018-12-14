@@ -13,9 +13,12 @@
 .chart-container {
 	position: relative;
 	height: 40px !important;
-	width: 40px !important;
+	width: 300px !important;
 	z-index: 100;
-	margin-right: 8px !important;
+}
+
+.chart-canvas {
+	// height: 40px !important;
 }
 
 .chart-score {
@@ -23,13 +26,17 @@
 	top: 0;
 	left: 0;
 	height: 40px;
-	width: 40px;
+	width: 300px;
+	padding: 8px;
+
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
 	font-size: 14px;
+
+	color: black;
 }
 
 .vote-total {

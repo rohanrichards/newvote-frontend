@@ -24,7 +24,8 @@ export class SolutionListComponent implements OnInit {
 	headerButtons = [{
 		text: 'New Solution',
 		color: 'warn',
-		routerLink: '/solutions/create'
+		routerLink: '/solutions/create',
+		role: 'admin'
 	}];
 
 	constructor(private solutionService: SolutionService,

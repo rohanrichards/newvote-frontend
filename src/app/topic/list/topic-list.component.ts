@@ -20,7 +20,8 @@ export class TopicListComponent implements OnInit {
 	headerButtons = [{
 		text: 'New Topic',
 		color: 'warn',
-		routerLink: '/topics/create'
+		routerLink: '/topics/create',
+		role: 'admin'
 	}];
 
 	constructor(private topicService: TopicService,

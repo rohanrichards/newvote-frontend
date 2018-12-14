@@ -4,16 +4,16 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { Logger } from '../logger.service';
 import { AuthenticationService } from './authentication.service';
 
-const log = new Logger('AdminGuard');
+const log = new Logger('EndorserGuard');
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class EndorserGuard implements CanActivate {
 
 	constructor(private router: Router,
 		private authenticationService: AuthenticationService) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-		if (this.authenticationService.isAdmin()) {
+		if (this.authenticationService.hasRole('endorser') || this.authenticationService.isAdmin()) {
 			return true;
 		}
 

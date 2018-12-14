@@ -6,6 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouteReusableStrategy } from './route-reusable-strategy';
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationGuard } from './authentication/authentication.guard';
+import { AdminGuard } from './authentication/admin.guard';
+import { ContentGuard } from './authentication/content.guard';
+import { EndorserGuard } from './authentication/endorser.guard';
 import { OrganizationService } from './http/organization/organization.service';
 import { I18nService } from './i18n.service';
 import { HttpService } from './http/http.service';
@@ -41,6 +44,9 @@ export function tokenGetter() {
 	providers: [
 		AuthenticationService,
 		AuthenticationGuard,
+		AdminGuard,
+		ContentGuard,
+		EndorserGuard,
 		OrganizationService,
 		I18nService,
 		HttpCacheService,
