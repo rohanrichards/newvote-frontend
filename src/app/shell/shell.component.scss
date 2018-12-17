@@ -47,3 +47,15 @@ router-outlet::after {
 .menu-button {
   margin-right: 1rem;
 }
+
+.logo-container {
+	max-width: 270px;
+	.logo {
+			width: 100%;
+			height: auto;
+	}
+}
+
+.spacer {
+	height: 24px;
+}

@@ -9,10 +9,46 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
-		<app-grid-list path="/issues"
-		    [items]=issues
-		    model="Issue"
-		    (delete)="onDelete($event)"></app-grid-list>
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<div *ngIf="allTopics">
+			<mat-form-field class="example-chip-list"
+			    fxFill>
+				<mat-chip-list #chipList>
+					<mat-chip *ngFor="let topic of selectedTopics"
+					    [selectable]="false"
+					    [removable]="true"
+					    (removed)="topicRemoved(topic)">
+						{{topic.name}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="Filter Topics"
+					    #topicInput
+					    [formControl]="topicFilter"
+					    [matAutocomplete]="auto"
+					    [matChipInputFor]="chipList"
+					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					    [matChipInputAddOnBlur]="true">
+				</mat-chip-list>
+				<mat-autocomplete #auto="matAutocomplete"
+				    (optionSelected)="topicSelected($event)">
+					<mat-option *ngFor="let topic of filteredTopics | async"
+					    [value]="topic">
+						{{topic.name}}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+
+			<div *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
+				<h2 class="mat-h1">
+					{{topic.name}}
+					<mat-divider></mat-divider>
+				</h2>
+				<app-grid-list path="/issues"
+				    [items]="getIssues(topic._id)"
+				    model="Issue"
+				    (delete)="onDelete($event)"></app-grid-list>
+			</div>
+		</div>
 	</div>
 </div>

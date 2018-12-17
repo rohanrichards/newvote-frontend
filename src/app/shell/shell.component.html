@@ -6,10 +6,10 @@
 		    [disableClose]="!isMobile"
 		    ngClass.gt-sm="has-border"
 		    fixedInViewport="true">
-			<div color="primary">
+			<div class="logo-container">
 				<p>
 					<img class="logo"
-					    src="assets/logo@256.png"
+					    src="assets/logo-gif.gif"
 					    alt="angular logo" />
 				</p>
 			</div>
@@ -21,12 +21,9 @@
 					    (click)="isMobile && sidenav.close()">
             			<span translate>Home</span>
           			</a>
-					<a mat-list-item
-					    routerLink="/topics"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
-            			<span translate>Topics</span>
-          			</a>
+
+					<div class="spacer"></div>
+
 					<a mat-list-item
 					    routerLink="/issues"
 					    routerLinkActive="active"
@@ -39,7 +36,9 @@
 					    (click)="isMobile && sidenav.close()">
             			<span translate>Vote Now</span>
           			</a>
-					<mat-divider></mat-divider>
+					
+					<div class="spacer"></div>
+
 					<a mat-list-item
 					    routerLink="/topics"
 					    routerLinkActive="active"

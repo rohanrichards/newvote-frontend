@@ -15,6 +15,7 @@ export class Issue implements IIssue {
 		public name: string = '',
 		public imageUrl: string = '',
 		public description: string = '',
-		public organizations: Array<any> = []
+		public organizations: Array<any> = [],
+		public topics: Array<any> = []
 	) { }
 }

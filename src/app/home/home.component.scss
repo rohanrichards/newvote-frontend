@@ -1,14 +1,78 @@
 .container {
-  text-align: center;
-  padding: 1em;
+	padding-top: 2em;
+	padding-left: 2em;
+	padding-right: 2em;
 }
 
-.logo {
-  width: 150px;
-  margin: 0 auto;
+.container ~ .container {
+	padding-top: 2em;
 }
 
-q {
-  font-style: italic;
-  quotes: "« " " »";
+.container:last-of-type {
+	padding-bottom: 2em;
+}
+
+.hero-image-container {
+	position: relative;
+	background-color: blue;
+	height: 50vh;
+}
+
+.hero-image {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+
+	height: 60vh;
+}
+
+.hot-issues-container {
+	background-color: yellow;
+}
+
+.about-container {
+	background-color: orange;
+}
+
+.vote-container {
+	background-color: lightBlue;
+}
+
+.how-container {
+	background-color: blue;
+}
+
+.final-container {
+	background-color: white;
+}
+
+.info-card-container {
+	padding: 16px;
+}
+
+.info-card > div:first-of-type {
+	text-align: center;
+}
+
+.info-card {
+	padding: 8px;
+	height: 290px;
+
+	.icon {
+		height: 100px;
+	}
+}
+
+#issues-card {
+	background-color: red;
+}
+
+#solutions-card {
+	background-color: yellow;
+}
+
+#proposals-card {
+	background-color: green;
 }

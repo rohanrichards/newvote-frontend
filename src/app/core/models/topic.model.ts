@@ -10,6 +10,7 @@ export interface ITopic {
 
 export class Topic implements ITopic {
 	public constructor(
+		public _id: string = '',
 		public name: string = '',
 		public imageUrl: string = '',
 		public description: string = '',

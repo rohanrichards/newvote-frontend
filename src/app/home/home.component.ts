@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { QuoteService } from './quote.service';
+import { OrganizationService } from '@app/core';
+import { IssueService } from '@app/core/http/issue/issue.service';
 
-import {OrganizationService } from '@app/core';
+import { Issue } from '@app/core/models/issue.model';
 
 @Component({
 	selector: 'app-home',
@@ -12,15 +13,18 @@ import {OrganizationService } from '@app/core';
 })
 export class HomeComponent implements OnInit {
 
-	quote: string;
 	isLoading: boolean;
 	org: any;
+	issues: Issue[];
 
-	constructor(private quoteService: QuoteService,
-		private organizationService: OrganizationService) { }
+	constructor(
+		private organizationService: OrganizationService,
+		private issueService: IssueService
+	) { }
 
 	ngOnInit() {
 		this.organizationService.get().subscribe((org) => this.org = org);
+		this.issueService.list({ forceUpdate: false }).subscribe((issues) => this.issues = issues);
 	}
 
 }

@@ -1,19 +1,113 @@
-<div class="container">
-  <mat-card>
-    <p>
-      <img class="logo" src="assets/ngx-rocket-logo.png" alt="angular logo"/>
-    </p>
-    <mat-card-content>
-      <mat-card-title translate *ngIf="this.org">{{this.org.prettyName}} NewVote</mat-card-title>
-      <mat-card-actions>
-        <!-- <button
-          mat-raised-button
-          angulartics2On="click"
-          angularticsAction="Click button below quote"
-          [angularticsCategory]="quote">
-          Click me to send an Analytics event
-        </button> -->
-      </mat-card-actions>
-    </mat-card-content>
-  </mat-card>
+<div fxLayout="column"
+    fxLayoutAlign="center center"
+    class="hero-image-container">
+	<div class="hero-image">
+	</div>
+	<div>
+		<div>Logo</div>
+		<div><span>Org</span> &nbsp; <span>NewVote</span></div>
+		<div>subheading</div>
+		<div>sign up</div>
+	</div>
+</div>
+
+<div class="hot-issues-container container">
+	<span class="mat-h2">WHAT'S HOT?</span>
+	<app-grid-list *ngIf="issues"
+	    path="/issues"
+	    model="Issue"
+	    [items]=issues></app-grid-list>
+</div>
+
+<div class="about-container container">
+	<span class="mat-h2">WHAT IS NEWVOTE?</span>
+	<div fxLayout="row wrap">
+		<div fxFlex="20"
+		    class="icon-container">icon</div>
+		<div class="mat-body"
+		    fxFlex.gt-sm="50"
+			fxFlex="100">
+			<p>NewVote is a platform for digital democracy, and it is all about you.</p>
+			<p>Your beliefs, your ideas, your solutions and your decisions. </p>
+			<p>We're concerned about the large and growing disconnect between everyday Australians, our politicians and government decision making. Confidence in our political system is at an all time low, and we think the problem is that there is a barrier that blocks everyday Australians from engaging easily and directly with their representatives.</p>
+			<p>We are on a mission to rebuild that relationship by creating a place where people can truly be heard.</p>
+			<p>Every voice matters, and all you need is a profile to start voting!</p>
+		</div>
+	</div>
+</div>
+
+<div class="vote-container container">
+	<span class="mat-h2">HOW DO I VOTE?</span>
+	<div fxLayout="row wrap">
+		<div fxFlex="10"
+		    class="icon-container">icon</div>
+		<div class="mat-body"
+		    fxFlex.gt-sm="50"
+			fxFlex="100">
+			<p>You’ll need to make an account using an email address to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
+		</div>
+		<div fxFlex></div>
+		<div>
+			<button mat-button
+			    mat-raised-button
+			    color="warn">
+				SIGN UP NOW</button>
+		</div>
+	</div>
+</div>
+
+<div class="how-container container">
+	<span class="mat-h2">HOW IT WORKS</span>
+	<div fxLayout="column">
+		<div class="mat-body">
+			<p>The voting process is quite simple. Explore the site to view topics, issues, solutions and proposals!</p>
+		</div>
+		<div fxLayout="row wrap"
+		    class="">
+			<div class="info-card-container mat-body"
+			    fxFlex="100"
+			    fxFlex.gt-sm="33">
+				<div class="info-card"
+				    id="issues-card"
+				    fxLayout="column">
+					<div class="mat-h3">ISSUES</div>
+					<div class="icon">icon</div>
+					<p fxFlex>An issue can be any problem or topic at UQ that needs to be addressed.</p>
+					<p>VIEW ISSUES ></p>
+				</div>
+			</div>
+			<div class="info-card-container mat-body"
+			    fxFlex="100"
+			    fxFlex.gt-sm="33">
+				<div class="info-card"
+				    id="solutions-card"
+				    fxLayout="column">
+					<div class="mat-h3">SOLUTIONS</div>
+					<div class="icon">icon</div>
+					<p fxFlex>A solution is the objective that you think UQ should aim to achieve in relation to the issue. </p>
+					<p>VIEW SOLUTIONS ></p>
+				</div>
+			</div>
+			<div class="info-card-container mat-body"
+			    fxFlex="100"
+			    fxFlex.gt-sm="33">
+				<div class="info-card"
+				    id="proposals-card"
+				    fxLayout="column">
+					<div class="mat-h3">PROPOSALS</div>
+					<div class="icon">icon</div>
+					<p fxFlex>A proposal is a specific action that can be taken to address the issue. </p>
+					<p>VIEW PROPOSALS ></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="final-container container">
+	<button mat-button
+	    mat-raised-button
+	    color="warn">
+		SIGN UP NOW</button>
+	<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
 </div>
