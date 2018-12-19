@@ -56,7 +56,7 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solutions: Array<Solution>) => {
 				this.solutions = solutions;
-				console.log(solutions);
+				console.log('got solutions: ', solutions);
 			});
 	}
 

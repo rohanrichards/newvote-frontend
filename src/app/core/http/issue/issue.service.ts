@@ -35,12 +35,16 @@ export class IssueService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
+		const options = {
+			withCredentials: true,
+			params
+		};
 
 		return this.httpClient
 			.cache(context.forceUpdate)
-			.get(routes.list(context), { params })
+			.get(routes.list(context), options)
 			.pipe(
 				map((res: Array<any>) => res),
 				catchError((e) => of([{ error: e }]))

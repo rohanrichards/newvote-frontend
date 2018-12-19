@@ -13,7 +13,7 @@
 .chart-container {
 	position: relative;
 	height: 40px !important;
-	width: 300px !important;
+	width: 100% !important;
 	z-index: 100;
 }
 
@@ -26,7 +26,7 @@
 	top: 0;
 	left: 0;
 	height: 40px;
-	width: 300px;
+	width: 100%;
 	padding: 8px;
 
 	display: flex;

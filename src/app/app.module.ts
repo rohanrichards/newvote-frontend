@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule, HttpClientXsrfModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TranslateModule } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,9 +49,13 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 		ShareModule.forRoot(),
 		AngularFontAwesomeModule,
 		ChartsModule,
-		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
-		AppRoutingModule // must be imported as the last module as it contains the fallback route
+		HttpClientXsrfModule.withOptions({
+			cookieName: 'XSRF-TOKEN',
+			headerName: 'X-XSRF-TOKEN',
+		}),
+			Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+			CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
+			AppRoutingModule // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [
 		AppComponent

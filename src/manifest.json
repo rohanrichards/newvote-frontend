@@ -1,13 +1,13 @@
 {
-  "name": "newvote frontend",
-  "short_name": "newvote frontend",
-  "theme_color": "#488aff",
-  "background_color": "#488aff",
+  "name": "NewVote",
+  "short_name": "NewVote",
+  "theme_color": "#0277bd",
+  "background_color": "#0277bd",
   "scope": "/",
   "start_url": "/",
   "display": "standalone",
   "icons": [{
-    "src": "assets/ngx-rocket-logo.png",
+    "src": "assets/logo-no-text.png",
     "sizes": "512x512",
     "type": "image/png"
   }]

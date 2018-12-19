@@ -14,7 +14,7 @@
 				</p>
 			</div>
 			<nav>
-				<mat-list layoutAlign="center center">
+				<mat-list>
 					<a mat-list-item
 					    routerLink="/home"
 					    routerLinkActive="active"
@@ -36,19 +36,18 @@
 					    (click)="isMobile && sidenav.close()">
             			<span translate>Vote Now</span>
           			</a>
-					
+
 					<div class="spacer"></div>
 
 					<a mat-list-item
-					    routerLink="/topics"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
-            			<span translate>About NewVote</span>
+					    href="https://newvote.org/about-us"
+						target="_blank">
+            			<span translate matLine>About NewVote</span>
           			</a>
+
 					<a mat-list-item
-					    routerLink="/topics"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
+					    href="https://newvote.org/help"
+						target="_blank">
             			<span translate>Help</span>
           			</a>
 				</mat-list>

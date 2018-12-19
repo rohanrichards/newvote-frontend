@@ -1,7 +1,5 @@
 .container {
-	padding-top: 2em;
-	padding-left: 2em;
-	padding-right: 2em;
+	padding: 2em;
 }
 
 .container ~ .container {
@@ -14,8 +12,9 @@
 
 .hero-image-container {
 	position: relative;
-	background-color: blue;
-	height: 50vh;
+	// background-color: blue;
+	height: 48vh;
+	min-height: 400px;
 }
 
 .hero-image {
@@ -24,28 +23,49 @@
 	left: 0px;
 	bottom: 0px;
 	right: 0px;
+	z-index: -1;
 
-	height: 60vh;
+	height: 48vh;
+	min-height: 400px;
+
+	background-image: url('assets/home-background@720x-50.jpg');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.hero-text-container {
+	text-align: center;
+	color: white;
+
+	.mat-display-2 {
+		margin-bottom: 0px !important;
+	}
+}
+
+.logo {
+	width: 250px;
+	height: auto;
 }
 
 .hot-issues-container {
-	background-color: yellow;
+	background-color: #FFFFFF;
 }
 
 .about-container {
-	background-color: orange;
+	background-color: #FAFAFA;
 }
 
 .vote-container {
-	background-color: lightBlue;
+	background-color: #FFFFFF;
 }
 
 .how-container {
-	background-color: blue;
+	background-color: #FAFAFA;
 }
 
 .final-container {
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 .info-card-container {
@@ -66,13 +86,13 @@
 }
 
 #issues-card {
-	background-color: red;
+	background-color: #FFAB91;
 }
 
 #solutions-card {
-	background-color: yellow;
+	background-color: #FFF59D;
 }
 
 #proposals-card {
-	background-color: green;
+	background-color: #C5E1A5;
 }

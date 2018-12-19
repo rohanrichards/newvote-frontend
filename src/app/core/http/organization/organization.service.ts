@@ -16,6 +16,7 @@ export class OrganizationService {
 		private httpClient: HttpClient) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
+		console.log('Your subdomain: ', this._subdomain);
 	}
 
 	get(): Observable<any> {
@@ -29,7 +30,7 @@ export class OrganizationService {
 			.get('/organizations', { params })
 			.pipe(
 				map((res: Array<Organization>) => {
-					console.log(res);
+					console.log('org: ', res);
 					this._org = res[0];
 					return res[0];
 				}),
