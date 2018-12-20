@@ -1,9 +1,14 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormControl, Validators } from '@angular/forms';
 import { ObservableMedia } from '@angular/flex-layout';
+import { Subject, Observable } from 'rxjs';
+import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AuthenticationService, I18nService } from '@app/core';
+
+import { SearchService } from '@app/core/http/search/search.service';
 
 @Component({
 	selector: 'app-shell',
@@ -11,14 +16,39 @@ import { AuthenticationService, I18nService } from '@app/core';
 	styleUrls: ['./shell.component.scss']
 })
 export class ShellComponent implements OnInit {
+	searchInput = new FormControl('', [Validators.required]);
+	public searchResults$: Observable<any>;
+	private searchTerms = new Subject<string>();
+
 
 	constructor(private router: Router,
 		private titleService: Title,
 		private media: ObservableMedia,
 		private authenticationService: AuthenticationService,
-		private i18nService: I18nService) { }
+		private i18nService: I18nService,
+		private searchService: SearchService
+	) { }
 
-	ngOnInit() { }
+	ngOnInit() {
+		this.searchResults$ = this.searchInput.valueChanges
+			.pipe(
+				debounceTime(300),
+				distinctUntilChanged(),
+				switchMap(
+					(query: string) => {
+						console.log('search results: ', this.searchService.all({ query }));
+						return this.searchService.all({ query });
+					}
+				)
+			);
+
+		this.searchResults$.subscribe(results => console.log(results));
+	}
+
+	search(term: string) {
+		console.log('searching: ', term);
+		this.searchTerms.next(term);
+	}
 
 	setLanguage(language: string) {
 		this.i18nService.language = language;

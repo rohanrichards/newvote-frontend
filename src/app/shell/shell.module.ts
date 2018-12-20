@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '@app/material.module';
 
+import { SearchService } from '@app/core/http/search/search.service';
+
 import { ShellComponent } from './shell.component';
 
 @NgModule({
@@ -17,6 +19,9 @@ import { ShellComponent } from './shell.component';
 	],
 	declarations: [
 		ShellComponent
+	],
+	providers: [
+		SearchService
 	]
 })
 export class ShellModule {

@@ -33,8 +33,8 @@ export class IssueListComponent implements OnInit {
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
 	headerTitle = 'Browse By Issue';
-	headerText = 'Issues arrange the current issues into broader categories. \
-		Select a issue below to learn more about it and explore relevant issues being discussed.';
+	headerText = 'An issue is any problem that needs to be addressed. \
+	Select an issue below to learn more about it';
 	headerButtons = [{
 		text: 'New Issue',
 		color: 'warn',

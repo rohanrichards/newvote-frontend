@@ -14,7 +14,6 @@ export class ApiPrefixInterceptor implements HttpInterceptor {
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		const token = this.tokenExtractor.getToken() as string;
-		console.log('token is: ', token);
 		if (token) {
 			if (!/^(http|https):/i.test(request.url)) {
 				request = request.clone({

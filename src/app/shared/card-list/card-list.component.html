@@ -50,7 +50,7 @@
 								    *ngIf="child.imageUrl"
 								    [style.backgroundImage]="'url(' + child.imageUrl + ')'">
 								</div>
-								<div fxLayout="column">
+								<div fxLayout="column" fxFlex>
 									<span class="mat-title"
 									    [innerHtml]="child.title"></span>
 									<app-vote-buttons class="buttons"
