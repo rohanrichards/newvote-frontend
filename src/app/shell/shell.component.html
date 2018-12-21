@@ -9,8 +9,8 @@
 			<div class="logo-container">
 				<p>
 					<img class="logo"
-					    src="assets/logo-gif.gif"
-					    alt="angular logo" />
+					    src="assets/logo-no-circle.png"
+					    alt="NewVote" />
 				</p>
 			</div>
 			<nav>
@@ -22,7 +22,7 @@
             			<span translate>Home</span>
           			</a>
 
-					<div class="spacer"></div>
+					<mat-divider></mat-divider>
 
 					<a mat-list-item
 					    routerLink="/issues"
@@ -34,10 +34,10 @@
 					    routerLink="/solutions"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-            			<span translate>Vote Now</span>
+            			<span translate>Solutions</span>
           			</a>
 
-					<div class="spacer"></div>
+					<mat-divider></mat-divider>
 
 					<a mat-list-item
 					    href="https://newvote.org/about-us"
@@ -92,8 +92,10 @@
 				</div>
 				<div *ngIf="!isAuthenticated">
 					<button mat-stroked-button
+					    class="border-override"
 					    routerLink="/auth/login">Sign In</button>
 					<button mat-flat-button
+					    color="warn"
 					    routerLink="/auth/signup">Create Account</button>
 				</div>
 				<div>

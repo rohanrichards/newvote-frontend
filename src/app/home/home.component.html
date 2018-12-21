@@ -1,7 +1,9 @@
 <div fxLayout="column"
     fxLayoutAlign="center center"
     class="hero-image-container">
-	<div class="hero-image">
+	<div *ngIf="org"
+	    class="hero-image"
+	    [style.background-image]="'url(' + org.imageUrl + ')'">
 	</div>
 	<div class="hero-text-container">
 		<div>
@@ -9,11 +11,12 @@
 			    src="assets/logo-no-text.png"
 			    alt="angular logo" />
 		</div>
-		<div class="mat-display-2">
+		<div class="mat-display-3 no-margin">
 			<span *ngIf="org">{{org.prettyName}}</span> &nbsp;
-			<span><img class="logo"
-			src="assets/logo-no-circle.png"
-			alt="NewVote" /></span>
+			<span>
+				<img class="logo"
+					src="assets/logo-no-circle.png"
+					alt="NewVote" /></span>
 		</div>
 		<div class="mat-h2">Democracy gone digital.</div>
 		<div>
@@ -27,128 +30,220 @@
 	</div>
 </div>
 
-<div class="hot-issues-container container">
-	<h2 class="mat-h2">What's Hot?</h2>
-	<app-grid-list *ngIf="issues"
-	    path="/issues"
-	    model="Issue"
-	    [items]=issues></app-grid-list>
-	<div>
-		<button mat-button
-		    routerLink="/issues">
+<div class="hot-issues-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">What's Hot?</h2>
+		<app-grid-list *ngIf="issues"
+		    path="/issues"
+		    model="Issue"
+		    [items]=issues></app-grid-list>
+		<div>
+			<button mat-button
+			    routerLink="/issues">
 			SEE ALL ></button>
-	</div>
-</div>
-
-<div class="about-container container">
-	<h2 class="mat-h2">What is NewVote?</h2>
-	<div fxLayout="row wrap">
-		<div fxFlex="20"
-		    class="icon-container">icon</div>
-		<div class="mat-body"
-		    fxFlex.gt-sm="50"
-		    fxFlex="100">
-			<p>NewVote is a platform for digital democracy, and it is all about you.</p>
-			<p>Your beliefs, your ideas, your solutions and your decisions. </p>
-			<p>We're concerned about the large and growing disconnect between everyday Australians, our politicians and government decision making. Confidence in our political system is at an all time low, and we think the problem is that there is a barrier that blocks everyday Australians from engaging easily and directly with their representatives.</p>
-			<p>We are on a mission to rebuild that relationship by creating a place where people can truly be heard.</p>
-			<p>Every voice matters, and all you need is a profile to start voting!</p>
 		</div>
 	</div>
 </div>
 
-<div class="vote-container container">
-	<h2 class="mat-h2">How do I Vote?</h2>
-	<div fxLayout="row wrap">
-		<div fxFlex="10"
-		    class="icon-container">icon</div>
-		<div class="mat-body"
-		    fxFlex.gt-sm="50"
-		    fxFlex="100">
-			<p>You’ll need to make an account using an email address to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
+<div class="community-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px"
+	    fxLayout="column">
+		<h2 class="mat-display-1">Community</h2>
+		<div fxLayout="row">
+			<div fxFlex></div>
+			<div fxLayout="column">
+				<span class="mat-h1">94</span>
+				<span class="mat-h3">Members</span>
+			</div>
+			<div fxFlex></div>
+			<mat-divider vertical="true"></mat-divider>
+			<div fxFlex></div>
+			<div fxLayout="column">
+				<span class="mat-h1">{{issues.length}}</span>
+				<span class="mat-h3">Issues</span>
+			</div>
+			<div fxFlex></div>
+			<mat-divider vertical="true"></mat-divider>
+			<div fxFlex></div>
+			<div fxLayout="column">
+				<span class="mat-h1">{{proposals.length}}</span>
+				<span class="mat-h3">Proposals</span>
+			</div>
+			<div fxFlex></div>
 		</div>
-		<div fxFlex></div>
 		<div>
 			<button mat-button
 			    mat-raised-button
 			    routerLink="/auth/signup"
-			    color="warn">
+			    color="warn"
+			    class="mat-display-1">
+			JOIN US</button>
+		</div>
+		<span class="mat-caption">NewVote is not currently affiliated with the University of Queensland.</span>
+		<span class="mat-caption">To claim leadership of the University of Queensland and UQ Student Union communities, contact us today</span>
+	</div>
+</div>
+
+<div class="about-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">What is NewVote?</h2>
+		<div fxLayout="row wrap">
+			<div fxFlex="100"
+			    fxFlex.gt-xs="25"
+			    fxLayoutAlign="center center"
+			    class="icon-container">
+				<img src="assets/earth-globe.svg" />
+			</div>
+			<div class="text-block"
+			    fxFlex="100"
+			    fxFlex.gt-xs="75">
+				<div class="mat-body-1">
+					<p>NewVote is a democracy app, and it’s all about you.</p>
+					<p>Your communities, your issues, your ideas and your decisions.</p>
+					<p>Our mission is to rebuild the relationship between everyday people and their leaders, so that we all have confidence in our democracies and the decisions they make.</p>
+					<p>We’re doing this across all levels of government worldwide, as well as “private” democratic communities, like unions, businesses, community groups, political parties, student councils, clubs and societies.</p>
+					<p>Connect with your community in a way that you can truly be heard - easily and directly - whilst leaders get the data they need.</p>
+					<p>Let’s enhance democracy together.</p>
+					<p>Your voice matters, and all you need is a profile to start voting!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="vote-container container"
+    fxLayoutAlign="center center"
+    routerLink="/auth/signup">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">How do I Vote?</h2>
+		<div fxLayout="row wrap">
+			<div class="icon-container"
+			    fxFlex="10"
+			    fxFlex.gt-xs="15"
+			    fxLayoutAlign="center center">
+				<img class="icon"
+				    src="assets/sort-arrows.png" />
+			</div>
+			<div class="text-block"
+			    fxLayoutAlign="center center"
+			    fxFlex
+			    fxFlex.xs="90">
+				<div class="mat-body">
+					<p>You’ll need to make an account using an email address to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
+				</div>
+			</div>
+			<div fxLayoutAlign="center center"
+			    fxFlex.xs="100">
+				<button mat-button
+				    mat-raised-button
+				    routerLink="/auth/signup"
+				    color="warn">
 				SIGN UP NOW</button>
+			</div>
 		</div>
 	</div>
 </div>
 
-<div class="how-container container">
-	<h2 class="mat-h2">How it Works</h2>
-	<div fxLayout="column">
-		<div class="mat-body">
-			<p>The voting process is quite simple. Explore the site to view topics, issues, solutions and proposals!</p>
-		</div>
-		<div fxLayout="row wrap"
-		    class="">
-			<div fxFlex></div>
-			<div class="info-card-container mat-body"
-			    fxFlex="100"
-			    fxFlex.gt-sm="33"
-			    fxFlex.gt-md="300px">
-				<div class="info-card"
-				    id="issues-card"
-				    fxLayout="column">
-					<div class="mat-h3">ISSUES</div>
-					<div class="icon">icon</div>
-					<p fxFlex>An issue can be any problem or topic at UQ that needs to be addressed.</p>
-					<div><button mat-button
-						    routerLink="/issues">
+<div class="how-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">How it Works</h2>
+		<div fxLayout="column">
+			<div class="mat-body">
+				<p>The voting process is quite simple. Explore this app to view issues, solutions and proposals!</p>
+			</div>
+			<div fxLayout="row wrap"
+			    class="">
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="issues-card"
+					    fxLayout="column">
+						<div class="mat-h3">ISSUES</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/problem.svg" />
+						</div>
+						<p class="text-block"
+						    fxFlex>Issues can be any problem or topic in your community that you think needs to be addressed.</p>
+						<div><button mat-button
+							    routerLink="/issues">
 						VIEW ISSUES ></button>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div fxFlex></div>
-			<div class="info-card-container mat-body"
-			    fxFlex="100"
-			    fxFlex.gt-sm="33"
-			    fxFlex.gt-md="300px">
-				<div class="info-card"
-				    id="solutions-card"
-				    fxLayout="column">
-					<div class="mat-h3">SOLUTIONS</div>
-					<div class="icon">icon</div>
-					<p fxFlex>A solution is the objective that you think UQ should aim to achieve in relation to the issue. </p>
-					<div>
-						<button mat-button
-						    routerLink="/solutions">
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="solutions-card"
+					    fxLayout="column">
+						<div class="mat-h3">SOLUTIONS</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/thought.svg" /></div>
+						<p class="text-block"
+						    fxFlex>Solutions are the decisions that you think your community should make.</p>
+						<div>
+							<button mat-button
+							    routerLink="/solutions">
 						VIEW SOLUTIONS ></button>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div fxFlex></div>
-			<div class="info-card-container mat-body"
-			    fxFlex="100"
-			    fxFlex.gt-sm="33"
-			    fxFlex.gt-md="300px">
-				<div class="info-card"
-				    id="proposals-card"
-				    fxLayout="column">
-					<div class="mat-h3">PROPOSALS</div>
-					<div class="icon">icon</div>
-					<p fxFlex>A proposal is a specific action that can be taken to address the issue. </p>
-					<div>
-						<button mat-button
-						    routerLink="/proposals">
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="proposals-card"
+					    fxLayout="column">
+						<div class="mat-h3">PROPOSALS</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/idea.svg" /></div>
+						<p fxFlex
+						    class="text-block">Proposals provide further clarity to solutions and specific actions.</p>
+						<div>
+							<button mat-button
+							    routerLink="/proposals">
 						VIEW PROPOSALS ></button>
+						</div>
 					</div>
 				</div>
+				<div fxFlex></div>
 			</div>
-			<div fxFlex></div>
 		</div>
 	</div>
 </div>
 
-<div class="final-container container">
-	<button mat-button
-	    mat-raised-button
-	    routerLink="/auth/signup"
-	    color="warn">
+<div class="final-container container"
+    fxLayoutAlign="center center"
+    routerLink="/auth/signup">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<button mat-button
+		    mat-raised-button
+		    routerLink="/auth/signup"
+		    color="warn">
 		SIGN UP NOW</button>
-	<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
+		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
+	</div>
 </div>

@@ -19,9 +19,7 @@ export class SolutionListComponent implements OnInit {
 	solutions: Array<any>;
 	isLoading: boolean;
 	headerTitle = 'Browse By Solution';
-	headerText = 'A solution is the objective that you think UQ society should \
-	have in relation to the issue - the end point that you want UQ society \
-	eventually to achieve. Select a solution to learn more about it.';
+	headerText = 'Solutions are the decisions that you think your community should make.';
 	headerButtons = [{
 		text: 'New Solution',
 		color: 'warn',

@@ -29,7 +29,12 @@ q {
 	background-size: cover;
 
 	width: calc(100% + 32px);
-	margin: -16px -16px 16px -16px;
+	margin: -16px -16px 0px -16px;
+}
+
+.description-container {
+	padding-top: 32px;
+	padding-bottom: 32px;
 }
 
 .admin-panel {

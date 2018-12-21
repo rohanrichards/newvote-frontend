@@ -7,19 +7,21 @@
 		<span class="mat-body-2">HAVE YOUR SAY</span>
 		<div fxLayout="row">
 			<button mat-raised-button
-			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'accent' : null"
+			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
 			    class="vote-button"
+				color="primary"
 			    (click)="onVote(item, 1, $event)"><mat-icon>arrow_upward</mat-icon><span fxHide="true" fxShow.gt-xs="true">VOTE UP</span></button>
 
 			<button mat-raised-button
-			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'accent' : null"
+			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
 			    class="vote-button"
+				color="primary"
 			    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span></button>
 		</div>
 	</div>
 	<div fxFlex></div>
 	<div fxLayout="column"
-		fxFlex="0 1 200px"
+		fxFlex="0 1 150px"
 		fxFlex.gt-xs="1 1 50%">
 		<span class="mat-body-2">RESULTS</span>
 		<div class="chart-container">
