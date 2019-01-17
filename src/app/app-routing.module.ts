@@ -9,7 +9,8 @@ const routes: Routes = [
 		{ path: 'topics', loadChildren: 'app/topic/topic.module#TopicModule' },
 		{ path: 'issues', loadChildren: 'app/issue/issue.module#IssueModule' },
 		{ path: 'solutions', loadChildren: 'app/solution/solution.module#SolutionModule' },
-		{ path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' }
+		{ path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
+		{ path: 'organizations', loadChildren: 'app/organization/organization.module#OrganizationModule' }
 	]),
 	// Fallback when no prior route is matched
 	{ path: '**', redirectTo: '', pathMatch: 'full' }

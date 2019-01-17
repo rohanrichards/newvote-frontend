@@ -1,0 +1,62 @@
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
+
+<div class="container"
+    fxLayout="row"
+    fxLayoutAlign="center center">
+	<mat-card fxFlex.gt-sm="60"
+	    fxFlex="100">
+		<form [formGroup]="organizationForm"
+		    fxLayout="column"
+		    (ngSubmit)="onSave()"
+		    novalidate>
+			<mat-form-field>
+				<!-- {{organizationForm.status}} -->
+				<input matInput
+				    placeholder="Enter a name for the organization (properly formatted e.g UQ Union)"
+				    formControlName="name"
+				    required>
+				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
+					The name is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<!-- {{organizationForm.status}} -->
+				<input matInput
+					placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
+					formControlName="url"
+					required>
+				<mat-error *ngIf="organizationForm.hasError('required', ['url'])">
+					The URL is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<input type="file"
+			    id="fileupload"
+			    #fileInput
+			    ng2FileSelect
+			    [uploader]="uploader"
+			    (change)="onFileChange($event)"
+			    formControlName="imageUrl"
+			    hidden
+			    autoComplete="off" />
+
+			<div class="image-select">
+				<button mat-flat-button
+					type="button"
+				    color="primary"
+				    (click)="fileInput.click()">Select Image</button>
+				<div class="image-preview"
+				    *ngIf="imageUrl">
+					<img [src]="imageUrl" />
+				</div>
+			</div>
+
+			<button mat-flat-button
+			    type="submit"
+			    [disabled]="!organizationForm.valid"
+			    color="primary">Create</button>
+		</form>
+	</mat-card>
+</div>

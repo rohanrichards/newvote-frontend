@@ -1,41 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { MatAutocomplete, MatSnackBar } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
-import { finalize } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs';
+import { map, startWith, finalize } from 'rxjs/operators';
 
-import { ITopic } from '@app/core/models/topic.model';
-import { Organization } from '@app/core/models/organization.model';
-import { TopicService } from '@app/core/http/topic/topic.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { Organization } from '@app/core/models/organization.model';
 
 @Component({
-	selector: 'app-topic',
-	templateUrl: './topic-create.component.html',
-	styleUrls: ['./topic-create.component.scss']
+	selector: 'app-organization',
+	templateUrl: './organization-create.component.html',
+	styleUrls: ['./organization-create.component.scss']
 })
-export class TopicCreateComponent implements OnInit {
+export class OrganizationCreateComponent implements OnInit {
 
-	topic: ITopic;
 	organization: Organization;
-	isLoading: boolean;
+	isLoading = true;
 	imageUrl: any;
 	uploader: FileUploader;
-	topicForm = new FormGroup({
+	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
-		description: new FormControl('', [Validators.required]),
+		url: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
+	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
+	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+
 	constructor(
-		private topicService: TopicService,
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
+		private route: ActivatedRoute,
 		private router: Router
 	) { }
 
 	ngOnInit() {
+		this.isLoading = true;
+
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
 			// Upload files automatically upon addition to upload queue
@@ -84,8 +87,8 @@ export class TopicCreateComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.topic = <ITopic>this.topicForm.value;
-		this.topic.organizations = [this.organization._id];
+		this.organization = <Organization>this.organizationForm.value;
+		console.log('saving: ', this.organization);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
@@ -95,16 +98,16 @@ export class TopicCreateComponent implements OnInit {
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
 				const res = JSON.parse(response);
-				this.topic.imageUrl = res.secure_url;
+				this.organization.imageUrl = res.secure_url;
 
-				this.topicService.create({ entity: this.topic })
+				this.organizationService.create({ entity: this.organization })
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
 						if (t.error) {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/topics', { forceUpdate: true }]);
+							this.router.navigate([`/organizations`, { forceUpdate: true }]);
 						}
 					});
 			}

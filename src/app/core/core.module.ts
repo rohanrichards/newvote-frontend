@@ -36,7 +36,8 @@ export function tokenGetter() {
 		TranslateModule,
 		JwtModule.forRoot({
 			config: {
-				tokenGetter: tokenGetter
+				tokenGetter: tokenGetter,
+				whitelistedDomains: ['api.newvote.org']
 			}
 		}),
 		RouterModule

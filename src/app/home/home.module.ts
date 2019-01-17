@@ -11,6 +11,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { UserService } from '@app/core/http/user/user.service';
 
 @NgModule({
 	imports: [
@@ -28,7 +29,8 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 	],
 	providers: [
 		IssueService,
-		ProposalService
+		ProposalService,
+		UserService
 	]
 })
 export class HomeModule { }

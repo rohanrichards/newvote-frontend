@@ -12,7 +12,7 @@
 			    alt="angular logo" />
 		</div>
 		<div class="mat-display-3 no-margin">
-			<span *ngIf="org">{{org.prettyName}}</span> &nbsp;
+			<span *ngIf="org">{{org.name}}</span> &nbsp;
 			<span>
 				<img class="logo"
 					src="assets/logo-no-circle.png"
@@ -56,21 +56,30 @@
 		<div fxLayout="row">
 			<div fxFlex></div>
 			<div fxLayout="column">
-				<span class="mat-h1">94</span>
+				<span class="mat-h1"
+				    *ngIf="userCount">{{userCount}}</span>
+				<span class="mat-h1"
+				    *ngIf="!userCount">0</span>
 				<span class="mat-h3">Members</span>
 			</div>
 			<div fxFlex></div>
 			<mat-divider vertical="true"></mat-divider>
 			<div fxFlex></div>
 			<div fxLayout="column">
-				<span class="mat-h1">{{issues.length}}</span>
+				<span class="mat-h1"
+				    *ngIf="issues">{{issues.length}}</span>
+				<span class="mat-h1"
+				    *ngIf="!issues">0</span>
 				<span class="mat-h3">Issues</span>
 			</div>
 			<div fxFlex></div>
 			<mat-divider vertical="true"></mat-divider>
 			<div fxFlex></div>
 			<div fxLayout="column">
-				<span class="mat-h1">{{proposals.length}}</span>
+				<span class="mat-h1"
+				    *ngIf="proposals">{{proposals.length}}</span>
+				<span class="mat-h1"
+				    *ngIf="!proposals">0</span>
 				<span class="mat-h3">Proposals</span>
 			</div>
 			<div fxFlex></div>

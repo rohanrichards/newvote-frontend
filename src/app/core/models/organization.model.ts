@@ -1,6 +1,6 @@
 export interface IOrganization {
 	_id?: string;
-	prettyName: string;
+	name: string;
 	url: string;
 	imageUrl: string;
 	owner?: any;
@@ -9,7 +9,8 @@ export interface IOrganization {
 
 export class Organization implements IOrganization {
 	public constructor(
-		public prettyName: string = '',
+		public _id: string = '',
+		public name: string = '',
 		public url: string = '',
 		public imageUrl: string = '') { }
 }
