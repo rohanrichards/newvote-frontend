@@ -2,18 +2,21 @@
     class="header-bar">
 	<div fxLayout="row wrap"
 	    fxLayoutAlign="center start">
-		<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+		<div fxFlex.gt-sm="690px"
+		    fxFlex.gt-md="800px">
 			<div class="mat-display-1"
 			    translate
-				[innerHtml]="title"></div>
+			    [innerHtml]="title"></div>
 			<div class="mat-subheading-2"
 			    translate
 			    [innerHtml]="text"></div>
-			<div *ngFor="let button of buttons">
-				<button mat-raised-button
-				    [color]="button.color"
-				    [routerLink]="button.routerLink"
-					*ngIf="auth.hasRole((button.role || 'user'))">{{button.text}}</button>
+			<div>
+				<span *ngFor="let button of buttons">
+					<button mat-raised-button
+					    [color]="button.color"
+					    [routerLink]="button.routerLink"
+					    *ngIf="auth.hasRole((button.role || 'user'))">{{button.text}}</button>
+				</span>
 			</div>
 		</div>
 	</div>

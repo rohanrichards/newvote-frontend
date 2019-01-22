@@ -11,6 +11,15 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { SwiperModule } from 'ngx-swiper-wrapper';
+import { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
+import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
+
+const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
+	direction: 'horizontal',
+	slidesPerView: 3,
+	centeredSlides: false
+};
 
 import { Cloudinary } from 'cloudinary-core';
 import { CloudinaryModule } from '@cloudinary/angular-5.x';
@@ -53,9 +62,10 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 			cookieName: 'XSRF-TOKEN',
 			headerName: 'X-XSRF-TOKEN',
 		}),
-			Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-			CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
-			AppRoutingModule // must be imported as the last module as it contains the fallback route
+		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
+		SwiperModule,
+		AppRoutingModule // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [
 		AppComponent
@@ -70,6 +80,10 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 			provide: RECAPTCHA_SETTINGS,
 			useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
 		},
+		{
+			provide: SWIPER_CONFIG,
+			useValue: DEFAULT_SWIPER_CONFIG
+		}
 	],
 	bootstrap: [AppComponent]
 })

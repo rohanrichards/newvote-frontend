@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, debounceTime } from 'rxjs/operators';
 import { merge } from 'lodash';
 
 import { IMedia } from '@app/core/models/media.model';
@@ -33,11 +33,13 @@ export class MediaEditComponent implements OnInit {
 	imageFile: File;
 	newImage = false;
 	uploader: FileUploader;
+	usingMetaImage = false;
 	mediaForm = new FormGroup({
+		url: new FormControl('', [Validators.required]),
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		issues: new FormControl(''),
-		imageUrl: new FormControl('', [Validators.required])
+		image: new FormControl('', [])
 	});
 
 	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
@@ -54,6 +56,24 @@ export class MediaEditComponent implements OnInit {
 		this.filteredIssues = this.mediaForm.get('issues').valueChanges.pipe(
 			startWith(''),
 			map((issue: string) => issue ? this._filter(issue) : this.allIssues.slice()));
+
+		this.mediaForm.get('url').valueChanges.pipe(debounceTime(500)).subscribe((url: string) => {
+			this.isLoading = true;
+			const uri = encodeURIComponent(url).replace(/'/g, '%27').replace(/"/g, '%22');
+			console.log('encoded url: ', uri);
+			this.mediaService.meta({ uri: uri }).subscribe((meta: any) => {
+				console.log('got meta for url: ', meta);
+				this.isLoading = false;
+				this.imageUrl = meta.image;
+				this.usingMetaImage = true;
+				this.mediaForm.patchValue({
+					'title': meta.title,
+					'description': meta.description
+				});
+
+				console.log(this.mediaForm.value);
+			});
+		});
 	}
 
 	ngOnInit() {
@@ -69,7 +89,8 @@ export class MediaEditComponent implements OnInit {
 						const issue = media.issues[i];
 						this.issues.push(issue);
 					}
-					this.mediaForm.patchValue(media);
+					this.mediaForm.patchValue(media, {emitEvent: false, onlySelf: true});
+					this.imageUrl = media.image;
 				});
 		});
 
@@ -123,12 +144,13 @@ export class MediaEditComponent implements OnInit {
 			};
 
 			reader.readAsDataURL(file);
+			this.usingMetaImage = false;
 		}
 	}
 
 	onResetImage() {
 		this.newImage = false;
-		this.imageUrl = this.mediaForm.get('imageUrl').value;
+		this.imageUrl = this.mediaForm.get('image').value;
 	}
 
 	onSave() {

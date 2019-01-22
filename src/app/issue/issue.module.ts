@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload';
+import { SwiperModule } from 'ngx-swiper-wrapper';
 
 import { MaterialModule } from '@app/material.module';
 import { IssueRoutingModule } from './issue-routing.module';
@@ -17,6 +18,7 @@ import { IssueEditComponent } from './edit/issue-edit.component';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
+import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
@@ -32,7 +34,8 @@ import { SharedModule } from '@app/shared';
 		MaterialFileInputModule,
 		QuillModule,
 		FileUploadModule,
-		IssueRoutingModule
+		IssueRoutingModule,
+		SwiperModule
 	],
 	declarations: [
 		IssueListComponent,
@@ -44,6 +47,7 @@ import { SharedModule } from '@app/shared';
 		TopicService,
 		SolutionService,
 		IssueService,
+		MediaService,
 		VoteService
 	]
 })

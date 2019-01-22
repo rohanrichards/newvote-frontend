@@ -1,16 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
+import {
+	SwiperComponent, SwiperDirective, SwiperConfigInterface,
+	SwiperScrollbarInterface, SwiperPaginationInterface
+} from 'ngx-swiper-wrapper';
+
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
+import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 
 import { IIssue } from '@app/core/models/issue.model';
 import { Solution } from '@app/core/models/solution.model';
+import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
 
 @Component({
@@ -19,14 +26,49 @@ import { Vote } from '@app/core/models/vote.model';
 	styleUrls: ['./issue-view.component.scss']
 })
 export class IssueViewComponent implements OnInit {
+	@ViewChild(SwiperComponent) componentRef?: SwiperComponent;
+	@ViewChild(SwiperDirective) directiveRef?: SwiperDirective;
 
 	issue: IIssue;
 	solutions: Array<Solution>;
+	media: Array<Media>;
 	isLoading: boolean;
+	swiperIndex: number;
+
+	public config: SwiperConfigInterface = {
+		a11y: true,
+		direction: 'horizontal',
+		slidesPerView: 1,
+		spaceBetween: 40,
+		keyboard: true,
+		mousewheel: false,
+		scrollbar: false,
+		navigation: true,
+		pagination: true,
+		observer: true,
+		autoHeight: true,
+		loop: true,
+		loopAdditionalSlides: 2,
+		loopFillGroupWithBlank: true,
+		initialSlide: 0
+	};
+
+	private scrollbar: SwiperScrollbarInterface = {
+		el: '.swiper-scrollbar',
+		hide: false,
+		draggable: true
+	};
+
+	private pagination: SwiperPaginationInterface = {
+		el: '.swiper-pagination',
+		clickable: true,
+		hideOnClick: false
+	};
 
 	constructor(
 		private issueService: IssueService,
 		private solutionService: SolutionService,
+		private mediaService: MediaService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -53,10 +95,21 @@ export class IssueViewComponent implements OnInit {
 
 	getSolutions(id: string, forceUpdate?: boolean) {
 		this.solutionService.list({ params: { issueId: id }, forceUpdate })
-			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solutions: Array<Solution>) => {
 				this.solutions = solutions;
 				console.log('got solutions: ', solutions);
+				this.getMedia(id);
+			});
+	}
+
+	getMedia(id: string, forceUpdate?: boolean) {
+		this.mediaService.list({ params: { issueId: id }, forceUpdate })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((mediaList: Array<Media>) => {
+				this.media = mediaList;
+				console.log('got media: ', mediaList);
+				console.log(this.swiperIndex);
+				this.swiperIndex = 0;
 			});
 	}
 

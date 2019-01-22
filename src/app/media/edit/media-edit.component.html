@@ -12,6 +12,17 @@
 			<mat-form-field>
 				<!-- {{mediaForm.status}} -->
 				<input matInput
+					placeholder="Enter the URL for the media"
+					formControlName="url"
+					required>
+				<mat-error *ngIf="mediaForm.hasError('required', ['url'])">
+					URL is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<!-- {{mediaForm.status}} -->
+				<input matInput
 				    placeholder="Enter a name for the media"
 				    formControlName="title"
 				    required>
@@ -63,7 +74,7 @@
 			<input matInput
 			    hidden
 			    placeholder="Enter a name for the media"
-			    formControlName="imageUrl"
+			    formControlName="image"
 			    required>
 
 			<div class="image-select">
