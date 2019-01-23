@@ -117,6 +117,12 @@ export class IssueListComponent implements OnInit {
 		});
 	}
 
+	onDeleteTopic(topic: any) {
+		this.topicService.delete({ id: topic._id }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
 	topicSelected(event: any) {
 		const selectedItem = event.option.value;
 

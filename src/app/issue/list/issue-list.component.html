@@ -42,6 +42,19 @@
 			<div *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
 				<h2 class="mat-h1">
 					{{topic.name}}
+					<div class="button-panel"
+						*ngIf="auth.isAdmin()">
+						<button color="accent"
+							mat-icon-button
+							[routerLink]="['/topics/edit', topic._id]">
+									<mat-icon aria-label="Edit the content">edit </mat-icon>
+						</button>
+						<button color="warn"
+							mat-icon-button
+							(click)="onDeleteTopic(topic, $event)">
+									<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
+						</button>
+					</div>
 					<mat-divider></mat-divider>
 				</h2>
 				<app-grid-list path="/issues"

@@ -4,6 +4,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { ChartsModule } from 'ng2-charts';
+import { SwiperModule } from 'ngx-swiper-wrapper';
+import {MatBadgeModule} from '@angular/material/badge';
 
 import { MaterialModule } from '@app/material.module';
 import { ShareModule } from '@ngx-share/core';
@@ -12,6 +14,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { ShareButtonsComponent } from './share-buttons/share-buttons.component';
 import { GridListComponent } from './grid-list/grid-list.component';
 import { CardListComponent } from './card-list/card-list.component';
+import { SwiperWrapperComponent } from './swiper-wrapper/swiper-wrapper.component';
 import { VoteButtonsComponent } from './vote-buttons/vote-buttons.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { HeaderBarComponent } from './header-bar/header-bar.component';
@@ -28,6 +31,8 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ShareModule,
 		AngularFontAwesomeModule,
 		ChartsModule,
+		SwiperModule,
+		MatBadgeModule,
 		RouterModule
 	],
 	declarations: [
@@ -35,6 +40,7 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ShareButtonsComponent,
 		GridListComponent,
 		CardListComponent,
+		SwiperWrapperComponent,
 		VoteButtonsComponent,
 		ConfirmDialogComponent,
 		MoreLessComponent,
@@ -46,6 +52,7 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ShareButtonsComponent,
 		GridListComponent,
 		CardListComponent,
+		SwiperWrapperComponent,
 		VoteButtonsComponent,
 		ConfirmDialogComponent,
 		MoreLessComponent,

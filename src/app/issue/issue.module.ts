@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload';
-import { SwiperModule } from 'ngx-swiper-wrapper';
 
 import { MaterialModule } from '@app/material.module';
 import { IssueRoutingModule } from './issue-routing.module';
@@ -34,8 +33,7 @@ import { SharedModule } from '@app/shared';
 		MaterialFileInputModule,
 		QuillModule,
 		FileUploadModule,
-		IssueRoutingModule,
-		SwiperModule
+		IssueRoutingModule
 	],
 	declarations: [
 		IssueListComponent,

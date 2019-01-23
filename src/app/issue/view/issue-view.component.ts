@@ -4,12 +4,9 @@ import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
-import {
-	SwiperComponent, SwiperDirective, SwiperConfigInterface,
-	SwiperScrollbarInterface, SwiperPaginationInterface
-} from 'ngx-swiper-wrapper';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { MediaService } from '@app/core/http/media/media.service';
@@ -26,46 +23,14 @@ import { Vote } from '@app/core/models/vote.model';
 	styleUrls: ['./issue-view.component.scss']
 })
 export class IssueViewComponent implements OnInit {
-	@ViewChild(SwiperComponent) componentRef?: SwiperComponent;
-	@ViewChild(SwiperDirective) directiveRef?: SwiperDirective;
 
 	issue: IIssue;
 	solutions: Array<Solution>;
 	media: Array<Media>;
 	isLoading: boolean;
-	swiperIndex: number;
-
-	public config: SwiperConfigInterface = {
-		a11y: true,
-		direction: 'horizontal',
-		slidesPerView: 1,
-		spaceBetween: 40,
-		keyboard: true,
-		mousewheel: false,
-		scrollbar: false,
-		navigation: true,
-		pagination: true,
-		observer: true,
-		autoHeight: true,
-		loop: true,
-		loopAdditionalSlides: 2,
-		loopFillGroupWithBlank: true,
-		initialSlide: 0
-	};
-
-	private scrollbar: SwiperScrollbarInterface = {
-		el: '.swiper-scrollbar',
-		hide: false,
-		draggable: true
-	};
-
-	private pagination: SwiperPaginationInterface = {
-		el: '.swiper-pagination',
-		clickable: true,
-		hideOnClick: false
-	};
 
 	constructor(
+		private topicService: TopicService,
 		private issueService: IssueService,
 		private solutionService: SolutionService,
 		private mediaService: MediaService,
@@ -108,22 +73,21 @@ export class IssueViewComponent implements OnInit {
 			.subscribe((mediaList: Array<Media>) => {
 				this.media = mediaList;
 				console.log('got media: ', mediaList);
-				console.log(this.swiperIndex);
-				this.swiperIndex = 0;
 			});
 	}
 
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string) {
 		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Solution', voteValue);
+		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
 
 		if (existingVote) {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(res => {
+		this.voteService.create({ entity: vote }).subscribe(() => {
 			this.getSolutions(this.issue._id, true);
+			this.getMedia(this.issue._id, true);
 		});
 	}
 
@@ -146,23 +110,11 @@ export class IssueViewComponent implements OnInit {
 		});
 	}
 
-	onDeleteSolution() {
-		// const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-		// 	width: '250px',
-		// 	data: {
-		// 		title: `Delete Solution?`,
-		// 		message: `Are you sure you want to delete ${this.issue.name}? This action cannot be undone.`
-		// 	}
-		// });
-		//
-		// dialogRef.afterClosed().subscribe((confirm: boolean) => {
-		// 	if (confirm) {
-		// 		this.issueService.delete({ id: this.issue._id }).subscribe(() => {
-		// 			this.openSnackBar('Succesfully deleted', 'OK');
-		// 			this.router.navigate(['/issues', { forceUpdate: true }]);
-		// 		});
-		// 	}
-		// });
+	onDeleteSolution(solution: any) {
+		this.solutionService.delete({ id: solution._id }).subscribe(() => {
+			this.openSnackBar('Succesfully deleted', 'OK');
+			this.getSolutions(this.issue._id, true);
+		});
 	}
 
 	openSnackBar(message: string, action: string) {

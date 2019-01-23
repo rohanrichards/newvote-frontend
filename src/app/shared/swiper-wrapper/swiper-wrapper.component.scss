@@ -1,0 +1,60 @@
+.button-panel {
+	text-align: right;
+	background-color: rgba(0, 0, 0, 0.6);
+	border-top-right-radius: inherit;
+	border-top-left-radius: inherit;
+}
+
+.item-card {
+
+	.title {
+		text-decoration: underline;
+	}
+
+	.image-container {
+		min-height: 200px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+
+	.item-subtitle {
+		height: 50px;
+		overflow: hidden;
+	}
+}
+
+.box-container {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 425px;
+}
+
+.action-container,
+.content-container {
+	margin: 15px;
+	position: relative;
+	overflow: auto;
+	min-height: 0;
+}
+
+.swiper-container {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.truncate-container {
+	max-width: 100%;
+	overflow: hidden;
+
+	.truncate {
+		display: inline-block;
+		max-width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

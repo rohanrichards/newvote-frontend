@@ -72,44 +72,10 @@
 	</div>
 </mat-toolbar>
 
-<div class="box-container"
-    fxLayout="column">
-
-	<div class="content-container"
-	    fxLayout="column"
-	    fxLayoutAlign="stretch"
-	    fxFlex="auto">
-		<swiper class="swiper-container"
-			[(index)]="swiperIndex"
-		    fxFlex="auto"
-		    [config]="config">
-			<div *ngFor="let m of media"
-			    class="swiper-slide">
-				<div fxLayout="column"
-				    fxLayoutAlign="center center"
-				    fxFlexFill>
-					<mat-card>
-						<img mat-card-image
-						    src="{{m.image}}"
-						    alt="{{m.title}}">
-						<mat-card-content>
-							<p>
-								{{m.title}}
-							</p>
-							<p [innerHtml]="m.description">
-							</p>
-						</mat-card-content>
-						<mat-card-actions>
-							<button mat-button>LIKE</button>
-							<button mat-button>SHARE</button>
-						</mat-card-actions>
-					</mat-card>
-
-				</div>
-			</div>
-		</swiper>
-	</div>
-</div>
+<app-swiper-wrapper path="/media"
+	[items]="media"
+    model="Media"
+	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
 <div class="container"
     fxLayout="row wrap"
@@ -122,8 +88,8 @@
 		    [showChildren]="true"
 		    childPath="proposals"
 		    childName="Proposals"
-		    (delete)="onDeleteSolution()"
-		    (vote)="onVote($event)"
-		    (childVote)="onVote($event)"></app-card-list>
+		    (delete)="onDeleteSolution($event)"
+		    (vote)="onVote($event, 'Solution')"
+		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
 </div>
