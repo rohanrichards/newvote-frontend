@@ -14,6 +14,7 @@ export interface IMedia {
 
 export class Media implements IMedia {
 	public constructor(
+		public _id: string = '',
 		public url: string = '',
 		public title: string = '',
 		public description: string = '',

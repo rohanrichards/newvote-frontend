@@ -75,6 +75,7 @@
 <app-swiper-wrapper path="/media"
 	[items]="media"
     model="Media"
+	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
 <div class="container"

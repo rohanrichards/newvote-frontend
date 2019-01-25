@@ -29,14 +29,12 @@ export class SwiperWrapperComponent implements OnInit {
 		mousewheel: false,
 		scrollbar: false,
 		navigation: true,
-		pagination: true,
+		pagination: false,
 		observer: true,
 		observeParents: true,
-		loop: true,
-		loopAdditionalSlides: 3,
-		loopFillGroupWithBlank: true,
-		initialSlide: 1,
-		watchOverflow: true,
+		loop: false,
+		initialSlide: 0,
+		roundLengths: true,
 		breakpoints: {
 			// when window width is <= 480px
 			480: {

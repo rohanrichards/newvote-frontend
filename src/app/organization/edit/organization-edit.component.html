@@ -1,5 +1,5 @@
 <app-loader [isLoading]="isLoading"
-	size="1.5"></app-loader>
+    size="1.5"></app-loader>
 <div class="container"
     fxLayout="row"
     fxLayoutAlign="center center">
@@ -23,12 +23,38 @@
 			<mat-form-field>
 				<!-- {{organizationForm.status}} -->
 				<input matInput
-					placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
-					formControlName="url"
-					required>
+				    placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
+				    formControlName="url"
+				    required>
 				<mat-error *ngIf="organizationForm.hasError('required', ['url'])">
 					The URL is <strong>required</strong>
 				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="example-chip-list">
+				<mat-chip-list #chipList>
+					<mat-chip *ngIf="owner"
+					    [selectable]="false"
+					    [removable]="true"
+					    (removed)="userRemoved(owner)">
+						{{owner.firstName}} {{owner.lastName}} {{owner.email}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="Select Community Owner"
+					    #userInput
+					    formControlName="owner"
+					    [matAutocomplete]="auto"
+					    [matChipInputFor]="chipList"
+					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					    [matChipInputAddOnBlur]="true">
+				</mat-chip-list>
+				<mat-autocomplete #auto="matAutocomplete"
+				    (optionSelected)="userSelected($event)">
+					<mat-option *ngFor="let user of filteredUsers | async"
+					    [value]="user">
+						{{user.firstName}} {{user.lastName}} {{user.email}}
+					</mat-option>
+				</mat-autocomplete>
 			</mat-form-field>
 
 			<input type="file"

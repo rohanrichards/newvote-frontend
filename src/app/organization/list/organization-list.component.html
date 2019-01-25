@@ -16,5 +16,6 @@
 		<app-grid-list *ngIf="organizations"
 		    path="/organizations"
 		    model="Organization"
+			(delete)="onDelete($event)"
 		    [items]=organizations></app-grid-list>
 </div>

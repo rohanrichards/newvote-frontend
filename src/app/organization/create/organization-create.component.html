@@ -32,6 +32,32 @@
 				</mat-error>
 			</mat-form-field>
 
+			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
+				<mat-chip-list #chipList>
+					<mat-chip *ngIf="owner"
+						[selectable]="false"
+						[removable]="true"
+						(removed)="userRemoved(owner)">
+						{{owner.firstName}} {{owner.lastName}} {{owner.email}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="Select Community Owner"
+						#userInput
+						formControlName="owner"
+						[matAutocomplete]="auto"
+						[matChipInputFor]="chipList"
+						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						[matChipInputAddOnBlur]="true">
+				</mat-chip-list>
+				<mat-autocomplete #auto="matAutocomplete"
+					(optionSelected)="userSelected($event)">
+					<mat-option *ngFor="let user of filteredUsers | async"
+						[value]="user">
+						{{user.firstName}} {{user.lastName}} {{user.email}}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+
 			<input type="file"
 			    id="fileupload"
 			    #fileInput

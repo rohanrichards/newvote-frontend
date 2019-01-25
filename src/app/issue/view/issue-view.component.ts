@@ -110,6 +110,13 @@ export class IssueViewComponent implements OnInit {
 		});
 	}
 
+	onMediaDelete(media: Media) {
+		this.mediaService.delete({ id: media._id }).subscribe(() => {
+			this.openSnackBar('Succesfully deleted', 'OK');
+			this.getMedia(this.issue._id, true);
+		});
+	}
+
 	onDeleteSolution(solution: any) {
 		this.solutionService.delete({ id: solution._id }).subscribe(() => {
 			this.openSnackBar('Succesfully deleted', 'OK');
