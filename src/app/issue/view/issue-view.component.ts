@@ -4,6 +4,8 @@ import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
+import { differenceWith as _differenceWith } from 'lodash';
+import { isEqual as _isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
@@ -28,6 +30,7 @@ export class IssueViewComponent implements OnInit {
 	solutions: Array<Solution>;
 	media: Array<Media>;
 	isLoading: boolean;
+	voteSnack: any;
 
 	constructor(
 		private topicService: TopicService,
@@ -76,6 +79,19 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
+	refreshData(issueId: string) {
+		this.isLoading = true;
+		this.solutionService.list({ params: { issueId }, forceUpdate: true })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(solutions => {
+				const diff = _differenceWith(solutions, this.solutions, _isEqual);
+				if (diff.length > 0) {
+					const index = this.solutions.findIndex(s => s._id === diff[0]._id);
+					this.solutions[index] = diff[0];
+				}
+			});
+	}
+
 	onVote(voteData: any, model: string) {
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
@@ -85,9 +101,14 @@ export class IssueViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.getSolutions(this.issue._id, true);
-			this.getMedia(this.issue._id, true);
+		this.voteService.create({ entity: vote }).subscribe((res) => {
+			if (res.error) {
+				this.openSnackBar('There was an error recording your vote', 'OK');
+			} else {
+				this.refreshData(this.issue._id);
+				this.getMedia(this.issue._id, true);
+				this.openSnackBar('Your vote was recorded', 'OK');
+			}
 		});
 	}
 
@@ -104,7 +125,7 @@ export class IssueViewComponent implements OnInit {
 			if (confirm) {
 				this.issueService.delete({ id: this.issue._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/issues', { forceUpdate: true }]);
+					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

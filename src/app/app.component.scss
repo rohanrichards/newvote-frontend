@@ -2,3 +2,9 @@
   display: flex;
   flex: 1;
 }
+
+::ng-deep {
+	.mat-display-1 {
+		margin-bottom: 16px !important;
+	}
+}

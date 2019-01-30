@@ -126,7 +126,7 @@ export class IssueCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/issues', { forceUpdate: true }]);
+							this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
 						}
 					});
 			}

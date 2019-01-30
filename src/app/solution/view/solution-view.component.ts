@@ -49,18 +49,23 @@ export class SolutionViewComponent implements OnInit {
 			});
 	}
 
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Solution', voteValue);
+		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
 
 		if (existingVote) {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.getSolution(this.solution._id, true);
+		this.voteService.create({ entity: vote }).subscribe((res) => {
+			if (res.error) {
+				this.openSnackBar('There was an error recording your vote', 'OK');
+			} else {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getSolution(this.solution._id, true);
+			}
 		});
 	}
 
@@ -77,7 +82,7 @@ export class SolutionViewComponent implements OnInit {
 			if (confirm) {
 				this.solutionService.delete({ id: this.solution._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/solutions', { forceUpdate: true }]);
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

@@ -55,19 +55,4 @@ export class OrganizationListComponent implements OnInit {
 		});
 	}
 
-	onVote(voteData: any) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Organization', voteValue);
-		const existingVote = item.votes.currentUser;
-
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
-
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.fetchData(true);
-		});
-	}
-
 }

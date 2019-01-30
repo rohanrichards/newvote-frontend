@@ -66,7 +66,7 @@ export class TopicViewComponent implements OnInit {
 			if (confirm) {
 				this.topicService.delete({ id: this.topic._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/topics', { forceUpdate: true }]);
+					this.router.navigate(['/topics'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

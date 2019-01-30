@@ -13,10 +13,12 @@ export interface ISolution {
 
 export class Solution implements ISolution {
 	public constructor(
+		public _id: string = '',
 		public title: string = '',
 		public imageUrl: string = '',
 		public description: string = '',
 		public likert: boolean = false,
-		public organizations: Array<any> = []
+		public organizations: Array<any> = [],
+		public votes: any = {}
 	) { }
 }

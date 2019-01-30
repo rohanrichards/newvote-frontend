@@ -49,21 +49,6 @@ export class OrganizationViewComponent implements OnInit {
 			});
 	}
 
-	onVote(voteData: any) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Organization', voteValue);
-		const existingVote = item.votes.currentUser;
-
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
-
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.getOrganization(this.organization._id, true);
-		});
-	}
-
 	onDelete() {
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -77,7 +62,7 @@ export class OrganizationViewComponent implements OnInit {
 			if (confirm) {
 				this.organizationService.delete({ id: this.organization._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/organizations', { forceUpdate: true }]);
+					this.router.navigate(['/organizations'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

@@ -59,8 +59,13 @@ export class ProposalViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.getProposal(this.proposal._id, true);
+		this.voteService.create({ entity: vote }).subscribe((res) => {
+			if (res.error) {
+				this.openSnackBar('There was an error recording your vote', 'OK');
+			} else {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getProposal(this.proposal._id, true);
+			}
 		});
 	}
 
@@ -77,7 +82,7 @@ export class ProposalViewComponent implements OnInit {
 			if (confirm) {
 				this.proposalService.delete({ id: this.proposal._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/proposals', { forceUpdate: true }]);
+					this.router.navigate(['/proposals'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { differenceWith as _differenceWith } from 'lodash';
+import { isEqual as _isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
@@ -31,7 +34,8 @@ export class SolutionListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		public snackBar: MatSnackBar
 	) { }
 
 	ngOnInit() {
@@ -48,6 +52,21 @@ export class SolutionListComponent implements OnInit {
 			.subscribe(solutions => { this.solutions = solutions; });
 	}
 
+	// find the different solution and only update it, not entire list
+	// this stops content flashing and unwanted scrolling
+	refreshData() {
+		this.isLoading = true;
+		this.solutionService.list({ orgs: [], forceUpdate: true })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(solutions => {
+				const diff = _differenceWith(solutions, this.solutions, _isEqual);
+				if (diff.length > 0) {
+					const index = this.solutions.findIndex(s => s._id === diff[0]._id);
+					this.solutions[index] = diff[0];
+				}
+			});
+	}
+
 	onDelete(event: any) {
 		this.solutionService.delete({ id: event._id }).subscribe(() => {
 			console.log('done');
@@ -55,18 +74,29 @@ export class SolutionListComponent implements OnInit {
 		});
 	}
 
-	onVote(voteData: any) {
-		this.isLoading = true;
+	onVote(voteData: any, model: string) {
 		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Solution', voteValue);
+		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
 
 		if (existingVote) {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.fetchData(true);
+		this.voteService.create({ entity: vote }).subscribe((res) => {
+			if (res.error) {
+				this.openSnackBar('There was an error recording your vote', 'OK');
+			} else {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.refreshData();
+			}
+		});
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 2000,
+			horizontalPosition: 'center'
 		});
 	}
 

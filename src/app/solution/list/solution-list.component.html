@@ -20,7 +20,7 @@
 		    childPath="proposals"
 		    childName="Proposals"
 		    (delete)="onDelete($event)"
-		    (vote)="onVote($event)"
-		    (childVote)="onVote($event)"></app-card-list>
+		    (vote)="onVote($event, 'Solution')"
+		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
 </div>

@@ -63,8 +63,7 @@
 			    maxHeight="200">
 			</app-more-less>
 			<div class="buttons">
-			    <app-vote-buttons [item]="solution"
-				    (vote)=onVote($event)>
+			    <app-vote-buttons (vote)="onVote($event, 'Solution')" [item]="solution">
 				</app-vote-buttons>
 			</div>
 		</div>
@@ -84,6 +83,6 @@
 		    model="Proposal"
 		    [showChildren]="false"
 		    (delete)="onDeleteProposal()"
-		    (vote)="onVote($event)"></app-card-list>
+		    (vote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
 </div>

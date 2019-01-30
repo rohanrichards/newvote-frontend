@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
@@ -32,7 +33,8 @@ export class ProposalListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		public snackBar: MatSnackBar
 	) { }
 
 	ngOnInit() {
@@ -66,8 +68,20 @@ export class ProposalListComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe(() => {
-			this.fetchData(true);
+		this.voteService.create({ entity: vote }).subscribe((res) => {
+			if (res.error) {
+				this.openSnackBar('There was an error recording your vote', 'OK');
+			} else {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.fetchData(true);
+			}
+		});
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 2000,
+			horizontalPosition: 'center'
 		});
 	}
 

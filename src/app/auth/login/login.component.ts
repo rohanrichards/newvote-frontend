@@ -29,11 +29,17 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		// this.authenticationService.randomGet().subscribe(res => console.log(res));
+		this.route.queryParams.subscribe(
+			params => {
+				console.log(params);
+			}
+		);
 	}
 
 	login() {
 		this.isLoading = true;
+
+
 		this.authenticationService.login(this.loginForm.value)
 			.pipe(finalize(() => {
 				this.loginForm.markAsPristine();
@@ -42,7 +48,10 @@ export class LoginComponent implements OnInit {
 			.subscribe(credentials => {
 				log.debug(`${credentials.user.username} successfully logged in`);
 				this.route.queryParams.subscribe(
-					params => this.router.navigate([params.redirect || '/'], { replaceUrl: true })
+					params => {
+						console.log(params);
+						this.router.navigate([params.redirect || '/'], { replaceUrl: true });
+					}
 				);
 			}, error => {
 				log.debug(`Login error: ${error}`);

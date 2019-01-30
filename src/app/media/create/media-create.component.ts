@@ -1,5 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -48,7 +49,8 @@ export class MediaCreateComponent implements OnInit {
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private location: Location
 	) {
 		this.filteredIssues = this.mediaForm.get('issues').valueChanges.pipe(
 			startWith(''),
@@ -159,7 +161,7 @@ export class MediaCreateComponent implements OnInit {
 						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 					} else {
 						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate(['/medias', { forceUpdate: true }]);
+						this.location.back();
 					}
 				});
 		}
@@ -183,7 +185,7 @@ export class MediaCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/medias', { forceUpdate: true }]);
+							this.location.back();
 						}
 					});
 			}

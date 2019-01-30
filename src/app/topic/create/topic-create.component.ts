@@ -104,7 +104,7 @@ export class TopicCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/topics', { forceUpdate: true }]);
+							this.router.navigate(['/topics'], {queryParams: {forceUpdate: true} });
 						}
 					});
 			}
