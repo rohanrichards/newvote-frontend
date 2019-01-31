@@ -1,3 +1,4 @@
+<app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
 <div fxFill
     fxLayout="column"
     fxLayoutAlign="center center"
@@ -15,9 +16,10 @@
 			    [formGroup]="signupForm"
 			    novalidate>
 				<div class="signup-error"
+					*ngIf="error && error.message"
 				    [hidden]="!error || isLoading"
 				    translate>
-					Username or password incorrect.
+					{{error.message}}
 				</div>
 				<br/>
 				<div fxLayout="column">
@@ -26,11 +28,17 @@
 						    matInput
 						    formControlName="email"
 						    autocomplete="email"
-						    [placeholder]="'Username' | translate" />
-						<mat-error *ngIf="signupForm.controls.email.valid || signupForm.controls.email.untouched">
-							<span translate>Username is required</span>
+						    [placeholder]="'Email' | translate"
+							required />
+						<mat-error *ngIf="signupForm.controls.email.errors && signupForm.controls.email.errors.required">
+							<span translate>Email is required</span>
 						</mat-error>
+						<mat-error *ngIf="signupForm.controls.email.errors && signupForm.controls.email.errors.email && !signupForm.controls.email.errors.required">
+							<span translate>Email is not valid</span>
+						</mat-error>
+
 					</mat-form-field>
+					{{signupForm.controls.valid}}
 					<mat-form-field>
 						<input type="password"
 						    matInput
@@ -38,15 +46,17 @@
 						    autocomplete="current-password"
 						    [placeholder]="'Password' | translate"
 						    required/>
-						<mat-error *ngIf="signupForm.controls.password.valid || signupForm.controls.password.untouched">
+						<mat-hint align="start"><strong>Must be 6 characters long.</strong> </mat-hint>
+						<mat-error *ngIf="!signupForm.controls.password.valid || signupForm.controls.password.untouched">
 							<span translate>Password is required</span>
 						</mat-error>
 					</mat-form-field>
 
-					<re-captcha class="recaptcha" formControlName="recaptchaResponse"></re-captcha>
+					<re-captcha class="recaptcha"
+					    formControlName="recaptchaResponse"></re-captcha>
 
 					<mat-slide-toggle color="accent"
-						class="remember-toggle"
+					    class="remember-toggle"
 					    formControlName="remember"
 					    translate>Remember me</mat-slide-toggle>
 					<br/>
@@ -54,7 +64,6 @@
 					    color="primary"
 					    type="submit"
 					    [disabled]="signupForm.invalid || isLoading">
-            <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
             <span translate>Signup</span>
           </button>
 				</div>

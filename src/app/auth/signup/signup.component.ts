@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
@@ -16,7 +16,7 @@ const log = new Logger('Signup');
 export class SignupComponent implements OnInit {
 
 	version: string = environment.version;
-	error: string;
+	error: any;
 	signupForm: FormGroup;
 	isLoading = false;
 
@@ -31,6 +31,10 @@ export class SignupComponent implements OnInit {
 
 	ngOnInit() {
 		this.authenticationService.randomGet().subscribe(res => console.log(res));
+		// this.signupForm.statusChanges.subscribe(changes => {
+		// 	console.log(changes);
+		// 	console.log(this.signupForm);
+		// });
 	}
 
 	signup() {
@@ -45,9 +49,9 @@ export class SignupComponent implements OnInit {
 				this.route.queryParams.subscribe(
 					params => this.router.navigate([params.redirect || '/'], { replaceUrl: true })
 				);
-			}, error => {
-				log.debug(`Signup error: ${error}`);
-				this.error = error;
+			}, (res: any) => {
+				log.debug(`Signup error: ${res}`);
+				this.error = res.error ? res.error : res;
 			});
 	}
 
@@ -65,10 +69,10 @@ export class SignupComponent implements OnInit {
 
 	private createForm() {
 		this.signupForm = this.formBuilder.group({
-			email: ['', Validators.required],
-			password: ['', Validators.required],
+			email: new FormControl('', [Validators.required, Validators.email]),
+			password: new FormControl('', [Validators.required, Validators.minLength(6)]),
 			remember: true,
-			recaptchaResponse: ['', Validators.required]
+			recaptchaResponse: new FormControl('', [Validators.required])
 		});
 	}
 

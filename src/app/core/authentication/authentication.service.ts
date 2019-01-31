@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { includes as _includes } from 'lodash';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 export interface Credentials {
 	// Customize received credentials here
@@ -33,11 +34,15 @@ export class AuthenticationService {
 
 	private _credentials: Credentials | null;
 
-	constructor(private httpClient: HttpClient) {
+	constructor(private httpClient: HttpClient, private jwt: JwtHelperService) {
 		const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
 		if (savedCredentials) {
 			this._credentials = JSON.parse(savedCredentials);
+			if (this.isTokenExpired()) {
+				this.logout();
+			}
 		}
+
 	}
 
 	randomGet() {
@@ -98,7 +103,19 @@ export class AuthenticationService {
 	 * @return True if the user is authenticated.
 	 */
 	isAuthenticated(): boolean {
-		return !!this.credentials;
+		return !!this.credentials && !this.isTokenExpired();
+	}
+
+	isTokenExpired(): boolean {
+		const token = this._credentials.token;
+		if (!token) {
+			return true;
+		}
+		if (this.jwt.isTokenExpired(token)) {
+			this.logout();
+			return true;
+		}
+		return false;
 	}
 
 	/**
