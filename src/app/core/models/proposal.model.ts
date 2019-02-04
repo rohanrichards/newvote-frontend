@@ -8,7 +8,7 @@ export interface IProposal {
 	votes?: any;
 	user?: any;
 	created?: Date;
-	organizations: Array<any>;
+	organizations: any;
 }
 
 export class Proposal implements IProposal {
@@ -17,6 +17,6 @@ export class Proposal implements IProposal {
 		public imageUrl: string = '',
 		public description: string = '',
 		public likert: boolean = false,
-		public organizations: Array<any> = []
+		public organizations: any = {}
 	) { }
 }

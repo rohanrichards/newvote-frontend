@@ -109,7 +109,7 @@ export class TopicEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.topic.organizations = [this.organization];
+		this.topic.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

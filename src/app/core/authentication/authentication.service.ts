@@ -5,6 +5,9 @@ import { map } from 'rxjs/operators';
 import { includes as _includes } from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
+import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { Organization } from '@app/core/models/organization.model';
+
 export interface Credentials {
 	// Customize received credentials here
 	user?: any;
@@ -33,8 +36,13 @@ const credentialsKey = 'credentials';
 export class AuthenticationService {
 
 	private _credentials: Credentials | null;
+	private _org: Organization;
 
-	constructor(private httpClient: HttpClient, private jwt: JwtHelperService) {
+	constructor(
+		private httpClient: HttpClient,
+		private jwt: JwtHelperService,
+		private organizationService: OrganizationService
+	) {
 		const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
 		if (savedCredentials) {
 			this._credentials = JSON.parse(savedCredentials);
@@ -43,6 +51,7 @@ export class AuthenticationService {
 			}
 		}
 
+		this.organizationService.get().subscribe(org => this._org = org);
 	}
 
 	randomGet() {
@@ -125,6 +134,32 @@ export class AuthenticationService {
 	isAdmin(): boolean {
 		if (this._credentials) {
 			return _includes(this._credentials.user.roles, 'admin');
+		}
+	}
+
+	/**
+	 * Checks is the user is an owner of the content.
+	 * owner implies admin, organization owner or content owner
+	 * checking content owner is optional
+	 * @return True if the user is an admin.
+	 */
+	isOwner(object?: any): boolean {
+		if (this._credentials) {
+			// admin owns everything
+			if (_includes(this._credentials.user.roles, 'admin')) {
+				return true;
+			}
+
+			// org leaders own any content within their org
+			if (this._org.owner === this._credentials.user._id) {
+				return true;
+			}
+
+			if (object && object.owner._id === this._credentials.user._id) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 

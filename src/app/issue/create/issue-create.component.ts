@@ -106,7 +106,7 @@ export class IssueCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.issue = <IIssue>this.issueForm.value;
 		this.issue.topics = this.topics;
-		this.issue.organizations = [this.organization];
+		this.issue.organizations = this.organization;
 		console.log(this.issue);
 
 		this.uploader.onCompleteAll = () => {

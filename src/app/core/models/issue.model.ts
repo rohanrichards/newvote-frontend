@@ -7,7 +7,7 @@ export interface IIssue {
 	solutionMetaData?: any;
 	topics?: Array<any>;
 	created?: Date;
-	organizations: Array<any>;
+	organizations: any;
 }
 
 export class Issue implements IIssue {
@@ -15,7 +15,7 @@ export class Issue implements IIssue {
 		public name: string = '',
 		public imageUrl: string = '',
 		public description: string = '',
-		public organizations: Array<any> = [],
+		public organizations: any = {},
 		public topics: Array<any> = []
 	) { }
 }

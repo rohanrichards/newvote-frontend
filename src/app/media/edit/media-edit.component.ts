@@ -157,7 +157,7 @@ export class MediaEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.media.organizations = [this.organization];
+		this.media.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

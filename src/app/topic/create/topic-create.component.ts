@@ -85,7 +85,7 @@ export class TopicCreateComponent implements OnInit {
 	onSave() {
 		this.isLoading = true;
 		this.topic = <ITopic>this.topicForm.value;
-		this.topic.organizations = [this.organization._id];
+		this.topic.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

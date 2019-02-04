@@ -138,7 +138,7 @@ export class SolutionEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.solution.organizations = [this.organization];
+		this.solution.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

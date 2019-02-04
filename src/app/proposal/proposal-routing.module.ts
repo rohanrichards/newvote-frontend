@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminGuard } from '@app/core/authentication/admin.guard';
+import { OwnerGuard } from '@app/core/authentication/owner.guard';
 
 import { extract } from '@app/core';
 // import { ProposalListComponent } from './list/proposal-list.component';
@@ -14,19 +15,19 @@ const routes: Routes = [
 		path: 'create',
 		component: ProposalCreateComponent,
 		data: { title: extract('New Proposal') },
-		canActivate: [AdminGuard]
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: 'create/:id',
 		component: ProposalCreateComponent,
 		data: { title: extract('New Proposal') },
-		canActivate: [AdminGuard]
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: 'edit/:id',
 		component: ProposalEditComponent,
 		data: { title: extract('Edit Proposal') },
-		canActivate: [AdminGuard]
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: ':id',

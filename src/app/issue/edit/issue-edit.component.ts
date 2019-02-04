@@ -139,7 +139,7 @@ export class IssueEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.issue.organizations = [this.organization];
+		this.issue.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
@@ -172,7 +172,7 @@ export class IssueEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues']);
+					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
 				}
 			});
 	}

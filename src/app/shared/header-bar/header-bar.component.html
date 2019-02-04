@@ -10,12 +10,11 @@
 			<div class="mat-subheading-2"
 			    translate
 			    [innerHtml]="text"></div>
-			<div>
+			<div *ngIf="auth.isOwner(object)">
 				<span *ngFor="let button of buttons">
 					<button mat-raised-button
 					    [color]="button.color"
-					    [routerLink]="button.routerLink"
-					    *ngIf="auth.hasRole((button.role || 'user'))">{{button.text}}</button>
+					    [routerLink]="button.routerLink">{{button.text}}</button>
 				</span>
 			</div>
 		</div>

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminGuard } from '@app/core/authentication/admin.guard';
+import { OwnerGuard } from '@app/core/authentication/owner.guard';
 
 import { extract } from '@app/core';
 import { IssueListComponent } from './list/issue-list.component';
@@ -14,13 +15,13 @@ const routes: Routes = [
 		path: 'create',
 		component: IssueCreateComponent,
 		data: { title: extract('New Issue') },
-		canActivate: [AdminGuard]
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: 'edit/:id',
 		component: IssueEditComponent,
 		data: { title: extract('Edit Issue') },
-		canActivate: [AdminGuard]
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: ':id',

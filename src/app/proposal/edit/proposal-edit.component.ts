@@ -138,7 +138,7 @@ export class ProposalEditComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
-		this.proposal.organizations = [this.organization];
+		this.proposal.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

@@ -146,7 +146,7 @@ export class MediaCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.media = <IMedia>this.mediaForm.value;
 		this.media.issues = this.issues;
-		this.media.organizations = [this.organization];
+		this.media.organizations = this.organization;
 		console.log(this.media);
 
 		if (!this.usingMetaImage) {

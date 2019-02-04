@@ -123,7 +123,7 @@ export class ProposalCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.proposal = <IProposal>this.proposalForm.value;
 		this.proposal.solutions = this.solutions;
-		this.proposal.organizations = [this.organization];
+		this.proposal.organizations = this.organization;
 		console.log(this.proposal);
 
 		this.uploader.onCompleteAll = () => {

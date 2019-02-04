@@ -123,7 +123,7 @@ export class SolutionCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.solution = <ISolution>this.solutionForm.value;
 		this.solution.issues = this.issues;
-		this.solution.organizations = [this.organization];
+		this.solution.organizations = this.organization;
 		console.log(this.solution);
 
 		this.uploader.onCompleteAll = () => {

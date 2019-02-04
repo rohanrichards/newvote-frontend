@@ -18,6 +18,7 @@ export class HeaderBarComponent implements OnInit {
 	@Input() title: string;
 	@Input() text: string;
 	@Input() buttons: Array<IButtonTemplate>;
+	@Input() object: any;
 
 	constructor(public auth: AuthenticationService) { }
 

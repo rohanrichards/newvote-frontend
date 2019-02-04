@@ -9,7 +9,7 @@ export interface IMedia {
 	image: string;
 	issues?: Array<any>;
 	votes?: any;
-	organizations: Array<any>;
+	organizations: any;
 }
 
 export class Media implements IMedia {
@@ -20,6 +20,6 @@ export class Media implements IMedia {
 		public description: string = '',
 		public imageOnly: boolean = false,
 		public image: string = '',
-		public organizations: Array<any> = []
+		public organizations: any = {}
 	) { }
 }

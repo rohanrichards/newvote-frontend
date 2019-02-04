@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminGuard } from '@app/core/authentication/admin.guard';
+import { OwnerGuard } from '@app/core/authentication/owner.guard';
 
 import { extract } from '@app/core';
 import { OrganizationListComponent } from './list/organization-list.component';
@@ -9,7 +10,12 @@ import { OrganizationCreateComponent } from './create/organization-create.compon
 import { OrganizationEditComponent } from './edit/organization-edit.component';
 
 const routes: Routes = [
-	{ path: '', component: OrganizationListComponent, data: { title: extract('All Organizations') } },
+	{
+		path: '',
+		component: OrganizationListComponent,
+		data: { title: extract('All Organizations') },
+		canActivate: [AdminGuard]
+	},
 	{
 		path: 'create',
 		component: OrganizationCreateComponent,
@@ -25,7 +31,8 @@ const routes: Routes = [
 	{
 		path: ':id',
 		component: OrganizationViewComponent,
-		data: { title: extract('Organization') }
+		data: { title: extract('Organization') },
+		canActivate: [AdminGuard]
 	},
 ];
 

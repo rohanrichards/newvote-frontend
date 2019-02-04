@@ -66,8 +66,11 @@ export class IssueListComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.paramMap.subscribe(params => {
-			const force: boolean = !!params.get('forceUpdate');
 			this.topicParam = params.get('topic');
+		});
+		this.route.queryParamMap.subscribe(queryParams => {
+			const force: boolean = !!queryParams.get('forceUpdate');
+			console.log('issue list forceUpdate: ', queryParams.get('forceUpdate'));
 			this.fetchData(force);
 		});
 	}

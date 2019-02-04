@@ -8,7 +8,7 @@ export interface ISolution {
 	votes?: any;
 	user?: any;
 	created?: Date;
-	organizations: Array<any>;
+	organizations: any;
 }
 
 export class Solution implements ISolution {
@@ -18,7 +18,7 @@ export class Solution implements ISolution {
 		public imageUrl: string = '',
 		public description: string = '',
 		public likert: boolean = false,
-		public organizations: Array<any> = [],
+		public organizations: any = {},
 		public votes: any = {}
 	) { }
 }

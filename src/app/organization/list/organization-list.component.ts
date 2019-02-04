@@ -35,7 +35,7 @@ export class OrganizationListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.route.paramMap.subscribe(params => {
+		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
 		});
