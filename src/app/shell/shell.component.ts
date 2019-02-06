@@ -7,6 +7,7 @@ import { Subject, Observable } from 'rxjs';
 import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AuthenticationService, I18nService } from '@app/core';
+import { OrganizationService } from '@app/core/http/organization/organization.service';
 
 import { SearchService } from '@app/core/http/search/search.service';
 
@@ -18,15 +19,17 @@ import { SearchService } from '@app/core/http/search/search.service';
 export class ShellComponent implements OnInit {
 	searchInput = new FormControl('', [Validators.required]);
 	public searchResults$: Observable<any>;
+	organization: any;
 	private searchTerms = new Subject<string>();
 
 
 	constructor(private router: Router,
 		private titleService: Title,
 		private media: ObservableMedia,
-		private authenticationService: AuthenticationService,
+		private auth: AuthenticationService,
 		private i18nService: I18nService,
-		private searchService: SearchService
+		private searchService: SearchService,
+		private organizationService: OrganizationService
 	) { }
 
 	ngOnInit() {
@@ -42,6 +45,7 @@ export class ShellComponent implements OnInit {
 				)
 			);
 
+		this.organizationService.get().subscribe(org => this.organization = org);
 		this.searchResults$.subscribe(results => console.log(results));
 	}
 
@@ -55,17 +59,17 @@ export class ShellComponent implements OnInit {
 	}
 
 	logout() {
-		this.authenticationService.logout()
+		this.auth.logout()
 			.subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
 	}
 
 	get username(): string | null {
-		const credentials = this.authenticationService.credentials;
+		const credentials = this.auth.credentials;
 		return credentials ? credentials.user.username : null;
 	}
 
 	get isAuthenticated(): boolean {
-		return this.authenticationService.isAuthenticated();
+		return this.auth.isAuthenticated();
 	}
 
 	get languages(): string[] {

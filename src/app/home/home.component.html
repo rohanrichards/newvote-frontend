@@ -92,8 +92,16 @@
 			    class="mat-display-1">
 			JOIN US</button>
 		</div>
-		<span class="mat-caption">NewVote is not currently affiliated with the University of Queensland.</span>
-		<span class="mat-caption">To claim leadership of the University of Queensland and UQ Student Union communities, contact us today</span>
+		<div *ngIf="org">
+			<span class="mat-caption">NewVote is not currently affiliated with the {{org.name}}.</span>
+			<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
+		<button mat-button
+			[routerLink]="['/communities/claim/', org._id]"
+			color="primary"
+			class="mat-display-1">
+			CLAIM HERE</button>
+		</span>
+		</div>
 	</div>
 </div>
 

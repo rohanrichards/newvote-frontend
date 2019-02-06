@@ -5,6 +5,7 @@ import { OrganizationService } from '@app/core';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
 
 import { Issue } from '@app/core/models/issue.model';
 
@@ -22,6 +23,7 @@ export class HomeComponent implements OnInit {
 	userCount: number;
 
 	constructor(
+		private auth: AuthenticationService,
 		private organizationService: OrganizationService,
 		private issueService: IssueService,
 		private proposalService: ProposalService,

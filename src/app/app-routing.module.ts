@@ -11,7 +11,7 @@ const routes: Routes = [
 		{ path: 'solutions', loadChildren: 'app/solution/solution.module#SolutionModule' },
 		{ path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
 		{ path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
-		{ path: 'organizations', loadChildren: 'app/organization/organization.module#OrganizationModule' }
+		{ path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' }
 	]),
 	// Fallback when no prior route is matched
 	{ path: '**', redirectTo: '', pathMatch: 'full' }

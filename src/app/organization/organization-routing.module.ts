@@ -8,30 +8,36 @@ import { OrganizationListComponent } from './list/organization-list.component';
 import { OrganizationViewComponent } from './view/organization-view.component';
 import { OrganizationCreateComponent } from './create/organization-create.component';
 import { OrganizationEditComponent } from './edit/organization-edit.component';
+import { OrganizationClaimComponent } from './claim/organization-claim.component';
 
 const routes: Routes = [
 	{
+		path: 'claim/:id',
+		component: OrganizationClaimComponent,
+		data: { title: extract('Community') }
+	},
+	{
 		path: '',
 		component: OrganizationListComponent,
-		data: { title: extract('All Organizations') },
+		data: { title: extract('All Communities') },
 		canActivate: [AdminGuard]
 	},
 	{
 		path: 'create',
 		component: OrganizationCreateComponent,
-		data: { title: extract('New Organization') },
+		data: { title: extract('New Community') },
 		canActivate: [AdminGuard]
 	},
 	{
 		path: 'edit/:id',
 		component: OrganizationEditComponent,
-		data: { title: extract('Edit Organization') },
-		canActivate: [AdminGuard]
+		data: { title: extract('Edit Community') },
+		canActivate: [OwnerGuard]
 	},
 	{
 		path: ':id',
 		component: OrganizationViewComponent,
-		data: { title: extract('Organization') },
+		data: { title: extract('Community') },
 		canActivate: [AdminGuard]
 	},
 ];

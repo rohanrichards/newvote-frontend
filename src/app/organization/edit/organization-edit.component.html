@@ -30,7 +30,7 @@
 				</mat-error>
 			</mat-form-field>
 
-			<mat-form-field class="example-chip-list">
+			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
 				<mat-chip-list #chipList>
 					<mat-chip *ngIf="owner"
 					    [selectable]="false"

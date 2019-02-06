@@ -151,7 +151,7 @@ export class AuthenticationService {
 			}
 
 			// org leaders own any content within their org
-			if (this._org.owner === this._credentials.user._id) {
+			if (this._org && this._org.owner === this._credentials.user._id) {
 				return true;
 			}
 

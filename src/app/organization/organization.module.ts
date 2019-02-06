@@ -13,6 +13,7 @@ import { OrganizationListComponent } from './list/organization-list.component';
 import { OrganizationViewComponent } from './view/organization-view.component';
 import { OrganizationCreateComponent } from './create/organization-create.component';
 import { OrganizationEditComponent } from './edit/organization-edit.component';
+import { OrganizationClaimComponent } from './claim/organization-claim.component';
 
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
@@ -37,7 +38,8 @@ import { SharedModule } from '@app/shared';
 		OrganizationCreateComponent,
 		OrganizationEditComponent,
 		OrganizationListComponent,
-		OrganizationViewComponent
+		OrganizationViewComponent,
+		OrganizationClaimComponent
 	],
 	providers: [
 		OrganizationService,

@@ -52,7 +52,7 @@ export class OrganizationEditComponent implements OnInit {
 		this.filteredUsers = this.organizationForm.get('owner').valueChanges.pipe(
 			startWith(''),
 			map((issue: string) => issue ? this._filter(issue) : this.allUsers.slice()));
-		}
+	}
 
 	ngOnInit() {
 		this.isLoading = true;
@@ -99,7 +99,9 @@ export class OrganizationEditComponent implements OnInit {
 			return { fileItem, form };
 		};
 
-		this.userService.list({}).subscribe(users => this.allUsers = users);
+		if (this.auth.isAdmin()) {
+			this.userService.list({}).subscribe(users => this.allUsers = users);
+		}
 	}
 
 	onFileChange(event: any) {
