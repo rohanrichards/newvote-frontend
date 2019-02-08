@@ -14,7 +14,8 @@
 		<div class="mat-display-3 no-margin">
 			<span *ngIf="org">{{org.name}}</span>
 		</div>
-		<div class="mat-h2" *ngIf="org">{{org.description}}</div>
+		<div class="mat-h2"
+		    *ngIf="org">{{org.description}}</div>
 		<div>
 			<button mat-button
 			    mat-raised-button
@@ -89,14 +90,19 @@
 			JOIN US</button>
 		</div>
 		<div *ngIf="org">
-			<span class="mat-caption">NewVote is not currently affiliated with the {{org.name}}.</span>
-			<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
-		<button mat-button
-			[routerLink]="['/communities/claim/', org._id]"
-			color="primary"
-			class="mat-display-1">
-			CLAIM HERE</button>
-		</span>
+			<div *ngIf="!org.owner">
+				<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
+				<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
+					<button mat-button
+						[routerLink]="['/communities/claim/', org._id]"
+						color="primary"
+						class="mat-display-1">
+						CLAIM HERE</button>
+				</span>
+			</div>
+			<div *ngIf="org.owner">
+				<span class="mat-caption">{{org.name}} has claimed leadership of this community.</span>
+			</div>
 		</div>
 	</div>
 </div>

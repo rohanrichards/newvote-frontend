@@ -10,6 +10,12 @@
 	margin-right: 8px !important;
 }
 
+::ng-deep {
+	.vote-button-dark.mat-primary {
+		background-color: #142C45 !important;
+	}
+}
+
 .chart-container {
 	position: relative;
 	height: 40px !important;
@@ -35,7 +41,7 @@
 	text-align: center;
 	font-size: 14px;
 
-	color: black;
+	color: white;
 }
 
 .vote-total {

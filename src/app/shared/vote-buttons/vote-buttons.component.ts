@@ -24,7 +24,7 @@ export class VoteButtonsComponent implements OnInit {
 			hoverBorderColor: '#212121'
 		},
 		{
-			backgroundColor: '#ECEFF1',
+			backgroundColor: '#142C45',
 			pointBorderColor: '#212121',
 			borderColor: '#212121'
 		}

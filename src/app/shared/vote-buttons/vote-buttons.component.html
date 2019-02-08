@@ -14,7 +14,7 @@
 
 			<button mat-raised-button
 			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
-			    class="vote-button"
+			    class="vote-button vote-button-dark"
 				color="primary"
 			    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span></button>
 		</div>
