@@ -6,19 +6,15 @@
 	    [style.background-image]="'url(' + org.imageUrl + ')'">
 	</div>
 	<div class="hero-text-container">
-		<div>
+		<div *ngIf="org">
 			<img class="logo"
-			    src="assets/logo-no-text.png"
-			    alt="angular logo" />
+			    src="{{org.iconUrl}}"
+			    alt="{{org.name}}" />
 		</div>
 		<div class="mat-display-3 no-margin">
-			<span *ngIf="org">{{org.name}}</span> &nbsp;
-			<span>
-				<img class="logo"
-					src="assets/logo-no-circle.png"
-					alt="NewVote" /></span>
+			<span *ngIf="org">{{org.name}}</span>
 		</div>
-		<div class="mat-h2">Democracy gone digital.</div>
+		<div class="mat-h2" *ngIf="org">{{org.description}}</div>
 		<div>
 			<button mat-button
 			    mat-raised-button

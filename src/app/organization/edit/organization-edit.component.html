@@ -20,6 +20,16 @@
 			</mat-form-field>
 
 			<mat-form-field>
+				<input matInput
+					placeholder="Enter a short description for the community (e.g A new way to vote!)"
+					formControlName="description"
+					required>
+				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
+					The description is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
 				<!-- {{organizationForm.status}} -->
 				<input matInput
 				    placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
@@ -56,33 +66,55 @@
 				</mat-autocomplete>
 			</mat-form-field>
 
+			<span>Home Page Background Image</span>
 			<input type="file"
-			    id="fileupload"
-			    #fileInput
+			    id="imageFileInput"
+			    #imageFileInput
 			    ng2FileSelect
 			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
+			    (change)="onFileChange('backgroundImage', $event)"
+			    formControlName="imageUrl"
 			    hidden
 			    autoComplete="off" />
-
-			<input matInput
-			    hidden
-			    placeholder="Enter a name for the organization"
-			    formControlName="imageUrl"
-			    required>
 
 			<div class="image-select">
 				<button mat-flat-button
 				    type="button"
 				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
+				    (click)="imageFileInput.click()">Select Image</button>
 				<button mat-flat-button
 				    type="button"
 				    color="primary"
-				    (click)="onResetImage()">Reset Image</button>
+				    (click)="onResetImage('backgroundImage')">Reset Image</button>
 				<div class="image-preview"
-				    *ngIf="imageUrl">
-					<img [src]="imageUrl" />
+				    *ngIf="backgroundImage.src">
+					<img [src]="backgroundImage.src" />
+				</div>
+			</div>
+
+			<span>Community Icon</span>
+			<input type="file"
+				id="iconFileInput"
+				#iconFileInput
+				ng2FileSelect
+				[uploader]="uploader"
+				(change)="onFileChange('iconImage', $event)"
+				formControlName="iconUrl"
+				hidden
+				autoComplete="off" />
+
+			<div class="image-select">
+				<button mat-flat-button
+					type="button"
+					color="primary"
+					(click)="iconFileInput.click()">Select Image</button>
+				<button mat-flat-button
+					type="button"
+					color="primary"
+					(click)="onResetImage('iconImage')">Reset Image</button>
+				<div class="image-preview"
+					*ngIf="iconImage.src">
+					<img [src]="iconImage.src" />
 				</div>
 			</div>
 

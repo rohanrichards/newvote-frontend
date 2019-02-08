@@ -137,8 +137,8 @@ export class IssueCreateComponent implements OnInit {
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
-			duration: 2000,
-			horizontalPosition: 'center'
+			duration: 4000,
+			horizontalPosition: 'right'
 		});
 	}
 

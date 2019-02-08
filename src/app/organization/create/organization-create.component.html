@@ -12,11 +12,21 @@
 			<mat-form-field>
 				<!-- {{organizationForm.status}} -->
 				<input matInput
-				    placeholder="Enter a name for the organization (properly formatted e.g UQ Union)"
+				    placeholder="Enter a name for the community (properly formatted e.g UQ Union)"
 				    formControlName="name"
 				    required>
 				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
 					The name is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input matInput
+					placeholder="Enter a short description for the community (e.g A new way to vote!)"
+					formControlName="description"
+					required>
+				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
+					The description is <strong>required</strong>
 				</mat-error>
 			</mat-form-field>
 
@@ -57,12 +67,13 @@
 				</mat-autocomplete>
 			</mat-form-field>
 
+			<span>Home Page Background Image</span>
 			<input type="file"
-			    id="fileupload"
-			    #fileInput
+			    id="imageFileInput"
+			    #imageFileInput
 			    ng2FileSelect
 			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
+			    (change)="onFileChange('backgroundImage', $event)"
 			    formControlName="imageUrl"
 			    hidden
 			    autoComplete="off" />
@@ -71,16 +82,38 @@
 				<button mat-flat-button
 					type="button"
 				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
+				    (click)="imageFileInput.click()">Select Image</button>
 				<div class="image-preview"
-				    *ngIf="imageUrl">
-					<img [src]="imageUrl" />
+				    *ngIf="backgroundImage">
+					<img [src]="backgroundImage.src" />
+				</div>
+			</div>
+
+			<span>Community Icon</span>
+			<input type="file"
+				id="iconFileInput"
+				#iconFileInput
+				ng2FileSelect
+				[uploader]="uploader"
+				(change)="onFileChange('iconImage', $event)"
+				formControlName="iconUrl"
+				hidden
+				autoComplete="off" />
+
+			<div class="image-select">
+				<button mat-flat-button
+					type="button"
+					color="primary"
+					(click)="iconFileInput.click()">Select Image</button>
+				<div class="image-preview"
+					*ngIf="iconImage">
+					<img [src]="iconImage.src" />
 				</div>
 			</div>
 
 			<button mat-flat-button
 			    type="submit"
-			    [disabled]="!organizationForm.valid"
+			    [disabled]="!organizationForm.valid || isLoading"
 			    color="primary">Create</button>
 		</form>
 	</mat-card>

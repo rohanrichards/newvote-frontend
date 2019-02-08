@@ -70,7 +70,11 @@ export class ProposalListComponent implements OnInit {
 
 		this.voteService.create({ entity: vote }).subscribe((res) => {
 			if (res.error) {
-				this.openSnackBar('There was an error recording your vote', 'OK');
+				if (res.error.status === 401) {
+					this.openSnackBar('You must be logged in to vote', 'OK');
+				} else {
+					this.openSnackBar('There was an error recording your vote', 'OK');
+				}
 			} else {
 				this.openSnackBar('Your vote was recorded', 'OK');
 				this.fetchData(true);
@@ -80,8 +84,8 @@ export class ProposalListComponent implements OnInit {
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
-			duration: 2000,
-			horizontalPosition: 'center'
+			duration: 4000,
+			horizontalPosition: 'right'
 		});
 	}
 

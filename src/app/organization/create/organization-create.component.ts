@@ -26,14 +26,34 @@ export class OrganizationCreateComponent implements OnInit {
 	filteredUsers: Observable<User[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading = true;
-	imageUrl: any;
+	backgroundImage: any;
+	iconImage: any;
 	uploader: FileUploader;
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
+		description: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl('', [Validators.required]),
+		iconUrl: new FormControl('', [Validators.required]),
 		owner: new FormControl('')
 	});
+
+	uploaderOptions: FileUploaderOptions = {
+		url: `https://api.cloudinary.com/v1_1/newvote/upload`,
+		// Upload files automatically upon addition to upload queue
+		autoUpload: false,
+		// Use xhrTransport in favor of iframeTransport
+		isHTML5: true,
+		// Calculate progress independently for each uploaded file
+		removeAfterUpload: true,
+		// XHR request headers
+		headers: [
+			{
+				name: 'X-Requested-With',
+				value: 'XMLHttpRequest'
+			}
+		]
+	};
 
 	@ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -54,26 +74,19 @@ export class OrganizationCreateComponent implements OnInit {
 	ngOnInit() {
 		this.isLoading = true;
 
-		const uploaderOptions: FileUploaderOptions = {
-			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
-			// Upload files automatically upon addition to upload queue
-			autoUpload: false,
-			// Use xhrTransport in favor of iframeTransport
-			isHTML5: true,
-			// Calculate progress independently for each uploaded file
-			removeAfterUpload: true,
-			// XHR request headers
-			headers: [
-				{
-					name: 'X-Requested-With',
-					value: 'XMLHttpRequest'
-				}
-			]
-		};
+		this.uploader = new FileUploader(this.uploaderOptions);
+		this.uploader.onBuildItemForm = this.buildItemForm();
 
-		this.uploader = new FileUploader(uploaderOptions);
+		if (this.auth.isAdmin()) {
+			this.userService.list({}).subscribe(users => {
+				this.allUsers = users;
+				this.isLoading = false;
+			});
+		}
+	}
 
-		this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
+	buildItemForm() {
+		return (fileItem: any, form: FormData): any => {
 			// Add Cloudinary's unsigned upload preset to the upload form
 			form.append('upload_preset', 'qhf7z3qa');
 			// Add file to upload
@@ -83,17 +96,19 @@ export class OrganizationCreateComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
-
-		this.userService.list({}).subscribe(users => this.allUsers = users);
 	}
 
-	onFileChange(event: any) {
+	onFileChange(field: string, event: any) {
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
 			const reader = new FileReader();
 
 			reader.onload = (pe: ProgressEvent) => {
-				this.imageUrl = (<FileReader>pe.target).result;
+				// when the file is changed store the file name for later
+				this[field] = {
+					name: file.name,
+					src: (<FileReader>pe.target).result
+				};
 			};
 
 			reader.readAsDataURL(file);
@@ -104,28 +119,34 @@ export class OrganizationCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.organization = <Organization>this.organizationForm.value;
 		this.organization.owner = this.owner;
-		console.log('saving: ', this.organization);
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
-			this.isLoading = false;
+			// console.log('completed all');
+			// console.log('saving: ', this.organization);
+			this.organizationService.create({ entity: this.organization })
+				.pipe(finalize(() => { this.isLoading = false; }))
+				.subscribe(t => {
+					if (t.error) {
+						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+					} else {
+						this.openSnackBar('Succesfully created', 'OK');
+						this.router.navigate([`/organizations`], { queryParams: { forceUpdate: true } });
+					}
+				});
 		};
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
+			// when the upload is complete compare the files name
+			// to the one we stored earlier so we know which file it is
 			if (status === 200 && item.isSuccess) {
 				const res = JSON.parse(response);
-				this.organization.imageUrl = res.secure_url;
-
-				this.organizationService.create({ entity: this.organization })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(t => {
-						if (t.error) {
-							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-						} else {
-							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate([`/organizations`], {queryParams: {forceUpdate: true} });
-						}
-					});
+				if (item.file.name === this.backgroundImage.name) {
+					// this was the background image file
+					this.organization.imageUrl = res.secure_url;
+				} else if (item.file.name === this.iconImage.name) {
+					// this was the icon image file
+					this.organization.iconUrl = res.secure_url;
+				}
 			}
 		};
 
@@ -134,8 +155,8 @@ export class OrganizationCreateComponent implements OnInit {
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
-			duration: 2000,
-			horizontalPosition: 'center'
+			duration: 4000,
+			horizontalPosition: 'right'
 		});
 	}
 
