@@ -11,6 +11,7 @@ import { OwnerGuard } from './authentication/owner.guard';
 import { ContentGuard } from './authentication/content.guard';
 import { EndorserGuard } from './authentication/endorser.guard';
 import { OrganizationService } from './http/organization/organization.service';
+import { MetaService } from './meta.service';
 import { I18nService } from './i18n.service';
 import { HttpService } from './http/http.service';
 import { HttpCacheService } from './http/http-cache.service';
@@ -51,6 +52,7 @@ export function tokenGetter() {
 		ContentGuard,
 		EndorserGuard,
 		OrganizationService,
+		MetaService,
 		I18nService,
 		HttpCacheService,
 		ApiPrefixInterceptor,

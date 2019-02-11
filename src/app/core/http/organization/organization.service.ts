@@ -36,6 +36,7 @@ export class OrganizationService {
 		console.log('Your subdomain: ', this._subdomain);
 	}
 
+	// gets the current organization from the url
 	get(): Observable<any> {
 		let params = new HttpParams();
 		const paramObject = { 'url': this._subdomain };
