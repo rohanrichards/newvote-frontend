@@ -5,15 +5,16 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { Organization } from '@app/core/models/organization.model';
 
 export interface UpdateContext {
-	title: string;
-	description: string;
-	image: string;
+	title?: string;
+	appBarTitle?: string;
+	description?: string;
+	image?: string;
 }
 
 @Injectable()
 export class MetaService {
 	appName: string;
-	pageTitle: string;
+	appBarTitle: string;
 	appDescription: string;
 	appType = 'website';
 	appUrl = 'newvote.org';
@@ -23,46 +24,71 @@ export class MetaService {
 
 	constructor(private meta: Meta, private title: Title, private organizationService: OrganizationService) {
 		this.appName = 'NewVote';
-		this.pageTitle = 'Home';
+		this.appBarTitle = 'NewVote';
 		this.appDescription = 'NewVote is a democracy app, and it’s all about you.\
 			Our mission is to rebuild the relationship between everyday people and \
 			their leaders, so that we all have confidence in our democracies and the \
 			decisions they make.';
 
+		console.log('meta service setting default values');
 		this.createTags();
-		this.title.setTitle(`${this.pageTitle} - ${this.appName}`);
+		this.title.setTitle(this.appName);
 
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
 			this.appUrl = `${this.organization.url}.${this.appUrl}`;
 			this.appName = this.organization.name;
-			this.appDescription = this.organization.description;
+			this.appDescription = this.organization.description ? this.organization.description : this.appDescription;
 			this.appImage = this.organization.imageUrl;
 
-			this.updateTags({ title: this.pageTitle, description: this.appDescription, image: this.appImage });
+			this.meta.updateTag({ name: 'og:url', content: this.appUrl });
+			this.title.setTitle(`${this.appBarTitle} | ${this.appName}`);
+			// console.log('meta service updating with org details');
+			// this.updateTags({ title: this.pageTitle, description: this.appDescription, image: this.appImage });
 		});
 	}
 
 	createTags() {
 		this.meta.addTags([
-			{
-				'description': this.appDescription,
-				'og:title': this.appName,
-				'og:description': this.appDescription,
-				'og:type': this.appType,
-				'og:url': this.appUrl,
-				'og:image': this.appImage
-			}
+			{ name: 'description', content: this.appDescription },
+			{ name: 'og:title', content: this.appName },
+			{ name: 'og:description', content: this.appDescription },
+			{ name: 'og:type', content: this.appType },
+			{ name: 'og:url', content: this.appUrl },
+			{ name: 'og:image', content: this.appImage }
 		]);
 	}
 
-	updateTags(context: UpdateContext) {
-		const title = `${context.title} - ${this.appName}`;
+	// provide no context to reset to app defaults (determined from organization)
+	updateTags(context?: UpdateContext) {
+		let title, appBarTitle, description, image;
+
+		// if no context at all reset to defaults and exit
+		if (!context) {
+			this.title.setTitle(this.appName);
+			this.meta.updateTag({ name: 'og:title', content: this.appName });
+			this.meta.updateTag({ name: 'description', content: this.appDescription });
+			this.meta.updateTag({ name: 'og:description', content: this.appDescription });
+			this.meta.updateTag({ name: 'og:image', content: this.appImage });
+			return;
+		}
+
+		title = context.title ? `${context.title} | ${this.appName}` : this.appName;
+		appBarTitle = context.appBarTitle ? context.appBarTitle : (context.title ? context.title : this.appName);
+		description = context.description ? context.description : this.appDescription;
+		description = description.replace(/<[^>]*>/g, ''); // strip the html out
+		image = context.image ? context.image : this.appImage;
+
 		this.title.setTitle(title);
-		this.meta.updateTag({ 'description': context.description });
-		this.meta.updateTag({ 'og:title': title });
-		this.meta.updateTag({ 'og:description': context.description });
-		this.meta.updateTag({ 'og:image': context.image });
+		this.appBarTitle = appBarTitle;
+		this.meta.updateTag({ name: 'og:title', content: title });
+		this.meta.updateTag({ name: 'og:image', content: image });
+		this.meta.updateTag({ name: 'description', content: description });
+		this.meta.updateTag({ name: 'og:description', content: description });
+	}
+
+	getAppBarTitle() {
+		return this.appBarTitle;
 	}
 
 }

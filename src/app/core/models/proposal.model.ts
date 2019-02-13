@@ -13,6 +13,7 @@ export interface IProposal {
 
 export class Proposal implements IProposal {
 	public constructor(
+		public _id: string = '',
 		public title: string = '',
 		public imageUrl: string = '',
 		public description: string = '',

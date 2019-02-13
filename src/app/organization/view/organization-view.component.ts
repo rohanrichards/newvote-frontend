@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IOrganization } from '@app/core/models/organization.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -30,7 +31,8 @@ export class OrganizationViewComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -46,6 +48,11 @@ export class OrganizationViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((organization: Organization) => {
 				this.organization = organization;
+				this.meta.updateTags(
+					{
+						title: `${organization.name} Community`,
+						description: 'Viewing a community page.'
+					});
 			});
 	}
 
@@ -62,7 +69,7 @@ export class OrganizationViewComponent implements OnInit {
 			if (confirm) {
 				this.organizationService.delete({ id: this.organization._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/organizations'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/organizations'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});

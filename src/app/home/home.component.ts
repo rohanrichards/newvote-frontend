@@ -6,6 +6,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { Issue } from '@app/core/models/issue.model';
 
@@ -27,14 +28,22 @@ export class HomeComponent implements OnInit {
 		private organizationService: OrganizationService,
 		private issueService: IssueService,
 		private proposalService: ProposalService,
-		private userService: UserService
+		private userService: UserService,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
-		this.organizationService.get().subscribe((org) => this.org = org);
+		this.organizationService.get().subscribe((org) => {
+			this.org = org;
+			this.meta.updateTags(
+				{
+					title: 'Home'
+				});
+		});
 		this.issueService.list({ forceUpdate: false }).subscribe((issues) => this.issues = issues);
 		this.proposalService.list({ forceUpdate: false }).subscribe((proposals) => this.proposals = proposals);
-		this.userService.count({forceUpdate: false}).subscribe((count) => this.userCount = count);
+		this.userService.count({ forceUpdate: false }).subscribe((count) => this.userCount = count);
+
 	}
 
 }

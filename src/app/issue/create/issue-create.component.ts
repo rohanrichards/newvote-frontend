@@ -13,6 +13,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-issue',
@@ -45,7 +46,8 @@ export class IssueCreateComponent implements OnInit {
 		private topicService: TopicService,
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -87,6 +89,12 @@ export class IssueCreateComponent implements OnInit {
 			.subscribe(topics => this.allTopics = topics);
 
 		this.organizationService.get().subscribe(org => this.organization = org);
+
+		this.meta.updateTags(
+			{
+				title: 'Create Issue',
+				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
+			});
 	}
 
 	onFileChange(event: any) {
@@ -126,7 +134,7 @@ export class IssueCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
+							this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 						}
 					});
 			}

@@ -14,6 +14,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-issue',
@@ -49,7 +50,8 @@ export class IssueEditComponent implements OnInit {
 		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -75,12 +77,18 @@ export class IssueEditComponent implements OnInit {
 						'imageUrl': issue.imageUrl,
 						'topics': ''
 					});
+
+				this.meta.updateTags(
+					{
+						title: `Edit ${issue.name}`,
+						appBarTitle: 'Edit Issue',
+						description: issue.description
+					});
 				});
 		});
 
 		this.topicService.list({})
 			.subscribe(topics => this.allTopics = topics);
-
 
 		this.organizationService.get().subscribe(org => this.organization = org);
 
@@ -172,7 +180,7 @@ export class IssueEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 				}
 			});
 	}

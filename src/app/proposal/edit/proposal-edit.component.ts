@@ -14,6 +14,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -49,7 +50,8 @@ export class ProposalEditComponent implements OnInit {
 		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
 			startWith(''),
@@ -75,6 +77,12 @@ export class ProposalEditComponent implements OnInit {
 						'imageUrl': proposal.imageUrl,
 						'solutions': ''
 					});
+					this.meta.updateTags(
+						{
+							title: `Edit ${proposal.title}`,
+							appBarTitle: 'Edit Proposal',
+							description: `${proposal.description}`
+						});
 				});
 		});
 

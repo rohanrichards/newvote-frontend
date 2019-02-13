@@ -14,6 +14,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-solution',
@@ -49,7 +50,8 @@ export class SolutionEditComponent implements OnInit {
 		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
 			startWith(''),
@@ -75,6 +77,13 @@ export class SolutionEditComponent implements OnInit {
 						'imageUrl': solution.imageUrl,
 						'issues': ''
 					});
+					this.meta.updateTags(
+						{
+							title: `Edit ${solution.title}`,
+							appBarTitle: 'Edit Solution',
+							description: solution.description,
+							image: solution.imageUrl
+						});
 				});
 		});
 

@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
@@ -34,7 +35,8 @@ export class ProposalListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -42,6 +44,11 @@ export class ProposalListComponent implements OnInit {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
 		});
+		this.meta.updateTags(
+			{
+				title: 'All Proposals',
+				description: 'List all proposals.'
+			});
 	}
 
 	fetchData(force?: boolean) {

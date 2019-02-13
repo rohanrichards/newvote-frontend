@@ -6,10 +6,11 @@ import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
 import { merge } from 'lodash';
 
-import { ITopic } from '@app/core/models/topic.model';
+import { ITopic, Topic } from '@app/core/models/topic.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-topic',
@@ -18,7 +19,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 })
 export class TopicEditComponent implements OnInit {
 
-	topic: ITopic;
+	topic: Topic;
 	organization: Organization;
 	isLoading: boolean;
 	imageUrl: any;
@@ -36,7 +37,8 @@ export class TopicEditComponent implements OnInit {
 		private organizationService: OrganizationService,
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -49,6 +51,12 @@ export class TopicEditComponent implements OnInit {
 					this.topicForm.patchValue(topic);
 					this.imageUrl = topic.imageUrl;
 					this.topic = topic;
+					this.meta.updateTags(
+						{
+							title: `Edit ${this.topic.name}`,
+							appBarTitle: 'Edit Topic',
+							description: 'List all proposals.'
+						});
 				});
 		});
 

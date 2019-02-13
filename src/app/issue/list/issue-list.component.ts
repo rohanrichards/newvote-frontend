@@ -15,6 +15,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { Issue } from '@app/core/models/issue.model';
 import { Topic } from '@app/core/models/topic.model';
 import { Organization } from '@app/core/models/organization.model';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-issue',
@@ -33,8 +34,7 @@ export class IssueListComponent implements OnInit {
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading: boolean;
 	headerTitle = 'Browse By Issue';
-	headerText = 'An issue is any problem that needs to be addressed. \
-	Select an issue below to learn more about it';
+	headerText = 'Issues can be any problem or topic in your community that you think needs to be addressed.';
 	headerButtons = [{
 		text: 'New Issue',
 		color: 'warn',
@@ -57,7 +57,8 @@ export class IssueListComponent implements OnInit {
 		private organizationService: OrganizationService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),
@@ -73,6 +74,12 @@ export class IssueListComponent implements OnInit {
 			console.log('issue list forceUpdate: ', queryParams.get('forceUpdate'));
 			this.fetchData(force);
 		});
+
+		this.meta.updateTags(
+			{
+				title: 'All Issues',
+				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
+			});
 	}
 
 	fetchData(force?: boolean) {

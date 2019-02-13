@@ -12,6 +12,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { UserService } from '@app/core/http/user/user.service';
 import { Organization } from '@app/core/models/organization.model';
 import { User } from '@app/core/models/user.model';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-organization',
@@ -64,7 +65,8 @@ export class OrganizationCreateComponent implements OnInit {
 		public auth: AuthenticationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredUsers = this.organizationForm.get('owner').valueChanges.pipe(
 			startWith(''),
@@ -83,6 +85,11 @@ export class OrganizationCreateComponent implements OnInit {
 				this.isLoading = false;
 			});
 		}
+		this.meta.updateTags(
+			{
+				title: 'Create Community',
+				description: 'Create a new community on the NewVote platform.'
+			});
 	}
 
 	buildItemForm() {

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IOrganization, Organization } from '@app/core/models/organization.model';
 
@@ -25,7 +26,8 @@ export class OrganizationClaimComponent implements OnInit {
 	constructor(private organizationService: OrganizationService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -42,7 +44,13 @@ export class OrganizationClaimComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(organization => {
 				this.organization = organization;
-				this.headerTitle = organization.name;
+				this.headerTitle = `Claim ${organization.name}`;
+				this.meta.updateTags(
+					{
+						title: `Claim ${organization.name}`,
+						appBarTitle: `Claim Community`,
+						description: this.headerText
+					});
 			});
 	}
 

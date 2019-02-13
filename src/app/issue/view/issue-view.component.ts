@@ -13,6 +13,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IIssue } from '@app/core/models/issue.model';
 import { Solution } from '@app/core/models/solution.model';
@@ -42,7 +43,8 @@ export class IssueViewComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -58,6 +60,13 @@ export class IssueViewComponent implements OnInit {
 			.subscribe((issue: IIssue) => {
 				this.issue = issue;
 				this.getSolutions(issue._id);
+				this.meta.updateTags(
+					{
+						title: this.issue.name,
+						appBarTitle: 'View Issue',
+						description: this.issue.description,
+						image: this.issue.imageUrl
+					});
 			});
 	}
 

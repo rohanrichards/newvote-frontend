@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IOrganization, Organization } from '@app/core/models/organization.model';
 import { Vote } from '@app/core/models/vote.model';
@@ -31,7 +32,8 @@ export class OrganizationListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -39,6 +41,11 @@ export class OrganizationListComponent implements OnInit {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
 		});
+		this.meta.updateTags(
+			{
+				title: 'All Communities',
+				description: 'The list of all available communities on the NewVote platform.'
+			});
 	}
 
 	fetchData(force?: boolean) {

@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { ISolution } from '@app/core/models/solution.model';
 import { Solution } from '@app/core/models/solution.model';
@@ -30,7 +31,8 @@ export class SolutionViewComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -46,6 +48,13 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solution: ISolution) => {
 				this.solution = solution;
+				this.meta.updateTags(
+					{
+						title: solution.title,
+						appBarTitle: 'View Solution',
+						description: solution.description,
+						image: solution.imageUrl
+					});
 			});
 	}
 

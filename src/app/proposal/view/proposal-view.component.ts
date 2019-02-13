@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { IProposal } from '@app/core/models/proposal.model';
 import { Proposal } from '@app/core/models/proposal.model';
@@ -19,7 +20,7 @@ import { Vote } from '@app/core/models/vote.model';
 })
 export class ProposalViewComponent implements OnInit {
 
-	proposal: IProposal;
+	proposal: Proposal;
 	proposals: Array<Proposal>;
 	isLoading: boolean;
 
@@ -30,7 +31,8 @@ export class ProposalViewComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public dialog: MatDialog,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -44,8 +46,15 @@ export class ProposalViewComponent implements OnInit {
 	getProposal(id: string, forceUpdate?: boolean) {
 		this.proposalService.view({ id: id, orgs: [], forceUpdate })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((proposal: IProposal) => {
+			.subscribe((proposal: Proposal) => {
 				this.proposal = proposal;
+				this.meta.updateTags(
+					{
+						title: `${this.proposal.title}`,
+						appBarTitle: 'View Proposal',
+						description: this.proposal.description,
+						image: this.proposal.imageUrl
+					});
 			});
 	}
 

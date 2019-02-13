@@ -13,6 +13,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -46,7 +47,8 @@ export class ProposalCreateComponent implements OnInit {
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
 			startWith(''),
@@ -55,6 +57,12 @@ export class ProposalCreateComponent implements OnInit {
 
 	ngOnInit() {
 		this.isLoading = true;
+		this.meta.updateTags(
+			{
+				title: 'Create Proposal',
+				description: 'Creating a new proposal on the NewVote platform.'
+			});
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			if (ID) {
@@ -103,7 +111,7 @@ export class ProposalCreateComponent implements OnInit {
 		this.solutionService.list({})
 			.subscribe(solutions => this.allSolutions = solutions);
 
-					this.organizationService.get().subscribe(org => this.organization = org);
+		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
 	onFileChange(event: any) {
@@ -143,7 +151,7 @@ export class ProposalCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], {queryParams: {forceUpdate: true} });
+							this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
 						}
 					});
 			}

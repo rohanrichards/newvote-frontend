@@ -8,6 +8,7 @@ import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operato
 
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { SearchService } from '@app/core/http/search/search.service';
 
@@ -29,7 +30,8 @@ export class ShellComponent implements OnInit {
 		private auth: AuthenticationService,
 		private i18nService: I18nService,
 		private searchService: SearchService,
-		private organizationService: OrganizationService
+		private organizationService: OrganizationService,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -45,7 +47,10 @@ export class ShellComponent implements OnInit {
 				)
 			);
 
-		this.organizationService.get().subscribe(org => this.organization = org);
+		this.organizationService.get().subscribe(org => {
+			this.organization = org;
+		});
+
 		this.searchResults$.subscribe(results => console.log(results));
 	}
 
@@ -81,6 +86,6 @@ export class ShellComponent implements OnInit {
 	}
 
 	get title(): string {
-		return this.titleService.getTitle();
+		return this.meta.getAppBarTitle();
 	}
 }

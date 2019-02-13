@@ -13,6 +13,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-solution',
@@ -46,7 +47,8 @@ export class SolutionCreateComponent implements OnInit {
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) {
 		this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
 			startWith(''),
@@ -55,6 +57,11 @@ export class SolutionCreateComponent implements OnInit {
 
 	ngOnInit() {
 		this.isLoading = true;
+		this.meta.updateTags(
+			{
+				title: 'Create Solution',
+				description: 'Solutions are the decisions that you think your community should make.'
+			});
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			if (ID) {

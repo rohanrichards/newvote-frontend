@@ -9,6 +9,7 @@ import { ITopic } from '@app/core/models/topic.model';
 import { Organization } from '@app/core/models/organization.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-topic',
@@ -32,10 +33,17 @@ export class TopicCreateComponent implements OnInit {
 		private topicService: TopicService,
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
+		this.meta.updateTags(
+			{
+				title: 'Create Topic',
+				description: 'Creating a new topic for the NewVote platform.'
+			});
+
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
 			// Upload files automatically upon addition to upload queue
@@ -104,7 +112,7 @@ export class TopicCreateComponent implements OnInit {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate(['/topics'], {queryParams: {forceUpdate: true} });
+							this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } });
 						}
 					});
 			}

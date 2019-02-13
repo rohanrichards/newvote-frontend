@@ -5,7 +5,7 @@ import { OwnerGuard } from '@app/core/authentication/owner.guard';
 
 import { extract } from '@app/core';
 import { OrganizationListComponent } from './list/organization-list.component';
-import { OrganizationViewComponent } from './view/organization-view.component';
+// import { OrganizationViewComponent } from './view/organization-view.component';
 import { OrganizationCreateComponent } from './create/organization-create.component';
 import { OrganizationEditComponent } from './edit/organization-edit.component';
 import { OrganizationClaimComponent } from './claim/organization-claim.component';
@@ -34,12 +34,12 @@ const routes: Routes = [
 		data: { title: extract('Edit Community') },
 		canActivate: [OwnerGuard]
 	},
-	{
-		path: ':id',
-		component: OrganizationViewComponent,
-		data: { title: extract('Community') },
-		canActivate: [AdminGuard]
-	},
+	// {
+	// 	path: ':id',
+	// 	component: OrganizationViewComponent,
+	// 	data: { title: extract('Community') },
+	// 	canActivate: [AdminGuard]
+	// },
 ];
 
 @NgModule({

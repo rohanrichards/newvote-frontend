@@ -8,6 +8,7 @@ import { isEqual as _isEqual } from 'lodash';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
+import { MetaService } from '@app/core/meta.service';
 
 import { ISolution, Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
@@ -35,10 +36,16 @@ export class SolutionListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
+	this.meta.updateTags(
+		{
+			title: 'All Solutions',
+			description: 'Solutions are the decisions that you think your community should make.'
+		});
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-topic',
@@ -27,7 +28,8 @@ export class TopicListComponent implements OnInit {
 	constructor(private topicService: TopicService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router
+		private router: Router,
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -35,6 +37,11 @@ export class TopicListComponent implements OnInit {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
 		});
+		this.meta.updateTags(
+			{
+				title: 'All Topics',
+				description: 'List all topics.'
+			});
 	}
 
 	fetchData(force?: boolean) {

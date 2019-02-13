@@ -15,6 +15,7 @@ import { MediaService } from '@app/core/http/media/media.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-media',
@@ -53,7 +54,8 @@ export class MediaEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
-		private location: Location
+		private location: Location,
+		private meta: MetaService
 	) {
 		this.filteredIssues = this.mediaForm.get('issues').valueChanges.pipe(
 			startWith(''),
@@ -63,14 +65,14 @@ export class MediaEditComponent implements OnInit {
 			this.isLoading = true;
 			const uri = encodeURIComponent(url).replace(/'/g, '%27').replace(/"/g, '%22');
 			console.log('encoded url: ', uri);
-			this.mediaService.meta({ uri: uri }).subscribe((meta: any) => {
-				console.log('got meta for url: ', meta);
+			this.mediaService.meta({ uri: uri }).subscribe((metadata: any) => {
+				console.log('got meta for url: ', metadata);
 				this.isLoading = false;
-				this.imageUrl = meta.image;
+				this.imageUrl = metadata.image;
 				this.usingMetaImage = true;
 				this.mediaForm.patchValue({
-					'title': meta.title,
-					'description': meta.description
+					'title': metadata.title,
+					'description': metadata.description
 				});
 
 				console.log(this.mediaForm.value);
@@ -80,6 +82,11 @@ export class MediaEditComponent implements OnInit {
 
 	ngOnInit() {
 		this.isLoading = true;
+		this.meta.updateTags(
+			{
+				title: 'Edit Media',
+				description: 'Edit media entries for site content.'
+			});
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.mediaService.view({ id: ID })
@@ -91,7 +98,7 @@ export class MediaEditComponent implements OnInit {
 						const issue = media.issues[i];
 						this.issues.push(issue);
 					}
-					this.mediaForm.patchValue(media, {emitEvent: false, onlySelf: true});
+					this.mediaForm.patchValue(media, { emitEvent: false, onlySelf: true });
 					this.imageUrl = media.image;
 				});
 		});
