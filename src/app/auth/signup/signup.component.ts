@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService } from '@app/core';
@@ -24,17 +25,18 @@ export class SignupComponent implements OnInit {
 		private route: ActivatedRoute,
 		private formBuilder: FormBuilder,
 		private i18nService: I18nService,
-		private authenticationService: AuthenticationService) {
+		private authenticationService: AuthenticationService,
+		private meta: MetaService
+	) {
 		this.createForm();
-		console.log(environment.recaptchaSitekey);
 	}
 
 	ngOnInit() {
-		this.authenticationService.randomGet().subscribe(res => console.log(res));
-		// this.signupForm.statusChanges.subscribe(changes => {
-		// 	console.log(changes);
-		// 	console.log(this.signupForm);
-		// });
+		this.meta.updateTags(
+			{
+				title: `Create account`,
+				description: 'Make your voice heard, create an account today!'
+			});
 	}
 
 	signup() {
@@ -53,18 +55,6 @@ export class SignupComponent implements OnInit {
 				log.debug(`Signup error: ${res}`);
 				this.error = res.error ? res.error : res;
 			});
-	}
-
-	setLanguage(language: string) {
-		this.i18nService.language = language;
-	}
-
-	get currentLanguage(): string {
-		return this.i18nService.language;
-	}
-
-	get languages(): string[] {
-		return this.i18nService.supportedLanguages;
 	}
 
 	private createForm() {

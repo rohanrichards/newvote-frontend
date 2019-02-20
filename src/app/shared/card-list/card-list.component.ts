@@ -17,6 +17,9 @@ export class CardListComponent implements OnInit {
 	@Input() showChildren = false;
 	@Input() childPath: string;
 	@Input() childName: string;
+	@Input() showParent = false;
+	@Input() parentPath: string;
+	@Input() parentPropName: string;
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() childVote = new EventEmitter();

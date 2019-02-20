@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Subscriber, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
+import { map, finalize, catchError } from 'rxjs/operators';
 
 import { Organization } from '@app/core/models/organization.model';
 
@@ -28,32 +28,35 @@ export class OrganizationService {
 	private _host: string;
 	private _subdomain: string;
 	private _org: Organization;
+	private $org: BehaviorSubject<any>;
 
-	constructor(@Inject(DOCUMENT) private document: any,
-		private httpClient: HttpClient) {
+	constructor(private httpClient: HttpClient
+	) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
-		console.log('Your subdomain: ', this._subdomain);
+
+		let params = new HttpParams();
+		const paramObject = { 'url': this._subdomain };
+		params = new HttpParams({ fromObject: paramObject });
+
+		if (!this.$org) {
+			this.$org = <BehaviorSubject<any>>new BehaviorSubject({});
+
+			this.httpClient
+				.get('/organizations', { params })
+				.pipe(
+					map((res: Array<Organization>) => res[0]),
+					catchError((e) => of({ error: e }))
+				).subscribe((org: Organization) => {
+					this._org = org;
+					this.$org.next(org);
+				});
+		}
 	}
 
 	// gets the current organization from the url
 	get(): Observable<any> {
-		let params = new HttpParams();
-		const paramObject = { 'url': this._subdomain };
-
-		params = new HttpParams({ fromObject: paramObject });
-
-		return this.httpClient
-			.cache()
-			.get('/organizations', { params })
-			.pipe(
-				map((res: Array<Organization>) => {
-					console.log('org: ', res);
-					this._org = res[0];
-					return res[0];
-				}),
-				catchError((e) => of({ error: e }))
-			);
+		return this.$org.asObservable();
 	}
 
 	list(context: OrganizationContext): Observable<any[]> {
@@ -64,7 +67,7 @@ export class OrganizationService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient

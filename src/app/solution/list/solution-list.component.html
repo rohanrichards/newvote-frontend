@@ -19,6 +19,9 @@
 		    [showChildren]="true"
 		    childPath="proposals"
 		    childName="Proposals"
+			[showParent]="true"
+			parentPath="/issues"
+			parentPropName="issues"
 		    (delete)="onDelete($event)"
 		    (vote)="onVote($event, 'Solution')"
 		    (childVote)="onVote($event, 'Proposal')"></app-card-list>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService } from '@app/core';
@@ -24,16 +25,18 @@ export class LoginComponent implements OnInit {
 		private route: ActivatedRoute,
 		private formBuilder: FormBuilder,
 		private i18nService: I18nService,
-		private authenticationService: AuthenticationService) {
+		private authenticationService: AuthenticationService,
+		private meta: MetaService
+	) {
 		this.createForm();
 	}
 
 	ngOnInit() {
-		this.route.queryParams.subscribe(
-			params => {
-				console.log(params);
-			}
-		);
+		this.meta.updateTags(
+			{
+				title: `Sign in`,
+				description: 'Fill in your account information to sign in.'
+			});
 	}
 
 	login() {

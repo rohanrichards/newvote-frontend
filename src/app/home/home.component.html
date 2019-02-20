@@ -16,7 +16,7 @@
 		</div>
 		<div class="mat-h2"
 		    *ngIf="org">{{org.description}}</div>
-		<div>
+		<div *ngIf="!auth.isAuthenticated()">
 			<button mat-button
 			    mat-raised-button
 			    routerLink="/auth/signup"
@@ -39,7 +39,7 @@
 		<div>
 			<button mat-button
 			    routerLink="/issues">
-			SEE ALL ></button>
+				SEE ALL ></button>
 		</div>
 	</div>
 </div>
@@ -81,22 +81,22 @@
 			</div>
 			<div fxFlex></div>
 		</div>
-		<div>
+		<div *ngIf="!auth.isAuthenticated()">
 			<button mat-button
 			    mat-raised-button
 			    routerLink="/auth/signup"
 			    color="warn"
 			    class="mat-display-1">
-			JOIN US</button>
+				JOIN US</button>
 		</div>
 		<div *ngIf="org">
 			<div *ngIf="!org.owner">
 				<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
 				<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
 					<button mat-button
-						[routerLink]="['/communities/claim/', org._id]"
-						color="primary"
-						class="mat-display-1">
+					    [routerLink]="['/communities/claim/', org._id]"
+					    color="primary"
+					    class="mat-display-1">
 						CLAIM HERE</button>
 				</span>
 			</div>
@@ -137,8 +137,7 @@
 </div>
 
 <div class="vote-container container"
-    fxLayoutAlign="center center"
-    routerLink="/auth/signup">
+    fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<h2 class="mat-h2">How do I Vote?</h2>
@@ -158,13 +157,14 @@
 					<p>You’ll need to make an account using an email address to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
 				</div>
 			</div>
-			<div fxLayoutAlign="center center"
+			<div *ngIf="!auth.isAuthenticated()"
+			 fxLayoutAlign="center center"
 			    fxFlex.xs="100">
 				<button mat-button
 				    mat-raised-button
 				    routerLink="/auth/signup"
 				    color="warn">
-				SIGN UP NOW</button>
+					SIGN UP NOW</button>
 			</div>
 		</div>
 	</div>
@@ -199,7 +199,7 @@
 						    fxFlex>Issues can be any problem or topic in your community that you think needs to be addressed.</p>
 						<div><button mat-button
 							    routerLink="/issues">
-						VIEW ISSUES ></button>
+								VIEW ISSUES ></button>
 						</div>
 					</div>
 				</div>
@@ -221,7 +221,7 @@
 						<div>
 							<button mat-button
 							    routerLink="/solutions">
-						VIEW SOLUTIONS ></button>
+								VIEW SOLUTIONS ></button>
 						</div>
 					</div>
 				</div>
@@ -243,7 +243,7 @@
 						<div>
 							<button mat-button
 							    routerLink="/proposals">
-						VIEW PROPOSALS ></button>
+								VIEW PROPOSALS ></button>
 						</div>
 					</div>
 				</div>
@@ -253,7 +253,8 @@
 	</div>
 </div>
 
-<div class="final-container container"
+<div *ngIf="!auth.isAuthenticated()"
+    class="final-container container"
     fxLayoutAlign="center center"
     routerLink="/auth/signup">
 	<div fxFlex.gt-sm="690px"
@@ -262,7 +263,7 @@
 		    mat-raised-button
 		    routerLink="/auth/signup"
 		    color="warn">
-		SIGN UP NOW</button>
+			SIGN UP NOW</button>
 		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
 	</div>
 </div>

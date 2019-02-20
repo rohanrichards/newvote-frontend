@@ -9,6 +9,7 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 import { MetaService } from '@app/core/meta.service';
 
 import { Issue } from '@app/core/models/issue.model';
+import { Organization } from '@app/core/models/organization.model';
 
 @Component({
 	selector: 'app-home',
@@ -18,13 +19,13 @@ import { Issue } from '@app/core/models/issue.model';
 export class HomeComponent implements OnInit {
 
 	isLoading: boolean;
-	org: any;
+	org: Organization;
 	issues: Issue[];
 	proposals: any[];
 	userCount: number;
 
 	constructor(
-		private auth: AuthenticationService,
+		public auth: AuthenticationService,
 		private organizationService: OrganizationService,
 		private issueService: IssueService,
 		private proposalService: ProposalService,

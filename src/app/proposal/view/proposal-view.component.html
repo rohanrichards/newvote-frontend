@@ -16,20 +16,20 @@
 				    matTooltip="Add a new Proposal"
 				    color="accent"
 				    routerLink="/proposals/create">
-    					<mat-icon aria-label="Add a new proposal">playlist_add</mat-icon>
-  					</button>
+					<mat-icon aria-label="Add a new proposal">playlist_add</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Edit this Proposal"
 				    color="accent"
 				    routerLink="/proposals/edit/{{proposal._id}}">
-    					<mat-icon aria-label="Edit the proposal">edit</mat-icon>
-  					</button>
+					<mat-icon aria-label="Edit the proposal">edit</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Proposal"
 				    color="warn"
 				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete the proposal forever">delete_forever</mat-icon>
-  					</button>
+					<mat-icon aria-label="Delete the proposal forever">delete_forever</mat-icon>
+				</button>
 			</div>
 		</div>
 		<div fxLayout="row"
@@ -51,12 +51,20 @@
 		    fxFlex.gt-md="800px">
 			<div class="mat-display-1"
 			    translate>{{proposal.title}}</div>
-			<app-topic-tags [topics]="proposal.topics"></app-topic-tags>
+
+			<span class="mat-body">This is a proposal for:
+				<span *ngFor="let parent of proposal.solutions; let i = index">
+					<a mat-button
+					    routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
+				</span>
+			</span>
 			<app-more-less [displayText]="proposal.description"
 			    maxHeight="200">
 			</app-more-less>
+			<mat-divider></mat-divider>
+			<p></p>
 			<div class="buttons">
-			    <app-vote-buttons [item]="proposal"
+				<app-vote-buttons [item]="proposal"
 				    (vote)=onVote($event)>
 				</app-vote-buttons>
 			</div>

@@ -13,29 +13,29 @@
 		    fxLayoutAlign="center end">
 			<div class="button-panel">
 				<button mat-icon-button
-					matTooltip="Create a new Solution"
-					color="accent"
-					routerLink="/solutions/create">
-						<mat-icon aria-label="Create a new Solution">add</mat-icon>
+				    matTooltip="Create a new Solution"
+				    color="accent"
+				    routerLink="/solutions/create">
+					<mat-icon aria-label="Create a new Solution">add</mat-icon>
 				</button>
 				<button mat-icon-button
-					matTooltip="Add a Proposal for this Solution"
-					color="accent"
-					routerLink="/proposals/create/{{solution._id}}">
-						<mat-icon aria-label="Add a Proposal for this Solution">playlist_add</mat-icon>
+				    matTooltip="Add a Proposal for this Solution"
+				    color="accent"
+				    routerLink="/proposals/create/{{solution._id}}">
+					<mat-icon aria-label="Add a Proposal for this Solution">playlist_add</mat-icon>
 				</button>
 				<button mat-icon-button
 				    matTooltip="Edit this Solution"
 				    color="accent"
 				    routerLink="/solutions/edit/{{solution._id}}">
-    					<mat-icon aria-label="Edit this solution">edit</mat-icon>
-  					</button>
+					<mat-icon aria-label="Edit this solution">edit</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Solution"
 				    color="warn"
 				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete this solution forever">delete_forever</mat-icon>
-  					</button>
+					<mat-icon aria-label="Delete this solution forever">delete_forever</mat-icon>
+				</button>
 			</div>
 		</div>
 		<div fxLayout="row"
@@ -52,18 +52,26 @@
 		</div>
 	</div>
 	<div fxLayout="row wrap"
-		class="description-bar"
+	    class="description-bar"
 	    fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
 		    fxFlex.gt-md="800px">
 			<div class="mat-display-1"
 			    translate>{{solution.title}}</div>
-			<app-topic-tags [topics]="solution.topics"></app-topic-tags>
+			<span class="mat-body">This is a solution for:
+				<span *ngFor="let parent of solution.issues; let i = index">
+					<a mat-button
+					    routerLink="/issues/{{parent._id}}">{{parent.title || parent.name}}</a>
+				</span>
+			</span>
 			<app-more-less [displayText]="solution.description"
 			    maxHeight="200">
 			</app-more-less>
+			<mat-divider></mat-divider>
+			<p></p>
 			<div class="buttons">
-			    <app-vote-buttons (vote)="onVote($event, 'Solution')" [item]="solution">
+				<app-vote-buttons (vote)="onVote($event, 'Solution')"
+				    [item]="solution">
 				</app-vote-buttons>
 			</div>
 		</div>
@@ -82,6 +90,9 @@
 		    [items]="solution.proposals"
 		    model="Proposal"
 		    [showChildren]="false"
+		    [showParent]="true"
+		    parentPath="/solutions"
+		    parentPropName="solutions"
 		    (delete)="onDeleteProposal()"
 		    (vote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
