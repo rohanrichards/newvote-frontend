@@ -1,0 +1,89 @@
+<app-loader [isLoading]="isLoading"
+	size="1.5"></app-loader>
+<div class="container"
+    fxLayoutAlign="center center">
+	<mat-card fxFlex.gt-sm="60"
+	    fxFlex="100">
+		<form [formGroup]="suggestionForm"
+		    fxLayout="column"
+		    (ngSubmit)="onSave()"
+		    novalidate>
+			<mat-form-field>
+				<!-- {{suggestionForm.status}} -->
+				<input matInput
+				    placeholder="Enter a name for the suggestion"
+				    formControlName="title"
+				    required>
+				<mat-error *ngIf="suggestionForm.hasError('required', ['title'])">
+					Name is <strong>required</strong>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="example-chip-list">
+				<mat-chip-list #chipList>
+					<mat-chip *ngFor="let solution of solutions"
+						[selectable]="false"
+						[removable]="true"
+						(removed)="solutionRemoved(solution)">
+						{{solution.title}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="New solution..."
+						#solutionInput
+						formControlName="solutions"
+						[matAutocomplete]="auto"
+						[matChipInputFor]="chipList"
+						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						[matChipInputAddOnBlur]="true"
+						(matChipInputTokenEnd)="add($event)">
+				</mat-chip-list>
+				<mat-autocomplete #auto="matAutocomplete"
+					(optionSelected)="solutionSelected($event)">
+					<mat-option *ngFor="let solution of filteredSolutions | async"
+						[value]="solution">
+						{{solution.title}}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+
+			<div class="quill-editor-container cf">
+				<quill-editor formControlName="description"></quill-editor>
+			</div>
+
+			<input type="file"
+			    id="fileupload"
+			    #fileInput
+			    ng2FileSelect
+			    [uploader]="uploader"
+			    (change)="onFileChange($event)"
+			    hidden
+			    autoComplete="off" />
+
+			<input matInput
+			    hidden
+			    placeholder="Enter a name for the suggestion"
+			    formControlName="imageUrl"
+			    required>
+
+			<div class="image-select">
+				<button mat-flat-button
+				    type="button"
+				    color="primary"
+				    (click)="fileInput.click()">Select Image</button>
+				<button mat-flat-button
+				    type="button"
+				    color="primary"
+				    (click)="onResetImage()">Reset Image</button>
+				<div class="image-preview"
+				    *ngIf="imageUrl">
+					<img [src]="imageUrl" />
+				</div>
+			</div>
+
+			<button mat-flat-button
+			    type="submit"
+			    [disabled]="!suggestionForm.valid || isLoading"
+			    color="primary">Update</button>
+		</form>
+	</mat-card>
+</div>
