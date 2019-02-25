@@ -9,7 +9,7 @@ export interface ISuggestion {
 	parent?: any;
 	votes?: any;
 	user?: any;
-	accepted: boolean;
+	status: number;
 	organizations: any;
 }
 
@@ -20,7 +20,7 @@ export class Suggestion implements ISuggestion {
 		public description: string = '',
 		public statements: string = '',
 		public media: string = '',
-		public accepted: boolean = false,
+		public status: number = 0,
 		public organizations: any = {}
 	) { }
 }

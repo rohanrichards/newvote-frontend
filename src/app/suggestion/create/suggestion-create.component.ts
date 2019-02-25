@@ -4,16 +4,16 @@ import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
-import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { switchMap, startWith, finalize, debounceTime } from 'rxjs/operators';
 
-import { ISuggestion } from '@app/core/models/suggestion.model';
-import { ISolution } from '@app/core/models/solution.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { Organization } from '@app/core/models/organization.model';
+import { SearchService } from '@app/core/http/search/search.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { Organization } from '@app/core/models/organization.model';
 
 @Component({
 	selector: 'app-suggestion',
@@ -22,37 +22,40 @@ import { MetaService } from '@app/core/meta.service';
 })
 export class SuggestionCreateComponent implements OnInit {
 
-	suggestion: ISuggestion;
-	allSolutions: Array<ISolution> = [];
-	solutions: Array<ISolution> = [];
+	suggestion: Suggestion;
 	organization: Organization;
-	filteredSolutions: Observable<ISolution[]>;
+	filteredObjects: Observable<any>;
+	selectedObject: any;
 	separatorKeysCodes: number[] = [ENTER, COMMA];
 	isLoading = true;
 	imageUrl: any;
 	uploader: FileUploader;
+
 	suggestionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
-		solutions: new FormControl(''),
+		parent: new FormControl(''),
+		parentType: new FormControl(''),
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
-	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
+	@ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
 		private suggestionService: SuggestionService,
-		private solutionService: SolutionService,
 		private organizationService: OrganizationService,
+		private searchService: SearchService,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
 		private router: Router,
 		private meta: MetaService
 	) {
-		this.filteredSolutions = this.suggestionForm.get('solutions').valueChanges.pipe(
-			startWith(''),
-			map((solution: string) => solution ? this._filter(solution) : this.allSolutions.slice()));
+		this.filteredObjects = this.suggestionForm.get('parent').valueChanges
+			.pipe(
+				debounceTime(300),
+				switchMap((search: string) => search ? this.searchService.all({query: search}) : of([]))
+			);
 	}
 
 	ngOnInit() {
@@ -63,101 +66,41 @@ export class SuggestionCreateComponent implements OnInit {
 				description: 'Creating a new suggestion on the NewVote platform.'
 			});
 
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			if (ID) {
-				this.solutionService.view({ id: ID, orgs: [] })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(solution => {
-						if (solution) {
-							this.solutions.push(solution);
-						}
-					});
-			} else {
-				this.isLoading = false;
-			}
-		});
-
-		const uploaderOptions: FileUploaderOptions = {
-			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
-			// Upload files automatically upon addition to upload queue
-			autoUpload: false,
-			// Use xhrTransport in favor of iframeTransport
-			isHTML5: true,
-			// Calculate progress independently for each uploaded file
-			removeAfterUpload: true,
-			// XHR request headers
-			headers: [
-				{
-					name: 'X-Requested-With',
-					value: 'XMLHttpRequest'
-				}
-			]
-		};
-
-		this.uploader = new FileUploader(uploaderOptions);
-
-		this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
-			// Add Cloudinary's unsigned upload preset to the upload form
-			form.append('upload_preset', 'qhf7z3qa');
-			// Add file to upload
-			form.append('file', fileItem);
-
-			// Use default "withCredentials" value for CORS requests
-			fileItem.withCredentials = false;
-			return { fileItem, form };
-		};
-
-		this.solutionService.list({})
-			.subscribe(solutions => this.allSolutions = solutions);
+		// this.route.paramMap.subscribe(params => {
+		// 	const ID = params.get('id');
+		// 	if (ID) {
+		// 		this.solutionService.view({ id: ID, orgs: [] })
+		// 			.pipe(finalize(() => { this.isLoading = false; }))
+		// 			.subscribe(solution => {
+		// 				if (solution) {
+		// 					this.solutions.push(solution);
+		// 				}
+		// 			});
+		// 	} else {
+		// 		this.isLoading = false;
+		// 	}
+		// });
 
 		this.organizationService.get().subscribe(org => this.organization = org);
-	}
-
-	onFileChange(event: any) {
-		if (event.target.files && event.target.files.length) {
-			const [file] = event.target.files;
-			const reader = new FileReader();
-
-			reader.onload = (pe: ProgressEvent) => {
-				this.imageUrl = (<FileReader>pe.target).result;
-			};
-
-			reader.readAsDataURL(file);
-		}
+		this.isLoading = false;
 	}
 
 	onSave() {
 		this.isLoading = true;
-		this.suggestion = <ISuggestion>this.suggestionForm.value;
-		this.suggestion.solutions = this.solutions;
+		this.suggestion = <Suggestion>this.suggestionForm.value;
 		this.suggestion.organizations = this.organization;
 		console.log(this.suggestion);
 
-		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
-			this.isLoading = false;
-		};
-
-		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
-			if (status === 200 && item.isSuccess) {
-				const res = JSON.parse(response);
-				this.suggestion.imageUrl = res.secure_url;
-
-				this.suggestionService.create({ entity: this.suggestion })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(t => {
-						if (t.error) {
-							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-						} else {
-							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate([`/solutions/${this.suggestion.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
-						}
-					});
-			}
-		};
-
-		this.uploader.uploadAll();
+		this.suggestionService.create({ entity: this.suggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(t => {
+				if (t.error) {
+					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+				} else {
+					this.openSnackBar('Succesfully created', 'OK');
+					this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
+				}
+			});
 	}
 
 	openSnackBar(message: string, action: string) {
@@ -167,40 +110,22 @@ export class SuggestionCreateComponent implements OnInit {
 		});
 	}
 
-	solutionSelected(event: any) {
+	parentSelected(event: any) {
 		const selectedItem = event.option.value;
 		// have to make sure the item isn't already in the list
-		if (!this.solutions.some(solution => solution._id === selectedItem._id)) {
-			this.solutions.push(event.option.value);
-			this.suggestionForm.get('solutions').setValue('');
-			this.solutionInput.nativeElement.value = '';
-		} else {
-			this.suggestionForm.get('solutions').setValue('');
-			this.solutionInput.nativeElement.value = '';
-		}
+		this.selectedObject = selectedItem;
+		this.suggestionForm.get('parent').setValue('');
+		this.suggestionForm.get('parentType').setValue(selectedItem.schema);
+		this.parentInput.nativeElement.value = '';
 	}
 
 	solutionRemoved(solution: any) {
-		const index = this.solutions.indexOf(solution);
-
-		if (index >= 0) {
-			this.solutions.splice(index, 1);
-		}
+		this.selectedObject = null;
+		this.suggestionForm.get('parentType').setValue(null);
 	}
 
 	add(event: any) {
-		console.log(event);
-	}
-
-	private _filter(value: any): ISolution[] {
-		const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase();
-
-		const filterVal = this.allSolutions.filter(solution => {
-			const name = solution.title.toLowerCase();
-			const compare = name.indexOf(filterValue) !== -1;
-			return compare;
-		});
-		return filterVal;
+		console.log('item added: ', event);
 	}
 
 }

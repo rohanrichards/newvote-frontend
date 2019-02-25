@@ -62,7 +62,7 @@ export class SuggestionEditComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.suggestionService.view({ id: ID, orgs: [] })
+			this.suggestionService.view({ id: ID })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(suggestion => {
 					this.imageUrl = suggestion.imageUrl;
@@ -157,7 +157,6 @@ export class SuggestionEditComponent implements OnInit {
 			if (status === 200 && item.isSuccess) {
 				merge(this.suggestion, <ISuggestion>this.suggestionForm.value);
 				const res = JSON.parse(response);
-				this.suggestion.imageUrl = res.secure_url;
 				this.updateWithApi();
 			}
 		};
@@ -171,8 +170,6 @@ export class SuggestionEditComponent implements OnInit {
 	}
 
 	updateWithApi() {
-		this.suggestion.solutions = this.solutions;
-		console.log('would update with: ', this.suggestion);
 		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {

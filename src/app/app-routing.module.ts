@@ -9,6 +9,7 @@ const routes: Routes = [
 		{ path: 'topics', loadChildren: 'app/topic/topic.module#TopicModule' },
 		{ path: 'issues', loadChildren: 'app/issue/issue.module#IssueModule' },
 		{ path: 'solutions', loadChildren: 'app/solution/solution.module#SolutionModule' },
+		{ path: 'suggestions', loadChildren: 'app/suggestion/suggestion.module#SuggestionModule' },
 		{ path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
 		{ path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
 		{ path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' }

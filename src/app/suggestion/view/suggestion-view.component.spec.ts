@@ -8,12 +8,12 @@ import { Angulartics2Module } from 'angulartics2';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
-import { SuggestionViewComponent } from './suggestion-view.component';
-import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { ProposalViewComponent } from './proposal-view.component';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
-describe('SuggestionComponent', () => {
-	let component: SuggestionViewComponent;
-	let fixture: ComponentFixture<SuggestionViewComponent>;
+describe('ProposalComponent', () => {
+	let component: ProposalViewComponent;
+	let fixture: ComponentFixture<ProposalViewComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
@@ -27,14 +27,14 @@ describe('SuggestionComponent', () => {
 				SharedModule,
 				HttpClientTestingModule
 			],
-			declarations: [SuggestionViewComponent],
-			providers: [SuggestionService]
+			declarations: [ProposalViewComponent],
+			providers: [ProposalService]
 		})
 			.compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SuggestionViewComponent);
+		fixture = TestBed.createComponent(ProposalViewComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

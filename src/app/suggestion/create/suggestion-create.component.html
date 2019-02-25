@@ -22,54 +22,32 @@
 
 			<mat-form-field class="example-chip-list">
 				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let solution of solutions"
+					<mat-chip *ngIf="selectedObject"
 					    [selectable]="false"
 					    [removable]="true"
 					    (removed)="solutionRemoved(solution)">
-						{{solution.title}}
+						{{selectedObject.title || selectedObject.name}}
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
-					<input placeholder="New solution..."
-					    #solutionInput
-					    formControlName="solutions"
+					<input placeholder="Select content to edit..."
+					    #parentInput
+					    formControlName="parent"
 					    [matAutocomplete]="auto"
 					    [matChipInputFor]="chipList"
 					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					    [matChipInputAddOnBlur]="true"
-					    (matChipInputTokenEnd)="add($event)">
+					    [matChipInputAddOnBlur]="false">
 				</mat-chip-list>
 				<mat-autocomplete #auto="matAutocomplete"
-				    (optionSelected)="solutionSelected($event)">
-					<mat-option *ngFor="let solution of filteredSolutions | async"
-					    [value]="solution">
-						{{solution.title}}
+				    (optionSelected)="parentSelected($event)">
+					<mat-option *ngFor="let object of filteredObjects | async"
+					    [value]="object">
+						<span class="schema-name">{{object.schema}}</span> {{object.title || object.name}}
 					</mat-option>
 				</mat-autocomplete>
 			</mat-form-field>
 
 			<div class="quill-editor-container cf">
 				<quill-editor formControlName="description"></quill-editor>
-			</div>
-
-			<input type="file"
-			    id="fileupload"
-			    #fileInput
-			    ng2FileSelect
-			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
-			    formControlName="imageUrl"
-			    hidden
-			    autoComplete="off" />
-
-			<div class="image-select">
-				<button mat-flat-button
-					type="button"
-				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
-				<div class="image-preview"
-				    *ngIf="imageUrl">
-					<img [src]="imageUrl" />
-				</div>
 			</div>
 
 			<button mat-flat-button

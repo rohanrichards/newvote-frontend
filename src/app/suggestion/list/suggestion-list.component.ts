@@ -53,7 +53,7 @@ export class SuggestionListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
-		this.suggestionService.list({ orgs: [], forceUpdate: force })
+		this.suggestionService.list({ forceUpdate: force })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(suggestions => { this.suggestions = suggestions; });
 	}

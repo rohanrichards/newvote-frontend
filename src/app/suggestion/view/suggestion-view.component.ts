@@ -9,8 +9,7 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { ISuggestion } from '@app/core/models/suggestion.model';
-import { Suggestion } from '@app/core/models/suggestion.model';
+import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { Vote } from '@app/core/models/vote.model';
 
 @Component({
@@ -44,7 +43,7 @@ export class SuggestionViewComponent implements OnInit {
 	}
 
 	getSuggestion(id: string, forceUpdate?: boolean) {
-		this.suggestionService.view({ id: id, orgs: [], forceUpdate })
+		this.suggestionService.view({ id: id, forceUpdate })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((suggestion: Suggestion) => {
 				this.suggestion = suggestion;
@@ -52,8 +51,7 @@ export class SuggestionViewComponent implements OnInit {
 					{
 						title: `${this.suggestion.title}`,
 						appBarTitle: 'View Suggestion',
-						description: this.suggestion.description,
-						image: this.suggestion.imageUrl
+						description: this.suggestion.description
 					});
 			});
 	}
