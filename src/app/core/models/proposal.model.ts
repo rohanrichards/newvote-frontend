@@ -18,6 +18,7 @@ export class Proposal implements IProposal {
 		public imageUrl: string = '',
 		public description: string = '',
 		public likert: boolean = false,
-		public organizations: any = {}
+		public organizations: any = {},
+		public votes: any = {}
 	) { }
 }

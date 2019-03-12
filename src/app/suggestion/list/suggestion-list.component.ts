@@ -20,14 +20,15 @@ export class SuggestionListComponent implements OnInit {
 
 	suggestions: Array<any>;
 	isLoading: boolean;
-	headerTitle = 'Browse By Suggestion';
-	headerText = 'Suggestions arrange the current suggestions into broader categories. \
-		Select a suggestion below to learn more about it and explore relevant suggestions being discussed.';
+	headerTitle = 'Make a new contribution';
+	headerText = 'Suggestions are a way for you to contribute to the discussion. \
+		Start by checking if your idea already exists in the suggestion list below (vote on it to increase exposure). \
+		If your idea doesn\'t already exist, use the create button below, the community leader will be notified.';
 	headerButtons = [{
 		text: 'New Suggestion',
 		color: 'warn',
 		routerLink: '/suggestions/create',
-		role: 'admin'
+		role: 'user'
 	}];
 
 	constructor(private suggestionService: SuggestionService,
@@ -47,7 +48,7 @@ export class SuggestionListComponent implements OnInit {
 		this.meta.updateTags(
 			{
 				title: 'All Suggestions',
-				description: 'List all suggestions.'
+				description: 'Showing all suggestions.'
 			});
 	}
 

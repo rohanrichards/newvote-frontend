@@ -1,9 +1,9 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable, of } from 'rxjs';
 import { switchMap, startWith, finalize, debounceTime } from 'rxjs/operators';
 
@@ -26,26 +26,29 @@ export class SuggestionCreateComponent implements OnInit {
 	organization: Organization;
 	filteredObjects: Observable<any>;
 	selectedObject: any;
-	separatorKeysCodes: number[] = [ENTER, COMMA];
+	mediaList: Array<string> = [];
+	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading = true;
-	imageUrl: any;
-	uploader: FileUploader;
+	createOrEdit = 'create';
 
 	suggestionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
+		statements: new FormControl(''),
+		media: new FormControl(''),
 		parent: new FormControl(''),
-		parentType: new FormControl(''),
-		imageUrl: new FormControl('', [Validators.required])
+		parentType: new FormControl('')
 	});
 
 	@ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
+	@ViewChild('mediaInput') mediaInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
 		private suggestionService: SuggestionService,
 		private organizationService: OrganizationService,
 		private searchService: SearchService,
+		private location: Location,
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -54,7 +57,7 @@ export class SuggestionCreateComponent implements OnInit {
 		this.filteredObjects = this.suggestionForm.get('parent').valueChanges
 			.pipe(
 				debounceTime(300),
-				switchMap((search: string) => search ? this.searchService.all({query: search}) : of([]))
+				switchMap((search: string) => search ? this.searchService.all({ query: search }) : of([]))
 			);
 	}
 
@@ -89,6 +92,8 @@ export class SuggestionCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.suggestion = <Suggestion>this.suggestionForm.value;
 		this.suggestion.organizations = this.organization;
+		this.suggestion.media = this.mediaList;
+		this.suggestion.parent = this.selectedObject;
 		console.log(this.suggestion);
 
 		this.suggestionService.create({ entity: this.suggestion })
@@ -112,20 +117,45 @@ export class SuggestionCreateComponent implements OnInit {
 
 	parentSelected(event: any) {
 		const selectedItem = event.option.value;
-		// have to make sure the item isn't already in the list
 		this.selectedObject = selectedItem;
 		this.suggestionForm.get('parent').setValue('');
 		this.suggestionForm.get('parentType').setValue(selectedItem.schema);
 		this.parentInput.nativeElement.value = '';
+		this.suggestionForm.patchValue({
+			'title': selectedItem.name || selectedItem.title,
+			'description': selectedItem.description
+		});
 	}
 
-	solutionRemoved(solution: any) {
+	parentRemoved(solution: any) {
 		this.selectedObject = null;
 		this.suggestionForm.get('parentType').setValue(null);
+		this.parentInput.nativeElement.value = '';
+		this.suggestionForm.patchValue({
+			'title': '',
+			'description': ''
+		});
 	}
 
-	add(event: any) {
-		console.log('item added: ', event);
+	mediaAdded(event: any) {
+		if (event.value) {
+			this.mediaList.push(event.value);
+			this.mediaInput.nativeElement.value = '';
+		}
+	}
+
+	mediaRemoved(media: any) {
+		const index = this.mediaList.indexOf(media);
+		if (index > -1) {
+			this.mediaList.splice(index, 1);
+		}
+	}
+
+	resetForm() {
+		this.suggestionForm.reset();
+		this.createOrEdit = null;
+		this.selectedObject = null;
+		this.parentInput.nativeElement.value = '';
 	}
 
 }

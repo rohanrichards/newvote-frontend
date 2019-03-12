@@ -23,13 +23,16 @@ q {
 }
 
 .image-container {
-	height: 350px !important;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
 
 	width: calc(100% + 32px);
 	margin: -16px -16px 16px -16px;
+}
+
+.info-card {
+	margin-bottom: 16px;
 }
 
 .admin-panel {

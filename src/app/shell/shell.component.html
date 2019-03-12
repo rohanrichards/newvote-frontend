@@ -37,6 +37,13 @@
             			<span translate>Solutions</span>
           			</a>
 
+					<a mat-list-item
+						routerLink="/suggestions"
+						routerLinkActive="active"
+						(click)="isMobile && sidenav.close()">
+						<span translate>Suggestions</span>
+					</a>
+
 					<mat-divider></mat-divider>
 
 					<a mat-list-item

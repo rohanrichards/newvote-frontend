@@ -5,31 +5,45 @@
     fxLayoutAlign="center center">
 	<mat-card fxFlex.gt-sm="60"
 	    fxFlex="100">
-		<form [formGroup]="suggestionForm"
+
+		<div *ngIf="!createOrEdit">
+			<h2 class="mat-display-1">Thank you for your interest in the {{this.organization.name}} community, what would you like to do?</h2>
+
+			<div>
+				<button mat-flat-button
+				    (click)="createOrEdit = 'create'"
+				    color="primary">Suggest new content</button>
+			</div>
+			<div>
+				<span class="mat-display-1">- or -</span>
+			</div>
+			<div>
+				<button mat-flat-button
+				    (click)="createOrEdit = 'edit'"
+				    color="primary">Suggest an edit to existing content</button>
+			</div>
+		</div>
+
+		<form *ngIf="createOrEdit"
+		    [formGroup]="suggestionForm"
 		    fxLayout="column"
 		    (ngSubmit)="onSave()"
 		    novalidate>
-			<mat-form-field>
-				<!-- {{suggestionForm.status}} -->
-				<input matInput
-				    placeholder="Enter a name for the suggestion"
-				    formControlName="title"
-				    required>
-				<mat-error *ngIf="suggestionForm.hasError('required', ['title'])">
-					Title is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
-
-			<mat-form-field class="example-chip-list">
+			<span *ngIf="createOrEdit === 'edit'"
+			    class="mat-caption group-label">
+				Hint: Start by searching for the content you'd like to suggest an edit to.
+			</span>
+			<mat-form-field *ngIf="createOrEdit === 'edit'"
+			    class="example-chip-list">
 				<mat-chip-list #chipList>
 					<mat-chip *ngIf="selectedObject"
 					    [selectable]="false"
 					    [removable]="true"
-					    (removed)="solutionRemoved(solution)">
+					    (removed)="parentRemoved(solution)">
 						{{selectedObject.title || selectedObject.name}}
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
-					<input placeholder="Select content to edit..."
+					<input placeholder="Search for content to edit..."
 					    #parentInput
 					    formControlName="parent"
 					    [matAutocomplete]="auto"
@@ -46,14 +60,72 @@
 				</mat-autocomplete>
 			</mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="description"></quill-editor>
-			</div>
+			<span class='group-label'>{{createOrEdit == 'create' ? 'Enter a name for the suggestion' : 'Suggest a change to the name'}}</span>
+			<span class="mat-caption group-label">Hint: Keep it short and snappy!</span>
+			<ng-container *ngIf="createOrEdit =='create' || selectedObject">
+				<mat-form-field>
+					<input matInput
+					    placeholder="e.g Create new content for climate change"
+					    formControlName="title"
+					    required>
+					<mat-error *ngIf="suggestionForm.hasError('required', ['title'])">
+						Title is <strong>required</strong>
+					</mat-error>
+				</mat-form-field>
 
-			<button mat-flat-button
-			    type="submit"
-			    [disabled]="!suggestionForm.valid"
-			    color="primary">Create</button>
+				<span class='group-label'>Summary</span>
+				<span class="mat-caption group-label">
+					Hint: Please provide a general introduction to your contribution (which will be a full-scale "wiki" in a future development of the app). Write your summary for an audience of people that don't know about politics or your contribution. the tone should be simple, clear, friendly and authoritative (like Wikipedia, in fact, try to write your contribution in line with wikipedias principles: encyclopedic, neutral point of view, verifiable accuracy and sighting reliable and authoritative sources). Aim for 250 words max.
+				</span>
+				<div class="quill-editor-container cf">
+					<quill-editor formControlName="description"></quill-editor>
+				</div>
+
+				<ng-container *ngIf="createOrEdit === 'create'">
+					<span class='group-label'>Seed the conversation</span>
+					<span class="mat-caption group-label">
+						Hint: To make sure the participants are engaged with the integrated Pol.Is platform as soon as they visit it, you need to “seed” the conversation with a few statements in advance. Try to provide 10 diverse statements about your contribution, seperated with commas. Examples of statements to add could be ones you know to be controversial, or opinions you know in advance you’d like feedback about. Make sure they’re simple and restricted to a single point, so they’re easy for the initial participants to engage with. The visualisation will appear once seven participants vote
+					</span>
+					<div class="quill-editor-container cf">
+						<quill-editor formControlName="statements"></quill-editor>
+					</div>
+				</ng-container>
+				<span class='group-label'>Links to sources</span>
+				<span class="mat-caption group-label">
+					Hint: At least five third-party media sources (articles, videos, podcast or memes) that relate to your contribution.
+				</span>
+				<mat-form-field class="example-chip-list">
+					<mat-chip-list #mediaChipList>
+						<mat-chip *ngFor="let media of mediaList"
+						    [selectable]="false"
+						    [removable]="true"
+						    (removed)="mediaRemoved(media)">
+							{{media}}
+							<mat-icon matChipRemove>cancel</mat-icon>
+						</mat-chip>
+						<input placeholder="Add related media..."
+						    #mediaInput
+						    [matChipInputFor]="mediaChipList"
+						    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						    [matChipInputAddOnBlur]="false"
+						    (matChipInputTokenEnd)="mediaAdded($event)">
+					</mat-chip-list>
+				</mat-form-field>
+
+				<span class="mat-caption group-label">
+					Your contribution will be sent to us for fine tuning before being added to the app. Don't worry, unless you plan on offending others, your contribution will be posted as soon as possible.
+				</span>
+				<div>
+					<!-- <button mat-stroked-button
+					    (click)="resetForm()"
+					    color="primary">Cancel</button> -->
+					<button mat-flat-button
+					    fxFlex
+					    type="submit"
+					    [disabled]="!suggestionForm.valid"
+					    color="primary">Create</button>
+				</div>
+			</ng-container>
 		</form>
 	</mat-card>
 </div>

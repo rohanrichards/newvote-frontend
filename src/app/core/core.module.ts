@@ -5,9 +5,11 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouteReusableStrategy } from './route-reusable-strategy';
 import { AuthenticationService } from './authentication/authentication.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { AuthenticationGuard } from './authentication/authentication.guard';
 import { AdminGuard } from './authentication/admin.guard';
 import { OwnerGuard } from './authentication/owner.guard';
+import { SuggestionCreatorGuard } from './authentication/suggestion-creator.guard';
 import { ContentGuard } from './authentication/content.guard';
 import { EndorserGuard } from './authentication/endorser.guard';
 import { OrganizationService } from './http/organization/organization.service';
@@ -46,11 +48,13 @@ export function tokenGetter() {
 	],
 	providers: [
 		AuthenticationService,
+		SuggestionService,
 		AuthenticationGuard,
 		AdminGuard,
 		OwnerGuard,
 		ContentGuard,
 		EndorserGuard,
+		SuggestionCreatorGuard,
 		OrganizationService,
 		MetaService,
 		I18nService,

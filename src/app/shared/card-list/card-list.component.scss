@@ -14,12 +14,16 @@
 .item-card {
 
 	.image-container {
-		min-height: 200px;
+		// min-height: 200px;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
 	}
 	cursor: pointer;
+}
+
+.status {
+	text-decoration: underline;
 }
 
 .button-panel {

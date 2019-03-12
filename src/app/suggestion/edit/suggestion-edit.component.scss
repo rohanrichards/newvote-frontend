@@ -3,19 +3,8 @@
 	padding: 1em;
 }
 
-.image-select {
-	margin-bottom: 25px;
-
-	.image-preview {
-		width: 100%;
-		max-height: 250px;
-
-		img {
-			max-width: 100%;
-			max-height: 250px;
-			height: auto;
-		}
-	}
+.group-label {
+	text-align: left;
 }
 
 

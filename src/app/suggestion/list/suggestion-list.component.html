@@ -16,14 +16,7 @@
 		<app-card-list path="/suggestions"
 		    [items]=suggestions
 		    model="Suggestion"
-		    [showChildren]="true"
-		    childPath="suggestions"
-		    childName="Suggestions"
-			[showParent]="true"
-			parentPath="/solutions"
-			parentPropName="solutions"
 		    (delete)="onDelete($event)"
-		    (vote)="onVote($event)"
-		    (childVote)="onVote($event)"></app-card-list>
+		    (vote)="onVote($event)"></app-card-list>
 	</div>
 </div>

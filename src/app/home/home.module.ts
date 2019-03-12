@@ -10,6 +10,7 @@ import { MaterialModule } from '@app/material.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 
@@ -30,7 +31,8 @@ import { UserService } from '@app/core/http/user/user.service';
 	providers: [
 		IssueService,
 		ProposalService,
-		UserService
+		UserService,
+		SolutionService
 	]
 })
 export class HomeModule { }

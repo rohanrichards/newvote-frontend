@@ -3,6 +3,7 @@ import { finalize } from 'rxjs/operators';
 
 import { OrganizationService } from '@app/core';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { SolutionService } from '@app/core/http/solution/solution.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -21,6 +22,7 @@ export class HomeComponent implements OnInit {
 	isLoading: boolean;
 	org: Organization;
 	issues: Issue[];
+	solutions: any[];
 	proposals: any[];
 	userCount: number;
 
@@ -28,6 +30,7 @@ export class HomeComponent implements OnInit {
 		public auth: AuthenticationService,
 		private organizationService: OrganizationService,
 		private issueService: IssueService,
+		private solutionService: SolutionService,
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService
@@ -41,10 +44,11 @@ export class HomeComponent implements OnInit {
 					title: 'Home'
 				});
 		});
+
 		this.issueService.list({ forceUpdate: false }).subscribe((issues) => this.issues = issues);
+		this.solutionService.list({forceUpdate: false}).subscribe((solutions) => this.solutions = solutions);
 		this.proposalService.list({ forceUpdate: false }).subscribe((proposals) => this.proposals = proposals);
 		this.userService.count({ forceUpdate: false }).subscribe((count) => this.userCount = count);
-
 	}
 
 }

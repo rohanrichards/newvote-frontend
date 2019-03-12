@@ -18,6 +18,7 @@ export interface LoginContext {
 	username: string;
 	password: string;
 	remember?: boolean;
+	organizations?: [Organization];
 }
 
 const routes = {
@@ -87,6 +88,7 @@ export class AuthenticationService {
 	 * @return The user credentials.
 	 */
 	signup(context: LoginContext): Observable<Credentials> {
+		context.organizations = [this.organizationService.org];
 		return this.httpClient
 			.post<Credentials>(routes.signup(), context)
 			.pipe(
@@ -134,16 +136,16 @@ export class AuthenticationService {
 	isAdmin(): boolean {
 		if (this._credentials) {
 			return _includes(this._credentials.user.roles, 'admin');
+		} else {
+			return false;
 		}
 	}
 
 	/**
-	 * Checks is the user is an owner of the content.
-	 * owner implies admin, organization owner or content owner
-	 * checking content owner is optional
+	 * owner implies admin or organization owner
 	 * @return True if the user is an admin.
 	 */
-	isOwner(object?: any): boolean {
+	isOwner(): boolean {
 		if (this._credentials) {
 			// admin owns everything
 			if (_includes(this._credentials.user.roles, 'admin')) {
@@ -155,10 +157,30 @@ export class AuthenticationService {
 				return true;
 			}
 
-			if (object && object.owner && object.owner._id === this._credentials.user._id) {
-				return true;
-			}
+			return false;
+		} else {
+			return false;
+		}
+	}
 
+	/**
+	 * check if content is owned by current user
+	 * @return True if the user is an admin.
+	 */
+	isCreator(object?: any): boolean {
+		if (!object) {
+			return false;
+		}
+
+		if (this._credentials) {
+			if (object.user) {
+				const id = object.user._id || object.user;
+
+				if (id === this._credentials.user._id) {
+					return true;
+				}
+			}
+		} else {
 			return false;
 		}
 	}

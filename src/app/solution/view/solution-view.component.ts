@@ -9,7 +9,6 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { ISolution } from '@app/core/models/solution.model';
 import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 
@@ -20,8 +19,7 @@ import { Vote } from '@app/core/models/vote.model';
 })
 export class SolutionViewComponent implements OnInit {
 
-	solution: ISolution;
-	solutions: Array<Solution>;
+	solution: Solution;
 	isLoading: boolean;
 
 	constructor(
@@ -46,7 +44,7 @@ export class SolutionViewComponent implements OnInit {
 	getSolution(id: string, forceUpdate?: boolean) {
 		this.solutionService.view({ id: id, orgs: [], forceUpdate })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((solution: ISolution) => {
+			.subscribe((solution: Solution) => {
 				this.solution = solution;
 				this.meta.updateTags(
 					{

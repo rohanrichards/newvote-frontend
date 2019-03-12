@@ -24,7 +24,7 @@ export class OrganizationListComponent implements OnInit {
 	headerButtons = [{
 		text: 'New Organization',
 		color: 'warn',
-		routerLink: '/organizations/create',
+		routerLink: '/communities/create',
 		role: 'admin'
 	}];
 

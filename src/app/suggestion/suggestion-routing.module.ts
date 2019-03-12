@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthenticationGuard } from '@app/core/authentication/authentication.guard';
 import { OwnerGuard } from '@app/core/authentication/owner.guard';
+import { SuggestionCreatorGuard } from '@app/core/authentication/suggestion-creator.guard';
 
 import { extract } from '@app/core';
 import { SuggestionListComponent } from './list/suggestion-list.component';
@@ -31,13 +32,12 @@ const routes: Routes = [
 		path: 'edit/:id',
 		component: SuggestionEditComponent,
 		data: { title: extract('Edit Suggestion') },
-		canActivate: [OwnerGuard]  // only the owner of the suggestion or the org can edit
+		canActivate: [SuggestionCreatorGuard]  // only the owner of the suggestion or the org can edit
 	},
 	{
 		path: ':id',
 		component: SuggestionViewComponent,
 		data: { title: extract('Suggestion') },
-		canActivate: [OwnerGuard]  // only the owner of the suggestion or the org can view
 	},
 ];
 

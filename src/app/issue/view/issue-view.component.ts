@@ -73,8 +73,8 @@ export class IssueViewComponent implements OnInit {
 	getSolutions(id: string, forceUpdate?: boolean) {
 		this.solutionService.list({ params: { issueId: id }, forceUpdate })
 			.subscribe((solutions: Array<Solution>) => {
-				this.solutions = solutions;
-				console.log('got solutions: ', solutions);
+				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
+				// console.log('got solutions: ', solutions);
 				this.getMedia(id);
 			});
 	}
@@ -84,7 +84,7 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((mediaList: Array<Media>) => {
 				this.media = mediaList;
-				console.log('got media: ', mediaList);
+				// console.log('got media: ', mediaList);
 			});
 	}
 

@@ -8,9 +8,10 @@
 		    routerLink="{{path}}/{{item._id}}">
 			<div mat-card-image
 			    class="image-container"
+				[ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
 			    [style.background-image]="'url(' + item.imageUrl + ')'">
 				<div class="button-panel"
-				    *ngIf="auth.isOwner(item)">
+				    *ngIf="auth.isOwner() || auth.isCreator(item)">
 					<button color="accent"
 					    mat-icon-button
 					    (click)="$event.stopPropagation()"
@@ -35,6 +36,7 @@
 								<span *ngIf="item[parentPropName].length > 1 && i !== item[parentPropName].length - 1">,&nbsp;</span>
 							</span>
 						</p>
+						<p class="status" *ngIf="item.status != null">Suggestion Status: {{item.status === -1 ? 'Rejected' : item.status === 0 ? 'Pending' : 'Approved' }}
 						<p [innerHtml]="item.description"></p>
 					</mat-card-subtitle>
 				</mat-card-title>

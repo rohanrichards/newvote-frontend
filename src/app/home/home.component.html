@@ -74,10 +74,10 @@
 			<div fxFlex></div>
 			<div fxLayout="column">
 				<span class="mat-h1"
-				    *ngIf="proposals">{{proposals.length}}</span>
+				    *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
 				<span class="mat-h1"
-				    *ngIf="!proposals">0</span>
-				<span class="mat-h3">Proposals</span>
+				    *ngIf="!proposals || !solutions">0</span>
+				<span class="mat-h3">Solutions</span>
 			</div>
 			<div fxFlex></div>
 		</div>
@@ -240,11 +240,11 @@
 							    src="assets/idea.svg" /></div>
 						<p fxFlex
 						    class="text-block">Proposals provide further clarity to solutions and specific actions.</p>
-						<div>
+						<!-- <div>
 							<button mat-button
 							    routerLink="/proposals">
 								VIEW PROPOSALS ></button>
-						</div>
+						</div> -->
 					</div>
 				</div>
 				<div fxFlex></div>

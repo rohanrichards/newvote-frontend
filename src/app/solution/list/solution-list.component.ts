@@ -56,7 +56,9 @@ export class SolutionListComponent implements OnInit {
 		this.isLoading = true;
 		this.solutionService.list({ orgs: [], forceUpdate: force })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(solutions => { this.solutions = solutions; });
+			.subscribe(solutions => {
+				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
+			});
 	}
 
 	// find the different solution and only update it, not entire list

@@ -56,6 +56,35 @@ export class SuggestionViewComponent implements OnInit {
 			});
 	}
 
+	approveSuggestion() {
+		this.suggestion.status = 1;
+		this.updateSuggestion();
+	}
+
+	pendSuggestion() {
+		this.suggestion.status = 0;
+		this.updateSuggestion();
+	}
+
+	denySuggestion() {
+		this.suggestion.status = -1;
+		this.updateSuggestion();
+	}
+
+	updateSuggestion() {
+		this.isLoading = true;
+		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				if (t.error) {
+					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+				} else {
+					this.openSnackBar('Succesfully updated', 'OK');
+					this.suggestion = t;
+				}
+			});
+	}
+
 	onVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -93,7 +122,7 @@ export class SuggestionViewComponent implements OnInit {
 			if (confirm) {
 				this.suggestionService.delete({ id: this.suggestion._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/suggestions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
