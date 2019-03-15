@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { ChartsModule } from 'ng2-charts';
 import { SwiperModule } from 'ngx-swiper-wrapper';
 import {MatBadgeModule} from '@angular/material/badge';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { MaterialModule } from '@app/material.module';
 import { ShareModule } from '@ngx-share/core';
@@ -33,7 +34,8 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		ChartsModule,
 		SwiperModule,
 		MatBadgeModule,
-		RouterModule
+		ClipboardModule,
+		RouterModule,
 	],
 	declarations: [
 		LoaderComponent,

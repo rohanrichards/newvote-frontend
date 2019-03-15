@@ -33,10 +33,16 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
 		if (response instanceof HttpErrorResponse) {
 			const error = <HttpErrorResponse>response;
 			if (error.status === 401) {
-				log.error('User is Unauthorized');
+				log.error('User is not authenticated - please log in');
 				const auth = this.inj.get(AuthenticationService);
 				auth.logout();
 				this.router.navigate(['/auth/login'], { queryParams: { 'redirect': this.router.url } });
+			} else if (error.status === 403) {
+				log.error('User is not authorized');
+				if (error.error.role && error.error.role === 'user') {
+					log.error('User has guest role, verification required');
+					this.router.navigate(['/auth/verify'], { queryParams: { 'redirect': this.router.url } });
+				}
 			}
 		}
 

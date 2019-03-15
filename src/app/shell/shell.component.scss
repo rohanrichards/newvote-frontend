@@ -18,6 +18,20 @@
 	z-index: 200;
 }
 
+.sticky-verify {
+	position: fixed;
+	z-index: 200;
+	height: 38px;
+}
+
+.top-bar-height-lg {
+	top: 64px;
+}
+
+.top-bar-height-sm {
+	top: 56px;
+}
+
 .with-sidenav {
 	width: calc(100% - 270px);
 }

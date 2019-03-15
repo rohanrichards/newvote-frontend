@@ -24,7 +24,9 @@ export interface LoginContext {
 const routes = {
 	signin: () => `/auth/signin`,
 	signup: () => `/auth/signup`,
-	randomGet: () => `/topics`
+	randomGet: () => `/topics`,
+	sms: () => `/users/sms`,
+	verify: () => `/users/verify`
 };
 
 const credentialsKey = 'credentials';
@@ -189,6 +191,41 @@ export class AuthenticationService {
 		if (this._credentials) {
 			return _includes(this._credentials.user.roles, role);
 		}
+	}
+
+	/**
+	 * check if current user has completed verification
+	 * @return True if the user is verified.
+	 */
+	isVerified(): boolean {
+		// debugger;
+		if (this._credentials) {
+			return (this._credentials.user.verified === true);
+		}
+	}
+
+	setVerified() {
+		this._credentials.user.verified = true;
+	}
+
+	sendVerificationCode(number: number): Observable<any> {
+		return this.httpClient
+			.post(routes.sms(), number)
+			.pipe(
+				map((res) => {
+					return res;
+				})
+			);
+	}
+
+	verifyMobile(code: number): Observable<any> {
+		return this.httpClient
+			.post(routes.verify(), code)
+			.pipe(
+				map((res) => {
+					return res;
+				})
+			);
 	}
 
 	/**

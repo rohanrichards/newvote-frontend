@@ -19,8 +19,8 @@
 					    routerLink="/home"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-            			<span translate>Home</span>
-          			</a>
+						<span translate>Home</span>
+					</a>
 
 					<mat-divider></mat-divider>
 
@@ -28,19 +28,19 @@
 					    routerLink="/issues"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-            			<span translate>Issues</span>
-          			</a>
+						<span translate>Issues</span>
+					</a>
 					<a mat-list-item
 					    routerLink="/solutions"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-            			<span translate>Solutions</span>
-          			</a>
+						<span translate>Solutions</span>
+					</a>
 
 					<a mat-list-item
-						routerLink="/suggestions"
-						routerLinkActive="active"
-						(click)="isMobile && sidenav.close()">
+					    routerLink="/suggestions"
+					    routerLinkActive="active"
+					    (click)="isMobile && sidenav.close()">
 						<span translate>Suggestions</span>
 					</a>
 
@@ -49,14 +49,15 @@
 					<a mat-list-item
 					    href="https://newvote.org/about-us"
 					    target="_blank">
-            			<span translate matLine>About NewVote</span>
-          			</a>
+						<span translate
+						    matLine>About NewVote</span>
+					</a>
 
 					<a mat-list-item
 					    href="https://newvote.org/help"
 					    target="_blank">
-            			<span translate>Help</span>
-          			</a>
+						<span translate>Help</span>
+					</a>
 				</mat-list>
 			</nav>
 		</mat-sidenav>
@@ -68,8 +69,8 @@
 				    mat-icon-button
 				    (click)="sidenav.toggle()"
 				    fxHide.gt-sm>
-          			<mat-icon>menu</mat-icon>
-        		</button>
+					<mat-icon>menu</mat-icon>
+				</button>
 				<span>{{title}}</span>
 				<div fxFlex></div>
 				<mat-autocomplete #auto="matAutocomplete">
@@ -83,8 +84,8 @@
 					<button mat-icon-button
 					    [matMenuTriggerFor]="userMenu"
 					    translate>
-            			<mat-icon>person</mat-icon>
-          			</button>
+						<mat-icon>person</mat-icon>
+					</button>
 					<mat-menu #userMenu="matMenu">
 						<mat-list>
 							<mat-list-item>
@@ -92,7 +93,7 @@
 							</mat-list-item>
 							<mat-divider></mat-divider>
 							<a mat-menu-item
-								*ngIf="auth.isOwner() && organization"
+							    *ngIf="auth.isOwner() && organization"
 							    routerLink="/communities/edit/{{organization._id}}"
 							    translate>Edit Community</a>
 							<mat-divider></mat-divider>
@@ -113,16 +114,29 @@
 				<div>
 					<button mat-icon-button
 					    [matMenuTriggerFor]="languageMenu">
-            			<mat-icon>language</mat-icon>
-          			</button>
+						<mat-icon>language</mat-icon>
+					</button>
 					<mat-menu #languageMenu="matMenu">
 						<button mat-menu-item
 						    *ngFor="let language of languages"
 						    (click)="setLanguage(language)">
-              				{{language}}
-            			</button>
+							{{language}}
+						</button>
 					</mat-menu>
 				</div>
+			</mat-toolbar>
+			<mat-toolbar color="warn"
+				*ngIf="showVerify"
+			    class="sticky-verify"
+			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
+				ngClass.lt-md="top-bar-height-sm">
+				<span class="mat-body">Your account is not yet verified</span>
+				<div fxFlex></div>
+				<button mat-stroked-button routerLink="/auth/verify">Verify Now</button>
+				<button mat-icon-button
+				    (click)="hideVerify = true">
+					<mat-icon>close</mat-icon>
+				</button>
 			</mat-toolbar>
 			<router-outlet></router-outlet>
 		</mat-sidenav-content>

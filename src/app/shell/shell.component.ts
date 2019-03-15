@@ -21,6 +21,7 @@ export class ShellComponent implements OnInit {
 	searchInput = new FormControl('', [Validators.required]);
 	public searchResults$: Observable<any>;
 	organization: any;
+	hideVerify = false;
 	private searchTerms = new Subject<string>();
 
 
@@ -75,6 +76,26 @@ export class ShellComponent implements OnInit {
 
 	get isAuthenticated(): boolean {
 		return this.auth.isAuthenticated();
+	}
+
+	get isVerified(): boolean {
+		// debugger;
+		if (this.isAuthenticated) {
+			return (this.auth.isVerified());
+		} else {
+			return true;
+		}
+	}
+
+	get showVerify(): boolean {
+		if (this.isVerified) {
+			return false;
+		}
+		if (!this.isVerified && !this.hideVerify) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	get languages(): string[] {
