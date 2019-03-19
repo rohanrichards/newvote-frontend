@@ -37,7 +37,7 @@
 						<mat-error *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.required">
 							<span translate>Mobile number is required</span>
 						</mat-error>
-						<mat-error *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.valid && !verifyForm.controls.number.errors.required">
+						<mat-error *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.valid && !numberForm.controls.number.errors.required">
 							<span translate>Mobile number is not valid</span>
 						</mat-error>
 
@@ -71,7 +71,7 @@
 						<mat-error *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.required">
 							<span translate>Verification code is required</span>
 						</mat-error>
-						<mat-error *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.valid && !verifyForm.controls.number.errors.required">
+						<mat-error *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.valid && !verifyForm.controls.code.errors.required">
 							<span translate>Verification code is not valid</span>
 						</mat-error>
 

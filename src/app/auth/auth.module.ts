@@ -11,6 +11,7 @@ import { MaterialModule } from '@app/material.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { ForgotComponent } from './forgot/forgot.component';
 import { VerifyComponent } from './verify/verify.component';
 
 @NgModule({
@@ -28,7 +29,8 @@ import { VerifyComponent } from './verify/verify.component';
 	declarations: [
 		LoginComponent,
 		SignupComponent,
-		VerifyComponent
+		VerifyComponent,
+		ForgotComponent
 	]
 })
 export class AuthModule { }

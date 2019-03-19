@@ -65,9 +65,9 @@ export class VerifyComponent implements OnInit {
 				this.verifyForm.markAsPristine();
 				this.isLoading = false;
 			}))
-			.subscribe(() => {
+			.subscribe((data: any) => {
 				log.debug(`verification completed`);
-				this.authenticationService.setVerified();
+				this.authenticationService.setVerified(data);
 				// route out here
 				this.route.queryParams.subscribe(
 					params => {

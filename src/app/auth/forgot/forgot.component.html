@@ -1,0 +1,115 @@
+<app-loader class="inline-loader"
+    [isLoading]="isLoading"></app-loader>
+<div fxFill
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="1.5rem"
+    class="mat-typography">
+	<div class="forgot-container"
+	    fxLayout="row"
+	    fxLayoutAlign="center">
+		<mat-card fxFlex="90%"
+		    fxFlex.sm="66%"
+		    fxFlex.md="50%"
+		    fxFlex.gt-md="33%"
+		    class="forgot-box">
+			<div class="forgot-error"
+			    *ngIf="error && error.message"
+			    [hidden]="!error || isLoading"
+			    translate>
+				{{error.message}}
+			</div>
+			<form *ngIf="state==='initial'"
+			    (ngSubmit)="forgot()"
+			    [formGroup]="forgotForm"
+			    novalidate>
+				<br />
+				<div fxLayout="column">
+					<span class="mat-display-1">Forgot your password?</span>
+					<p class="caption">Enter your e-mail adress below and we'll send you instructions on how to reset it.</p>
+					<mat-form-field>
+						<input type="email"
+						    matInput
+						    formControlName="email"
+						    [placeholder]="'Email Address' | translate"
+						    required />
+						<mat-error *ngIf="forgotForm.controls.email.errors && forgotForm.controls.email.errors.required">
+							<span translate>Email is required</span>
+						</mat-error>
+						<mat-error *ngIf="forgotForm.controls.email.errors && forgotForm.controls.email.errors.valid && !forgotForm.controls.email.errors.required">
+							<span translate>Email is not valid</span>
+						</mat-error>
+					</mat-form-field>
+
+					<re-captcha class="recaptcha"
+					    formControlName="recaptchaResponse"></re-captcha>
+
+					<!-- required: {{forgotForm.controls.email.errors.required}} ||
+					errors: {{forgotForm.controls.email.errors}} ||
+					valid: {{forgotForm.controls.valid === true}} -->
+
+					<button mat-raised-button
+					    color="primary"
+					    type="submit"
+					    [disabled]="forgotForm.invalid || isLoading">
+						<span translate>Send Email</span>
+					</button>
+				</div>
+			</form>
+
+			<div fxLayout="column"
+			    *ngIf="state==='sent'">
+				<span class="mat-display-1">Email sent!</span>
+				<p class="caption">Once you receive the e-mail follow the instructions to reset your password.</p>
+				<p class="caption">Remember to check your spam or junk folders if you haven't received it after a few minutes.</p>
+			</div>
+
+			<form *ngIf="state==='token'"
+			    (ngSubmit)="reset()"
+			    [formGroup]="resetForm"
+			    novalidate>
+				<br />
+				<div fxLayout="column">
+					<span class="mat-display-1">Reset Password</span>
+					<p class="caption">Please confirm your new password.</p>
+					<mat-form-field>
+						<input type="password"
+						    matInput
+						    formControlName="newPassword"
+						    [placeholder]="'New Password' | translate"
+						    required />
+						<mat-error *ngIf="resetForm.controls.newPassword.errors && resetForm.controls.newPassword.errors.required">
+							<span translate>New password is required</span>
+						</mat-error>
+						<mat-error *ngIf="resetForm.controls.newPassword.errors && resetForm.controls.newPassword.errors.valid && !resetForm.controls.newPassword.errors.required">
+							<span translate>New password is not valid</span>
+						</mat-error>
+
+					</mat-form-field>
+
+					<mat-form-field>
+						<input type="password"
+						    matInput
+						    formControlName="verifyPassword"
+						    [placeholder]="'Confirm Password' | translate"
+						    required />
+						<mat-error *ngIf="resetForm.controls.verifyPassword.errors && resetForm.controls.verifyPassword.errors.required">
+							<span translate>Confirm password is required</span>
+						</mat-error>
+						<mat-error *ngIf="resetForm.controls.verifyPassword.errors && resetForm.controls.verifyPassword.errors.valid && !resetForm.controls.verifyPassword.errors.required">
+							<span translate>Confirm password is not valid</span>
+						</mat-error>
+
+					</mat-form-field>
+
+					<button mat-raised-button
+					    color="primary"
+					    type="submit"
+					    [disabled]="resetForm.invalid || isLoading">
+						<span translate>Reset Password</span>
+					</button>
+				</div>
+			</form>
+		</mat-card>
+	</div>
+</div>

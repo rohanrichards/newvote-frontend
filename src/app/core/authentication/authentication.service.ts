@@ -21,12 +21,26 @@ export interface LoginContext {
 	organizations?: [Organization];
 }
 
+export interface ForgotContext {
+	email: string;
+	recaptchaResponse: string;
+}
+
+export interface ResetContext {
+	email: string;
+	token: string;
+	newPassword: string;
+	verifyPassword: string;
+}
+
 const routes = {
 	signin: () => `/auth/signin`,
 	signup: () => `/auth/signup`,
+	forgot: () => `/auth/forgot`,
+	reset: () => `/auth/reset`,
 	randomGet: () => `/topics`,
 	sms: () => `/users/sms`,
-	verify: () => `/users/verify`
+	verify: () => `/users/verify`,
 };
 
 const credentialsKey = 'credentials';
@@ -109,6 +123,26 @@ export class AuthenticationService {
 		// Customize credentials invalidation here
 		this.setCredentials();
 		return of(true);
+	}
+
+	/**
+	 * Sends an email to the provided address with password reset instructions.
+	 * @return True if the e-mail was sent successfully.
+	 */
+	forgot(context: ResetContext): Observable<Boolean> {
+		// Customize credentials invalidation here
+		return this.httpClient
+			.post<Boolean>(routes.forgot(), context);
+	}
+
+	/**
+	 * Resets the users password combined with a provided token.
+	 * @return True if the password was reset successfully.
+	 */
+	reset(context: ResetContext): Observable<Boolean> {
+		// Customize credentials invalidation here
+		return this.httpClient
+			.post<Boolean>(routes.reset(), context);
 	}
 
 	/**
@@ -204,8 +238,14 @@ export class AuthenticationService {
 		}
 	}
 
-	setVerified() {
-		this._credentials.user.verified = true;
+	setVerified(credentials: Credentials) {
+		// debugger;
+		if (localStorage.getItem(credentialsKey)) {
+			localStorage.setItem(credentialsKey, JSON.stringify(credentials));
+		} else if (sessionStorage.getItem(credentialsKey)) {
+			sessionStorage.setItem(credentialsKey, JSON.stringify(credentials));
+		}
+		this._credentials = credentials;
 	}
 
 	sendVerificationCode(number: number): Observable<any> {

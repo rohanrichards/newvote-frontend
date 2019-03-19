@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
 				this.isLoading = false;
 			}))
 			.subscribe(credentials => {
-				log.debug(`${credentials.user.username} successfully logged in`);
+				log.debug(`${credentials.user.email} successfully logged in`);
 				this.route.queryParams.subscribe(
 					params => {
 						console.log(params);

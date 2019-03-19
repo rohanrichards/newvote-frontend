@@ -1,0 +1,33 @@
+@import "src/theme/theme-variables";
+
+:host {
+  display: flex;
+  flex: 1;
+  background-color: #ECEFF1;
+  height: calc(100% - 64px);
+}
+
+.inline-loader {
+  display: inline-block;
+}
+
+.remember-toggle {
+	margin-bottom: 16px;
+}
+
+.recaptcha {
+	margin-bottom: 16px;
+}
+
+.version {
+  margin: 0;
+}
+
+.forgot-container,
+.mat-form-field {
+  width: 100%;
+}
+
+.forgot-error {
+  color: mat-color($app-warn);
+}
