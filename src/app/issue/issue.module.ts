@@ -6,9 +6,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload';
-
 import { MaterialModule } from '@app/material.module';
 import { IssueRoutingModule } from './issue-routing.module';
+
 import { IssueListComponent } from './list/issue-list.component';
 import { IssueViewComponent } from './view/issue-view.component';
 import { IssueCreateComponent } from './create/issue-create.component';

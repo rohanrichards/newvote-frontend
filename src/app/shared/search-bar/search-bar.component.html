@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+	<mat-form-field class=""
+	    fxFill>
+		<input matInput
+		    type="text"
+		    placeholder="Search Entire Site"
+		    #searchInputElement
+		    [formControl]="searchInputControl"
+		    [matAutocomplete]="auto">
+	</mat-form-field>
+	<mat-autocomplete #auto="matAutocomplete"
+	    (optionSelected)="searchSelected($event)">
+		<mat-option *ngFor="let option of searchResults$ | async"
+		    [value]="option">
+			<span class="schema-tag">{{option.schema}}</span>{{option.name || option.title}}
+		</mat-option>
+	</mat-autocomplete>
+</mat-toolbar>

@@ -20,8 +20,13 @@
 
 .sticky-verify {
 	position: fixed;
-	z-index: 200;
+	z-index: 210;
 	height: 38px;
+}
+
+.sticky-search {
+	position: fixed;
+	z-index: 220;
 }
 
 .top-bar-height-lg {
