@@ -8,8 +8,10 @@
 }
 
 ::ng-deep{
-	.mat-form-field-wrapper {
-		padding-top: 8px !important;
-		padding-bottom: 8px !important;		
+	app-search-bar {
+		.mat-form-field-wrapper {
+			padding-top: 8px !important;
+			padding-bottom: 8px !important;
+		}
 	}
 }
