@@ -16,6 +16,7 @@ import { MetaService } from '@app/core/meta.service';
 export class ShellComponent implements OnInit {
 	organization: any;
 	hideVerify = false;
+	showSearch = false;
 
 	constructor(private router: Router,
 		private titleService: Title,
@@ -68,6 +69,10 @@ export class ShellComponent implements OnInit {
 		} else {
 			return false;
 		}
+	}
+
+	toggleSearch() {
+		this.showSearch = !this.showSearch;
 	}
 
 	get languages(): string[] {

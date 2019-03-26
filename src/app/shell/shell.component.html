@@ -73,6 +73,10 @@
 				</button>
 				<span>{{title}}</span>
 				<div fxFlex></div>
+				<button mat-icon-button
+				    (click)="toggleSearch()">
+					<mat-icon>search</mat-icon>
+				</button>
 				<div *ngIf="isAuthenticated">
 					<button mat-icon-button
 					    [matMenuTriggerFor]="userMenu"
@@ -121,7 +125,9 @@
 			<!-- only show if search button pressed -->
 			<app-search-bar class="sticky-search"
 			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
-			    ngClass.lt-md="top-bar-height-sm"></app-search-bar>
+			    ngClass.lt-md="top-bar-height-sm"
+				[(isVisible)]="showSearch"></app-search-bar>
+
 			<mat-toolbar color="warn"
 			    *ngIf="showVerify"
 			    class="sticky-verify"

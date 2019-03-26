@@ -6,3 +6,10 @@
 	padding-right: 5px;
 	margin-right: 8px;
 }
+
+::ng-deep{
+	.mat-form-field-wrapper {
+		padding-top: 8px !important;
+		padding-bottom: 8px !important;		
+	}
+}

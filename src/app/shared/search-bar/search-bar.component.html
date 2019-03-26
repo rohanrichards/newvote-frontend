@@ -1,12 +1,16 @@
-<mat-toolbar color="primary">
+<mat-toolbar *ngIf="isVisible" color="accent"
+    fxFill>
 	<mat-form-field class=""
+	    appearance="outline"
+	    color="warn"
 	    fxFill>
+		<mat-label>Search entire site</mat-label>
 		<input matInput
 		    type="text"
-		    placeholder="Search Entire Site"
 		    #searchInputElement
 		    [formControl]="searchInputControl"
 		    [matAutocomplete]="auto">
+		<mat-icon matPrefix>search</mat-icon>
 	</mat-form-field>
 	<mat-autocomplete #auto="matAutocomplete"
 	    (optionSelected)="searchSelected($event)">

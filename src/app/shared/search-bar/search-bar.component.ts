@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material';
 import { Subject, Observable, of } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -12,16 +13,19 @@ import { SearchService } from '@app/core/http/search/search.service';
 	styleUrls: ['./search-bar.component.scss']
 })
 export class SearchBarComponent implements OnInit {
+	@Input() isVisible = false;
+	@Output() isVisibleChange = new EventEmitter<boolean>();
 
 	@ViewChild('searchInputElement') searchInputElement: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-	searchInputControl = new FormControl('', [Validators.required]);
+	searchInputControl = new FormControl('', []);
 	public searchResults$: Observable<any>;
 	private searchTerms = new Subject<string>();
 
 	constructor(
-		private searchService: SearchService
+		private searchService: SearchService,
+		private router: Router
 	) { }
 
 	ngOnInit() {
@@ -57,7 +61,10 @@ export class SearchBarComponent implements OnInit {
 		const url = `/${model.toLowerCase()}s/${item._id}`;
 
 		this.searchInputControl.setValue('');
-		console.log('routing to: ', url);
+		this.isVisible = false;
+		this.isVisibleChange.emit(false);
+		this.router.navigate([url]);
+		console.log(this);
 	}
 
 }
