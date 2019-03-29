@@ -11,7 +11,7 @@
 				[ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
 			    [style.background-image]="'url(' + item.imageUrl + ')'">
 				<div class="button-panel"
-				    *ngIf="auth.isOwner() || auth.isCreator(item)">
+				    *ngIf="auth.isModerator() || auth.isCreator(item)">
 					<button color="accent"
 					    mat-icon-button
 					    (click)="$event.stopPropagation()"

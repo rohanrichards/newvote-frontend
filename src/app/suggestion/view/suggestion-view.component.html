@@ -8,12 +8,12 @@
 	    fxLayout="column"
 	    [style.background-image]="'url(' + suggestion.imageUrl + ')'">
 		<div class="admin-panel"
-		    *ngIf="auth.isOwner() || auth.isCreator(suggestion)"
+		    *ngIf="auth.isModerator() || auth.isCreator(suggestion)"
 		    fxLayout="column"
 		    fxLayoutAlign="center end">
 			<div class="button-panel">
 				<!-- only show these buttons for admins/org owners -->
-				<span *ngIf="auth.isOwner()">
+				<span *ngIf="auth.isModerator()">
 					<button mat-icon-button
 					    matTooltip="Set Suggestion Approved"
 					    [color]="suggestion.status === 1 ? 'warn' : 'primary'"

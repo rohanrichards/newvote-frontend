@@ -1,4 +1,4 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { merge } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -26,8 +26,8 @@ export class OrganizationEditComponent implements OnInit {
 	organization: Organization;
 	allUsers: Array<User> = [];
 	owner: User;
-	filteredUsers: Observable<User[]>;
-	separatorKeysCodes: number[] = [ENTER, COMMA];
+	filteredOwners: Observable<User[]>;
+	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading: boolean;
 	uploader: FileUploader;
 
@@ -37,7 +37,9 @@ export class OrganizationEditComponent implements OnInit {
 		description: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl(''),
 		iconUrl: new FormControl(''),
-		owner: new FormControl('')
+		owner: new FormControl(''),
+		moderators: new FormControl([]),
+		moderatorsControl: new FormControl([], [Validators.email])
 	});
 
 	backgroundImage = {
@@ -73,8 +75,9 @@ export class OrganizationEditComponent implements OnInit {
 		]
 	};
 
-	@ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('ownerInput') ownerInput: ElementRef<HTMLInputElement>;
+	@ViewChild('ownerAuto') ownerAutocomplete: MatAutocomplete;
+	@ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
 
 	constructor(
 		private userService: UserService,
@@ -85,9 +88,9 @@ export class OrganizationEditComponent implements OnInit {
 		private location: Location,
 		private meta: MetaService
 	) {
-		this.filteredUsers = this.organizationForm.get('owner').valueChanges.pipe(
+		this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
 			startWith(''),
-			map((issue: string) => issue ? this._filter(issue) : this.allUsers.slice()));
+			map((user: string) => user ? this._filter(user) : this.allUsers.slice()));
 	}
 
 	ngOnInit() {
@@ -101,11 +104,16 @@ export class OrganizationEditComponent implements OnInit {
 					this.backgroundImage.src = organization.imageUrl;
 					this.iconImage.src = organization.iconUrl;
 					this.owner = organization.owner;
+
+					organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m);
+
 					this.organizationForm.patchValue({
 						'name': organization.name,
 						'description': organization.description,
-						'url': organization.url
+						'url': organization.url,
+						'moderators': organization.moderators
 					});
+
 					this.meta.updateTags(
 						{
 							title: `Edit ${organization.name} Community`,
@@ -218,14 +226,35 @@ export class OrganizationEditComponent implements OnInit {
 		});
 	}
 
-	userSelected(event: any) {
+	ownerSelected(event: any) {
 		const selectedItem = event.option.value;
 		this.owner = selectedItem;
 		this.organizationForm.get('owner').setValue('');
-		this.userInput.nativeElement.value = '';
+		this.ownerInput.nativeElement.value = '';
 	}
 
-	userRemoved() {
+	moderatorSelected(event: any) {
+		console.log('moderator selected: ', event);
+		const selectedItem = event.value;
+		if (selectedItem && selectedItem != null) {
+			const moderators = this.organizationForm.value.moderators;
+			if (moderators.indexOf(selectedItem) === -1) {
+				moderators.push(selectedItem);
+				this.organizationForm.patchValue({ moderators });
+			}
+			this.organizationForm.get('moderatorsControl').setValue('');
+			this.moderatorInput.nativeElement.value = '';
+		}
+	}
+
+	moderatorRemoved(mod: any) {
+		const moderators = this.organizationForm.value.moderators;
+		const index = moderators.indexOf(mod);
+		moderators.splice(index, 1);
+		this.organizationForm.patchValue(moderators);
+	}
+
+	ownerRemoved() {
 		this.owner = null;
 	}
 

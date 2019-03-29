@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild }
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material';
-import { Subject, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { SearchService } from '@app/core/http/search/search.service';
@@ -21,7 +21,6 @@ export class SearchBarComponent implements OnInit {
 
 	searchInputControl = new FormControl('', []);
 	public searchResults$: Observable<any>;
-	private searchTerms = new Subject<string>();
 
 	constructor(
 		private searchService: SearchService,
@@ -36,7 +35,6 @@ export class SearchBarComponent implements OnInit {
 				switchMap(
 					(query: string) => {
 						if (query !== '') {
-							console.log('search results: ', this.searchService.all({ query }));
 							return this.searchService.all({ query });
 						} else {
 							return of([]);
@@ -44,13 +42,6 @@ export class SearchBarComponent implements OnInit {
 					}
 				)
 			);
-
-		this.searchResults$.subscribe(results => console.log(results));
-	}
-
-	search(term: string) {
-		console.log('searching: ', term);
-		this.searchTerms.next(term);
 	}
 
 	searchSelected(event: any) {

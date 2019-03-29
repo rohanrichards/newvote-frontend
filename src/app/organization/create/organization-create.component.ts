@@ -1,4 +1,4 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -25,7 +25,7 @@ export class OrganizationCreateComponent implements OnInit {
 	allUsers: Array<User> = [];
 	owner: User;
 	filteredUsers: Observable<User[]>;
-	separatorKeysCodes: number[] = [ENTER, COMMA];
+	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading = true;
 	backgroundImage: any;
 	iconImage: any;
@@ -36,7 +36,9 @@ export class OrganizationCreateComponent implements OnInit {
 		description: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl('', [Validators.required]),
 		iconUrl: new FormControl('', [Validators.required]),
-		owner: new FormControl('')
+		owner: new FormControl(''),
+		moderators: new FormControl([]),
+		moderatorsControl: new FormControl([], [Validators.email])
 	});
 
 	uploaderOptions: FileUploaderOptions = {
@@ -58,6 +60,7 @@ export class OrganizationCreateComponent implements OnInit {
 
 	@ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
 
 	constructor(
 		private userService: UserService,
@@ -177,6 +180,27 @@ export class OrganizationCreateComponent implements OnInit {
 
 	userRemoved(user: any) {
 		this.owner = null;
+	}
+
+	moderatorSelected(event: any) {
+		console.log('moderator selected: ', event);
+		const selectedItem = event.value;
+		if (selectedItem && selectedItem != null) {
+			const moderators = this.organizationForm.value.moderators;
+			if (moderators.indexOf(selectedItem) === -1) {
+				moderators.push(selectedItem);
+				this.organizationForm.patchValue({ moderators });
+			}
+			this.organizationForm.get('moderatorsControl').setValue('');
+			this.moderatorInput.nativeElement.value = '';
+		}
+	}
+
+	moderatorRemoved(mod: any) {
+		const moderators = this.organizationForm.value.moderators;
+		const index = moderators.indexOf(mod);
+		moderators.splice(index, 1);
+		this.organizationForm.patchValue(moderators);
 	}
 
 	private _filter(value: any): User[] {

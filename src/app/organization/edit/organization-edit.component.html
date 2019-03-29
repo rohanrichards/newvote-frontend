@@ -45,25 +45,44 @@
 					<mat-chip *ngIf="owner"
 					    [selectable]="false"
 					    [removable]="true"
-					    (removed)="userRemoved(owner)">
+					    (removed)="ownerRemoved(owner)">
 						{{owner.firstName}} {{owner.lastName}} {{owner.email}}
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
 					<input placeholder="Select Community Owner"
-					    #userInput
+					    #ownerInput
 					    formControlName="owner"
-					    [matAutocomplete]="auto"
+					    [matAutocomplete]="ownerAuto"
 					    [matChipInputFor]="chipList"
 					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 					    [matChipInputAddOnBlur]="true">
 				</mat-chip-list>
-				<mat-autocomplete #auto="matAutocomplete"
-				    (optionSelected)="userSelected($event)">
-					<mat-option *ngFor="let user of filteredUsers | async"
+				<mat-autocomplete #ownerAuto="matAutocomplete"
+				    (optionSelected)="ownerSelected($event)">
+					<mat-option *ngFor="let user of filteredOwners | async"
 					    [value]="user">
 						{{user.firstName}} {{user.lastName}} {{user.email}}
 					</mat-option>
 				</mat-autocomplete>
+			</mat-form-field>
+
+			<mat-form-field class="example-chip-list" *ngIf="auth.isOwner()">
+				<mat-chip-list #modChipList>
+					<mat-chip *ngFor="let mod of organizationForm.value.moderators"
+						[selectable]="false"
+						[removable]="true"
+						(removed)="moderatorRemoved(mod)">
+						{{mod}}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+					<input placeholder="Select Community Moderators"
+						#moderatorInput
+						formControlName="moderatorsControl"
+						[matChipInputFor]="modChipList"
+						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						[matChipInputAddOnBlur]="true"
+           				(matChipInputTokenEnd)="moderatorSelected($event)">
+				</mat-chip-list>
 			</mat-form-field>
 
 			<span>Home Page Background Image</span>

@@ -16,7 +16,7 @@
 					    class="image-container"
 					    [style.background-image]="'url(' + item.image + ')'">
 						<div class="button-panel"
-						    *ngIf="auth.isOwner(item)">
+						    *ngIf="auth.isModerator(item)">
 							<button color="accent"
 							    mat-icon-button
 							    (click)="$event.stopPropagation()"

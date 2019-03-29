@@ -6,6 +6,7 @@ export interface IOrganization {
 	imageUrl: string;
 	iconUrl: string;
 	owner?: any;
+	moderators?: Array<any>;
 	created?: Date;
 }
 
@@ -16,6 +17,7 @@ export class Organization implements IOrganization {
 		public description: string = '',
 		public url: string = '',
 		public owner: any = {},
+		public moderators: any = [],
 		public imageUrl: string = '',
 		public iconUrl: string = ''
 	) { }

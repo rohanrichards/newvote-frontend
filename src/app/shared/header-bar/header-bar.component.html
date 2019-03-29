@@ -13,7 +13,7 @@
 			<div>
 				<span *ngFor="let button of buttons">
 					<button mat-raised-button
-					 	*ngIf="auth.isOwner() || auth.hasRole(button.role)"
+					 	*ngIf="auth.isModerator() || auth.hasRole(button.role)"
 					    [color]="button.color"
 					    [routerLink]="button.routerLink">{{button.text}}</button>
 				</span>

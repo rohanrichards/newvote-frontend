@@ -200,6 +200,30 @@ export class AuthenticationService {
 	}
 
 	/**
+	 * moderators are on the list of org moderators
+	 * also allows through admins or owners
+	 * @return True if the user is moderator.
+	 */
+	isModerator(): boolean {
+		// debugger;
+		if (this._credentials) {
+			// owners and admins are allowed to do anything a moderator can
+			if (this.isOwner()) {
+				return true;
+			}
+
+			// check if user is within moderators list
+			if (this._org && this._org.moderators && _includes(this._org.moderators, this._credentials.user._id)) {
+				return true;
+			}
+
+			return false;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * check if content is owned by current user
 	 * @return True if the user is an admin.
 	 */

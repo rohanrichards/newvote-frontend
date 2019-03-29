@@ -9,6 +9,7 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { AuthenticationGuard } from './authentication/authentication.guard';
 import { AdminGuard } from './authentication/admin.guard';
 import { OwnerGuard } from './authentication/owner.guard';
+import { ModeratorGuard } from './authentication/moderator.guard';
 import { SuggestionCreatorGuard } from './authentication/suggestion-creator.guard';
 import { ContentGuard } from './authentication/content.guard';
 import { EndorserGuard } from './authentication/endorser.guard';
@@ -52,6 +53,7 @@ export function tokenGetter() {
 		AuthenticationGuard,
 		AdminGuard,
 		OwnerGuard,
+		ModeratorGuard,
 		ContentGuard,
 		EndorserGuard,
 		SuggestionCreatorGuard,

@@ -8,7 +8,7 @@
 		fxLayout="column"
 	    [style.background-image]="'url(' + topic.imageUrl + ')'">
 		<div class="admin-panel"
-		    *ngIf="auth.isOwner(topic)"
+		    *ngIf="auth.isModerator(topic)"
 		    fxLayout="column"
 		    fxLayoutAlign="center end">
 			<div class="button-panel">

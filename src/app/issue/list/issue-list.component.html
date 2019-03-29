@@ -43,7 +43,7 @@
 				<h2 class="mat-h1">
 					{{topic.name}}
 					<div class="button-panel"
-						*ngIf="auth.isOwner(topic)">
+						*ngIf="auth.isModerator(topic)">
 						<button color="accent"
 							mat-icon-button
 							[routerLink]="['/topics/edit', topic._id]">

@@ -19,21 +19,24 @@ export class SuggestionCreatorGuard implements CanActivate {
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): (Promise<boolean>) {
 		const id = route.params.id;
+		if (this.authenticationService.isModerator()) {
+			return Promise.resolve(true);
+		}
 		return new Promise((resolve, reject) => {
 			if (!id) {
 				resolve(false);
 			}
 
 			this.suggestionService.view({ id }).subscribe(s => {
-					if (!s) {
-						resolve(false);
-					}
+				if (!s) {
+					resolve(false);
+				}
 
-					if (this.authenticationService.isAdmin() || this.authenticationService.isCreator(s)) {
-						resolve(true);
-					} else {
-						resolve(false);
-					}
+				if (this.authenticationService.isAdmin() || this.authenticationService.isCreator(s)) {
+					resolve(true);
+				} else {
+					resolve(false);
+				}
 			});
 		});
 	}
