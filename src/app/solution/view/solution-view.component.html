@@ -85,7 +85,7 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<span class="mat-headline">Vote on Proposals</span>
+		<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Proposals</span>
 		<app-card-list path="/proposals"
 		    [items]="solution.proposals"
 		    model="Proposal"

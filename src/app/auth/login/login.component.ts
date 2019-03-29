@@ -52,8 +52,12 @@ export class LoginComponent implements OnInit {
 				log.debug(`${credentials.user.email} successfully logged in`);
 				this.route.queryParams.subscribe(
 					params => {
-						console.log(params);
-						this.router.navigate([params.redirect || '/'], { replaceUrl: true });
+						// console.log(params);
+						if (credentials.user.verified) {
+							this.router.navigate([params.redirect || '/'], { replaceUrl: true });
+						} else {
+							this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true });
+						}
 					}
 				);
 			}, error => {
