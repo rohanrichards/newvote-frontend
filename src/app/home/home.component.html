@@ -34,7 +34,8 @@
 		<h2 class="mat-h2">What's Hot?</h2>
 		<app-grid-list *ngIf="issues"
 		    path="/issues"
-		    model="Issue"
+			model="Issue"
+			[itemLimit]="ISSUE_LIMIT"
 		    [items]=issues></app-grid-list>
 		<div>
 			<button mat-button

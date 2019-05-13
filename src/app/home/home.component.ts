@@ -26,6 +26,8 @@ export class HomeComponent implements OnInit {
 	proposals: any[];
 	userCount: number;
 
+	ISSUE_LIMIT = 6;
+
 	constructor(
 		public auth: AuthenticationService,
 		private organizationService: OrganizationService,
