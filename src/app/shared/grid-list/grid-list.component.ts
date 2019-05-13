@@ -20,8 +20,11 @@ export class GridListComponent implements OnInit {
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	public get getItems() {
+
 		if (this.itemLimit) {
-			return this.items.filter((item: any, index: Number) => index < this.itemLimit)
+			return this.items
+				.filter((item: any, index: Number) => index < this.itemLimit)
+				.sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore);
 		}
 
 		return this.items;
