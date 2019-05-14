@@ -47,6 +47,16 @@
 					<mat-divider></mat-divider>
 
 					<a mat-list-item
+						*ngIf="organization && organization.organizationUrl"
+						href="#"
+						(click)="visitOrganizationUrl($event)"
+						target="_blank"
+						>
+						<span translate
+							matLine>About {{ organization.name }}</span>
+					</a>
+					
+					<a mat-list-item
 					    href="https://newvote.org/about-us"
 					    target="_blank">
 						<span translate
