@@ -40,6 +40,14 @@
 				</mat-error>
 			</mat-form-field>
 
+			<mat-form-field>
+				<input matInput
+					type="url"
+				    placeholder="(optional) URL to your organization"
+				    formControlName="organizationUrl"
+				    >
+			</mat-form-field>
+
 			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
 				<mat-chip-list #chipList>
 					<mat-chip *ngIf="owner"
