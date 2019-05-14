@@ -33,6 +33,7 @@ export class OrganizationCreateComponent implements OnInit {
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
+		organizationUrl: new FormControl(''),
 		description: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl('', [Validators.required]),
 		iconUrl: new FormControl('', [Validators.required]),
