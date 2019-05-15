@@ -71,7 +71,50 @@
 		</div>
 	</div>
 </mat-toolbar>
-
+<div class="container"
+    fxLayoutAlign="center center	">
+	<div fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px"
+		*ngIf="!headingEdit"
+		>
+		<span class="mat-headline" *ngIf="media && media.length > 0">
+			{{ this.issue.mediaHeading || "Third Party Media"}}
+		</span>
+		<button 
+			*ngIf="auth.isModerator(issue)"
+			mat-icon-button
+			matTooltip="Edit this Issue"
+			color="accent"
+			(click)="toggleHeader()"
+			>
+				<mat-icon aria-label="Edit the issue">edit</mat-icon>
+			</button>
+	</div>
+	<div 
+		*ngIf="headingEdit && auth.isModerator(issue)"
+		fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px"
+		>
+		<mat-form-field class="example-full-width">
+			<input 
+				#newHeading 
+				matInput 
+				placeholder="Heading Name"
+				(keyup.enter)="handleSubmit(newHeading.value)"
+				(blur)="handleSubmit()"
+				>
+			<button 
+				mat-icon-button
+				matSuffix
+				color="accent"
+				(click)="handleSubmit(newHeading.value)"
+				>
+				<mat-icon >send</mat-icon>
+			</button>
+			
+		</mat-form-field>
+	</div>
+</div>
 <app-swiper-wrapper path="/media"
 	[items]="media"
     model="Media"
