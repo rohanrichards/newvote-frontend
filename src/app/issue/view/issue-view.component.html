@@ -72,28 +72,36 @@
 	</div>
 </mat-toolbar>
 <div class="container"
-    fxLayoutAlign="center center	">
-	<div fxFlex.gt-sm="690px"
+	fxLayoutAlign="center center"
+	*ngIf="media"
+	>
+	<div
+		fxLayoutAlign="center center"
+		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
 		*ngIf="!headingEdit"
 		>
-		<span class="mat-headline" *ngIf="media && media.length > 0">
+		<h3 class="mat-headline" 
+			*ngIf="media && media.length > 0"
+			[ngStyle]="{ 'margin-bottom': '0px'}"
+			>
 			{{ this.issue.mediaHeading || "Third Party Media"}}
-		</span>
+		</h3>
 		<button 
-			*ngIf="auth.isModerator(issue)"
 			mat-icon-button
 			matTooltip="Edit this Issue"
 			color="accent"
 			(click)="toggleHeader()"
+			*ngIf="auth.isModerator()"
 			>
 				<mat-icon aria-label="Edit the issue">edit</mat-icon>
-			</button>
-	</div>
+		</button>
+	</div>		
 	<div 
-		*ngIf="headingEdit && auth.isModerator(issue)"
+		fxLayoutAlign="center center"
 		fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px"
+		fxFlex.gt-md="800px"
+		*ngIf="auth.isModerator() && headingEdit"
 		>
 		<mat-form-field class="example-full-width">
 			<input 
@@ -110,8 +118,7 @@
 				(click)="handleSubmit(newHeading.value)"
 				>
 				<mat-icon >send</mat-icon>
-			</button>
-			
+			</button>	
 		</mat-form-field>
 	</div>
 </div>

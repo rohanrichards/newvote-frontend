@@ -33,6 +33,7 @@ export class IssueViewComponent implements OnInit {
 	isLoading: boolean;
 	voteSnack: any;
 	headingEdit = false;
+	isMod: boolean;
 
 	constructor(
 		private topicService: TopicService,
@@ -54,6 +55,8 @@ export class IssueViewComponent implements OnInit {
 			const ID = params.get('id');
 			this.getIssue(ID);
 		});
+
+		this.isMod = this.auth.isModerator()
 	}
 
 	getIssue(id: string) {
