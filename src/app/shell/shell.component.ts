@@ -30,7 +30,6 @@ export class ShellComponent implements OnInit {
 	ngOnInit() {
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
-			console.log(this.organization, 'this is organization');
 		});
 	}
 

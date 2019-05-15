@@ -8,6 +8,7 @@ export interface IOrganization {
 	owner?: any;
 	moderators?: Array<any>;
 	created?: Date;
+	organizationUrl?: string;
 }
 
 export class Organization implements IOrganization {
@@ -19,6 +20,7 @@ export class Organization implements IOrganization {
 		public owner: any = {},
 		public moderators: any = [],
 		public imageUrl: string = '',
-		public iconUrl: string = ''
+		public iconUrl: string = '',
+		public organizationUrl: ''
 	) { }
 }

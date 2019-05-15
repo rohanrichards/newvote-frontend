@@ -112,7 +112,8 @@ export class OrganizationEditComponent implements OnInit {
 						'name': organization.name,
 						'description': organization.description,
 						'url': organization.url,
-						'moderators': organization.moderators
+						'moderators': organization.moderators,
+						'organizationUrl': organization.organizationUrl
 					});
 
 					this.meta.updateTags(
@@ -208,6 +209,7 @@ export class OrganizationEditComponent implements OnInit {
 		this.organization.owner = this.owner;
 		this.organization.imageUrl = this.backgroundImage.src;
 		this.organization.iconUrl = this.iconImage.src;
+
 		this.organizationService.update({ id: this.organization._id, entity: this.organization })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
