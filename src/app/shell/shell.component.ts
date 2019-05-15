@@ -96,7 +96,7 @@ export class ShellComponent implements OnInit {
 
 	setHttp(link: string) {
 		if (link.search(/^http[s]?\:\/\//) === -1) {
-			link = 'http://' + link;
+			link = 'https://' + link;
 		}
 		return link;
 	}
