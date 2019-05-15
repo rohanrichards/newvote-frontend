@@ -86,4 +86,18 @@ export class ShellComponent implements OnInit {
 	get title(): string {
 		return this.meta.getAppBarTitle();
 	}
+
+	visitOrganizationUrl (event: any) {
+		event.preventDefault();
+		let { organizationUrl: url } = this.organization;
+		url = this.setHttp(url);
+		window.open(url, '_blank');
+	}
+
+	setHttp(link: string) {
+		if (link.search(/^http[s]?\:\/\//) === -1) {
+			link = 'https://' + link;
+		}
+		return link;
+	}
 }
