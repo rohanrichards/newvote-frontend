@@ -22,13 +22,17 @@
 
 			<mat-form-field>
 				<input matInput
-					placeholder="Enter a short description for the community (e.g A new way to vote!)"
+					placeholder="Enter a short description or tag-line for the community (e.g A new way to vote!)"
 					formControlName="description"
 					required>
 				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
 					The description is <strong>required</strong>
 				</mat-error>
 			</mat-form-field>
+
+			<div class="quill-editor-container cf">
+				<quill-editor formControlName="longDescription" placeholder="Enter a longer description for your community"></quill-editor>
+			</div>
 
 			<mat-form-field>
 				<!-- {{organizationForm.status}} -->

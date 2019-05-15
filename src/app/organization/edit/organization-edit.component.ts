@@ -35,6 +35,7 @@ export class OrganizationEditComponent implements OnInit {
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
+		longDescription: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl(''),
 		iconUrl: new FormControl(''),
 		owner: new FormControl(''),
@@ -110,6 +111,7 @@ export class OrganizationEditComponent implements OnInit {
 					this.organizationForm.patchValue({
 						'name': organization.name,
 						'description': organization.description,
+						'longDescription': organization.longDescription,
 						'url': organization.url,
 						'moderators': organization.moderators
 					});

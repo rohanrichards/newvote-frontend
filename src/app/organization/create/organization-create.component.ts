@@ -34,6 +34,7 @@ export class OrganizationCreateComponent implements OnInit {
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
+		longDescription: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl('', [Validators.required]),
 		iconUrl: new FormControl('', [Validators.required]),
 		owner: new FormControl(''),
