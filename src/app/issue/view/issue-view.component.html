@@ -79,7 +79,7 @@
 		fxLayoutAlign="center center"
 		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
-		*ngIf="!headingEdit"
+		*ngIf="media && !headingEdit"
 		>
 		<h3 class="mat-headline" 
 			*ngIf="media && media.length > 0"
@@ -89,10 +89,10 @@
 		</h3>
 		<button 
 			mat-icon-button
-			matTooltip="Edit this Issue"
+			matTooltip="Edit no Issue"
 			color="accent"
 			(click)="toggleHeader()"
-			*ngIf="auth.isModerator()"
+			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
 			>
 				<mat-icon aria-label="Edit the issue">edit</mat-icon>
 		</button>
