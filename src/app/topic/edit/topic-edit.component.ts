@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
@@ -38,6 +39,7 @@ export class TopicEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
+		private location: Location,
 		private meta: MetaService
 	) { }
 
@@ -120,7 +122,6 @@ export class TopicEditComponent implements OnInit {
 		this.topic.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -149,7 +150,8 @@ export class TopicEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/topics']);
+					// this.router.navigate(['/issues']);
+					this.location.back();
 				}
 			});
 	}

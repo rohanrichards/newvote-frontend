@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -28,12 +28,22 @@ export class TopicService {
 	constructor(private httpClient: HttpClient) { }
 
 	list(context: TopicContext): Observable<any[]> {
+		// create blank params object
+		let params = new HttpParams();
+
+		// if we have params provided in the context, replace with those
+		if (context.params) {
+			// context.params is assumed to have a format similar to
+			// { topicId: [id], search: [search terms], ...}
+			params = new HttpParams({ fromObject: context.params });
+		}
+
 		return this.httpClient
 			.cache(context.forceUpdate)
-			.get(routes.list(context))
+			.get(routes.list(context), { params })
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{error: e}]))
+				catchError((e) => of([{ error: e }]))
 			);
 	}
 
@@ -43,7 +53,7 @@ export class TopicService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({error: e}))
+				catchError((e) => of({ error: e }))
 			);
 	}
 
@@ -53,7 +63,7 @@ export class TopicService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({error: e}))
+				catchError((e) => of({ error: e }))
 			);
 	}
 
@@ -63,7 +73,7 @@ export class TopicService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({error: e}))
+				catchError((e) => of({ error: e }))
 			);
 	}
 
@@ -73,7 +83,7 @@ export class TopicService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({error: e}))
+				catchError((e) => of({ error: e }))
 			);
 	}
 

@@ -8,6 +8,7 @@
 		    fxFlex.lt-sm="0 0 100%"
 		    *ngFor="let item of getItems">
 			<mat-card class="item-card"
+				[ngClass]="{'soft-deleted': item.softDeleted}"
 			    routerLink="{{path}}/{{item._id}}">
 				<div mat-card-image
 				    class="image-container"
@@ -15,14 +16,31 @@
 					<div class="button-panel"
 					    *ngIf="auth.isModerator(item)">
 						<button color="accent"
+							matTooltip="Edit the item"
 						    mat-icon-button
 						    (click)="$event.stopPropagation()"
 						    routerLink='{{path}}/edit/{{item._id}}'>
     						<mat-icon aria-label="Edit the content">edit</mat-icon>
   						</button>
-						<button color="warn"
+						<button color="accent"
+							matTooltip="Restore the item"
+							*ngIf="item.softDeleted"
 						    mat-icon-button
-						    (click)="onDelete(item, $event)">
+						    (click)="onRestore(item, $event)">
+    						<mat-icon aria-label="Delete content forever">restore</mat-icon>
+  						</button>
+						<button color="accent"
+							matTooltip="Remove the item"
+							*ngIf="!item.softDeleted"
+						    mat-icon-button
+						    (click)="onSoftDelete(item, $event)">
+    						<mat-icon aria-label="Delete content forever">delete</mat-icon>
+  						</button>
+						<button color="warn"
+							matTooltip="Delete the item forever"
+						    mat-icon-button
+						    (click)="onDelete(item, $event)"
+							*ngIf="auth.isAdmin(item)">
     						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
   						</button>
 					</div>

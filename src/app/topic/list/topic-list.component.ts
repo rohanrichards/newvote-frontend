@@ -46,9 +46,27 @@ export class TopicListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
-		this.topicService.list({ orgs: [], forceUpdate: force })
+		this.topicService.list({ orgs: [], forceUpdate: force, params: { 'showDeleted': true } })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(topics => { this.topics = topics; });
+			.subscribe(topics => { this.topics = topics; console.log(this.topics); });
+	}
+
+	onRestore(topic: any) {
+		this.isLoading = true;
+		topic.softDeleted = false;
+
+		this.topicService.update({ id: topic._id, entity: topic })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {	this.fetchData(true); });
+	}
+
+	onSoftDelete(topic: any) {
+		this.isLoading = true;
+		topic.softDeleted = true;
+
+		this.topicService.update({ id: topic._id, entity: topic })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {	this.fetchData(true); });
 	}
 
 	onDelete(event: any) {
