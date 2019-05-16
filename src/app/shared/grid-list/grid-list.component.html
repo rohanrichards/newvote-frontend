@@ -6,7 +6,7 @@
 		<div class="item-card-row"
 		    fxFlex="0 0 calc(33.3% - 32px)"
 		    fxFlex.lt-sm="0 0 100%"
-		    *ngFor="let item of items">
+		    *ngFor="let item of getItems">
 			<mat-card class="item-card"
 			    routerLink="{{path}}/{{item._id}}">
 				<div mat-card-image

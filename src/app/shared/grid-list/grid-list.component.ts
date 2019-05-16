@@ -14,9 +14,21 @@ export class GridListComponent implements OnInit {
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
+	@Input() itemLimit: Number;
 	@Output() delete = new EventEmitter();
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+
+	public get getItems() {
+
+		if (this.itemLimit) {
+			return this.items
+				.filter((item: any, index: Number) => index < this.itemLimit)
+				.sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore);
+		}
+
+		return this.items;
+	}
 
 	ngOnInit() { }
 

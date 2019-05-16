@@ -30,7 +30,6 @@ export class ShellComponent implements OnInit {
 	ngOnInit() {
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
-			console.log(this.organization, 'this is organization');
 		});
 	}
 
@@ -97,7 +96,7 @@ export class ShellComponent implements OnInit {
 
 	setHttp(link: string) {
 		if (link.search(/^http[s]?\:\/\//) === -1) {
-			link = 'http://' + link;
+			link = 'https://' + link;
 		}
 		return link;
 	}

@@ -36,6 +36,7 @@ export class OrganizationEditComponent implements OnInit {
 		url: new FormControl('', [Validators.required]),
 		organizationUrl: new FormControl(''),
 		description: new FormControl('', [Validators.required]),
+		longDescription: new FormControl('', [Validators.required]),
 		imageUrl: new FormControl(''),
 		iconUrl: new FormControl(''),
 		owner: new FormControl(''),
@@ -111,8 +112,10 @@ export class OrganizationEditComponent implements OnInit {
 					this.organizationForm.patchValue({
 						'name': organization.name,
 						'description': organization.description,
+						'longDescription': organization.longDescription,
 						'url': organization.url,
-						'moderators': organization.moderators
+						'moderators': organization.moderators,
+						'organizationUrl': organization.organizationUrl
 					});
 
 					this.meta.updateTags(
@@ -208,6 +211,7 @@ export class OrganizationEditComponent implements OnInit {
 		this.organization.owner = this.owner;
 		this.organization.imageUrl = this.backgroundImage.src;
 		this.organization.iconUrl = this.iconImage.src;
+
 		this.organizationService.update({ id: this.organization._id, entity: this.organization })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {

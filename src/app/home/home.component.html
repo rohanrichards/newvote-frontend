@@ -27,6 +27,16 @@
 	</div>
 </div>
 
+<div class="about-community-container container"
+    fxLayoutAlign="center center"
+	*ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">About {{org.name}}</h2>
+		<span [innerHtml]="org.longDescription"></span>
+	</div>
+</div>
+
 <div class="hot-issues-container container"
     fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
@@ -34,7 +44,8 @@
 		<h2 class="mat-h2">What's Hot?</h2>
 		<app-grid-list *ngIf="issues"
 		    path="/issues"
-		    model="Issue"
+			model="Issue"
+			[itemLimit]="ISSUE_LIMIT"
 		    [items]=issues></app-grid-list>
 		<div>
 			<button mat-button
