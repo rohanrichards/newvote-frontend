@@ -174,7 +174,6 @@ export class IssueViewComponent implements OnInit {
 	handleSubmit(value?: string) {
 		this.toggleHeader();
 		if (!value) {
-			console.log(this.issue.mediaHeading);
 			return;
 		}
 
