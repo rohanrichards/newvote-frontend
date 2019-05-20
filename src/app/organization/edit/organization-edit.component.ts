@@ -36,10 +36,11 @@ export class OrganizationEditComponent implements OnInit {
 		url: new FormControl('', [Validators.required]),
 		organizationUrl: new FormControl(''),
 		description: new FormControl('', [Validators.required]),
-		longDescription: new FormControl('', [Validators.required]),
+		longDescription: new FormControl(''),
 		imageUrl: new FormControl(''),
 		iconUrl: new FormControl(''),
 		owner: new FormControl(''),
+		ownerEmail: new FormControl(''),
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email])
 	});

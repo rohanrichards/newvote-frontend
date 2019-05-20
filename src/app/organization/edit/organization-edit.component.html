@@ -51,7 +51,7 @@
 				    formControlName="organizationUrl"
 				    >
 			</mat-form-field>
-
+<!-- 
 			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
 				<mat-chip-list #chipList>
 					<mat-chip *ngIf="owner"
@@ -76,6 +76,10 @@
 						{{user.firstName}} {{user.lastName}} {{user.email}}
 					</mat-option>
 				</mat-autocomplete>
+			</mat-form-field> -->
+
+			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
+				<input matInput formControlName="ownerEmail" placeholder="Select or Enter Community Owner Email" value="">
 			</mat-form-field>
 
 			<mat-form-field class="example-chip-list" *ngIf="auth.isOwner()">
