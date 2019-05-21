@@ -10,6 +10,7 @@ export interface IOrganization {
 	moderators?: Array<any>;
 	created?: Date;
 	organizationUrl?: string;
+	futureOwner?: string;
 }
 
 export class Organization implements IOrganization {
@@ -23,6 +24,7 @@ export class Organization implements IOrganization {
 		public moderators: any = [],
 		public imageUrl: string = '',
 		public iconUrl: string = '',
-		public organizationUrl: ''
+		public organizationUrl: '',
+		public futureOwner: ''
 	) { }
 }

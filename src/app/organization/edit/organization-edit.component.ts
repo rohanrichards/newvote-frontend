@@ -30,6 +30,7 @@ export class OrganizationEditComponent implements OnInit {
 	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading: boolean;
 	uploader: FileUploader;
+	isValid = false;
 
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
@@ -40,7 +41,7 @@ export class OrganizationEditComponent implements OnInit {
 		imageUrl: new FormControl(''),
 		iconUrl: new FormControl(''),
 		owner: new FormControl(''),
-		ownerEmail: new FormControl(''),
+		futureOwner: new FormControl(''),
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email])
 	});
@@ -116,7 +117,8 @@ export class OrganizationEditComponent implements OnInit {
 						'longDescription': organization.longDescription,
 						'url': organization.url,
 						'moderators': organization.moderators,
-						'organizationUrl': organization.organizationUrl
+						'organizationUrl': organization.organizationUrl,
+						'futureOwner': organization.futureOwner
 					});
 
 					this.meta.updateTags(
@@ -262,6 +264,34 @@ export class OrganizationEditComponent implements OnInit {
 
 	ownerRemoved() {
 		this.owner = null;
+	}
+
+
+	handleChange(email: any) {
+		// https://tylermcginnis.com/validate-email-address-javascript/
+		this.isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+	}
+
+	submitOwnerEmail(input: any) {
+		const { value: email } = input.nativeElement;
+		this.ownerInput.nativeElement.value = '';
+		this.isValid = false;
+
+		// update this.org with form data and the owner manually
+		merge(this.organization, <Organization>this.organizationForm.value);
+		this.organization.owner = this.owner;
+		this.organization.futureOwner = email;
+
+		this.organizationService.setFutureOwner({ id: this.organization._id, entity: this.organization })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				if (t.error) {
+					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+				} else {
+					this.openSnackBar('Succesfully updated', 'OK');
+					this.location.back();
+				}
+			});
 	}
 
 	private _filter(value: any): User[] {

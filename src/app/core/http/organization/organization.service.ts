@@ -11,6 +11,7 @@ const routes = {
 	view: (c: OrganizationContext) => `/organizations/${c.id}`,
 	create: (c: OrganizationContext) => `/organizations`,
 	update: (c: OrganizationContext) => `/organizations/${c.id}`,
+	updateOwner: (c: OrganizationContext) => `/organizations/owner/${c.id}`,
 	delete: (c: OrganizationContext) => `/organizations/${c.id}`
 };
 
@@ -106,6 +107,17 @@ export class OrganizationService {
 			.pipe(
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
+			);
+	}
+
+	setFutureOwner(context: OrganizationContext): Observable<any> {
+		console.log(context.entity, 'this is context.entity');
+		return this.httpClient
+			.cache(context.forceUpdate)
+			.put(routes.updateOwner(context), context.entity)
+			.pipe(
+				map((res: any) => res),
+				catchError((e) => of({ error: e}))
 			);
 	}
 

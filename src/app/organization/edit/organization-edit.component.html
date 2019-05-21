@@ -3,7 +3,7 @@
 <div class="container"
     fxLayoutAlign="center center">
 	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
+	   >
 		<form [formGroup]="organizationForm"
 		    fxLayout="column"
 		    (ngSubmit)="onSave()"
@@ -51,37 +51,51 @@
 				    formControlName="organizationUrl"
 				    >
 			</mat-form-field>
-<!-- 
-			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
-				<mat-chip-list #chipList>
-					<mat-chip *ngIf="owner"
-					    [selectable]="false"
-					    [removable]="true"
-					    (removed)="ownerRemoved(owner)">
-						{{owner.firstName}} {{owner.lastName}} {{owner.email}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Select Community Owner"
-					    #ownerInput
-					    formControlName="owner"
-					    [matAutocomplete]="ownerAuto"
-					    [matChipInputFor]="chipList"
-					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					    [matChipInputAddOnBlur]="true">
-				</mat-chip-list>
-				<mat-autocomplete #ownerAuto="matAutocomplete"
-				    (optionSelected)="ownerSelected($event)">
-					<mat-option *ngFor="let user of filteredOwners | async"
-					    [value]="user">
-						{{user.firstName}} {{user.lastName}} {{user.email}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field> -->
-
-			<mat-form-field class="example-chip-list" *ngIf="auth.isAdmin()">
-				<input matInput formControlName="ownerEmail" placeholder="Select or Enter Community Owner Email" value="">
-			</mat-form-field>
-
+			<div fxFlex.gt-sm="60" fxLayout="row">
+				<mat-form-field style="width: 100%; padding-right: 0.5rem" class="example-chip-list" *ngIf="auth.isAdmin()">
+					<mat-chip-list #chipList>
+						<mat-chip *ngIf="owner"
+							[selectable]="false"
+							[removable]="true"
+							(removed)="ownerRemoved(owner)">
+							{{owner.firstName}} {{owner.lastName}} {{owner.email}}
+							<mat-icon matChipRemove>cancel</mat-icon>
+						</mat-chip>
+						<input placeholder="Select Community Owner"
+							#ownerInput
+							formControlName="owner"
+							[matAutocomplete]="ownerAuto"
+							[matChipInputFor]="chipList"
+							[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+							[matChipInputAddOnBlur]="true"
+							[readonly]="owner"
+							(input)="handleChange(ownerInput.value)"
+							>
+							
+					</mat-chip-list>
+					<mat-hint color="primary">If user does not appear in dropdown. Enter email to invite to community.</mat-hint>
+					<mat-autocomplete #ownerAuto="matAutocomplete"
+						(optionSelected)="ownerSelected($event)">
+						<mat-option *ngFor="let user of filteredOwners | async"
+							[value]="user">
+							{{user.firstName}} {{user.lastName}} {{user.email}}
+						</mat-option>
+					</mat-autocomplete>
+				</mat-form-field>
+				<div
+					*ngIf="!owner && ownerInput"
+					fxLayoutAlign="center center">
+					<button mat-stroked-button 
+						color="primary"
+						type="button"
+						aria-label="Clear"
+						(click)="submitOwnerEmail(ownerInput)"
+						[disabled]="!isValid"
+						>
+						Invite User
+					</button>
+				</div>
+			</div>
 			<mat-form-field class="example-chip-list" *ngIf="auth.isOwner()">
 				<mat-chip-list #modChipList>
 					<mat-chip *ngFor="let mod of organizationForm.value.moderators"
