@@ -10,6 +10,7 @@ import { VerifyComponent } from './verify/verify.component';
 const routes: Routes = [
 	{ path: 'login', component: LoginComponent, data: { title: extract('Login') } },
 	{ path: 'signup', component: SignupComponent, data: { title: extract('Create Account') } },
+	{ path: 'signup/:id', component: SignupComponent, data: { title: extract('Create Account') } },
 	{ path: 'verify', component: VerifyComponent, data: { title: extract('Verify Account') } },
 	{ path: 'forgot', component: ForgotComponent, data: { title: extract('Forgot Password') } },
 	{ path: 'forgot/:token/:email', component: ForgotComponent, data: { title: extract('Reset Password') } },
