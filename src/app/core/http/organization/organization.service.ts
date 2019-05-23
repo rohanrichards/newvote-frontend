@@ -111,7 +111,6 @@ export class OrganizationService {
 	}
 
 	setFutureOwner(context: OrganizationContext): Observable<any> {
-		console.log(context.entity, 'this is context.entity');
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.put(routes.updateOwner(context), context.entity)

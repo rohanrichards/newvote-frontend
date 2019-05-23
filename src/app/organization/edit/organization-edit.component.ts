@@ -279,7 +279,7 @@ export class OrganizationEditComponent implements OnInit {
 
 		// update this.org with form data and the owner manually
 		merge(this.organization, <Organization>this.organizationForm.value);
-		this.organization.owner = this.owner;
+		this.organization.owner = null;
 		this.organization.futureOwner = email;
 
 		this.organizationService.setFutureOwner({ id: this.organization._id, entity: this.organization })
