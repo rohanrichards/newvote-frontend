@@ -26,6 +26,7 @@ export class OrganizationEditComponent implements OnInit {
 	organization: Organization;
 	allUsers: Array<User> = [];
 	owner: User;
+	futureOwner: any;
 	filteredOwners: Observable<User[]>;
 	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading: boolean;
@@ -43,7 +44,7 @@ export class OrganizationEditComponent implements OnInit {
 		owner: new FormControl(''),
 		futureOwner: new FormControl(''),
 		moderators: new FormControl([]),
-		moderatorsControl: new FormControl([], [Validators.email])
+		moderatorsControl: new FormControl([], [Validators.email]),
 	});
 
 	backgroundImage = {
@@ -108,6 +109,7 @@ export class OrganizationEditComponent implements OnInit {
 					this.backgroundImage.src = organization.imageUrl;
 					this.iconImage.src = organization.iconUrl;
 					this.owner = organization.owner;
+					this.futureOwner = organization.futureOwner;
 
 					organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m);
 
@@ -118,7 +120,8 @@ export class OrganizationEditComponent implements OnInit {
 						'url': organization.url,
 						'moderators': organization.moderators,
 						'organizationUrl': organization.organizationUrl,
-						'futureOwner': organization.futureOwner
+						'futureOwner': organization.futureOwner,
+						'newLeaderEmail': ''
 					});
 
 					this.meta.updateTags(
@@ -212,6 +215,7 @@ export class OrganizationEditComponent implements OnInit {
 		// update this.org with form data and the owner manually
 		merge(this.organization, <Organization>this.organizationForm.value);
 		this.organization.owner = this.owner;
+		this.organization.futureOwner = this.futureOwner;
 		this.organization.imageUrl = this.backgroundImage.src;
 		this.organization.iconUrl = this.iconImage.src;
 
@@ -266,6 +270,10 @@ export class OrganizationEditComponent implements OnInit {
 		this.owner = null;
 	}
 
+	futureOwnerRemoved() {
+		this.futureOwner = null;
+	}
+
 
 	handleChange(email: any) {
 		// https://tylermcginnis.com/validate-email-address-javascript/
@@ -277,10 +285,10 @@ export class OrganizationEditComponent implements OnInit {
 		this.ownerInput.nativeElement.value = '';
 		this.isValid = false;
 
-		// update this.org with form data and the owner manually
-		merge(this.organization, <Organization>this.organizationForm.value);
 		this.organization.owner = null;
-		this.organization.futureOwner = email;
+		this.organization.futureOwner = null;
+
+		this.organization.newLeaderEmail = email;
 
 		this.organizationService.setFutureOwner({ id: this.organization._id, entity: this.organization })
 			.pipe(finalize(() => { this.isLoading = false; }))

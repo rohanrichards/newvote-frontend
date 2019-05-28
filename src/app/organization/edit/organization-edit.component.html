@@ -61,6 +61,14 @@
 							{{owner.firstName}} {{owner.lastName}} {{owner.email}}
 							<mat-icon matChipRemove>cancel</mat-icon>
 						</mat-chip>
+						<mat-chip *ngIf="futureOwner"
+							class="future-chip"
+							[selectable]="false"
+							[removable]="true"
+							(removed)="futureOwnerRemoved(owner)">
+								{{futureOwner.email}} : Pending
+							<mat-icon matChipRemove>cancel</mat-icon>
+						</mat-chip>
 						<input placeholder="Select Community Owner"
 							#ownerInput
 							formControlName="owner"
@@ -68,7 +76,7 @@
 							[matChipInputFor]="chipList"
 							[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 							[matChipInputAddOnBlur]="true"
-							[readonly]="owner"
+							[readonly]="owner || futureOwner"
 							(input)="handleChange(ownerInput.value)"
 							>
 							
@@ -83,7 +91,7 @@
 					</mat-autocomplete>
 				</mat-form-field>
 				<div
-					*ngIf="!owner && ownerInput"
+					*ngIf="!owner && !futureOwner && ownerInput"
 					fxLayoutAlign="center center">
 					<button mat-stroked-button 
 						color="primary"

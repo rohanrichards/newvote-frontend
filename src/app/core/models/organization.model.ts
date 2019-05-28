@@ -11,6 +11,7 @@ export interface IOrganization {
 	created?: Date;
 	organizationUrl?: string;
 	futureOwner?: string;
+	newLeaderEmail: string;
 }
 
 export class Organization implements IOrganization {
@@ -25,6 +26,7 @@ export class Organization implements IOrganization {
 		public imageUrl: string = '',
 		public iconUrl: string = '',
 		public organizationUrl: '',
-		public futureOwner: ''
+		public futureOwner: '',
+		public newLeaderEmail: ''
 	) { }
 }
