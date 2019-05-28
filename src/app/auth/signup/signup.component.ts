@@ -6,6 +6,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService } from '@app/core';
+import { arrayExpression } from 'babel-types';
 
 const log = new Logger('Signup');
 
@@ -42,7 +43,7 @@ export class SignupComponent implements OnInit {
 		// extract verificationCode if directed via email
 		this.verificationCode = this.route.snapshot.params.id
 			? this.route.snapshot.params.id
-			: false;
+			: '';
 	}
 
 	signup() {

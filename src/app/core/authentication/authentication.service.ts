@@ -35,7 +35,9 @@ export interface ResetContext {
 
 const routes = {
 	signin: () => `/auth/signin`,
-	signup: (id?: string) => `/auth/signup` + id ? `/${id}` : '',
+	signup: (id?: string) => {
+		return `/auth/signup${id ? `/${id}` : ''}`;
+	},
 	forgot: () => `/auth/forgot`,
 	reset: () => `/auth/reset`,
 	randomGet: () => `/topics`,
