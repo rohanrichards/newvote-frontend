@@ -88,7 +88,7 @@
 		<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
 		<app-card-list path="/proposals"
 		    [items]="solution.proposals"
-		    model="Proposal"
+		    model="Action"
 		    [showChildren]="false"
 		    [showParent]="true"
 		    parentPath="/solutions"

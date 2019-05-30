@@ -46,8 +46,8 @@ export class ProposalListComponent implements OnInit {
 		});
 		this.meta.updateTags(
 			{
-				title: 'All Proposals',
-				description: 'List all proposals.'
+				title: 'All Actions',
+				description: 'List all actions.'
 			});
 	}
 

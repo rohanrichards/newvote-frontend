@@ -52,7 +52,7 @@
 			<div class="mat-display-1"
 			    translate>{{proposal.title}}</div>
 
-			<span class="mat-body">This is a action for:
+			<span class="mat-body">This is a Action for:
 				<span *ngFor="let parent of proposal.solutions; let i = index">
 					<a mat-button
 					    routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
@@ -82,7 +82,7 @@
 		<!-- <span class="mat-headline">Vote on Actions</span>
 		<app-card-list path="/proposals"
 		    [items]="proposal.proposals"
-		    model="Proposal"
+		    model="Action"
 		    [showChildren]="false"
 		    (delete)="onDeleteProposal()"
 		    (vote)="onVote($event)"></app-card-list> -->

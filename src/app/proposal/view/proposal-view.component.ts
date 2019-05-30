@@ -51,7 +51,7 @@ export class ProposalViewComponent implements OnInit {
 				this.meta.updateTags(
 					{
 						title: `${this.proposal.title}`,
-						appBarTitle: 'View Proposal',
+						appBarTitle: 'View Action',
 						description: this.proposal.description,
 						image: this.proposal.imageUrl
 					});
