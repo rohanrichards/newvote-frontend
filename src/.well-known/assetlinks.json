@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "org.newvote.twa.tests",
+               "sha256_cert_fingerprints": ["3A:60:EC:CD:0C:39:77:02:5E:07:05:69:2D:6B:FA:E5:F8:AE:AC:92:9E:8B:6F:2F:9E:C6:0E:86:8B:78:AA:EA"] }
+}]

@@ -27,7 +27,8 @@
               "src/apple-touch-icon.png",
               "src/robots.txt",
               "src/manifest.json",
-              "src/assets"
+              "src/assets",
+			  "src/.well-known"
             ],
             "styles": [
               "src/main.scss",
