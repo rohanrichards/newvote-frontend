@@ -297,7 +297,7 @@ export class OrganizationEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.location.back();
+					// this.location.back();
 				}
 			});
 	}
