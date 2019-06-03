@@ -30,6 +30,8 @@ export class OrganizationCreateComponent implements OnInit {
 	backgroundImage: any;
 	iconImage: any;
 	uploader: FileUploader;
+	isValid = false;
+
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
@@ -127,10 +129,19 @@ export class OrganizationCreateComponent implements OnInit {
 		}
 	}
 
+
 	onSave() {
 		this.isLoading = true;
-		this.organization = <Organization>this.organizationForm.value;
-		this.organization.owner = this.owner;
+		this.organization = this.organizationForm.value;
+
+		if (!this.owner && this.isValid) {
+			this.organization.owner = null;
+			this.organization.newLeaderEmail = this.userInput.nativeElement.value;
+			this.userInput.nativeElement.value = '';
+		} else {
+			this.organization.owner = this.owner;
+			this.organization.newLeaderEmail = null;
+		}
 
 		this.uploader.onCompleteAll = () => {
 			// console.log('completed all');
@@ -203,6 +214,11 @@ export class OrganizationCreateComponent implements OnInit {
 		const index = moderators.indexOf(mod);
 		moderators.splice(index, 1);
 		this.organizationForm.patchValue(moderators);
+	}
+
+	handleChange(email: any) {
+		// https://tylermcginnis.com/validate-email-address-javascript/
+		this.isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 	}
 
 	private _filter(value: any): User[] {

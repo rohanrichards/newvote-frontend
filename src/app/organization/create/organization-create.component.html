@@ -64,12 +64,17 @@
 					</mat-chip>
 					<input placeholder="Select Community Owner"
 						#userInput
+						type="text"
 						formControlName="owner"
 						[matAutocomplete]="auto"
 						[matChipInputFor]="chipList"
 						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-						[matChipInputAddOnBlur]="true">
+						[matChipInputAddOnBlur]="true"
+						[readonly]="owner"
+						(input)="handleChange(userInput.value)"
+						>
 				</mat-chip-list>
+				<mat-hint color="primary">If user does not appear in dropdown. Enter email to invite to community.</mat-hint>
 				<mat-autocomplete #auto="matAutocomplete"
 					(optionSelected)="userSelected($event)">
 					<mat-option *ngFor="let user of filteredUsers | async"
@@ -144,7 +149,7 @@
 
 			<button mat-flat-button
 			    type="submit"
-			    [disabled]="!organizationForm.valid || isLoading"
+			    [disabled]="(!organizationForm.valid  && isValid) || isLoading || (!organizationForm.valid  && !owner)"
 			    color="primary">Create</button>
 		</form>
 	</mat-card>
