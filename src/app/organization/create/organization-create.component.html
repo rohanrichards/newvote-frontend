@@ -149,7 +149,7 @@
 
 			<button mat-flat-button
 			    type="submit"
-			    [disabled]="(!organizationForm.valid  && isValid) || isLoading || (!organizationForm.valid  && !owner)"
+			    [disabled]="!organizationForm.valid || isLoading "
 			    color="primary">Create</button>
 		</form>
 	</mat-card>
