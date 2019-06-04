@@ -53,4 +53,20 @@ export class HomeComponent implements OnInit {
 		this.userService.count({ forceUpdate: false }).subscribe((count) => this.userCount = count);
 	}
 
+	fetchData(force?: boolean) {
+		this.isLoading = true;
+		this.issueService.list({ orgs: [], forceUpdate: force, params: { 'showDeleted': true }})
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(issues => { this.issues = issues; console.log(this.issues); });
+	}
+
+	onSoftDelete(issue: any) {
+		this.isLoading = true;
+		issue.softDeleted = true;
+		console.log(issue, 'this is issue');
+		this.issueService.update({ id: issue._id, entity: issue })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {	this.fetchData(true); });
+	}
+
 }
