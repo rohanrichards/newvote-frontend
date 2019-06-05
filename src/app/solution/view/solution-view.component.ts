@@ -44,7 +44,14 @@ export class SolutionViewComponent implements OnInit {
 	}
 
 	getSolution(id: string, forceUpdate?: boolean) {
-		this.solutionService.view({ id: id, orgs: [], forceUpdate })
+		const isOwner = this.auth.isOwner();
+
+		this.solutionService.view({
+			id: id,
+			orgs: [],
+			forceUpdate,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solution: Solution) => {
 				this.solution = solution;
