@@ -115,7 +115,7 @@ export class ProposalViewComponent implements OnInit {
 				this.proposal.softDeleted = true;
 				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
 					this.openSnackBar('Succesfully removed', 'OK');
-					this.router.navigate(['/proposals'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});
@@ -135,7 +135,7 @@ export class ProposalViewComponent implements OnInit {
 				this.proposal.softDeleted = false;
 				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/proposals'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});
