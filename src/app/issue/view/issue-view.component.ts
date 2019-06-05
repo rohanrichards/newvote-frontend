@@ -71,7 +71,14 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	getSolutions(id: string, forceUpdate?: boolean) {
-		this.solutionService.list({ params: { issueId: id }, forceUpdate })
+		const isOwner = this.auth.isOwner();
+
+		this.solutionService.list({
+			params: isOwner
+				? { issueId: id, 'showDeleted': true }
+				:  { issueId: id },
+			forceUpdate,
+		})
 			.subscribe((solutions: Array<Solution>) => {
 				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
 				// console.log('got solutions: ', solutions);
@@ -80,7 +87,14 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	getMedia(id: string, forceUpdate?: boolean) {
-		this.mediaService.list({ params: { issueId: id }, forceUpdate })
+		const isOwner = this.auth.isOwner();
+
+		this.mediaService.list({
+			params: isOwner
+				? { issueId: id, 'showDeleted': true }
+				:  { issueId: id },
+			forceUpdate,
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((mediaList: Array<Media>) => {
 				this.media = mediaList;
@@ -193,6 +207,14 @@ export class IssueViewComponent implements OnInit {
 
 	onMediaSoftDelete(media: Media) {
 		media.softDeleted = true;
+		this.mediaService.update({ id: media._id, entity: media }).subscribe(() => {
+			this.openSnackBar('Succesfully removed', 'OK');
+			this.getMedia(this.issue._id, true);
+		});
+	}
+
+	onMediaRestore(media: Media) {
+		media.softDeleted = false;
 		this.mediaService.update({ id: media._id, entity: media }).subscribe(() => {
 			this.openSnackBar('Succesfully removed', 'OK');
 			this.getMedia(this.issue._id, true);

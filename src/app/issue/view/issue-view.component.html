@@ -89,6 +89,7 @@
 <app-swiper-wrapper path="/media"
 	[items]="media"
 	model="Media"
+	(restore)="onMediaRestore($event)"
 	(softDelete)="onMediaSoftDelete($event)"
 	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
@@ -108,6 +109,7 @@
 			[showParent]="true"
 			parentPath="/issues"
 			parentPropName="issues"
+			(restore)="onRestoreSolution($event)"
 			(delete)="onDeleteSolution($event)"
 			(softDelete)="onSoftDeleteSolution($event)"
 		    (vote)="onVote($event, 'Solution')"
