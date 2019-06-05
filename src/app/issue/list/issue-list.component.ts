@@ -141,6 +141,13 @@ export class IssueListComponent implements OnInit {
 		});
 	}
 
+	onRestore(event: any) {
+		event.softDeleted = false;
+		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
 	onDeleteTopic(topic: any) {
 		this.topicService.delete({ id: topic._id }).subscribe(() => {
 			this.fetchData(true);
@@ -157,7 +164,6 @@ export class IssueListComponent implements OnInit {
 				this.fetchData(true);
 			});
 	}
-
 
 	topicSelected(event: any) {
 		const selectedItem = event.option.value;

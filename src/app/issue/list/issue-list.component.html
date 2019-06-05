@@ -66,6 +66,7 @@
 				<app-grid-list path="/issues"
 				    [items]="getIssues(topic._id)"
 					model="Issue"
+					(restore)="onRestore($event)"
 					(softDelete)="onSoftDelete($event)"
 				    (delete)="onDelete($event)"></app-grid-list>
 			</div>
