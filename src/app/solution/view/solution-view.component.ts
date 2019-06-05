@@ -11,6 +11,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
 @Component({
 	selector: 'app-solution',
@@ -25,6 +26,7 @@ export class SolutionViewComponent implements OnInit {
 	constructor(
 		private solutionService: SolutionService,
 		private voteService: VoteService,
+		private proposalService: ProposalService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -136,6 +138,37 @@ export class SolutionViewComponent implements OnInit {
 					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
+		});
+	}
+
+	onRestoreProposal(event: any) {
+		this.isLoading = true;
+		event.softDeleted = false;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.openSnackBar('Succesfully Restored', 'OK');
+				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+			});
+	}
+
+	onSoftDeleteProposal(event: any) {
+		this.isLoading = true;
+		event.softDeleted = true;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.openSnackBar('Succesfully removed', 'OK');
+				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+			});
+	}
+
+	onDeleteProposal(event: any) {
+		this.proposalService.delete({ id: event._id }).subscribe(() => {
+			this.openSnackBar('Succesfully deleted', 'OK');
+			this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 		});
 	}
 

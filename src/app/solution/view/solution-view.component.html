@@ -32,12 +32,13 @@
 				</button>
 				<button color="accent"
 					*ngIf="solution.softDeleted"
+					matTooltip="Restore this Solution"
 					mat-icon-button
 					(click)="onRestore()">
 					<mat-icon aria-label="Restore content">restore</mat-icon>
 			  	</button>
 				<button mat-icon-button
-					matTooltip="Remove solution"
+					matTooltip="Remove this solution"
 					*ngIf="!solution.softDeleted"
 					color="accent"
 					(click)="onSoftDelete()">
@@ -106,8 +107,9 @@
 		    [showParent]="true"
 		    parentPath="/solutions"
 			parentPropName="solutions"
-			(restore)="onRestoreProposal()"
-		    (delete)="onDeleteProposal()"
+			(restore)="onRestoreProposal($event)"
+			(softDelete)="onSoftDeleteProposal($event)"
+		    (delete)="onDeleteProposal($event)"
 		    (vote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
 </div>
