@@ -99,6 +99,46 @@ export class SolutionViewComponent implements OnInit {
 		});
 	}
 
+	onSoftDelete() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove Solution?`,
+				message: `Are you sure you want to remove${this.solution.title}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.solution.softDeleted = true;
+				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+					this.openSnackBar('Succesfully deleted', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
+	onRestore() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore Solution?`,
+				message: `Are you sure you want to restore ${this.solution.title}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.solution.softDeleted = false;
+				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+					this.openSnackBar('Succesfully restored', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,

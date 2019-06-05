@@ -30,6 +30,19 @@
 				    routerLink="/solutions/edit/{{solution._id}}">
 					<mat-icon aria-label="Edit this solution">edit</mat-icon>
 				</button>
+				<button color="accent"
+					*ngIf="solution.softDeleted"
+					mat-icon-button
+					(click)="onRestore()">
+					<mat-icon aria-label="Restore content">restore</mat-icon>
+			  	</button>
+				<button mat-icon-button
+					matTooltip="Remove solution"
+					*ngIf="!solution.softDeleted"
+					color="accent"
+					(click)="onSoftDelete()">
+					<mat-icon aria-label="Remove solution">delete</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Solution"
 				    color="warn"
@@ -92,7 +105,8 @@
 		    [showChildren]="false"
 		    [showParent]="true"
 		    parentPath="/solutions"
-		    parentPropName="solutions"
+			parentPropName="solutions"
+			(restore)="onRestoreProposal()"
 		    (delete)="onDeleteProposal()"
 		    (vote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
