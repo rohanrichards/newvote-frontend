@@ -9,6 +9,7 @@ export interface IProposal {
 	user?: any;
 	created?: Date;
 	organizations: any;
+	softDeleted: boolean;
 }
 
 export class Proposal implements IProposal {
@@ -19,6 +20,7 @@ export class Proposal implements IProposal {
 		public description: string = '',
 		public likert: boolean = false,
 		public organizations: any = {},
-		public votes: any = {}
+		public votes: any = {},
+		public softDeleted: boolean = false
 	) { }
 }
