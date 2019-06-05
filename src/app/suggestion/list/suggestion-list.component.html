@@ -15,7 +15,9 @@
 	    fxFlex.gt-md="800px">
 		<app-card-list path="/suggestions"
 		    [items]=suggestions
-		    model="Suggestion"
+			model="Suggestion"
+			(restore)="onRestore($event)"
+			(softDelete)="onSoftDelete($event)"
 		    (delete)="onDelete($event)"
 		    (vote)="onVote($event)"></app-card-list>
 	</div>
