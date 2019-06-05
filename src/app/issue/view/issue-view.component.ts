@@ -144,6 +144,46 @@ export class IssueViewComponent implements OnInit {
 		});
 	}
 
+	onSoftDelete() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove ${this.issue.name}?`,
+				message: `Are you sure you want to remove ${this.issue.name}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.issue.softDeleted = true;
+				this.issueService.update({ id: this.issue._id, entity: this.issue }).subscribe(() => {
+					this.openSnackBar('Succesfully removed', 'OK');
+					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+				});
+			}
+		});
+	}
+
+	onRestore() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore ${this.issue.name}?`,
+				message: `Are you sure you want to restore ${this.issue.name}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.issue.softDeleted = false;
+				this.issueService.update({ id: this.issue._id, entity: this.issue }).subscribe(() => {
+					this.openSnackBar('Succesfully restored', 'OK');
+					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
 	onMediaDelete(media: Media) {
 		this.mediaService.delete({ id: media._id }).subscribe(() => {
 			this.openSnackBar('Succesfully deleted', 'OK');
@@ -151,9 +191,33 @@ export class IssueViewComponent implements OnInit {
 		});
 	}
 
+	onMediaSoftDelete(media: Media) {
+		media.softDeleted = true;
+		this.mediaService.update({ id: media._id, entity: media }).subscribe(() => {
+			this.openSnackBar('Succesfully removed', 'OK');
+			this.getMedia(this.issue._id, true);
+		});
+	}
+
 	onDeleteSolution(solution: any) {
 		this.solutionService.delete({ id: solution._id }).subscribe(() => {
 			this.openSnackBar('Succesfully deleted', 'OK');
+			this.getSolutions(this.issue._id, true);
+		});
+	}
+
+	onSoftDeleteSolution(solution: any) {
+		solution.softDeleted = true;
+		this.solutionService.update({ id: solution._id, entity: solution }).subscribe(() => {
+			this.openSnackBar('Succesfully removed', 'OK');
+			this.getSolutions(this.issue._id, true);
+		});
+	}
+
+	onRestoreSolution(solution: any) {
+		solution.softDeleted = false;
+		this.solutionService.update({ id: solution._id, entity: solution }).subscribe(() => {
+			this.openSnackBar('Succesfully removed', 'OK');
 			this.getSolutions(this.issue._id, true);
 		});
 	}

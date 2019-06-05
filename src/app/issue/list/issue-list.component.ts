@@ -89,8 +89,13 @@ export class IssueListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
+		const isOwner = this.auth.isOwner();
 
-		const issueObs: Observable<Issue[]> = this.issueService.list({ orgs: [], forceUpdate: force });
+		const issueObs: Observable<Issue[]> = this.issueService.list({
+			orgs: [],
+			forceUpdate: force,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		});
 		// .subscribe(issues => { this.issues = issues; });
 
 		const topicObs = this.topicService.list({ forceUpdate: force });
@@ -125,6 +130,13 @@ export class IssueListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.issueService.delete({ id: event._id }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
+	onSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
 			this.fetchData(true);
 		});
 	}
