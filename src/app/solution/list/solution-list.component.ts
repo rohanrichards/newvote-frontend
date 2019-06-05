@@ -63,7 +63,6 @@ export class SolutionListComponent implements OnInit {
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(solutions => {
-				console.log(solutions, 'this is solution');
 				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
 			});
 	}
@@ -146,5 +145,4 @@ export class SolutionListComponent implements OnInit {
 			horizontalPosition: 'right'
 		});
 	}
-
 }
