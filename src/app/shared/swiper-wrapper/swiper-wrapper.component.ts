@@ -17,6 +17,7 @@ export class SwiperWrapperComponent implements OnInit {
 	@Input() items: Array<any>;
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
+	@Output() softDelete = new EventEmitter();
 
 	public config: SwiperConfigInterface = {
 		a11y: true,
@@ -74,6 +75,24 @@ export class SwiperWrapperComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				this.delete.emit(item);
+			}
+		});
+	}
+
+	onSoftDelete(item: any, event: any) {
+		event.stopPropagation();
+
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove ${this.model}`,
+				message: `Are you sure you want to remove ${item.title}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.softDelete.emit(item);
 			}
 		});
 	}

@@ -11,7 +11,9 @@
 		    [config]="config">
 			<div *ngFor="let item of items"
 			    class="swiper-slide">
-				<mat-card class="item-card">
+				<mat-card 
+					[ngClass]="{'soft-deleted': item.softDeleted}"
+					class="item-card">
 					<div mat-card-image
 					    class="image-container"
 					    [style.background-image]="'url(' + item.image + ')'">
@@ -22,7 +24,12 @@
 							    (click)="$event.stopPropagation()"
 							    routerLink='{{path}}/edit/{{item._id}}'>
 			    						<mat-icon aria-label="Edit the content">edit</mat-icon>
-			  						</button>
+									  </button>
+							<button color="accent"
+								mat-icon-button
+								(click)="onSoftDelete(item, $event)">
+									<mat-icon aria-label="Remove content">delete</mat-icon>
+								</button>
 							<button color="warn"
 							    mat-icon-button
 							    (click)="onDelete(item, $event)">
