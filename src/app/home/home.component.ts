@@ -47,15 +47,22 @@ export class HomeComponent implements OnInit {
 				});
 		});
 
-		this.issueService.list({ forceUpdate: false }).subscribe((issues) => this.issues = issues);
+		this.fetchData();
+		// this.issueService.list({ forceUpdate: false }).subscribe((issues) => this.issues = issues);
 		this.solutionService.list({forceUpdate: false}).subscribe((solutions) => this.solutions = solutions);
 		this.proposalService.list({ forceUpdate: false }).subscribe((proposals) => this.proposals = proposals);
 		this.userService.count({ forceUpdate: false }).subscribe((count) => this.userCount = count);
 	}
 
 	fetchData(force?: boolean) {
+		const isOwner = this.auth.isOwner();
+
 		this.isLoading = true;
-		this.issueService.list({ orgs: [], forceUpdate: force, params: { 'showDeleted': true }})
+		this.issueService.list({
+			orgs: [],
+			forceUpdate: force,
+			// params: isOwner ? { 'showDeleted': true } :  {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(issues => { this.issues = issues; console.log(this.issues); });
 	}
@@ -63,7 +70,6 @@ export class HomeComponent implements OnInit {
 	onSoftDelete(issue: any) {
 		this.isLoading = true;
 		issue.softDeleted = true;
-		console.log(issue, 'this is issue');
 		this.issueService.update({ id: issue._id, entity: issue })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {	this.fetchData(true); });
