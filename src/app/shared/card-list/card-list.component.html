@@ -5,6 +5,7 @@
 	    fxFlex="100%"
 	    *ngFor="let item of items">
 		<mat-card class="item-card"
+			[ngClass]="{'soft-deleted': item.softDeleted}"
 		    routerLink="{{path}}/{{item._id}}">
 			<div mat-card-image
 			    class="image-container"
@@ -18,6 +19,18 @@
 					    routerLink='{{path}}/edit/{{item._id}}'>
 						<mat-icon aria-label="Edit the content">edit</mat-icon>
 					</button>
+					<button color="accent"
+						*ngIf="item.softDeleted"
+						mat-icon-button
+						(click)="onRestore(item, $event)">
+						<mat-icon aria-label="Restore content">restore</mat-icon>
+				  	</button>
+					<button color="accent"
+						*ngIf="!item.softDeleted"
+						mat-icon-button
+						(click)="onSoftDelete(item, $event)">
+					<mat-icon aria-label="Remove content">delete</mat-icon>
+				</button>
 					<button color="warn"
 					    mat-icon-button
 					    (click)="onDelete(item, $event)">
