@@ -46,7 +46,8 @@
 		    path="/issues"
 			model="Issue"
 			[itemLimit]="ISSUE_LIMIT"
-		    [items]=issues></app-grid-list>
+			[items]=issues
+			(softDelete)="onSoftDelete($event)"></app-grid-list>
 		<div>
 			<button mat-button
 			    routerLink="/issues">

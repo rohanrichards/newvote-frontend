@@ -10,6 +10,7 @@ export interface ISolution {
 	user?: any;
 	created?: Date;
 	organizations: any;
+	softDeleted: boolean;
 }
 
 export class Solution implements ISolution {
@@ -21,6 +22,7 @@ export class Solution implements ISolution {
 		public proposals: Array<any> = [],
 		public likert: boolean = false,
 		public organizations: any = {},
-		public votes: any = {}
+		public votes: any = {},
+		public softDeleted: boolean = false
 	) { }
 }

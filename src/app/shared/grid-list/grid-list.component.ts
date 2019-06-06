@@ -16,6 +16,8 @@ export class GridListComponent implements OnInit {
 	@Input() items: Array<any>;
 	@Input() itemLimit: Number;
 	@Output() delete = new EventEmitter();
+	@Output() softDelete = new EventEmitter();
+	@Output() restore = new EventEmitter();
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
@@ -38,7 +40,7 @@ export class GridListComponent implements OnInit {
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
 			data: {
-				title: `Delete ${this.model}`,
+				title: `Delete ${this.model} Forever`,
 				message: `Are you sure you want to delete ${item.name}? This action cannot be undone.`
 			}
 		});
@@ -46,6 +48,42 @@ export class GridListComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				this.delete.emit(item);
+			}
+		});
+	}
+
+	onSoftDelete(item: any, event: any) {
+		event.stopPropagation();
+
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Delete ${this.model}`,
+				message: `Are you sure you want to delete ${item.name}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.softDelete.emit(item);
+			}
+		});
+	}
+
+	onRestore(item: any, event: any) {
+		event.stopPropagation();
+
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore ${this.model}`,
+				message: `Are you sure you want to restore ${item.name}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.restore.emit(item);
 			}
 		});
 	}

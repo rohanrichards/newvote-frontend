@@ -48,9 +48,17 @@ export class SolutionService {
 	}
 
 	view(context: SolutionContext): Observable<any> {
+
+		let params = new HttpParams();
+
+		if (context.params) {
+			params = new HttpParams({fromObject: context.params});
+		}
+
+		console.log(params, 'this is params');
 		return this.httpClient
 			.cache(context.forceUpdate)
-			.get(routes.view(context))
+			.get(routes.view(context), { params })
 			.pipe(
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))

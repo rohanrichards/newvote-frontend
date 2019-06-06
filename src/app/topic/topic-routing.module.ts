@@ -11,7 +11,12 @@ import { TopicCreateComponent } from './create/topic-create.component';
 import { TopicEditComponent } from './edit/topic-edit.component';
 
 const routes: Routes = [
-	{ path: '', component: TopicListComponent, data: { title: extract('All Topics') } },
+	{
+		path: '',
+		component: TopicListComponent,
+		data: { title: extract('All Topics') },
+		canActivate: [ModeratorGuard]
+	},
 	{
 		path: 'create',
 		component: TopicCreateComponent,

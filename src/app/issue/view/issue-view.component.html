@@ -35,7 +35,21 @@
 				    color="accent"
 				    routerLink="/issues/edit/{{issue._id}}">
     					<mat-icon aria-label="Edit the issue">edit</mat-icon>
-  					</button>
+					  </button>
+				<button mat-icon-button
+					*ngIf="issue.softDeleted"
+					matTooltip="Restore this issue"
+					color="accent"
+					(click)="onRestore()">
+						<mat-icon aria-label="Remove this issue">restore</mat-icon>
+					</button>
+				<button mat-icon-button
+					*ngIf="!issue.softDeleted"
+					matTooltip="Remove this Issue"
+					color="accent"
+					(click)="onSoftDelete()">
+						<mat-icon aria-label="Remove this issue">delete</mat-icon>
+					</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Issue"
 				    color="warn"
@@ -124,7 +138,9 @@
 </div>
 <app-swiper-wrapper path="/media"
 	[items]="media"
-    model="Media"
+	model="Media"
+	(restore)="onMediaRestore($event)"
+	(softDelete)="onMediaSoftDelete($event)"
 	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
@@ -143,7 +159,9 @@
 			[showParent]="true"
 			parentPath="/issues"
 			parentPropName="issues"
-		    (delete)="onDeleteSolution($event)"
+			(restore)="onRestoreSolution($event)"
+			(delete)="onDeleteSolution($event)"
+			(softDelete)="onSoftDeleteSolution($event)"
 		    (vote)="onVote($event, 'Solution')"
 		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>

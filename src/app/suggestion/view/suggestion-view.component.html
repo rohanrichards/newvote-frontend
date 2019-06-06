@@ -46,6 +46,19 @@
 				    routerLink="/suggestions/edit/{{suggestion._id}}">
 					<mat-icon aria-label="Edit the suggestion">edit</mat-icon>
 				</button>
+				<button color="accent"
+					*ngIf="suggestion.softDeleted"
+					mat-icon-button
+					(click)="onRestore()">
+					<mat-icon aria-label="Restore suggestion">restore</mat-icon>
+				</button>
+				<button mat-icon-button
+					matTooltip="Remove solution"
+					*ngIf="!suggestion.softDeleted"
+					color="accent"
+					(click)="onSoftDelete()">
+					<mat-icon aria-label="Remove suggestion">delete</mat-icon>
+				</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Suggestion"
 				    color="warn"

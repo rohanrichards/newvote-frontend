@@ -25,6 +25,20 @@
 					<mat-icon aria-label="Edit the action">edit</mat-icon>
 				</button>
 				<button mat-icon-button
+					*ngIf="proposal.softDeleted"
+					matTooltip="Restore Action"
+					color="accent"
+					(click)="onRestore()">
+					<mat-icon aria-label="Restore Action">restore</mat-icon>
+				</button>
+				<button mat-icon-button
+					*ngIf="!proposal.softDeleted"
+					matTooltip="Remove Action"
+					color="accent"
+					(click)="onSoftDelete()">
+					<mat-icon aria-label="Remove Action">delete</mat-icon>
+				</button>
+				<button mat-icon-button
 				    matTooltip="Delete this Action"
 				    color="warn"
 				    (click)="onDelete()">
