@@ -8,7 +8,7 @@ import env from './.env';
 export const environment = {
 	production: false,
 	version: env.npm_package_version + '-dev',
-	serverUrl: '/api',
+	serverUrl: 'https://newvote-staging.herokuapp.com/api',
 	defaultLanguage: 'en-US',
 	supportedLanguages: [
 		'en-US',

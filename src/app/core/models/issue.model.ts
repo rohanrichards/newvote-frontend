@@ -8,6 +8,8 @@ export interface IIssue {
 	topics?: Array<any>;
 	created?: Date;
 	organizations: any;
+	softDeleted: boolean;
+	mediaHeading?: string;
 }
 
 export class Issue implements IIssue {
@@ -16,6 +18,7 @@ export class Issue implements IIssue {
 		public imageUrl: string = '',
 		public description: string = '',
 		public organizations: any = {},
-		public topics: Array<any> = []
+		public topics: Array<any> = [],
+		public softDeleted: boolean = false
 	) { }
 }

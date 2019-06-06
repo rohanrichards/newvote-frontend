@@ -46,6 +46,12 @@ export class IssueListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/topics/create',
 		role: 'admin'
+	},
+	{
+		text: 'All Topics',
+		color: 'warn',
+		routerLink: '/topics',
+		role: 'admin'
 	}];
 
 	topicFilter = new FormControl('');
@@ -71,7 +77,6 @@ export class IssueListComponent implements OnInit {
 		});
 		this.route.queryParamMap.subscribe(queryParams => {
 			const force: boolean = !!queryParams.get('forceUpdate');
-			console.log('issue list forceUpdate: ', queryParams.get('forceUpdate'));
 			this.fetchData(force);
 		});
 
@@ -84,8 +89,13 @@ export class IssueListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
+		const isOwner = this.auth.isOwner();
 
-		const issueObs: Observable<Issue[]> = this.issueService.list({ orgs: [], forceUpdate: force });
+		const issueObs: Observable<Issue[]> = this.issueService.list({
+			orgs: [],
+			forceUpdate: force,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		});
 		// .subscribe(issues => { this.issues = issues; });
 
 		const topicObs = this.topicService.list({ forceUpdate: force });
@@ -101,8 +111,6 @@ export class IssueListComponent implements OnInit {
 				this.issues = result[0];
 				this.allTopics = result[1];
 				this.organization = result[2];
-
-				console.log(this.topicParam);
 				if (this.topicParam) {
 					const topic = this._filter(this.topicParam);
 					if (topic.length) {
@@ -122,7 +130,20 @@ export class IssueListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.issueService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
+			this.fetchData(true);
+		});
+	}
+
+	onSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
+	onRestore(event: any) {
+		event.softDeleted = false;
+		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
 			this.fetchData(true);
 		});
 	}
@@ -131,6 +152,17 @@ export class IssueListComponent implements OnInit {
 		this.topicService.delete({ id: topic._id }).subscribe(() => {
 			this.fetchData(true);
 		});
+	}
+
+	onSoftDeleteTopic(topic: any) {
+		this.isLoading = true;
+		topic.softDeleted = true;
+
+		this.topicService.update({ id: topic._id, entity: topic })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.fetchData(true);
+			});
 	}
 
 	topicSelected(event: any) {

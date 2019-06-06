@@ -11,6 +11,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
 @Component({
 	selector: 'app-solution',
@@ -25,6 +26,7 @@ export class SolutionViewComponent implements OnInit {
 	constructor(
 		private solutionService: SolutionService,
 		private voteService: VoteService,
+		private proposalService: ProposalService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -42,7 +44,14 @@ export class SolutionViewComponent implements OnInit {
 	}
 
 	getSolution(id: string, forceUpdate?: boolean) {
-		this.solutionService.view({ id: id, orgs: [], forceUpdate })
+		const isOwner = this.auth.isOwner();
+
+		this.solutionService.view({
+			id: id,
+			orgs: [],
+			forceUpdate,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solution: Solution) => {
 				this.solution = solution;
@@ -96,6 +105,77 @@ export class SolutionViewComponent implements OnInit {
 					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
+		});
+	}
+
+	onSoftDelete() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove Solution?`,
+				message: `Are you sure you want to remove${this.solution.title}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.solution.softDeleted = true;
+				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+					this.openSnackBar('Succesfully deleted', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
+	onRestore() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore Solution?`,
+				message: `Are you sure you want to restore ${this.solution.title}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.solution.softDeleted = false;
+				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+					this.openSnackBar('Succesfully restored', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
+	onRestoreProposal(event: any) {
+		this.isLoading = true;
+		event.softDeleted = false;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.openSnackBar('Succesfully Restored', 'OK');
+				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+			});
+	}
+
+	onSoftDeleteProposal(event: any) {
+		this.isLoading = true;
+		event.softDeleted = true;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.openSnackBar('Succesfully removed', 'OK');
+				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+			});
+	}
+
+	onDeleteProposal(event: any) {
+		this.proposalService.delete({ id: event._id }).subscribe(() => {
+			this.openSnackBar('Succesfully deleted', 'OK');
+			this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 		});
 	}
 

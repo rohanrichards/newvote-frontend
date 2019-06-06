@@ -19,16 +19,30 @@
 					<mat-icon aria-label="Create a new Solution">add</mat-icon>
 				</button>
 				<button mat-icon-button
-				    matTooltip="Add a Proposal for this Solution"
+				    matTooltip="Add a Action for this Solution"
 				    color="accent"
 				    routerLink="/proposals/create/{{solution._id}}">
-					<mat-icon aria-label="Add a Proposal for this Solution">playlist_add</mat-icon>
+					<mat-icon aria-label="Add a Action for this Solution">playlist_add</mat-icon>
 				</button>
 				<button mat-icon-button
 				    matTooltip="Edit this Solution"
 				    color="accent"
 				    routerLink="/solutions/edit/{{solution._id}}">
 					<mat-icon aria-label="Edit this solution">edit</mat-icon>
+				</button>
+				<button color="accent"
+					*ngIf="solution.softDeleted"
+					matTooltip="Restore this Solution"
+					mat-icon-button
+					(click)="onRestore()">
+					<mat-icon aria-label="Restore content">restore</mat-icon>
+			  	</button>
+				<button mat-icon-button
+					matTooltip="Remove this solution"
+					*ngIf="!solution.softDeleted"
+					color="accent"
+					(click)="onSoftDelete()">
+					<mat-icon aria-label="Remove solution">delete</mat-icon>
 				</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Solution"
@@ -85,15 +99,17 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Proposals</span>
+		<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
 		<app-card-list path="/proposals"
 		    [items]="solution.proposals"
-		    model="Proposal"
+		    model="Action"
 		    [showChildren]="false"
 		    [showParent]="true"
 		    parentPath="/solutions"
-		    parentPropName="solutions"
-		    (delete)="onDeleteProposal()"
+			parentPropName="solutions"
+			(restore)="onRestoreProposal($event)"
+			(softDelete)="onSoftDeleteProposal($event)"
+		    (delete)="onDeleteProposal($event)"
 		    (vote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>
 </div>

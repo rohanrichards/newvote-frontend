@@ -53,8 +53,12 @@ export class SuggestionListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
+		const isOwner = this.auth.isOwner();
 		this.isLoading = true;
-		this.suggestionService.list({ forceUpdate: force })
+		this.suggestionService.list({
+			forceUpdate: force,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(suggestions => { this.suggestions = suggestions; });
 	}
@@ -65,6 +69,23 @@ export class SuggestionListComponent implements OnInit {
 			this.fetchData(true);
 		});
 	}
+
+	onSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			console.log('done');
+			this.fetchData(true);
+		});
+	}
+
+	onRestore(event: any) {
+		event.softDeleted = false;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			console.log('done');
+			this.fetchData(true);
+		});
+	}
+
 
 	onVote(voteData: any) {
 		this.isLoading = true;

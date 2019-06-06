@@ -18,10 +18,12 @@
 		    model="Solution"
 		    [showChildren]="true"
 		    childPath="proposals"
-		    childName="Proposals"
+		    childName="Actions"
 			[showParent]="true"
 			parentPath="/issues"
 			parentPropName="issues"
+			(restore)="onRestore($event)"
+			(softDelete)="onSoftDelete($event)"
 		    (delete)="onDelete($event)"
 		    (vote)="onVote($event, 'Solution')"
 		    (childVote)="onVote($event, 'Proposal')"></app-card-list>

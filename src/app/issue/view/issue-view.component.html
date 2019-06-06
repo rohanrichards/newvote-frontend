@@ -35,7 +35,21 @@
 				    color="accent"
 				    routerLink="/issues/edit/{{issue._id}}">
     					<mat-icon aria-label="Edit the issue">edit</mat-icon>
-  					</button>
+					  </button>
+				<button mat-icon-button
+					*ngIf="issue.softDeleted"
+					matTooltip="Restore this issue"
+					color="accent"
+					(click)="onRestore()">
+						<mat-icon aria-label="Remove this issue">restore</mat-icon>
+					</button>
+				<button mat-icon-button
+					*ngIf="!issue.softDeleted"
+					matTooltip="Remove this Issue"
+					color="accent"
+					(click)="onSoftDelete()">
+						<mat-icon aria-label="Remove this issue">delete</mat-icon>
+					</button>
 				<button mat-icon-button
 				    matTooltip="Delete this Issue"
 				    color="warn"
@@ -71,10 +85,62 @@
 		</div>
 	</div>
 </mat-toolbar>
-
+<div class="container"
+	fxLayoutAlign="center center"
+	*ngIf="media"
+	>
+	<div
+		fxLayoutAlign="center center"
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px"
+		*ngIf="media && !headingEdit"
+		>
+		<h3 class="mat-headline" 
+			*ngIf="media && media.length > 0"
+			[ngStyle]="{ 'margin-bottom': '0px'}"
+			>
+			{{ this.issue.mediaHeading || "Third Party Media"}}
+		</h3>
+		<button 
+			mat-icon-button
+			matTooltip="Edit no Issue"
+			color="accent"
+			(click)="toggleHeader()"
+			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
+			>
+				<mat-icon aria-label="Edit the issue">edit</mat-icon>
+		</button>
+	</div>		
+	<div 
+		fxLayoutAlign="center center"
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px"
+		*ngIf="auth.isModerator() && headingEdit"
+		>
+		<mat-form-field class="example-full-width">
+			<input 
+				#newHeading 
+				matInput 
+				placeholder="Heading Name"
+				(keyup.enter)="handleSubmit(newHeading.value)"
+				(blur)="handleSubmit()"
+				>
+			<button 
+				mat-icon-button
+				matSuffix
+				color="accent"
+				(click)="handleSubmit(newHeading.value)"
+				>
+				<mat-icon >send</mat-icon>
+			</button>	
+		</mat-form-field>
+	</div>
+</div>
 <app-swiper-wrapper path="/media"
 	[items]="media"
-    model="Media"
+	model="Media"
+	(restore)="onMediaRestore($event)"
+	(softDelete)="onMediaSoftDelete($event)"
 	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
@@ -89,11 +155,13 @@
 		    model="Solution"
 		    [showChildren]="true"
 		    childPath="proposals"
-		    childName="Proposals"
+		    childName="Actions"
 			[showParent]="true"
 			parentPath="/issues"
 			parentPropName="issues"
-		    (delete)="onDeleteSolution($event)"
+			(restore)="onRestoreSolution($event)"
+			(delete)="onDeleteSolution($event)"
+			(softDelete)="onSoftDeleteSolution($event)"
 		    (vote)="onVote($event, 'Solution')"
 		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
 	</div>

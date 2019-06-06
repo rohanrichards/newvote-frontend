@@ -49,17 +49,25 @@
 							[routerLink]="['/topics/edit', topic._id]">
 									<mat-icon aria-label="Edit the content">edit </mat-icon>
 						</button>
+						<button color="accent"
+							mat-icon-button
+							(click)="onSoftDeleteTopic(topic, $event)">
+									<mat-icon aria-label="Remove the content">delete</mat-icon>
+						</button>
 						<button color="warn"
 							mat-icon-button
+							*ngIf="auth.isAdmin(topic)"
 							(click)="onDeleteTopic(topic, $event)">
-									<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
+									<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
 						</button>
 					</div>
 					<mat-divider></mat-divider>
 				</h2>
 				<app-grid-list path="/issues"
 				    [items]="getIssues(topic._id)"
-				    model="Issue"
+					model="Issue"
+					(restore)="onRestore($event)"
+					(softDelete)="onSoftDelete($event)"
 				    (delete)="onDelete($event)"></app-grid-list>
 			</div>
 		</div>

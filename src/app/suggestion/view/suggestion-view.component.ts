@@ -128,6 +128,46 @@ export class SuggestionViewComponent implements OnInit {
 		});
 	}
 
+	onSoftDelete() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove Suggestion?`,
+				message: `Are you sure you want to remove ${this.suggestion.title}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.suggestion.softDeleted = true;
+				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion }).subscribe(() => {
+					this.openSnackBar('Succesfully removed', 'OK');
+					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+				});
+			}
+		});
+	}
+
+	onRestore() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore Suggestion?`,
+				message: `Are you sure you want to restore ${this.suggestion.title}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.suggestion.softDeleted = false;
+				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion }).subscribe(() => {
+					this.openSnackBar('Succesfully restored', 'OK');
+					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+				});
+			}
+		});
+	}
+
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,

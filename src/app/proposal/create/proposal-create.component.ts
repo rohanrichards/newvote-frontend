@@ -59,8 +59,8 @@ export class ProposalCreateComponent implements OnInit {
 		this.isLoading = true;
 		this.meta.updateTags(
 			{
-				title: 'Create Proposal',
-				description: 'Creating a new proposal on the NewVote platform.'
+				title: 'Create Action',
+				description: 'Creating a new action on the NewVote platform.'
 			});
 
 		this.route.paramMap.subscribe(params => {

@@ -20,6 +20,8 @@ export class CardListComponent implements OnInit {
 	@Input() showParent = false;
 	@Input() parentPath: string;
 	@Input() parentPropName: string;
+	@Output() restore = new EventEmitter();
+	@Output() softDelete = new EventEmitter();
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() childVote = new EventEmitter();
@@ -47,11 +49,48 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
+	onSoftDelete(item: any, event: any) {
+		event.stopPropagation();
+
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove ${this.model}?`,
+				message: `Are you sure you want to remove ${item.name}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.softDelete.emit(item);
+			}
+		});
+	}
+
 	onVote(event: any) {
 		this.vote.emit(event);
 	}
 
 	onChildVote(event: any) {
 		this.childVote.emit(event);
+	}
+
+
+	onRestore(item: any, event: any) {
+		event.stopPropagation();
+
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore ${this.model}`,
+				message: `Are you sure you want to restore ${item.name}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.restore.emit(item);
+			}
+		});
 	}
 }

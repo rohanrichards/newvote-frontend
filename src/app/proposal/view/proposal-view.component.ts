@@ -51,7 +51,7 @@ export class ProposalViewComponent implements OnInit {
 				this.meta.updateTags(
 					{
 						title: `${this.proposal.title}`,
-						appBarTitle: 'View Proposal',
+						appBarTitle: 'View Action',
 						description: this.proposal.description,
 						image: this.proposal.imageUrl
 					});
@@ -96,6 +96,46 @@ export class ProposalViewComponent implements OnInit {
 				this.proposalService.delete({ id: this.proposal._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
 					this.router.navigate(['/proposals'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
+	onSoftDelete() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Remove Proposal?`,
+				message: `Are you sure you want to remove ${this.proposal.title}? This will only hide the item from the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.proposal.softDeleted = true;
+				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
+					this.openSnackBar('Succesfully removed', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				});
+			}
+		});
+	}
+
+	onRestore() {
+		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				title: `Restore Proposal?`,
+				message: `Are you sure you want to restore ${this.proposal.title}? This will make the item visible to the public.`
+			}
+		});
+
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.proposal.softDeleted = false;
+				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
+					this.openSnackBar('Succesfully restored', 'OK');
+					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
 			}
 		});

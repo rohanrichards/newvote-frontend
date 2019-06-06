@@ -54,7 +54,13 @@ export class SolutionListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
-		this.solutionService.list({ orgs: [], forceUpdate: force })
+		const isOwner = this.auth.isOwner();
+
+		this.solutionService.list({
+			orgs: [],
+			forceUpdate: force,
+			params: isOwner ? { 'showDeleted': true } :  {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(solutions => {
 				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
@@ -64,8 +70,13 @@ export class SolutionListComponent implements OnInit {
 	// find the different solution and only update it, not entire list
 	// this stops content flashing and unwanted scrolling
 	refreshData() {
+		const isOwner = this.auth.isOwner();
+
 		this.isLoading = true;
-		this.solutionService.list({ orgs: [], forceUpdate: true })
+		this.solutionService.list({
+			orgs: [],
+			forceUpdate: true,
+			params: isOwner ? { 'showDeleted': true } :  {} })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(solutions => {
 				const diff = _differenceWith(solutions, this.solutions, _isEqual);
@@ -73,6 +84,28 @@ export class SolutionListComponent implements OnInit {
 					const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 					this.solutions[index] = diff[0];
 				}
+			});
+	}
+
+	onRestore(event: any) {
+		this.isLoading = true;
+		event.softDeleted = false;
+
+		this.solutionService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.fetchData(true);
+			});
+	}
+
+	onSoftDelete(event: any) {
+		this.isLoading = true;
+		event.softDeleted = true;
+
+		this.solutionService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.fetchData(true);
 			});
 	}
 
@@ -112,5 +145,4 @@ export class SolutionListComponent implements OnInit {
 			horizontalPosition: 'right'
 		});
 	}
-
 }
