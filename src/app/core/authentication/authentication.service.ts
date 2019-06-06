@@ -35,7 +35,9 @@ export interface ResetContext {
 
 const routes = {
 	signin: () => `/auth/signin`,
-	signup: () => `/auth/signup`,
+	signup: (id?: string) => {
+		return `/auth/signup${id ? `/${id}` : ''}`;
+	},
 	forgot: () => `/auth/forgot`,
 	reset: () => `/auth/reset`,
 	randomGet: () => `/topics`,
@@ -103,10 +105,10 @@ export class AuthenticationService {
 	 * @param context The signup parameters.
 	 * @return The user credentials.
 	 */
-	signup(context: LoginContext): Observable<Credentials> {
+	signup(context: LoginContext, verificationCode?: string): Observable<Credentials> {
 		context.organizations = [this.organizationService.org];
 		return this.httpClient
-			.post<Credentials>(routes.signup(), context)
+			.post<Credentials>(routes.signup(verificationCode), context)
 			.pipe(
 				map((res) => {
 					this.setCredentials(res, context.remember);

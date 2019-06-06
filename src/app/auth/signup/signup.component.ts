@@ -6,6 +6,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService } from '@app/core';
+import { arrayExpression } from 'babel-types';
 
 const log = new Logger('Signup');
 
@@ -20,13 +21,14 @@ export class SignupComponent implements OnInit {
 	error: any;
 	signupForm: FormGroup;
 	isLoading = false;
+	verificationCode: string;
 
 	constructor(private router: Router,
 		private route: ActivatedRoute,
 		private formBuilder: FormBuilder,
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
-		private meta: MetaService
+		private meta: MetaService,
 	) {
 		this.createForm();
 	}
@@ -37,11 +39,16 @@ export class SignupComponent implements OnInit {
 				title: `Create account`,
 				description: 'Make your voice heard, create an account today!'
 			});
+
+		// extract verificationCode if directed via email
+		this.verificationCode = this.route.snapshot.params.id
+			? this.route.snapshot.params.id
+			: '';
 	}
 
 	signup() {
 		this.isLoading = true;
-		this.authenticationService.signup(this.signupForm.value)
+		this.authenticationService.signup(this.signupForm.value, this.verificationCode)
 			.pipe(finalize(() => {
 				this.signupForm.markAsPristine();
 				this.isLoading = false;
