@@ -32,6 +32,7 @@ export class IssueViewComponent implements OnInit {
 	media: Array<Media>;
 	isLoading: boolean;
 	voteSnack: any;
+	headingEdit = false;
 
 	constructor(
 		private topicService: TopicService,
@@ -250,6 +251,23 @@ export class IssueViewComponent implements OnInit {
 			horizontalPosition: 'right',
 			verticalPosition: 'bottom',
 		});
+	}
+
+	toggleHeader() {
+		this.headingEdit = this.headingEdit ? false : true;
+	}
+
+	handleSubmit(value?: string) {
+		this.toggleHeader();
+		if (!value) {
+			return;
+		}
+
+		this.issue.mediaHeading = value;
+		this.issueService.update({ id: this.issue._id, entity: this.issue })
+			.subscribe((t) => {
+				this.issue = t;
+			});
 	}
 
 }

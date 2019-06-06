@@ -9,6 +9,7 @@ export interface IIssue {
 	created?: Date;
 	organizations: any;
 	softDeleted: boolean;
+	mediaHeading?: string;
 }
 
 export class Issue implements IIssue {

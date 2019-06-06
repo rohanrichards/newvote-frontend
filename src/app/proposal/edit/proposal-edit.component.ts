@@ -80,7 +80,7 @@ export class ProposalEditComponent implements OnInit {
 					this.meta.updateTags(
 						{
 							title: `Edit ${proposal.title}`,
-							appBarTitle: 'Edit Proposal',
+							appBarTitle: 'Edit Action',
 							description: `${proposal.description}`
 						});
 				});

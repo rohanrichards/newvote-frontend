@@ -13,36 +13,36 @@
 		    fxLayoutAlign="center end">
 			<div class="button-panel">
 				<button mat-icon-button
-				    matTooltip="Add a new Proposal"
+				    matTooltip="Add a new Action"
 				    color="accent"
 				    routerLink="/proposals/create">
-					<mat-icon aria-label="Add a new proposal">playlist_add</mat-icon>
+					<mat-icon aria-label="Add a new action">playlist_add</mat-icon>
 				</button>
 				<button mat-icon-button
-				    matTooltip="Edit this Proposal"
+				    matTooltip="Edit this Action"
 				    color="accent"
 				    routerLink="/proposals/edit/{{proposal._id}}">
-					<mat-icon aria-label="Edit the proposal">edit</mat-icon>
+					<mat-icon aria-label="Edit the action">edit</mat-icon>
 				</button>
 				<button mat-icon-button
 					*ngIf="proposal.softDeleted"
-					matTooltip="Restore Proposal"
+					matTooltip="Restore Action"
 					color="accent"
 					(click)="onRestore()">
-					<mat-icon aria-label="Restore proposal">restore</mat-icon>
+					<mat-icon aria-label="Restore Action">restore</mat-icon>
 				</button>
 				<button mat-icon-button
 					*ngIf="!proposal.softDeleted"
-					matTooltip="Remove Proposal"
+					matTooltip="Remove Action"
 					color="accent"
 					(click)="onSoftDelete()">
-					<mat-icon aria-label="Remove proposal">delete</mat-icon>
+					<mat-icon aria-label="Remove Action">delete</mat-icon>
 				</button>
 				<button mat-icon-button
-				    matTooltip="Delete this Proposal"
+				    matTooltip="Delete this Action"
 				    color="warn"
 				    (click)="onDelete()">
-					<mat-icon aria-label="Delete the proposal forever">delete_forever</mat-icon>
+					<mat-icon aria-label="Delete the action forever">delete_forever</mat-icon>
 				</button>
 			</div>
 		</div>
@@ -66,7 +66,7 @@
 			<div class="mat-display-1"
 			    translate>{{proposal.title}}</div>
 
-			<span class="mat-body">This is a proposal for:
+			<span class="mat-body">This is a Action for:
 				<span *ngFor="let parent of proposal.solutions; let i = index">
 					<a mat-button
 					    routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
@@ -93,7 +93,7 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<!-- <span class="mat-headline">Vote on Proposals</span>
+		<!-- <span class="mat-headline">Vote on Actions</span>
 		<app-card-list path="/proposals"
 		    [items]="proposal.proposals"
 		    model="Proposal"

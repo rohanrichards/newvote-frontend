@@ -8,3 +8,7 @@
 		margin-bottom: 16px !important;
 	}
 }
+
+::ng-deep .mat-chip {
+		max-width: 300px !important;
+}
