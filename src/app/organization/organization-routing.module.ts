@@ -10,6 +10,7 @@ import { OrganizationListComponent } from './list/organization-list.component';
 import { OrganizationCreateComponent } from './create/organization-create.component';
 import { OrganizationEditComponent } from './edit/organization-edit.component';
 import { OrganizationClaimComponent } from './claim/organization-claim.component';
+import { DiscoverComponent } from './discover/discover.component';
 
 const routes: Routes = [
 	{
@@ -35,6 +36,11 @@ const routes: Routes = [
 		data: { title: extract('Edit Community') },
 		canActivate: [OwnerGuard]
 	},
+	{
+		path: 'discover',
+		component: DiscoverComponent,
+		data: { title: 'Discover Communties'}
+	}
 	// {
 	// 	path: ':id',
 	// 	component: OrganizationViewComponent,

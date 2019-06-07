@@ -1,0 +1,28 @@
+<app-header-bar></app-header-bar>
+
+<app-loader [isLoading]="isLoading" size="1.5">
+</app-loader>
+
+
+<div class="container" fxLayout="row wrap" fxLayoutAlign="center start">
+	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+		<div fxLayout="column">
+			<div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutAlign.lt-sm="start stretch" fxLayoutGap="32px">
+				<div class="item-card-row" fxFlex="0 0 calc(33.3% - 32px)" fxFlex.lt-sm="0 0 100%"
+					*ngFor="let item of organizations">
+					<a [href]="getUrl(item.url)">
+						<mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}">
+							<img mat-card-image 		    class="image-container" [src]="item.imageUrl"/>
+							<mat-card-content>
+								<mat-card-title translate>
+									<div class="truncate-container">
+										<span class="truncate">{{item.name}}</span>
+									</div>
+								</mat-card-title>
+							</mat-card-content>
+						</mat-card>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
