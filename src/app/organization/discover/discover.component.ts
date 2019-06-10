@@ -14,6 +14,9 @@ export class DiscoverComponent implements OnInit {
 	organizations: Array<any>;
 	isLoading = false;
 
+	headerTitle = 'Discover New Organizations';
+	headerText = 'Find out who is active on NewVote';
+
 	constructor(
 		private organizationService: OrganizationService,
 		public auth: AuthenticationService,

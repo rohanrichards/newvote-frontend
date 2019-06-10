@@ -1,10 +1,13 @@
-<app-header-bar></app-header-bar>
+<app-header-bar
+	[title]="headerTitle"
+	[text]="headerText"
+	></app-header-bar>
 
 <app-loader [isLoading]="isLoading" size="1.5">
 </app-loader>
 
 
-<div class="container" fxLayout="row wrap" fxLayoutAlign="center start">
+<div class="container discover-wrap" fxLayout="row wrap" fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
 		<div fxLayout="column">
 			<div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutAlign.lt-sm="start stretch" fxLayoutGap="32px">

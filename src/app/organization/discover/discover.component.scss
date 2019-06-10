@@ -1,0 +1,41 @@
+.mat-progress-spinner {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.message {
+	margin-left: 0.5em;
+}
+
+.item-card-row {
+	margin-bottom: 32px;
+}
+
+.item-card {
+	.image-container {
+		min-height: 200px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+	cursor: pointer;
+}
+
+.truncate-container {
+	max-width: 100%;
+	min-width: 0;
+
+	.truncate {
+		min-width: 0;
+		display: inline-block;
+		width: 100%;
+		height: 28px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.discover-wrap {
+    padding-left: 2rem;
+    padding-top: 2rem;
+}
