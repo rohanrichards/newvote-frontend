@@ -55,7 +55,6 @@ export class SolutionService {
 			params = new HttpParams({fromObject: context.params});
 		}
 
-		console.log(params, 'this is params');
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.view(context), { params })

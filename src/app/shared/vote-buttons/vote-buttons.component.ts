@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
 	selector: 'app-vote-buttons',
@@ -58,7 +59,10 @@ export class VoteButtonsComponent implements OnInit {
 	public dataSetOverride: any;
 
 
-	constructor(private auth: AuthenticationService) { }
+	constructor(
+		private auth: AuthenticationService,
+		public snackBar: MatSnackBar,
+		) { }
 
 	ngOnInit() {
 		this.dataSetOverride = [
@@ -103,7 +107,18 @@ export class VoteButtonsComponent implements OnInit {
 
 	onVote(item: any, voteValue: number, event: any) {
 		event.stopPropagation();
-
 		this.vote.emit({ item, voteValue });
+	}
+
+	voteToRevealMessage(event: any) {
+		event.stopPropagation();
+		this.openSnackBar('You have to vote to reveal the result', 'OK');
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 4000,
+			horizontalPosition: 'right'
+		});
 	}
 }
