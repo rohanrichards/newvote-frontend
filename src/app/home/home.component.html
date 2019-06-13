@@ -47,6 +47,7 @@
 			model="Issue"
 			[itemLimit]="ISSUE_LIMIT"
 			[items]=issues
+			(delete)="onDelete($event)"
 			(softDelete)="onSoftDelete($event)"></app-grid-list>
 		<div>
 			<button mat-button
