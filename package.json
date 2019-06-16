@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "npm run env -s && ng build --prod --base-href /",
-	"build-staging": "npm run env -s && ng build --configuration=stage --base-href /",
+    "build-staging": "npm run env -s && ng build --configuration=stage --base-href /",
     "start": "npm run env -s && ng serve --aot --proxy-config proxy.conf.js --disable-host-check",
     "serve:sw": "npm run build -s && npx http-server ./www -p 4200",
     "lint": "ng lint && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",
@@ -44,7 +44,7 @@
     "@ngx-share/core": "^7.0.0",
     "@ngx-translate/core": "^10.0.1",
     "angular-font-awesome": "^3.1.2",
-    "angulartics2": "^6.0.0",
+    "angulartics2": "^6.3.1",
     "chart.js": "^2.7.3",
     "cloudinary-core": "^2.5.0",
     "cordova-android": "^7.0.0",
