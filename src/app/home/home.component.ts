@@ -75,4 +75,11 @@ export class HomeComponent implements OnInit {
 			.subscribe((t) => {	this.fetchData(true); });
 	}
 
+	onDelete(issue: any) {
+		this.issueService.delete({ id: issue._id }).subscribe(() => {
+			console.log('deleted');
+			this.fetchData(true);
+		});
+	}
+
 }
