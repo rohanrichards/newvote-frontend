@@ -41,7 +41,9 @@
     fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">What's Hot?</h2>
+		<h2 [ngStyle]="{'text-align': 'center'}" class="mat-h2">
+			Current Issues
+		</h2>
 		<app-grid-list *ngIf="issues"
 		    path="/issues"
 			model="Issue"
