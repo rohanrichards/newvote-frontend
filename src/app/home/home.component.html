@@ -11,11 +11,6 @@
 			    src="{{org.iconUrl}}"
 			    alt="{{org.name}}" />
 		</div>
-		<div class="mat-display-3 no-margin">
-			<span *ngIf="org">{{org.name}}</span>
-		</div>
-		<div class="mat-h2"
-		    *ngIf="org">{{org.description}}</div>
 		<div *ngIf="!auth.isAuthenticated()">
 			<button mat-button
 			    mat-raised-button
@@ -27,42 +22,15 @@
 	</div>
 </div>
 
-<div class="about-community-container container"
-    fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
-
-<div class="hot-issues-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">What's Hot?</h2>
-		<app-grid-list *ngIf="issues"
-		    path="/issues"
-			model="Issue"
-			[itemLimit]="ISSUE_LIMIT"
-			[items]=issues
-			(delete)="onDelete($event)"
-			(softDelete)="onSoftDelete($event)"></app-grid-list>
-		<div>
-			<button mat-button
-			    routerLink="/issues">
-				SEE ALL ></button>
-		</div>
-	</div>
-</div>
-
 <div class="community-container container"
     fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px"
 	    fxLayout="column">
-		<h2 class="mat-display-1">Community</h2>
+		<div class="mat-display-1 no-margin">
+			<span *ngIf="org">{{org.name}}</span>
+		</div>
+		<div class="mat-h2" *ngIf="org">{{org.description}}</div>
 		<div fxLayout="row">
 			<div fxFlex></div>
 			<div fxLayout="column">
@@ -117,6 +85,36 @@
 				<span class="mat-caption">{{org.name}} has claimed leadership of this community.</span>
 			</div>
 		</div>
+	</div>
+</div>
+
+<div class="hot-issues-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">What's Hot?</h2>
+		<app-grid-list *ngIf="issues"
+		    path="/issues"
+			model="Issue"
+			[itemLimit]="ISSUE_LIMIT"
+			[items]=issues
+			(delete)="onDelete($event)"
+			(softDelete)="onSoftDelete($event)"></app-grid-list>
+		<div>
+			<button mat-button
+			    routerLink="/issues">
+				SEE ALL ></button>
+		</div>
+	</div>
+</div>
+
+<div class="about-community-container container"
+    fxLayoutAlign="center center"
+	*ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">About {{org.name}}</h2>
+		<span [innerHtml]="org.longDescription"></span>
 	</div>
 </div>
 
