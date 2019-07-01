@@ -120,6 +120,152 @@
 	</div>
 </div>
 
+<div class="about-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">What is NewVote?</h2>
+		<div fxLayout="row wrap">
+			<div fxFlex="100"
+			    fxFlex.gt-xs="25"
+			    fxLayoutAlign="center center"
+			    class="icon-container">
+				<img src="assets/earth-globe.svg" />
+			</div>
+			<div class="text-block"
+			    fxFlex="100"
+			    fxFlex.gt-xs="75">
+				<div class="mat-body-1">
+					<p>NewVote is a democracy app, and it’s all about you.</p>
+					<p>Your communities, your issues, your ideas and your decisions.</p>
+					<p>Our mission is to rebuild the relationship between everyday people and their leaders, so that we all have confidence in our democracies and the decisions they make.</p>
+					<p>We’re doing this across all levels of government worldwide, as well as “private” democratic communities, like unions, businesses, community groups, political parties, student councils, clubs and societies.</p>
+					<p>Connect with your community in a way that you can truly be heard - easily and directly - whilst leaders get the data they need.</p>
+					<p>Let’s enhance democracy together.</p>
+					<p>Your voice matters, and all you need is a profile to start voting!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="vote-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">How do I Vote?</h2>
+		<div fxLayout="row wrap">
+			<div class="icon-container"
+			    fxFlex="10"
+			    fxFlex.gt-xs="15"
+			    fxLayoutAlign="center center">
+				<img class="icon"
+				    src="assets/sort-arrows.png" />
+			</div>
+			<div class="text-block"
+			    fxLayoutAlign="center center"
+			    fxFlex
+			    fxFlex.xs="90">
+				<div class="mat-body">
+					<p>You’ll need to make an account using an email address and your mobile number to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
+				</div>
+			</div>
+			<div *ngIf="!auth.isAuthenticated()"
+			 fxLayoutAlign="center center"
+			    fxFlex.xs="100">
+				<button mat-button
+				    mat-raised-button
+				    routerLink="/auth/signup"
+				    color="warn">
+					SIGN UP NOW</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="how-container container"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">How it Works</h2>
+		<div fxLayout="column">
+			<div class="mat-body">
+				<p>The voting process is quite simple. Explore this app to view issues, solutions and actions!</p>
+			</div>
+			<div fxLayout="row wrap"
+			    class="">
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="issues-card"
+					    fxLayout="column">
+						<div class="mat-h3">ISSUES</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/problem.svg" />
+						</div>
+						<p class="text-block"
+						    fxFlex>Issues can be any problem or topic in your community that you think needs to be addressed.</p>
+						<div><button mat-button
+							    routerLink="/issues">
+								VIEW ISSUES ></button>
+						</div>
+					</div>
+				</div>
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="solutions-card"
+					    fxLayout="column">
+						<div class="mat-h3">SOLUTIONS</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/thought.svg" /></div>
+						<p class="text-block"
+						    fxFlex>Solutions are the decisions that you think your community should make.</p>
+						<div>
+							<button mat-button
+							    routerLink="/solutions">
+								VIEW SOLUTIONS ></button>
+						</div>
+					</div>
+				</div>
+				<div fxFlex></div>
+				<div class="info-card-container mat-body"
+				    fxFlex="100"
+				    fxFlex.gt-sm="33"
+				    fxFlex.gt-md="266px">
+					<div class="info-card"
+					    id="proposals-card"
+					    fxLayout="column">
+						<div class="mat-h3">ACTIONS</div>
+						<div class="icon"
+						    fxLayoutAlign="center center">
+							<img class="icon"
+							    src="assets/idea.svg" /></div>
+						<p fxFlex
+						    class="text-block">Actions provide further clarity to solutions and specific actions.</p>
+						<!-- <div>
+							<button mat-button
+							    routerLink="/proposals">
+								VIEW ACTIONS ></button>
+						</div> -->
+					</div>
+				</div>
+				<div fxFlex></div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <div *ngIf="!auth.isAuthenticated()"
     class="final-container container"
     fxLayoutAlign="center center"
