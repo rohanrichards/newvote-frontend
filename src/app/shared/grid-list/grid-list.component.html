@@ -45,13 +45,26 @@
   						</button>
 					</div>
 				</div>
-				<mat-card-content>
-					<mat-card-title translate>
-						<div class="truncate-container">
-							<span class="truncate">{{item.name}}</span>
+				<ng-container *ngIf="!titleCard; then noTitle; else isTitle">
+				</ng-container>
+				<ng-template #noTitle>
+					<mat-card-content>
+						<mat-card-title translate>
+							<div class="truncate-container">
+								<span class="truncate">{{item.name}}</span>
+							</div>
+						</mat-card-title>
+					</mat-card-content>
+				</ng-template>
+				<ng-template #isTitle>
+					<mat-card-content>
+						<mat-card-title class="title-card-header">
+							{{item.name}}
+						</mat-card-title>
+						<div class="title-card-subheader" [innerHtml]="item.description">
 						</div>
-					</mat-card-title>
-				</mat-card-content>
+					</mat-card-content>
+				</ng-template>
 			</mat-card>
 		</div>
 	</div>
