@@ -23,7 +23,7 @@ const formats = [
 ];
 
 
-const QuillSettings = {
+export const QuillSettings = {
 	modules: {
 		toolbar: [
 			['bold', 'italic', 'underline', 'strike'],
@@ -43,8 +43,3 @@ const QuillSettings = {
 	},
 	format: formats,
 } as any;
-
-
-export default QuillSettings;
-
-
