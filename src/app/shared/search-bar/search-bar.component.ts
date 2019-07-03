@@ -15,6 +15,7 @@ import { SearchService } from '@app/core/http/search/search.service';
 export class SearchBarComponent implements OnInit {
 	@Input() isVisible = false;
 	@Output() isVisibleChange = new EventEmitter<boolean>();
+	@Output() closeSearch = new EventEmitter();
 
 	@ViewChild('searchInputElement') searchInputElement: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -58,4 +59,8 @@ export class SearchBarComponent implements OnInit {
 		console.log(this);
 	}
 
+	onSearchClose(event: any) {
+		event.preventDefault();
+		this.closeSearch.emit();
+	}
 }

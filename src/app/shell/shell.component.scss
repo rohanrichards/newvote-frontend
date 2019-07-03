@@ -87,3 +87,7 @@ router-outlet::after {
 .spacer {
 	height: 24px;
 }
+
+::ng-deep .mat-input-underline {
+    display: none;
+}

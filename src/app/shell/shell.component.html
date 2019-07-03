@@ -136,7 +136,9 @@
 			<app-search-bar class="sticky-search"
 			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
 			    ngClass.lt-md="top-bar-height-sm"
-				[(isVisible)]="showSearch"></app-search-bar>
+				[(isVisible)]="showSearch"
+				(closeSearch)="toggleSearch()"
+				></app-search-bar>
 
 			<mat-toolbar color="warn"
 			    *ngIf="showVerify"

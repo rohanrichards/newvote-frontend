@@ -7,11 +7,30 @@
 	margin-right: 8px;
 }
 
-::ng-deep{
+// ::ng-deep{
+// 	app-search-bar {
+// 		.mat-form-field-wrapper {
+// 			padding-top: 8px !important;
+// 			padding-bottom: 8px !important;
+// 		}
+// 	}
+// }
+
+::ng-deep {
 	app-search-bar {
-		.mat-form-field-wrapper {
-			padding-top: 8px !important;
-			padding-bottom: 8px !important;
+		width: 100%;
+
+
+		mat-toolbar {
+			width: 100%;
+			padding-right: 0.5rem;
+
+			mat-form-field {
+				width: 100%;
+			}
 		}
+
 	}
+
+	
 }

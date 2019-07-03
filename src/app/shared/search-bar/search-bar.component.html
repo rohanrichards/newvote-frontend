@@ -1,17 +1,23 @@
 <mat-toolbar *ngIf="isVisible" color="accent"
     fxFill>
 	<mat-form-field class=""
-	    appearance="outline"
-	    color="warn"
-	    fxFill>
-		<mat-label>Search entire site</mat-label>
+		color="warn"
+		[floatLabel]="'never'"
+	    >
+		<mat-label>Search</mat-label>
 		<input matInput
 		    type="text"
 		    #searchInputElement
 		    [formControl]="searchInputControl"
-		    [matAutocomplete]="auto">
-		<mat-icon matPrefix>search</mat-icon>
+			[matAutocomplete]="auto">
+		<!-- <button matSuffix mat-icon-button aria-label="Close Search">
+			
+		</button> -->
+		
 	</mat-form-field>
+	<button  mat-icon-button aria-label="Close Search" (click)="onSearchClose($event)">
+		<mat-icon [ngClass]="isVisible ? 'open': ''" matSuffix>close</mat-icon>
+	</button>
 	<mat-autocomplete #auto="matAutocomplete"
 	    (optionSelected)="searchSelected($event)">
 		<mat-option *ngFor="let option of searchResults$ | async"

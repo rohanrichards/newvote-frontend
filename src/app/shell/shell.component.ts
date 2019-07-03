@@ -1,5 +1,5 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 
@@ -17,6 +17,8 @@ export class ShellComponent implements OnInit {
 	organization: any;
 	hideVerify = false;
 	showSearch = false;
+
+	@Output() closeSearch = new EventEmitter();
 
 	constructor(private router: Router,
 		private titleService: Title,
@@ -100,4 +102,6 @@ export class ShellComponent implements OnInit {
 		}
 		return link;
 	}
+
+
 }
