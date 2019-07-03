@@ -13,6 +13,8 @@ import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-view.component.html',
@@ -55,6 +57,7 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solution: Solution) => {
 				this.solution = solution;
+				this.solution.imageUrl = this.replaceImageUrl(this.solution.imageUrl);
 				this.meta.updateTags(
 					{
 						title: solution.title,
@@ -184,6 +187,14 @@ export class SolutionViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
 	}
 
 }

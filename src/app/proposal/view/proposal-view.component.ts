@@ -12,6 +12,7 @@ import { MetaService } from '@app/core/meta.service';
 import { IProposal } from '@app/core/models/proposal.model';
 import { Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
 
 @Component({
 	selector: 'app-proposal',
@@ -148,4 +149,7 @@ export class ProposalViewComponent implements OnInit {
 		});
 	}
 
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
+	}
 }

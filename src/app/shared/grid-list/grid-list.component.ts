@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { createUrl } from '../helpers/cloudinary';
 
 @Component({
 	selector: 'app-grid-list',
@@ -87,4 +88,9 @@ export class GridListComponent implements OnInit {
 			}
 		});
 	}
+
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
+	}
+
 }

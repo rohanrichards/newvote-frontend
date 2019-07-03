@@ -20,6 +20,8 @@ import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
 
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-view.component.html',
@@ -270,4 +272,7 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
+	}
 }

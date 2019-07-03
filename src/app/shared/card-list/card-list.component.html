@@ -10,7 +10,9 @@
 			<div mat-card-image
 			    class="image-container"
 				[ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
-			    [style.background-image]="'url(' + item.imageUrl + ')'">
+				[style.background-image]="item.imageUrl ? 
+					'url(' + item.imageUrl + ')'
+					: ''">
 				<div class="button-panel"
 				    *ngIf="auth.isModerator() || auth.isCreator(item)">
 					<button color="accent"

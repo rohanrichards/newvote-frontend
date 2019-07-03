@@ -3,12 +3,14 @@
     class="hero-image-container">
 	<div *ngIf="org"
 	    class="hero-image"
-	    [style.background-image]="'url(' + org.imageUrl + ')'">
+		[style.background-image]="org.imageUrl ? 
+		'url(' + replaceImageUrl(org.imageUrl) + ')'
+		: ''">
 	</div>
 	<div class="hero-text-container">
 		<div *ngIf="org">
 			<img class="logo"
-			    src="{{org.iconUrl}}"
+			    src="{{replaceImageUrl(org.iconUrl)}}"
 			    alt="{{org.name}}" />
 		</div>
 		<div class="mat-display-3 no-margin">
