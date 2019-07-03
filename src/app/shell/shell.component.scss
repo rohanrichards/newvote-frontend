@@ -91,3 +91,30 @@ router-outlet::after {
 ::ng-deep .mat-input-underline {
     display: none;
 }
+
+.hide-login-menu {
+	display: block;
+}
+
+.account-create-menu-icon {
+	display: none;
+}
+
+@media screen and (max-width: 450px) {
+	
+
+	.hide-login-menu {
+		display: none;
+	}
+
+	.account-create-menu-icon {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 300px) {
+	
+	.toolbar-title {
+		display: none;
+	}
+}

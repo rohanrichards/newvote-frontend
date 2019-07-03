@@ -55,6 +55,7 @@ export class SearchBarComponent implements OnInit {
 		this.searchInputControl.setValue('');
 		this.isVisible = false;
 		this.isVisibleChange.emit(false);
+		this.closeSearch.emit();
 		this.router.navigate([url]);
 		console.log(this);
 	}
