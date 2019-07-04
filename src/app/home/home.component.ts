@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(issues => { this.issues = issues; console.log(this.issues); });
+			.subscribe(issues => { this.issues = issues; });
 	}
 
 	onSoftDelete(issue: any) {

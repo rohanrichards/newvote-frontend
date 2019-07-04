@@ -1,33 +1,46 @@
-<div fxLayout="column"
-    fxLayoutAlign="center center"
-    class="hero-image-container">
-	<div *ngIf="org"
-	    class="hero-image"
-		[style.background-image]="org.imageUrl ? 
-		'url(' + replaceImageUrl(org.imageUrl) + ')'
-		: ''">
+<ng-container
+	*ngIf="isLoading; then skeleton; else mainContainer">
+
+</ng-container>
+
+<ng-template #skeleton>
+	<app-home-skeleton>		
+	</app-home-skeleton>
+</ng-template>
+
+<ng-template #mainContainer>
+	<div fxLayout="column"
+		fxLayoutAlign="center center"
+		class="hero-image-container">
+		<div *ngIf="org"
+			class="hero-image"
+			[style.background-image]="org.imageUrl ? 
+			'url(' + replaceImageUrl(org.imageUrl) + ')'
+			: ''">
+		</div>
+		<div class="hero-text-container">
+			<div *ngIf="org">
+				<img class="logo"
+					src="{{replaceImageUrl(org.iconUrl)}}"
+					alt="{{org.name}}" />
+			</div>
+			<div class="mat-display-3 no-margin">
+				<span *ngIf="org">{{org.name}}</span>
+			</div>
+			<div class="mat-h2"
+				*ngIf="org">{{org.description}}</div>
+			<div *ngIf="!auth.isAuthenticated()">
+				<button mat-button
+					mat-raised-button
+					routerLink="/auth/signup"
+					color="warn"
+					class="mat-display-1">
+					SIGN UP NOW</button>
+			</div>
+		</div>
 	</div>
-	<div class="hero-text-container">
-		<div *ngIf="org">
-			<img class="logo"
-			    src="{{replaceImageUrl(org.iconUrl)}}"
-			    alt="{{org.name}}" />
-		</div>
-		<div class="mat-display-3 no-margin">
-			<span *ngIf="org">{{org.name}}</span>
-		</div>
-		<div class="mat-h2"
-		    *ngIf="org">{{org.description}}</div>
-		<div *ngIf="!auth.isAuthenticated()">
-			<button mat-button
-			    mat-raised-button
-			    routerLink="/auth/signup"
-			    color="warn"
-			    class="mat-display-1">
-				SIGN UP NOW</button>
-		</div>
-	</div>
-</div>
+</ng-template>
+
 
 <div class="about-community-container container"
     fxLayoutAlign="center center"
