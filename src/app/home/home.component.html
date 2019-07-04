@@ -47,6 +47,7 @@
 		<app-grid-list *ngIf="issues"
 		    path="/issues"
 			model="Issue"
+			[titleCard]=true
 			[itemLimit]="ISSUE_LIMIT"
 			[items]=issues
 			(delete)="onDelete($event)"
