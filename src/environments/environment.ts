@@ -14,7 +14,7 @@ export const environment = {
 		'en-US',
 		'fr-FR'
 	],
-	recaptchaSitekey: env.recaptchaSitekey
+	recaptchaSitekey: env.recaptcha_sitekey
 };
 
 /*
