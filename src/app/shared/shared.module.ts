@@ -23,7 +23,6 @@ import { HeaderBarComponent } from './header-bar/header-bar.component';
 import { TopicTagsComponent } from './topic-tags/topic-tags.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { MoreLessComponent } from './more-less/more-less.component';
-
 @NgModule({
 	imports: [
 		FlexLayoutModule,
