@@ -1,5 +1,4 @@
-<ng-container
-	*ngIf="isLoading; then skeleton; else mainContainer">
+<ng-container *ngIf="isLoading; then skeleton; else mainContainer">
 
 </ng-container>
 
@@ -10,20 +9,18 @@
 
 <ng-template #mainContainer>
 	<div fxLayout="column"
-		fxLayoutAlign="center center"
-		class="hero-image-container">
+	    fxLayoutAlign="center center"
+	    class="hero-image-container">
 		<div *ngIf="org"
-			class="hero-image"
-			[style.background-image]="org.imageUrl ?
+		    class="hero-image"
+		    [style.background-image]="org.imageUrl ?
 			'url(' + replaceImageUrl(org.imageUrl) + ')'
 			: ''">
 		</div>
-		<div class="hero-text-container">
-			<div *ngIf="org">
-				<img class="logo"
-					src="{{replaceImageUrl(org.iconUrl)}}"
-					alt="{{org.name}}" />
-			</div>
+		<div class="hero-logo-container"
+			[style.background-image]="org.iconUrl ?
+			'url(' + replaceImageUrl(org.iconUrl) + ')'
+			: ''">
 		</div>
 	</div>
 </ng-template>
@@ -36,7 +33,8 @@
 		<div class="mat-display-1 no-margin">
 			<span *ngIf="org">{{org.name}}</span>
 		</div>
-		<div class="mat-h2" *ngIf="org">{{org.description}}</div>
+		<div class="mat-h2"
+		    *ngIf="org">{{org.description}}</div>
 		<div fxLayout="row">
 			<div fxFlex></div>
 			<div fxLayout="column">
@@ -94,18 +92,19 @@
 	</div>
 </div>
 
-<div class="hot-issues-container container"
+<div class="hot-issues-container container text-center"
     fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<h2 class="mat-h2">What's Hot?</h2>
 		<app-grid-list *ngIf="issues"
 		    path="/issues"
-			model="Issue"
-			[itemLimit]="ISSUE_LIMIT"
-			[items]=issues
-			(delete)="onDelete($event)"
-			(softDelete)="onSoftDelete($event)"></app-grid-list>
+		    model="Issue"
+		    [itemLimit]="ISSUE_LIMIT"
+		    [titleCard]=true
+		    [items]=issues
+		    (delete)="onDelete($event)"
+		    (softDelete)="onSoftDelete($event)"></app-grid-list>
 		<div>
 			<button mat-button
 			    routerLink="/issues">
@@ -114,18 +113,18 @@
 	</div>
 </div>
 
-<div class="about-community-container container"
+<div class="about-community-container container text-center"
     fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
+    *ngIf="org && org.longDescription">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span [innerHtml]="org.longDescription"></span>
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
 	</div>
 </div>
 
 <div *ngIf="!auth.isAuthenticated()"
-    class="final-container container"
+    class="final-container container text-center"
     fxLayoutAlign="center center"
     routerLink="/auth/signup">
 	<div fxFlex.gt-sm="690px"
