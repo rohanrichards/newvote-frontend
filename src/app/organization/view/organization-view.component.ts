@@ -12,6 +12,7 @@ import { MetaService } from '@app/core/meta.service';
 import { IOrganization } from '@app/core/models/organization.model';
 import { Organization } from '@app/core/models/organization.model';
 import { Vote } from '@app/core/models/vote.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
 
 @Component({
 	selector: 'app-organization',
@@ -80,6 +81,10 @@ export class OrganizationViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
 	}
 
 }

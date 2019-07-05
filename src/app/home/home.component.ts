@@ -11,6 +11,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
 
 @Component({
 	selector: 'app-home',
@@ -64,7 +65,7 @@ export class HomeComponent implements OnInit {
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(issues => { this.issues = issues; console.log(this.issues); });
+			.subscribe(issues => { this.issues = issues; });
 	}
 
 	onSoftDelete(issue: any) {
@@ -82,4 +83,11 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
 }

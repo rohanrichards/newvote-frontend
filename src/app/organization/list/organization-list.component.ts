@@ -49,8 +49,12 @@ export class OrganizationListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
+		const isAdmin = this.auth.isAdmin();
 		this.isLoading = true;
-		this.organizationService.list({ orgs: [], forceUpdate: force })
+		this.organizationService.list({
+			orgs: [], forceUpdate: force,
+			params: isAdmin ? { 'showDeleted': true } : {}
+		})
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(organizations => { this.organizations = organizations; });
 	}
@@ -58,6 +62,26 @@ export class OrganizationListComponent implements OnInit {
 	onDelete(event: any) {
 		this.organizationService.delete({ id: event._id }).subscribe(() => {
 			console.log('done');
+			this.fetchData(true);
+		});
+	}
+
+	onSoftDelete(event: any) {
+		if (!this.auth.isOwner()) {
+			return false;
+		}
+		event.softDeleted = true;
+		this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
+	onRestore(event: any) {
+		if (!this.auth.isOwner()) {
+			return false;
+		}
+		event.softDeleted = false;
+		this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
 			this.fetchData(true);
 		});
 	}

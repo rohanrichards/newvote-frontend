@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { createUrl } from '../helpers/cloudinary';
 
 @Component({
 	selector: 'app-grid-list',
 	templateUrl: './grid-list.component.html',
-	styleUrls: ['./grid-list.component.scss']
+	styleUrls: ['./grid-list.component.scss'],
+	encapsulation: ViewEncapsulation.None
 })
 export class GridListComponent implements OnInit {
 
@@ -15,6 +17,7 @@ export class GridListComponent implements OnInit {
 	@Input() model: string;
 	@Input() items: Array<any>;
 	@Input() itemLimit: Number;
+	@Input() titleCard: boolean;
 	@Output() delete = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
 	@Output() restore = new EventEmitter();
@@ -87,4 +90,9 @@ export class GridListComponent implements OnInit {
 			}
 		});
 	}
+
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
+	}
+
 }
