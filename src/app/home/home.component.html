@@ -1,86 +1,40 @@
-<ng-container
-	*ngIf="isLoading; then skeleton; else mainContainer">
+<ng-container *ngIf="isLoading; then skeleton; else mainContainer">
 
 </ng-container>
 
 <ng-template #skeleton>
-	<app-home-skeleton>		
+	<app-home-skeleton>
 	</app-home-skeleton>
 </ng-template>
 
 <ng-template #mainContainer>
 	<div fxLayout="column"
-		fxLayoutAlign="center center"
-		class="hero-image-container">
+	    fxLayoutAlign="center center"
+	    class="hero-image-container">
 		<div *ngIf="org"
-			class="hero-image"
-			[style.background-image]="org.imageUrl ? 
+		    class="hero-image"
+		    [style.background-image]="org.imageUrl ?
 			'url(' + replaceImageUrl(org.imageUrl) + ')'
 			: ''">
 		</div>
-		<div class="hero-text-container">
-			<div *ngIf="org">
-				<img class="logo"
-					src="{{replaceImageUrl(org.iconUrl)}}"
-					alt="{{org.name}}" />
-			</div>
-			<div class="mat-display-3 no-margin">
-				<span *ngIf="org">{{org.name}}</span>
-			</div>
-			<div class="mat-h2"
-				*ngIf="org">{{org.description}}</div>
-			<div *ngIf="!auth.isAuthenticated()">
-				<button mat-button
-					mat-raised-button
-					routerLink="/auth/signup"
-					color="warn"
-					class="mat-display-1">
-					SIGN UP NOW</button>
-			</div>
+		<div class="hero-logo-container"
+			[style.background-image]="org.iconUrl ?
+			'url(' + replaceImageUrl(org.iconUrl) + ')'
+			: ''">
 		</div>
 	</div>
 </ng-template>
-
-
-<div class="about-community-container container"
-    fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
-
-<div class="hot-issues-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 [ngStyle]="{'text-align': 'center'}" class="mat-h2">
-			Current Issues
-		</h2>
-		<app-grid-list *ngIf="issues"
-		    path="/issues"
-			model="Issue"
-			[titleCard]=true
-			[itemLimit]="ISSUE_LIMIT"
-			[items]=issues
-			(delete)="onDelete($event)"
-			(softDelete)="onSoftDelete($event)"></app-grid-list>
-		<div>
-			<button mat-button
-			    routerLink="/issues">
-				SEE ALL ></button>
-		</div>
-	</div>
-</div>
 
 <div class="community-container container"
     fxLayoutAlign="center center">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px"
 	    fxLayout="column">
-		<h2 class="mat-display-1">Community</h2>
+		<div class="mat-display-1 no-margin">
+			<span *ngIf="org">{{org.name}}</span>
+		</div>
+		<div class="mat-h2"
+		    *ngIf="org">{{org.description}}</div>
 		<div fxLayout="row">
 			<div fxFlex></div>
 			<div fxLayout="column">
@@ -118,7 +72,7 @@
 			    routerLink="/auth/signup"
 			    color="warn"
 			    class="mat-display-1">
-				JOIN US</button>
+				CREATE ACCOUNT</button>
 		</div>
 		<div *ngIf="org">
 			<div *ngIf="!org.owner">
@@ -138,8 +92,39 @@
 	</div>
 </div>
 
+<div class="hot-issues-container container text-center"
+    fxLayoutAlign="center center">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">What's Hot?</h2>
+		<app-grid-list *ngIf="issues"
+		    path="/issues"
+		    model="Issue"
+		    [itemLimit]="ISSUE_LIMIT"
+		    [titleCard]=true
+		    [items]=issues
+		    (delete)="onDelete($event)"
+		    (softDelete)="onSoftDelete($event)"></app-grid-list>
+		<div>
+			<button mat-button
+			    routerLink="/issues">
+				SEE ALL ></button>
+		</div>
+	</div>
+</div>
+
+<div class="about-community-container container text-center"
+    fxLayoutAlign="center center"
+    *ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">About {{org.name}}</h2>
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+	</div>
+</div>
+
 <div *ngIf="!auth.isAuthenticated()"
-    class="final-container container"
+    class="final-container container text-center"
     fxLayoutAlign="center center"
     routerLink="/auth/signup">
 	<div fxFlex.gt-sm="690px"
@@ -148,7 +133,7 @@
 		    mat-raised-button
 		    routerLink="/auth/signup"
 		    color="warn">
-			SIGN UP NOW</button>
-		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
+			CREATE ACCOUNT</button>
+		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
 	</div>
 </div>
