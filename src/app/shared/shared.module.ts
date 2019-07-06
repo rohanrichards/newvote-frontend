@@ -23,6 +23,11 @@ import { HeaderBarComponent } from './header-bar/header-bar.component';
 import { TopicTagsComponent } from './topic-tags/topic-tags.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { MoreLessComponent } from './more-less/more-less.component';
+import { SkeletonHeaderComponent } from './skeleton/skeleton-header/skeleton-header.component';
+import { SkeletonTripleDivideComponent } from './skeleton/skeleton-triple-divide/skeleton-triple-divide.component';
+import { SkeletonTextBarComponent } from './skeleton/skeleton-text-bar/skeleton-text-bar.component';
+import { SkeletonButtonComponent } from './skeleton/skeleton-button/skeleton-button.component';
+
 @NgModule({
 	imports: [
 		FlexLayoutModule,
@@ -50,7 +55,11 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		MoreLessComponent,
 		HeaderBarComponent,
 		TopicTagsComponent,
-		SearchBarComponent
+		SearchBarComponent,
+		SkeletonHeaderComponent,
+		SkeletonTripleDivideComponent,
+		SkeletonTextBarComponent,
+		SkeletonButtonComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -63,7 +72,10 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		MoreLessComponent,
 		HeaderBarComponent,
 		TopicTagsComponent,
-		SearchBarComponent
+		SearchBarComponent,
+		SkeletonHeaderComponent,
+		SkeletonTextBarComponent,
+		SkeletonButtonComponent
 	]
 })
 export class SharedModule { }
