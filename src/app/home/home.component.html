@@ -149,26 +149,79 @@
 	</div>
 </ng-template>
 
-<div class="hot-issues-container container text-center"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">What's Hot?</h2>
-		<app-grid-list *ngIf="issues"
-		    path="/issues"
-		    model="Issue"
-		    [itemLimit]="ISSUE_LIMIT"
-		    [titleCard]=true
-		    [items]=issues
-		    (delete)="onDelete($event)"
-		    (softDelete)="onSoftDelete($event)"></app-grid-list>
-		<div>
-			<button mat-button
-			    routerLink="/issues">
-				SEE ALL ></button>
+<ng-container *ngIf="isLoading; 
+	then skeletonIssues; 
+	else mainIssues">
+</ng-container>
+
+<ng-template #skeletonIssues>
+	<div class="hot-issues-container container">
+		<div class="skeleton-issues-container">
+			<app-skeleton-text-bar [isSubtitle]="true" [width]="100">			
+			</app-skeleton-text-bar>
+			<div class="skeleton-card-list">
+				<div class="skeleton-card">
+					<div  class="skeleton-card-image">
+					</div>
+					<div class="skeleton-card-content">
+						<app-skeleton-text-bar [isHeading]=true [width]="115">
+						</app-skeleton-text-bar>
+						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+						</app-skeleton-text-bar>
+					</div>
+				</div>
+				<div class="skeleton-card">
+					<div  class="skeleton-card-image">
+					</div>
+					<div class="skeleton-card-content">
+						<app-skeleton-text-bar [isHeading]=true [width]="115">
+						</app-skeleton-text-bar>
+						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+						</app-skeleton-text-bar>
+					</div>
+				</div>
+				<div class="skeleton-card">
+					<div  class="skeleton-card-image">
+					</div>
+					<div class="skeleton-card-content">
+						<app-skeleton-text-bar [isHeading]=true [width]="115" >
+						</app-skeleton-text-bar>
+						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+						</app-skeleton-text-bar>
+					</div>
+				</div>
+			</div>
+			<div class="skeleton-issues-footer">
+				<app-skeleton-text-bar [isSubtitle]=true [width]="75">
+				</app-skeleton-text-bar>
+			</div>
 		</div>
 	</div>
-</div>
+</ng-template>
+
+<ng-template #mainIssues>
+	<div class="hot-issues-container container text-center"
+    	fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<h2 class="mat-h2">What's Hot?</h2>
+			<app-grid-list *ngIf="issues"
+				path="/issues"
+				model="Issue"
+				[itemLimit]="ISSUE_LIMIT"
+				[titleCard]=true
+				[items]=issues
+				(delete)="onDelete($event)"
+				(softDelete)="onSoftDelete($event)"></app-grid-list>
+			<div>
+				<button mat-button
+					routerLink="/issues">
+					SEE ALL ></button>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
 
 <div class="about-community-container container text-center"
     fxLayoutAlign="center center"
@@ -180,17 +233,36 @@
 	</div>
 </div>
 
-<div *ngIf="!auth.isAuthenticated()"
-    class="final-container container text-center"
-    fxLayoutAlign="center center"
-    routerLink="/auth/signup">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<button mat-button
-		    mat-raised-button
-		    routerLink="/auth/signup"
-		    color="warn">
-			CREATE ACCOUNT</button>
-		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
+<ng-container *ngIf="isLoading; 
+	then skeletonFooter; 
+	else mainFooter">
+</ng-container>
+
+<ng-template #skeletonFooter>
+	<div class="final-container container">
+		<div class="skeleton-footer">
+			<app-skeleton-button [width]="100" class="footer-button">
+			</app-skeleton-button>
+			<app-skeleton-text-bar [isText]=true [width]="205"> 
+			</app-skeleton-text-bar>
+		</div>
 	</div>
-</div>
+</ng-template>
+
+<ng-template #mainFooter>
+	<div *ngIf="!auth.isAuthenticated()"
+		class="final-container container text-center"
+		fxLayoutAlign="center center"
+		routerLink="/auth/signup">
+		<div fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<button mat-button
+				mat-raised-button
+				routerLink="/auth/signup"
+				color="warn">
+				CREATE ACCOUNT</button>
+			<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
+		</div>
+	</div>
+</ng-template>
+
