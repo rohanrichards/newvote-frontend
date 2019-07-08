@@ -14,6 +14,7 @@ q {
 
 .skeleton-form-wrap {
 	padding: 0 0.5rem;
+	margin-top: 0.5rem;
 }
 
 .skeleton-form {
@@ -44,8 +45,8 @@ q {
 	box-shadow: 3px 4px 5px 0px #ababab;
 	border-radius: 5px;
 	margin-bottom: 1rem;
-	flex-basis: 220px;
-	max-width: 234px;
+	flex-basis: 200px;
+	max-width: 200px;
 }
 .skeleton-card-image {
 	background-color: #d3d3d8;
@@ -95,7 +96,8 @@ q {
 
 	.skeleton-card {
 		width: 100%;
-		max-width: 450px;
+		max-width: 510px;
+		margin-right: 0;
 	}
 
 	.skeleton-form-wrap {

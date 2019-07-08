@@ -12,7 +12,7 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<div *ngIf="allTopics">
+		<div>
 			<ng-container *ngIf="isLoading; 
 				then skeletonForm; 
 				else mainForm">
@@ -145,6 +145,7 @@
 		<app-grid-list path="/issues"
 			[items]="getIssues(topic._id)"
 			model="Issue"
+			[titleCard]=true
 			(restore)="onRestore($event)"
 			(softDelete)="onSoftDelete($event)"
 			(delete)="onDelete($event)"></app-grid-list>

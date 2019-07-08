@@ -72,6 +72,7 @@ export class IssueListComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
 		});
@@ -106,7 +107,7 @@ export class IssueListComponent implements OnInit {
 
 		const obsCollection = zip(issueObs, topicObs, orgObs);
 
-		obsCollection.pipe(finalize(() => { this.isLoading = true; }))
+		obsCollection.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(result => {
 				this.issues = result[0];
 				this.allTopics = result[1];
