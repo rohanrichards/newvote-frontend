@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-skeleton-header',
@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SkeletonHeaderComponent implements OnInit {
 
+	@Input() noLogo: boolean;
 	constructor() { }
 
 	ngOnInit() {

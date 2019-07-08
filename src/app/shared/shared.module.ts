@@ -26,6 +26,8 @@ import { MoreLessComponent } from './more-less/more-less.component';
 import { SkeletonHeaderComponent } from './skeleton/skeleton-header/skeleton-header.component';
 import { SkeletonTextBarComponent } from './skeleton/skeleton-text-bar/skeleton-text-bar.component';
 import { SkeletonButtonComponent } from './skeleton/skeleton-button/skeleton-button.component';
+import { SkeletonSocialButtonComponent } from './skeleton/skeleton-social-button/skeleton-social-button.component';
+import { SkeletonSocialBarComponent } from './skeleton/skeleton-social-bar/skeleton-social-bar.component';
 
 @NgModule({
 	imports: [
@@ -57,7 +59,9 @@ import { SkeletonButtonComponent } from './skeleton/skeleton-button/skeleton-but
 		SearchBarComponent,
 		SkeletonHeaderComponent,
 		SkeletonTextBarComponent,
-		SkeletonButtonComponent
+		SkeletonButtonComponent,
+		SkeletonSocialButtonComponent,
+		SkeletonSocialBarComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -73,7 +77,9 @@ import { SkeletonButtonComponent } from './skeleton/skeleton-button/skeleton-but
 		SearchBarComponent,
 		SkeletonHeaderComponent,
 		SkeletonTextBarComponent,
-		SkeletonButtonComponent
+		SkeletonButtonComponent,
+		SkeletonSocialButtonComponent,
+		SkeletonSocialBarComponent
 	]
 })
 export class SharedModule { }
