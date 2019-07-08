@@ -6,70 +6,147 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
 
+
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<div *ngIf="allTopics">
-			<mat-form-field class="example-chip-list"
-			    fxFill>
-				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let topic of selectedTopics"
-					    [selectable]="false"
-					    [removable]="true"
-					    (removed)="topicRemoved(topic)">
-						{{topic.name}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Filter Topics"
-					    #topicInput
-					    [formControl]="topicFilter"
-					    [matAutocomplete]="auto"
-					    [matChipInputFor]="chipList"
-					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					    [matChipInputAddOnBlur]="true">
-				</mat-chip-list>
-				<mat-autocomplete #auto="matAutocomplete"
-				    (optionSelected)="topicSelected($event)">
-					<mat-option *ngFor="let topic of filteredTopics | async"
-					    [value]="topic">
-						{{topic.name}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
-
-			<div *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
-				<h2 class="mat-h1">
-					{{topic.name}}
-					<div class="button-panel"
-						*ngIf="auth.isModerator(topic)">
-						<button color="accent"
-							mat-icon-button
-							[routerLink]="['/topics/edit', topic._id]">
-									<mat-icon aria-label="Edit the content">edit </mat-icon>
-						</button>
-						<button color="accent"
-							mat-icon-button
-							(click)="onSoftDeleteTopic(topic, $event)">
-									<mat-icon aria-label="Remove the content">delete</mat-icon>
-						</button>
-						<button color="warn"
-							mat-icon-button
-							*ngIf="auth.isAdmin(topic)"
-							(click)="onDeleteTopic(topic, $event)">
-									<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
-						</button>
-					</div>
-					<mat-divider></mat-divider>
-				</h2>
-				<app-grid-list path="/issues"
-				    [items]="getIssues(topic._id)"
-					model="Issue"
-					(restore)="onRestore($event)"
-					(softDelete)="onSoftDelete($event)"
-				    (delete)="onDelete($event)"></app-grid-list>
-			</div>
+			<ng-container *ngIf="isLoading; 
+				then skeletonForm; 
+				else mainForm">
+			</ng-container>			
+			<ng-container *ngIf="isLoading;
+				then skeletonTopics; 
+				else mainTopics">
+			</ng-container>
 		</div>
 	</div>
 </div>
+
+<ng-template #skeletonForm>
+	<div class="skeleton-form-wrap">
+		<div class="skeleton-form">
+			<app-skeleton-text-bar 
+				[isSubtitle]=true [width]="110" 
+				[isMarginLess]=true> 
+			</app-skeleton-text-bar>
+		</div>
+	</div>
+
+</ng-template>
+
+<ng-template #mainForm>
+	<mat-form-field class="example-chip-list"
+		fxFill>
+		<mat-chip-list #chipList>
+			<mat-chip *ngFor="let topic of selectedTopics"
+				[selectable]="false"
+				[removable]="true"
+				(removed)="topicRemoved(topic)">
+				{{topic.name}}
+				<mat-icon matChipRemove>cancel</mat-icon>
+			</mat-chip>
+			<input placeholder="Filter Topics"
+				#topicInput
+				[formControl]="topicFilter"
+				[matAutocomplete]="auto"
+				[matChipInputFor]="chipList"
+				[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+				[matChipInputAddOnBlur]="true">
+		</mat-chip-list>
+		<mat-autocomplete #auto="matAutocomplete"
+			(optionSelected)="topicSelected($event)">
+			<mat-option *ngFor="let topic of filteredTopics | async"
+				[value]="topic">
+				{{topic.name}}
+			</mat-option>
+		</mat-autocomplete>
+	</mat-form-field>
+</ng-template>
+
+<ng-template #skeletonTopics>
+	<div class="skeleton-topic-wrap">
+		<div class="skeleton-form">
+			<app-skeleton-text-bar 
+				[isHeading]=true [width]="75" 
+				[isMarginLess]=true> 
+			</app-skeleton-text-bar>
+		</div>
+		<div class="skeleton-card-list">
+			<div class="skeleton-card">
+				<div  class="skeleton-card-image">
+				</div>
+				<div class="skeleton-card-content">
+					<app-skeleton-text-bar [isHeading]=true [width]="115">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+					</app-skeleton-text-bar>
+				</div>
+			</div>
+			<div class="skeleton-card">
+				<div  class="skeleton-card-image">
+				</div>
+				<div class="skeleton-card-content">
+					<app-skeleton-text-bar [isHeading]=true [width]="115">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+					</app-skeleton-text-bar>
+				</div>
+			</div>
+		</div>
+		<div class="skeleton-form">
+			<app-skeleton-text-bar 
+				[isHeading]=true [width]="125" 
+				[isMarginLess]=true> 
+			</app-skeleton-text-bar>
+		</div>
+		<div class="skeleton-card-list">
+			<div class="skeleton-card">
+				<div  class="skeleton-card-image">
+				</div>
+				<div class="skeleton-card-content">
+					<app-skeleton-text-bar [isHeading]=true [width]="115">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true [width]="145">
+					</app-skeleton-text-bar>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #mainTopics>
+	<div *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
+		<h2 class="mat-h1">
+			{{topic.name}}
+			<div class="button-panel"
+				*ngIf="auth.isModerator(topic)">
+				<button color="accent"
+					mat-icon-button
+					[routerLink]="['/topics/edit', topic._id]">
+							<mat-icon aria-label="Edit the content">edit </mat-icon>
+				</button>
+				<button color="accent"
+					mat-icon-button
+					(click)="onSoftDeleteTopic(topic, $event)">
+							<mat-icon aria-label="Remove the content">delete</mat-icon>
+				</button>
+				<button color="warn"
+					mat-icon-button
+					*ngIf="auth.isAdmin(topic)"
+					(click)="onDeleteTopic(topic, $event)">
+							<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
+				</button>
+			</div>
+			<mat-divider></mat-divider>
+		</h2>
+		<app-grid-list path="/issues"
+			[items]="getIssues(topic._id)"
+			model="Issue"
+			(restore)="onRestore($event)"
+			(softDelete)="onSoftDelete($event)"
+			(delete)="onDelete($event)"></app-grid-list>
+	</div>
+</ng-template>

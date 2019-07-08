@@ -106,7 +106,7 @@ export class IssueListComponent implements OnInit {
 
 		const obsCollection = zip(issueObs, topicObs, orgObs);
 
-		obsCollection.pipe(finalize(() => { this.isLoading = false; }))
+		obsCollection.pipe(finalize(() => { this.isLoading = true; }))
 			.subscribe(result => {
 				this.issues = result[0];
 				this.allTopics = result[1];
