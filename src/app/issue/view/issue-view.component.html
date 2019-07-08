@@ -1,90 +1,112 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
 
-<mat-toolbar color="primary"
-    class="header-info-panel"
-    *ngIf="issue">
-	<div class="image-container"
-	    fxLayout="column"
-	    [style.background-image]="'url(' + replaceImageUrl(issue.imageUrl) + ')'">
-		<div class="admin-panel"
-		    *ngIf="auth.isModerator(issue)"
-		    fxLayout="column"
-		    fxLayoutAlign="center end">
-			<div class="button-panel">
-				<button mat-icon-button
-				    matTooltip="Create a new Issue"
-				    color="accent"
-				    routerLink="/issues/create">
-    					<mat-icon aria-label="Create a new issue">add</mat-icon>
-  				</button>
-				<button mat-icon-button
-				    matTooltip="Add Solution for this Issue"
-				    color="accent"
-				    routerLink="/solutions/create/{{issue._id}}">
-						<mat-icon aria-label="Add a new solution">playlist_add</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Add Media to this Issue"
-				    color="accent"
-				    routerLink="/media/create/{{issue._id}}">
-						<mat-icon aria-label="Add new media">add_a_photo</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Edit this Issue"
-				    color="accent"
-				    routerLink="/issues/edit/{{issue._id}}">
-    					<mat-icon aria-label="Edit the issue">edit</mat-icon>
-					  </button>
-				<button mat-icon-button
-					*ngIf="issue.softDeleted"
-					matTooltip="Restore this issue"
-					color="accent"
-					(click)="onRestore()">
-						<mat-icon aria-label="Remove this issue">restore</mat-icon>
+
+<ng-container *ngIf="isLoading;
+	then skeletonHeader;
+	else mainIssueHeader">
+</ng-container>
+
+<ng-template #skeletonHeader>
+	<app-skeleton-header [noLogo]=true >
+	</app-skeleton-header>
+	<div class="skeleton-panel">
+		<app-skeleton-text-bar [isHeading]=true [width]="200">
+		</app-skeleton-text-bar>
+		<div class="skeleton-chip">
+		</div>
+		<app-skeleton-text-bar [isText]=true [width]="80">
+		</app-skeleton-text-bar>
+	</div>
+</ng-template>
+
+<ng-template #mainIssueHeader>
+	<mat-toolbar color="primary"
+		class="header-info-panel"
+		*ngIf="issue">
+		<div class="image-container"
+			fxLayout="column"
+			[style.background-image]="'url(' + replaceImageUrl(issue.imageUrl) + ')'">
+			<div class="admin-panel"
+				*ngIf="auth.isModerator(issue)"
+				fxLayout="column"
+				fxLayoutAlign="center end">
+				<div class="button-panel">
+					<button mat-icon-button
+						matTooltip="Create a new Issue"
+						color="accent"
+						routerLink="/issues/create">
+							<mat-icon aria-label="Create a new issue">add</mat-icon>
 					</button>
-				<button mat-icon-button
-					*ngIf="!issue.softDeleted"
-					matTooltip="Remove this Issue"
-					color="accent"
-					(click)="onSoftDelete()">
-						<mat-icon aria-label="Remove this issue">delete</mat-icon>
+					<button mat-icon-button
+						matTooltip="Add Solution for this Issue"
+						color="accent"
+						routerLink="/solutions/create/{{issue._id}}">
+							<mat-icon aria-label="Add a new solution">playlist_add</mat-icon>
 					</button>
-				<button mat-icon-button
-				    matTooltip="Delete this Issue"
-				    color="warn"
-				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
-  					</button>
+					<button mat-icon-button
+						matTooltip="Add Media to this Issue"
+						color="accent"
+						routerLink="/media/create/{{issue._id}}">
+							<mat-icon aria-label="Add new media">add_a_photo</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Edit this Issue"
+						color="accent"
+						routerLink="/issues/edit/{{issue._id}}">
+							<mat-icon aria-label="Edit the issue">edit</mat-icon>
+						</button>
+					<button mat-icon-button
+						*ngIf="issue.softDeleted"
+						matTooltip="Restore this issue"
+						color="accent"
+						(click)="onRestore()">
+							<mat-icon aria-label="Remove this issue">restore</mat-icon>
+						</button>
+					<button mat-icon-button
+						*ngIf="!issue.softDeleted"
+						matTooltip="Remove this Issue"
+						color="accent"
+						(click)="onSoftDelete()">
+							<mat-icon aria-label="Remove this issue">delete</mat-icon>
+						</button>
+					<button mat-icon-button
+						matTooltip="Delete this Issue"
+						color="warn"
+						(click)="onDelete()">
+							<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
+						</button>
+				</div>
+			</div>
+			<div fxLayout="row"
+				fxFlex></div>
+			<!-- <div fxLayout="column"
+				fxLayoutAlign="start start">
+			</div> -->
+			<div fxLayout="row wrap"
+				fxLayoutAlign="center center">
+				<div fxFlex.gt-sm="690px"
+					fxFlex.gt-md="800px">
+					<app-share-buttons></app-share-buttons>
+				</div>
 			</div>
 		</div>
-		<div fxLayout="row"
-		    fxFlex></div>
-		<!-- <div fxLayout="column"
-		    fxLayoutAlign="start start">
-		</div> -->
 		<div fxLayout="row wrap"
-		    fxLayoutAlign="center center">
+			fxLayoutAlign="center center"
+			class="description-container">
 			<div fxFlex.gt-sm="690px"
-			    fxFlex.gt-md="800px">
-				<app-share-buttons></app-share-buttons>
+				fxFlex.gt-md="800px">
+				<div class="mat-display-1"
+					translate>{{issue.name}}</div>
+				<app-topic-tags [topics]="issue.topics"></app-topic-tags>
+				<app-more-less [displayText]="issue.description"
+					maxHeight="200">
+				</app-more-less>
 			</div>
 		</div>
-	</div>
-	<div fxLayout="row wrap"
-	    fxLayoutAlign="center center"
-	    class="description-container">
-		<div fxFlex.gt-sm="690px"
-		    fxFlex.gt-md="800px">
-			<div class="mat-display-1"
-			    translate>{{issue.name}}</div>
-			<app-topic-tags [topics]="issue.topics"></app-topic-tags>
-			<app-more-less [displayText]="issue.description"
-			    maxHeight="200">
-			</app-more-less>
-		</div>
-	</div>
-</mat-toolbar>
+	</mat-toolbar>
+</ng-template>
+
 <div class="container"
 	fxLayoutAlign="center center"
 	*ngIf="media"
