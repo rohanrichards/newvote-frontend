@@ -10,6 +10,7 @@ export class SkeletonTextBarComponent implements OnInit {
 	@Input() isHeading: boolean;
 	@Input() isSubtitle: boolean;
 	@Input() isText: boolean;
+	@Input() isMarginLess: boolean;
 	@Input() width: number;
 
 	constructor() { }
