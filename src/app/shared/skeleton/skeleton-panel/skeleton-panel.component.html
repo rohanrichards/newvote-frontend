@@ -3,7 +3,9 @@
 	</app-skeleton-text-bar>
 	<div *ngIf="hasChip" class="skeleton-chip">
 	</div>
-	<app-skeleton-text-bar [isText]=true [width]="80">
+	<app-skeleton-text-bar class="description-margin" [isText]=true [width]="80">
+	</app-skeleton-text-bar>
+	<app-skeleton-text-bar  *ngIf="hasVote" [isSubtitle]=true [width]="160">
 	</app-skeleton-text-bar>
 	<ng-template [ngIf]="hasVote">
 		<div class="skeleton-action-container">
