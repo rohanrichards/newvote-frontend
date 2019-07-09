@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
 			forceUpdate: force,
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.pipe(finalize(() => { this.isLoading = false; }))
+			.pipe(finalize(() => { this.isLoading = true; }))
 			.subscribe(issues => { this.issues = issues; });
 	}
 

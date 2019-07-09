@@ -157,39 +157,15 @@
 <ng-template #skeletonIssues>
 	<div class="hot-issues-container container">
 		<div class="skeleton-issues-container">
-			<app-skeleton-text-bar [isSubtitle]="true" [width]="100">			
-			</app-skeleton-text-bar>
+				<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
+				</app-skeleton-text-bar>
 			<div class="skeleton-card-list">
-				<div class="skeleton-card">
-					<div  class="skeleton-card-image">
-					</div>
-					<div class="skeleton-card-content">
-						<app-skeleton-text-bar [isHeading]=true [width]="115">
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-						</app-skeleton-text-bar>
-					</div>
-				</div>
-				<div class="skeleton-card">
-					<div  class="skeleton-card-image">
-					</div>
-					<div class="skeleton-card-content">
-						<app-skeleton-text-bar [isHeading]=true [width]="115">
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-						</app-skeleton-text-bar>
-					</div>
-				</div>
-				<div class="skeleton-card">
-					<div  class="skeleton-card-image">
-					</div>
-					<div class="skeleton-card-content">
-						<app-skeleton-text-bar [isHeading]=true [width]="115" >
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-						</app-skeleton-text-bar>
-					</div>
-				</div>
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
 			</div>
 			<div class="skeleton-issues-footer">
 				<app-skeleton-text-bar [isSubtitle]=true [width]="75">

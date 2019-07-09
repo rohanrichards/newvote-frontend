@@ -7,6 +7,73 @@
 	else mainIssueHeader">
 </ng-container>
 
+<div class="container"
+	fxLayoutAlign="center center"
+	*ngIf="media"
+	>
+	<div
+		fxLayoutAlign="center center"
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px"
+		*ngIf="media && !headingEdit"
+		>
+		<h3 class="mat-headline" 
+			*ngIf="media && media.length > 0"
+			[ngStyle]="{ 'margin-bottom': '0px'}"
+			>
+			{{ this.issue.mediaHeading || "Third Party Media"}}
+		</h3>
+		<button 
+			mat-icon-button
+			matTooltip="Edit no Issue"
+			color="accent"
+			(click)="toggleHeader()"
+			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
+			>
+				<mat-icon aria-label="Edit the issue">edit</mat-icon>
+		</button>
+	</div>		
+	<div 
+		fxLayoutAlign="center center"
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="690px"
+		*ngIf="auth.isModerator() && headingEdit"
+		>
+		<mat-form-field class="example-full-width">
+			<input 
+				#newHeading 
+				matInput 
+				placeholder="Heading Name"
+				(keyup.enter)="handleSubmit(newHeading.value)"
+				(blur)="handleSubmit()"
+				>
+			<button 
+				mat-icon-button
+				matSuffix
+				color="accent"
+				(click)="handleSubmit(newHeading.value)"
+				>
+				<mat-icon >send</mat-icon>
+			</button>	
+		</mat-form-field>
+	</div>
+</div>
+
+<app-swiper-wrapper path="/media"
+	[items]="media"
+	model="Media"
+	(restore)="onMediaRestore($event)"
+	(softDelete)="onMediaSoftDelete($event)"
+	(delete)="onMediaDelete($event)"
+	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
+
+<ng-container *ngIf="isLoading;
+	then skeletonCards
+	else mainCards">
+</ng-container>
+
+/* Header Template */ 
+
 <ng-template #skeletonHeader>
 	<app-skeleton-header [noLogo]=true >
 	</app-skeleton-header>
@@ -107,69 +174,8 @@
 	</mat-toolbar>
 </ng-template>
 
-<div class="container"
-	fxLayoutAlign="center center"
-	*ngIf="media"
-	>
-	<div
-		fxLayoutAlign="center center"
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="800px"
-		*ngIf="media && !headingEdit"
-		>
-		<h3 class="mat-headline" 
-			*ngIf="media && media.length > 0"
-			[ngStyle]="{ 'margin-bottom': '0px'}"
-			>
-			{{ this.issue.mediaHeading || "Third Party Media"}}
-		</h3>
-		<button 
-			mat-icon-button
-			matTooltip="Edit no Issue"
-			color="accent"
-			(click)="toggleHeader()"
-			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
-			>
-				<mat-icon aria-label="Edit the issue">edit</mat-icon>
-		</button>
-	</div>		
-	<div 
-		fxLayoutAlign="center center"
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="690px"
-		*ngIf="auth.isModerator() && headingEdit"
-		>
-		<mat-form-field class="example-full-width">
-			<input 
-				#newHeading 
-				matInput 
-				placeholder="Heading Name"
-				(keyup.enter)="handleSubmit(newHeading.value)"
-				(blur)="handleSubmit()"
-				>
-			<button 
-				mat-icon-button
-				matSuffix
-				color="accent"
-				(click)="handleSubmit(newHeading.value)"
-				>
-				<mat-icon >send</mat-icon>
-			</button>	
-		</mat-form-field>
-	</div>
-</div>
-<app-swiper-wrapper path="/media"
-	[items]="media"
-	model="Media"
-	(restore)="onMediaRestore($event)"
-	(softDelete)="onMediaSoftDelete($event)"
-	(delete)="onMediaDelete($event)"
-	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
-<ng-container *ngIf="isLoading;
-	then skeletonCards
-	else mainCards">
-</ng-container>
+/* Main Card section * /
 
 <ng-template #skeletonCards>
 	<div class="container"
@@ -228,4 +234,3 @@
 		</div>
 	</div>
 </ng-template>
-
