@@ -55,7 +55,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 		SharedModule,
 		ShellModule,
 		HomeModule,
-		ShareModule.forRoot(),
+		ShareModule,
 		AngularFontAwesomeModule,
 		ChartsModule,
 		HttpClientXsrfModule.withOptions({
