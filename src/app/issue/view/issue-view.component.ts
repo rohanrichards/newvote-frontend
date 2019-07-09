@@ -98,7 +98,7 @@ export class IssueViewComponent implements OnInit {
 				:  { issueId: id },
 			forceUpdate,
 		})
-			.pipe(finalize(() => { this.isLoading = false; }))
+			.pipe(finalize(() => { this.isLoading = true; }))
 			.subscribe((mediaList: Array<Media>) => {
 				this.media = mediaList;
 				// console.log('got media: ', mediaList);

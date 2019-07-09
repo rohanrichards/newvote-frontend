@@ -136,7 +136,7 @@
 	<div 
 		fxLayoutAlign="center center"
 		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="800px"
+		fxFlex.gt-md="690px"
 		*ngIf="auth.isModerator() && headingEdit"
 		>
 		<mat-form-field class="example-full-width">
@@ -166,25 +166,65 @@
 	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 
-<div class="container"
-    fxLayout="row wrap"
-    fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<span class="mat-headline" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
-		<app-card-list path="/solutions"
-		    [items]=solutions
-		    model="Solution"
-		    [showChildren]="true"
-		    childPath="proposals"
-		    childName="Actions"
-			[showParent]="true"
-			parentPath="/issues"
-			parentPropName="issues"
-			(restore)="onRestoreSolution($event)"
-			(delete)="onDeleteSolution($event)"
-			(softDelete)="onSoftDeleteSolution($event)"
-		    (vote)="onVote($event, 'Solution')"
-		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
+<ng-container *ngIf="isLoading;
+	then skeletonCards
+	else mainCards">
+</ng-container>
+
+<ng-template #skeletonCards>
+	<div class="container"
+		fxLayout="column"
+		fxLayoutAlign="center start"
+		>
+		<div class="skeleton-card-list"
+			>
+			<app-skeleton-text-bar [isSubtitle]=true [width]="150">
+			</app-skeleton-text-bar>
+
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+		</div>	
 	</div>
-</div>
+</ng-template> 
+
+<ng-template #mainCards>
+	<div class="container"
+		fxLayout="row wrap"
+		fxLayoutAlign="center start">
+		<div fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<span class="mat-headline" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			<app-card-list path="/solutions"
+				[items]=solutions
+				model="Solution"
+				[showChildren]="true"
+				childPath="proposals"
+				childName="Actions"
+				[showParent]="true"
+				parentPath="/issues"
+				parentPropName="issues"
+				(restore)="onRestoreSolution($event)"
+				(delete)="onDeleteSolution($event)"
+				(softDelete)="onSoftDeleteSolution($event)"
+				(vote)="onVote($event, 'Solution')"
+				(childVote)="onVote($event, 'Proposal')"></app-card-list>
+		</div>
+	</div>
+</ng-template>
+
