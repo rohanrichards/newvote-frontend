@@ -77,14 +77,8 @@
 <ng-template #skeletonHeader>
 	<app-skeleton-header [noLogo]=true >
 	</app-skeleton-header>
-	<div class="skeleton-panel">
-		<app-skeleton-text-bar [isHeading]=true [width]="200">
-		</app-skeleton-text-bar>
-		<div class="skeleton-chip">
-		</div>
-		<app-skeleton-text-bar [isText]=true [width]="80">
-		</app-skeleton-text-bar>
-	</div>
+	<app-skeleton-panel [hasChip]=true>
+	</app-skeleton-panel>
 </ng-template>
 
 <ng-template #mainIssueHeader>
