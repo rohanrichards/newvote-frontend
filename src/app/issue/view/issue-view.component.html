@@ -59,20 +59,43 @@
 	</div>
 </div>
 
-<app-swiper-wrapper path="/media"
+<ng-container *ngIf="isLoading;
+	then skeletonMedia;
+	else mainMedia">
+</ng-container>
+
+<ng-template #skeletonMedia>
+	<div class="skeleton-media-container">
+		<div class="center-item">
+			<app-skeleton-text-bar class="center-item" [isHeading]=true [width]="150">
+			</app-skeleton-text-bar>
+		</div>
+		<div class="skeleton-media-card-wrap">
+			<app-skeleton-media-card>
+			</app-skeleton-media-card>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #mainMedia>
+	<app-swiper-wrapper path="/media"
 	[items]="media"
 	model="Media"
 	(restore)="onMediaRestore($event)"
 	(softDelete)="onMediaSoftDelete($event)"
 	(delete)="onMediaDelete($event)"
 	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
+</ng-template>
+
+
+
 
 <ng-container *ngIf="isLoading;
 	then skeletonCards
 	else mainCards">
 </ng-container>
 
-/* Header Template */ 
+<!-- Header Template -->
 
 <ng-template #skeletonHeader>
 	<app-skeleton-header [noLogo]=true >
@@ -169,7 +192,7 @@
 </ng-template>
 
 
-/* Main Card section * /
+<!-- Main Section -->
 
 <ng-template #skeletonCards>
 	<div class="container"
