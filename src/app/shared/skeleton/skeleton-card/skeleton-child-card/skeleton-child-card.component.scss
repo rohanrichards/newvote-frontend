@@ -1,0 +1,84 @@
+.skeleton-child-card-container {
+    border: 1px solid black;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+}
+
+.skeleton-child-image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right: 0.5rem;
+   
+}
+
+.skeleton-image-placeholder {
+    min-width: 88px;
+    min-height: 88px;
+    max-height: 88px;
+    background-color: darkgray;
+}
+
+.skeleton-child-content {
+    flex: 1;
+}
+
+/* Vote Section */
+
+
+.skeleton-action-container {
+	display: flex;
+	flex-direction: row;
+	padding: 0.25rem;
+	flex-wrap: wrap;
+}
+
+.skeleton-vote-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.skeleton-button-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.skeleton-result-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.result-button {
+    
+}
+
+.vote-button {
+    margin-right: 0.5rem;
+
+}
+
+@media only screen and (max-width: 660px) {
+
+	.skeleton-vote-container {
+		justify-content: center;
+		align-items: flex-start;
+	}
+
+	.skeleton-result-container {
+		justify-content: center;
+        align-items: flex-start;
+	}
+
+	.button-spacer {
+		margin: 0.5rem;
+	}
+
+	.skeleton-button-row {
+		width: 100%;
+	}
+}
