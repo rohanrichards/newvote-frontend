@@ -34,8 +34,11 @@
 		</div>
 	</ng-template>
 	<ng-template [ngIf]="showChildren">
-		<div>
-	  		Children here
+		<div class="skeleton-child-container">
+				<app-skeleton-text-bar [isSubtitle]=true [width]="80">
+				</app-skeleton-text-bar>
+				<app-skeleton-child-card [showImage]=true [showVote]=true>
+				</app-skeleton-child-card>	
 		</div>
 	</ng-template>
 </div>
