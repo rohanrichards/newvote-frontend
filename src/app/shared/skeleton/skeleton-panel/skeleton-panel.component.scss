@@ -1,0 +1,81 @@
+.skeleton-panel {
+	min-height: 23.5vh;
+	background-color: #039BE5;
+	padding: 2.5rem 1em;
+}
+
+.skeleton-chip {
+	display: block;
+    padding: 7px 12px;
+    border-radius: 16px;
+    align-items: center;
+    cursor: default;
+    min-height: 32px;
+    height: 1px;
+	background-color: #e0e0e0;
+	width: 64px;
+	margin-bottom: 1rem;
+}
+
+.skeleton-action-container {
+	display: flex;
+	flex-direction: row;
+	padding: 1rem;
+	flex-wrap: wrap;
+}
+
+.skeleton-vote-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	align-items: start;
+}
+
+.skeleton-button-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.skeleton-result-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	align-items: start;
+}
+
+.button-spacer {
+	margin-right: 2rem;
+}
+
+.skeleton-child-container {
+	margin-top: 1.0rem;
+	padding: 1rem;
+}
+
+@media only screen and (max-width: 530px) {
+	.skeleton-result-container {
+		margin-top: 1rem;
+	}
+}
+
+@media only screen and (max-width: 660px) {
+
+	// .skeleton-vote-container {
+	// 	justify-content: center;
+	// 	align-items: center;
+	// }
+
+	// .skeleton-result-container {
+	// 	justify-content: center;
+	// 	align-items: center;
+	// }
+
+	// .button-spacer {
+	// 	margin: 0;
+	// }
+
+	// .skeleton-button-row {
+	// 	width: 100%;
+	// 	justify-content: space-around;
+	// }
+}

@@ -1,0 +1,28 @@
+<div class="skeleton-panel">
+	<app-skeleton-text-bar [isHeading]=true [width]="200">
+	</app-skeleton-text-bar>
+	<div *ngIf="hasChip" class="skeleton-chip">
+	</div>
+	<app-skeleton-text-bar [isText]=true [width]="80">
+	</app-skeleton-text-bar>
+	<ng-template [ngIf]="hasVote">
+		<div class="skeleton-action-container">
+			<div class="skeleton-vote-container">
+				<app-skeleton-text-bar [isSubtitle]=true [width]="60">
+				</app-skeleton-text-bar>
+				<div class="skeleton-button-row">
+					<app-skeleton-button [width]="100" class="button-spacer">
+					</app-skeleton-button>
+					<app-skeleton-button [width]="100" class="button-spacer">
+					</app-skeleton-button>
+				</div>
+			</div>
+			<div class="skeleton-result-container">
+				<app-skeleton-text-bar [isSubtitle]=true [width]="60">
+				</app-skeleton-text-bar>
+				<app-skeleton-button [width]="200">
+				</app-skeleton-button>
+			</div>
+		</div>
+	</ng-template>
+</div>
