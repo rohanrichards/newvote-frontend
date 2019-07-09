@@ -1,0 +1,47 @@
+<mat-card 
+	[ngClass]="{'soft-deleted': item.softDeleted}"
+	class="item-card">
+	<div mat-card-image
+		class="image-container"
+		[style.background-image]="'url(' + item.image + ')'">
+		<div class="button-panel"
+			*ngIf="auth.isModerator(item)">
+			<button color="accent"
+				mat-icon-button
+				(click)="$event.stopPropagation()"
+				routerLink='{{path}}/edit/{{item._id}}'>
+						<mat-icon aria-label="Edit the content">edit</mat-icon>
+						</button>
+			<button color="accent"
+				mat-icon-button
+				(click)="onSoftDelete(item, $event)">
+					<mat-icon aria-label="Remove content">delete</mat-icon>
+				</button>
+			<button color="warn"
+				mat-icon-button
+				(click)="onDelete(item, $event)">
+						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
+					</button>
+		</div>
+	</div>
+	<mat-card-content>
+		<mat-card-title translate>
+			<div class="truncate-container">
+				<a href="{{item.url}}"
+					target="_blank"
+					class="truncate title">{{item.title}}</a>
+			</div>
+			<mat-card-subtitle class="item-subtitle"
+				[innerHtml]="item.description"></mat-card-subtitle>
+		</mat-card-title>
+	</mat-card-content>
+	<mat-card-actions>
+		<button mat-raised-button
+			[color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
+			class="vote-button"
+			color="primary"
+			(click)="onVote(item, 1, $event)"
+			matBadge="{{item.votes.up}}"
+			matBadgeColor="accent"><mat-icon>thumb_up</mat-icon><span fxHide="true" fxShow.gt-xs="true">LIKE</span></button>
+	</mat-card-actions>
+</mat-card>
