@@ -30,6 +30,9 @@ import { SkeletonSocialButtonComponent } from './skeleton/skeleton-social-button
 import { SkeletonSocialBarComponent } from './skeleton/skeleton-social-bar/skeleton-social-bar.component';
 import { SkeletonWideCardComponent } from './skeleton/skeleton-card/skeleton-wide-card/skeleton-wide-card.component';
 import { SkeletonChildCardComponent } from './skeleton/skeleton-card/skeleton-child-card/skeleton-child-card.component';
+import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-media-card/skeleton-media-card.component';
+import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component';
+import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component';
 
 @NgModule({
 	imports: [
@@ -65,7 +68,10 @@ import { SkeletonChildCardComponent } from './skeleton/skeleton-card/skeleton-ch
 		SkeletonSocialButtonComponent,
 		SkeletonSocialBarComponent,
 		SkeletonWideCardComponent,
-		SkeletonChildCardComponent
+		SkeletonChildCardComponent,
+		SkeletonMediaCardComponent,
+		SkeletonCardComponent,
+		SkeletonPanelComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -85,7 +91,10 @@ import { SkeletonChildCardComponent } from './skeleton/skeleton-card/skeleton-ch
 		SkeletonSocialButtonComponent,
 		SkeletonSocialBarComponent,
 		SkeletonWideCardComponent,
-		SkeletonChildCardComponent
+		SkeletonChildCardComponent,
+		SkeletonMediaCardComponent,
+		SkeletonCardComponent,
+		SkeletonPanelComponent
 	]
 })
 export class SharedModule { }
