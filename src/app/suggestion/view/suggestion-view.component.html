@@ -21,6 +21,7 @@
 
 <ng-template #mainHeader>
 	<mat-toolbar color="primary"
+		[@fadeIn]="!isLoading"
 		class="header-info-panel"
 		*ngIf="suggestion">
 		<div class="image-container"
@@ -138,6 +139,7 @@
 
 <ng-template #mainSuggestion>
 	<div class="container"
+		[@fadeIn]="!isLoading"
 		*ngIf="suggestion"
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">

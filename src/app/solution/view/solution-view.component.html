@@ -54,6 +54,7 @@
 
 <ng-template #mainHeader>
 	<mat-toolbar color="primary"
+		[@fadeIn]="!isLoading"
 		class="header-info-panel"
 		*ngIf="solution">
 		<div class="image-container"
@@ -150,6 +151,7 @@
 
 <ng-template #mainSolutions>
 	<div class="container"
+		[@fadeIn]="!isLoading"
 		*ngIf="solution"
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">

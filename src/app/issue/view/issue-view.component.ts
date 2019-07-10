@@ -22,10 +22,16 @@ import { Vote } from '@app/core/models/vote.model';
 
 import { createUrl } from '@app/shared/helpers/cloudinary';
 
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-view.component.html',
-	styleUrls: ['./issue-view.component.scss']
+	styleUrls: ['./issue-view.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class IssueViewComponent implements OnInit {
 

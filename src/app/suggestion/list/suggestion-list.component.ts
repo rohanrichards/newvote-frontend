@@ -11,10 +11,16 @@ import { MetaService } from '@app/core/meta.service';
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { Vote } from '@app/core/models/vote.model';
 
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-suggestion',
 	templateUrl: './suggestion-list.component.html',
-	styleUrls: ['./suggestion-list.component.scss']
+	styleUrls: ['./suggestion-list.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class SuggestionListComponent implements OnInit {
 

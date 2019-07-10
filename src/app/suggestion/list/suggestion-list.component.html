@@ -47,6 +47,7 @@
 
 <ng-template #mainSuggestions>
 	<app-card-list path="/suggestions"
+		[@fadeIn]="!isLoading"
 		[items]=suggestions
 		model="Suggestion"
 		(restore)="onRestore($event)"

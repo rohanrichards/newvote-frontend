@@ -8,6 +8,7 @@
 
 <ng-template #mainContainer>
 	<div fxLayout="column"
+		[@fadeIn]="!isLoading"
 	    fxLayoutAlign="center center"
 	    class="hero-image-container">
 		<div *ngIf="org"
@@ -30,7 +31,7 @@
 </ng-container>
 
 <ng-template #skeletonCommunity>
-	<div class="community-container container"
+	<div [@fadeOut]="!isLoading" class="community-container container"
 		>
 			<div 
 				fxLayout="column"
@@ -81,7 +82,7 @@
 </ng-template>
 
 <ng-template #mainCommunity>
-	<div class="community-container container"
+	<div [@fadeIn]="!isLoading" class="community-container container"
 		fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px"
@@ -155,7 +156,7 @@
 </ng-container>
 
 <ng-template #skeletonIssues>
-	<div class="hot-issues-container container">
+	<div [@fadeOut]="!isLoading" class="hot-issues-container container">
 		<div class="skeleton-issues-container">
 				<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
 				</app-skeleton-text-bar>
@@ -176,7 +177,7 @@
 </ng-template>
 
 <ng-template #mainIssues>
-	<div class="hot-issues-container container text-center"
+	<div [@fadeIn]="isLoading" class="hot-issues-container container text-center"
     	fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
@@ -215,7 +216,7 @@
 </ng-container>
 
 <ng-template #skeletonFooter>
-	<div class="final-container container">
+	<div [@fadeOut]="!isLoading" class="final-container container">
 		<div class="skeleton-footer">
 			<app-skeleton-button [width]="100" class="footer-button">
 			</app-skeleton-button>
@@ -226,7 +227,7 @@
 </ng-template>
 
 <ng-template #mainFooter>
-	<div *ngIf="!auth.isAuthenticated()"
+	<div [@fadeIn]="isLoading" *ngIf="!auth.isAuthenticated()"
 		class="final-container container text-center"
 		fxLayoutAlign="center center"
 		routerLink="/auth/signup">

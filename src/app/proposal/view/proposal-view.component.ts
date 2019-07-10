@@ -14,10 +14,16 @@ import { Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
 import { createUrl } from '@app/shared/helpers/cloudinary';
 
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-proposal',
 	templateUrl: './proposal-view.component.html',
-	styleUrls: ['./proposal-view.component.scss']
+	styleUrls: ['./proposal-view.component.scss'],
+		animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class ProposalViewComponent implements OnInit {
 

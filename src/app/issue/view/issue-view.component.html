@@ -7,7 +7,9 @@
 	else mainIssueHeader">
 </ng-container>
 
-<div class="container"
+<div 
+	[@fadeIn]="!isLoading"
+	class="container"
 	fxLayoutAlign="center center"
 	*ngIf="media"
 	>
@@ -78,15 +80,16 @@
 </ng-template>
 
 <ng-template #mainMedia>
-	<app-swiper-wrapper path="/media"
-	[items]="media"
-	model="Media"
-	(restore)="onMediaRestore($event)"
-	(softDelete)="onMediaSoftDelete($event)"
-	(delete)="onMediaDelete($event)"
-	(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
+	<app-swiper-wrapper 
+		[@fadeIn]="!isLoading"
+		path="/media"
+		[items]="media"
+		model="Media"
+		(restore)="onMediaRestore($event)"
+		(softDelete)="onMediaSoftDelete($event)"
+		(delete)="onMediaDelete($event)"
+		(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 </ng-template>
-
 
 
 
@@ -105,10 +108,13 @@
 </ng-template>
 
 <ng-template #mainIssueHeader>
-	<mat-toolbar color="primary"
+	<mat-toolbar 
+		[@fadeIn]="!isLoading"
+		color="primary"
 		class="header-info-panel"
 		*ngIf="issue">
 		<div class="image-container"
+			
 			fxLayout="column"
 			[style.background-image]="'url(' + replaceImageUrl(issue.imageUrl) + ')'">
 			<div class="admin-panel"
@@ -229,6 +235,7 @@
 
 <ng-template #mainCards>
 	<div class="container"
+		[@fadeIn]="!isLoading"
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"

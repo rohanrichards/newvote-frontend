@@ -39,6 +39,7 @@
 
 <ng-template #mainForm>
 	<mat-form-field class="example-chip-list"
+		[@fadeIn]="!isLoading"
 		fxFill>
 		<mat-chip-list #chipList>
 			<mat-chip *ngFor="let topic of selectedTopics"
@@ -118,7 +119,7 @@
 </ng-template>
 
 <ng-template #mainTopics>
-	<div *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
+	<div [@fadeIn]="!isLoading" *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
 		<h2 class="mat-h1">
 			{{topic.name}}
 			<div class="button-panel"

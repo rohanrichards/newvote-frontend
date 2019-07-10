@@ -16,7 +16,10 @@ import { Vote } from '@app/core/models/vote.model';
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-list.component.html',
-	styleUrls: ['./solution-list.component.scss']
+	styleUrls: ['./solution-list.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class SolutionListComponent implements OnInit {
 
