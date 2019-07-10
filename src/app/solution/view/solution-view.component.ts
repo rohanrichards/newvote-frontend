@@ -54,7 +54,7 @@ export class SolutionViewComponent implements OnInit {
 			forceUpdate,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.pipe(finalize(() => { this.isLoading = true; }))
+			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((solution: Solution) => {
 				this.solution = solution;
 				this.solution.imageUrl = this.replaceImageUrl(this.solution.imageUrl);

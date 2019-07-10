@@ -89,3 +89,9 @@ q {
 	margin-left: auto;
 	margin-right: auto;
 }
+
+@media only screen and (max-width: 400px) {
+	.skeleton-media-card-wrap {
+		padding: 1rem;
+	}
+}

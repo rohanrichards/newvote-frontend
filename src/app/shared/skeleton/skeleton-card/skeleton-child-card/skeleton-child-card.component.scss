@@ -57,10 +57,7 @@
     
 }
 
-.vote-button {
-    margin-right: 0.5rem;
 
-}
 
 @media only screen and (max-width: 660px) {
 
@@ -81,4 +78,16 @@
 	.skeleton-button-row {
 		width: 100%;
 	}
+}
+
+@media only screen and (max-width: 400px) {
+
+	.vote-button {
+		margin-right: 0;
+	}
+
+	.skeleton-button-row {
+		flex-wrap: wrap;
+	}
+
 }

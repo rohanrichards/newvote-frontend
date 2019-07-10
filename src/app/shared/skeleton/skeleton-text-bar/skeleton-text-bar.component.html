@@ -1,5 +1,7 @@
 <div 
-	[style.width]="width + 'px'"
+	[style.min-width]="(width/1.5) + 'px'"
+	
+	[style.max-width]="width + 'px'"
 	[ngClass]="{ 
 		heading: isHeading,
 		subtitle: isSubtitle, 

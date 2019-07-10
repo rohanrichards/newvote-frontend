@@ -107,6 +107,7 @@
 	flex-direction: row;
 	justify-content: center;
 	align-items: space-around;
+	margin-bottom: 1rem;
 }
 
 .skeleton-triple-section {
@@ -178,4 +179,11 @@
 		flex-direction: column;
 	}
 
+}
+
+@media only screen and (max-width: 370px) {
+
+	.footer-button {
+		margin-right: 0;
+	}
 }
