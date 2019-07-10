@@ -34,6 +34,8 @@ import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-me
 import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component';
 import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		FlexLayoutModule,
@@ -49,6 +51,9 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 		MatBadgeModule,
 		ClipboardModule,
 		RouterModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		LoaderComponent,

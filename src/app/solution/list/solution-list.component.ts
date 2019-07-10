@@ -13,6 +13,9 @@ import { MetaService } from '@app/core/meta.service';
 import { ISolution, Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-list.component.html',

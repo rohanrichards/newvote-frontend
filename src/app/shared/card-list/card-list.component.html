@@ -10,9 +10,10 @@
 			<div mat-card-image
 			    class="image-container"
 				[ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
-				[style.background-image]="item.imageUrl ? 
-					'url(' + item.imageUrl + ')'
-					: ''">
+				[defaultImage]="imageToPlaceholder(item.imageUrl)"
+				[lazyLoad]="item.imageUrl ?
+					replaceImageUrl(item.imageUrl)
+				: ''">
 				<div class="button-panel"
 				    *ngIf="auth.isModerator() || auth.isCreator(item)">
 					<button color="accent"
@@ -76,7 +77,10 @@
 							    fxLayoutAlign="start center">
 								<div class="mini-proposal-image"
 								    *ngIf="child.imageUrl"
-								    [style.backgroundImage]="'url(' + child.imageUrl + ')'">
+									[defaultImage]="imageToPlaceholder(child.imageUrl)"
+									[lazyLoad]="child.imageUrl ?
+										replaceImageUrl(child.imageUrl)
+										: ''">
 								</div>
 								<div fxLayout="column"
 								    fxFlex>

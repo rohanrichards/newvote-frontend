@@ -116,7 +116,10 @@
 		<div class="image-container"
 			
 			fxLayout="column"
-			[style.background-image]="'url(' + replaceImageUrl(issue.imageUrl) + ')'">
+			[defaultImage]="imageToPlaceholder(issue.imageUrl)"
+			[lazyLoad]="issue.imageUrl ?
+				replaceImageUrl(issue.imageUrl)
+				: ''">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(issue)"
 				fxLayout="column"

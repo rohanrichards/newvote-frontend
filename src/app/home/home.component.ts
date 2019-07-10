@@ -12,6 +12,7 @@ import { MetaService } from '@app/core/meta.service';
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
 import { createUrl } from '@app/shared/helpers/cloudinary';
+
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 
@@ -94,5 +95,13 @@ export class HomeComponent implements OnInit {
 		}
 
 		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
 	}
 }

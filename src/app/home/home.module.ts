@@ -15,6 +15,8 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { HomeSkeletonComponent } from './home-skeleton/home-skeleton.component';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -25,6 +27,9 @@ import { HomeSkeletonComponent } from './home-skeleton/home-skeleton.component';
 		MaterialModule,
 		Angulartics2Module,
 		HomeRoutingModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		HomeComponent,

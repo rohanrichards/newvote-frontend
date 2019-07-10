@@ -20,7 +20,10 @@
 		*ngIf="proposal">
 		<div class="image-container"
 			fxLayout="column"
-			[style.background-image]="'url(' + replaceImageUrl(proposal.imageUrl) + ')'">
+			[defaultImage]="imageToPlaceholder(proposal.imageUrl)"
+			[lazyLoad]="proposal.imageUrl ?
+				replaceImageUrl(proposal.imageUrl)
+				: ''">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(proposal)"
 				fxLayout="column"

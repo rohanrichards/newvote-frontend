@@ -59,9 +59,10 @@
 		*ngIf="solution">
 		<div class="image-container"
 			fxLayout="column"
-			[style.background-image]="solution.imageUrl ?
-						'url(' + replaceImageUrl(solution.imageUrl) + ')'
-						: ''">
+			[defaultImage]="imageToPlaceholder(solution.imageUrl)"
+			[lazyLoad]="solution.imageUrl ?
+				replaceImageUrl(solution.imageUrl)
+				: ''">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(solution)"
 				fxLayout="column"

@@ -202,4 +202,12 @@ export class SolutionViewComponent implements OnInit {
 		return createUrl(url, 'auto', 'auto');
 	}
 
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
+	}
+
 }
