@@ -4,11 +4,8 @@ import {
 	animate,
 	transition,
 	query,
-	stagger,
-	keyframes
+	stagger
 } from '@angular/animations';
-
-https://blog.angularindepth.com/https-medium-com-thomasburleson-animated-ghosts-bfc045a51fba
 
 export function fadeIn(selector: string, duration = '200ms ease-out') {
 	return [
