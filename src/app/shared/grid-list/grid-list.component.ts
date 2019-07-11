@@ -92,7 +92,19 @@ export class GridListComponent implements OnInit {
 	}
 
 	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
 		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
 	}
 
 }

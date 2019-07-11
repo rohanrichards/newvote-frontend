@@ -1,0 +1,123 @@
+<div class="comment-footer" color="primary" [formGroup]="commentForm">
+	<div *ngIf="auth.isCreator(suggestion)">
+		<span class="mat-headline">Comment on Suggestions</span>
+			<div class="write-comment-container">
+			<mat-card class="comment-card">
+				<div class="quill-container">
+						<quill-editor
+							formControlName="body"
+							[style]="{'min-height': '125px', 'background-color': '#fafafa', 'margin-top': '0.5rem'}"
+							[modules]="{toolbar: false}"
+							>
+					</quill-editor>
+				</div>
+				<mat-card-actions align="end">
+						<button type="button" 
+							mat-raised-button 
+							color="primary"
+							(click)="onComment($event)"
+							>
+							Post Comment
+						</button>
+				</mat-card-actions>
+			</mat-card>
+		</div>
+	</div>
+
+
+	<div class="comment-container">
+		<mat-card class="comment-card">
+			<mat-card-header>
+				<div mat-card-avatar class="header-image"></div>
+				<mat-card-title>Jamie Player</mat-card-title>
+				<div class="info-box">
+					<p><small>2 days ago</small></p>
+				</div>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+					<p>
+						This was a great suggestion I totally agree with the implementation.
+						I'd suggest we work on a few more things.
+					</p>
+					<p>So thoughts?</p>
+			</mat-card-content>
+			<mat-card-actions align="end">
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">edit</mat-icon>
+				</button>
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">delete</mat-icon>
+				</button>
+			</mat-card-actions>
+			<!-- <mat-card-footer>
+				<ul class="comment-footer-list">
+					<li>Remove</li>
+					<li>*</li>
+					<li>Edit</li>
+				</ul>
+			</mat-card-footer> -->
+		</mat-card>
+		<mat-card class="comment-card">
+			<mat-card-header>
+				<div mat-card-avatar class="header-image"></div>
+				<mat-card-title>Jamie Player</mat-card-title>
+				<div class="info-box">
+					<p><small>2 days ago</small></p>
+				</div>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+					<p>
+						This was a great suggestion I totally agree with the implementation.
+						I'd suggest we work on a few more things.
+					</p>
+					<p>So thoughts?</p>
+			</mat-card-content>
+			<mat-card-actions align="end">
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">edit</mat-icon>
+				</button>
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">delete</mat-icon>
+				</button>
+			</mat-card-actions>
+			<!-- <mat-card-footer>
+				<ul class="comment-footer-list">
+					<li>Remove</li>
+					<li>*</li>
+					<li>Edit</li>
+				</ul>
+			</mat-card-footer> -->
+		</mat-card>
+		<mat-card class="comment-card">
+			<mat-card-header>
+				<div mat-card-avatar class="header-image"></div>
+				<mat-card-title>Jamie Player</mat-card-title>
+				<div class="info-box">
+					<p><small>2 days ago</small></p>
+				</div>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+					<p>
+						This was a great suggestion I totally agree with the implementation.
+						I'd suggest we work on a few more things.
+					</p>
+					<p>So thoughts?</p>
+			</mat-card-content>
+			<mat-card-actions align="end">
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">edit</mat-icon>
+				</button>
+				<button  mat-icon-button color="primary">
+					<mat-icon class="action-but">delete</mat-icon>
+				</button>
+			</mat-card-actions>
+			<!-- <mat-card-footer>
+				<ul class="comment-footer-list">
+					<li>Remove</li>
+					<li>*</li>
+					<li>Edit</li>
+				</ul>
+			</mat-card-footer> -->
+		</mat-card>
+	</div>
+</div>

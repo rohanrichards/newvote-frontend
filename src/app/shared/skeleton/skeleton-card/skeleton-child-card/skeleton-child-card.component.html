@@ -1,0 +1,32 @@
+<div class="skeleton-child-card-container">
+	<ng-template [ngIf]="showImage">
+		<div class="skeleton-child-image-container">
+			<div class="skeleton-image-placeholder">
+			</div>
+		</div>
+	</ng-template>
+	<div class="skeleton-child-content">
+		<app-skeleton-text-bar [isSubtitle]=true [width]="180"></app-skeleton-text-bar>
+		<app-skeleton-text-bar [isSubtitle]=true [width]="100"></app-skeleton-text-bar>
+		<ng-template [ngIf]="showVote">
+			<div class="skeleton-action-container">
+					<div class="skeleton-vote-container">
+						<app-skeleton-text-bar [isSubtitle]=true [width]="60">
+						</app-skeleton-text-bar>
+						<div class="skeleton-button-row">
+							<app-skeleton-button class="vote-button" [width]="50">
+							</app-skeleton-button>
+							<app-skeleton-button class="vote-button" [width]="50">
+							</app-skeleton-button>
+						</div>
+					</div>
+					<div class="skeleton-result-container">
+						<app-skeleton-text-bar [isSubtitle]=true [width]="60">
+						</app-skeleton-text-bar>
+						<app-skeleton-button class="result-button" [width]="120">
+						</app-skeleton-button>
+					</div>
+				</div>
+		</ng-template>
+	</div>
+</div>

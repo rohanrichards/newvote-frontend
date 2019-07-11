@@ -92,3 +92,110 @@
 	background-color: #FFFFFF;
 	cursor: pointer;
 }
+
+.skeleton-title-wrap {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-top: 1rem;
+}
+
+.skeleton-triple-divider-container {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: space-around;
+	margin-bottom: 1rem;
+}
+
+.skeleton-triple-section {
+	width:100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.skeleton-community-footer {
+	margin-top: 0.5rem;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1rem;
+}
+
+.skeleton-community-cta {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 0.75rem;
+}
+
+.skeleton-issues-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.skeleton-issue-header {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.skeleton-card-list {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+.skeleton-issues-footer {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.skeleton-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.footer-button {
+	margin-right: 1rem;
+}
+
+.hero-image {
+	filter: blur(20px);
+	// transition: opacity 0.5s;
+	transition: filter 1.5s;
+	// opacity: 0;
+}
+
+ .ng-lazyloaded {
+	// opacity: 1;
+	filter: blur(0px);
+} 
+
+@media only screen and (max-width: 750px) {
+
+	.skeleton-card-list {
+		flex-direction: column;
+	}
+
+}
+
+@media only screen and (max-width: 370px) {
+
+	.footer-button {
+		margin-right: 0;
+	}
+}

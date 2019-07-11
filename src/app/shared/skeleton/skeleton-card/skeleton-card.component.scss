@@ -1,0 +1,36 @@
+.skeleton-card {
+	min-width: 200px;
+	box-shadow: 3px 4px 5px 0px #ababab;
+	border-radius: 5px;
+	margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+.skeleton-card-image {
+	background-color: #d3d3d8;
+	width: 100%;
+	min-height: 175px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: 5px 5px 0 0;
+}
+
+.skeleton-card-content {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+
+@media only screen and (max-width: 750px) {
+
+	.skeleton-card {
+		width: 100%;
+		min-width: 250px;
+		max-width: 450px;
+	}
+
+}

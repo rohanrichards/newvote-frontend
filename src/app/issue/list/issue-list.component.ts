@@ -17,10 +17,16 @@ import { Topic } from '@app/core/models/topic.model';
 import { Organization } from '@app/core/models/organization.model';
 import { MetaService } from '@app/core/meta.service';
 
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-list.component.html',
-	styleUrls: ['./issue-list.component.scss']
+	styleUrls: ['./issue-list.component.scss'],
+	animations: [
+		trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class IssueListComponent implements OnInit {
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
@@ -72,6 +78,7 @@ export class IssueListComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
 		});

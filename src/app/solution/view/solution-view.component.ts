@@ -14,11 +14,16 @@ import { Vote } from '@app/core/models/vote.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
 import { createUrl } from '@app/shared/helpers/cloudinary';
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
 
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-view.component.html',
-	styleUrls: ['./solution-view.component.scss']
+	styleUrls: ['./solution-view.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class SolutionViewComponent implements OnInit {
 
@@ -195,6 +200,14 @@ export class SolutionViewComponent implements OnInit {
 		}
 
 		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
 	}
 
 }

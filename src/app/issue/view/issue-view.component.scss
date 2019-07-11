@@ -64,3 +64,34 @@ q {
 	bottom: 0;
 	left: 0;
 }
+
+.center-item {
+	display: flex;
+	align-self: center;
+	justify-self: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1rem;
+}
+/* Skeleton Section */
+
+.skeleton-media-container {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.skeleton-card-list {
+	// display: flex;
+	// flex-direction: column;
+	// justify-content: center;
+	// align-items: center;
+	// width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@media only screen and (max-width: 400px) {
+	.skeleton-media-card-wrap {
+		padding: 1rem;
+	}
+}
