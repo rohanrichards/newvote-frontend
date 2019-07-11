@@ -65,8 +65,14 @@ export class SuggestionListComponent implements OnInit {
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(suggestions => { this.suggestions = suggestions; });
+		.pipe(finalize(() => { this.isLoading = false; }))
+		.subscribe(
+			suggestions => {
+				console.log(suggestions, 'this is suggestions');
+				this.suggestions = suggestions;
+			},
+			err => { console.log(err, 'this is err'); }
+			);
 	}
 
 	onDelete(event: any) {

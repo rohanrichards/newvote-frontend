@@ -22,6 +22,12 @@
 	cursor: pointer;
 }
 
+.error-card {
+	margin-bottom: 32px;
+	border: 1px solid red;
+	cursor: default;
+}
+
 .status {
 	text-decoration: underline;
 }

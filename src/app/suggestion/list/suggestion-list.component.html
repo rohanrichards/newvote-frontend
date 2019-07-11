@@ -46,8 +46,10 @@
 </ng-template>
 
 <ng-template #mainSuggestions>
-	<app-card-list path="/suggestions"
+	<app-card-list 
+		path="/suggestions"
 		[@fadeIn]="!isLoading"
+		[isError]="suggestions[0].error"
 		[items]=suggestions
 		model="Suggestion"
 		(restore)="onRestore($event)"
