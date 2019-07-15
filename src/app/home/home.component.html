@@ -1,18 +1,20 @@
-<ng-container *ngIf="isLoading; then skeleton; else mainContainer">
+
+
+<ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
 </ng-container>
 
-<ng-template #skeleton>
+<ng-template #skeletonHeader>
 	<app-skeleton-header>
 	</app-skeleton-header>
 </ng-template>
-
+	
 <ng-template #mainContainer>
 	<div fxLayout="column"
 		[@fadeIn]="!isLoading"
-	    fxLayoutAlign="center center"
-	    class="hero-image-container">
+		fxLayoutAlign="center center"
+		class="hero-image-container">
 		<div *ngIf="org"
-		    class="hero-image"
+			class="hero-image"
 			[defaultImage]="imageToPlaceholder(org.imageUrl)"
 			[lazyLoad]="org.imageUrl ?
 				replaceImageUrl(org.imageUrl)
@@ -27,24 +29,15 @@
 	</div>
 </ng-template>
 
-<ng-container *ngIf="isLoading; 
-	then skeletonCommunity; 
-	else mainCommunity">
-</ng-container>
-
-<ng-template #skeletonCommunity>
-	<div class="community-container container"
-		>
-			<div 
-				fxLayout="column"
-				>
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'" class="community-container container">
+			<div fxLayout="column">
 				<div class="skeleton-title-wrap">
 					<app-skeleton-text-bar [isHeading]=true [width]="200">
 					</app-skeleton-text-bar>
 					<app-skeleton-text-bar [isSubtitle]=true [width]="150">
 					</app-skeleton-text-bar>
 				</div>
-
 				<div class="skeleton-triple-divider-container">
 					<div class="skeleton-triple-section">
 						<app-skeleton-text-bar [isHeading]=true [width]="25">
@@ -79,12 +72,23 @@
 					</app-skeleton-text-bar>
 				</div>
 			</div>
-
 	</div>
-</ng-template>
-
-<ng-template #mainCommunity>
-	<div [@fadeIn]="!isLoading" class="community-container container"
+	<div *ngSwitchCase="'serverError'" class="community-container container" fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px" fxLayout="column">
+			<div class="mat-display-1 no-margin">
+				<span *ngIf="org">
+					Server Eror
+				</span>
+			</div>
+			<div class="mat-h2" *ngIf="org">
+				Could not load organization data.
+			</div>
+			<div>
+				<span class="mat-caption">Try refreshing the page, otherwise contact NewVote</span>
+			</div>
+		</div>
+	</div>
+	<div *ngSwitchCase="'complete'" [@fadeIn]=true class="community-container container"
 		fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px"
@@ -150,15 +154,11 @@
 			</div>
 		</div>
 	</div>
-</ng-template>
-
-<ng-container *ngIf="isLoading; 
-	then skeletonIssues; 
-	else mainIssues">
 </ng-container>
 
-<ng-template #skeletonIssues>
-	<div class="hot-issues-container container">
+
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'" class="hot-issues-container container">
 		<div class="skeleton-issues-container">
 				<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
 				</app-skeleton-text-bar>
@@ -176,31 +176,63 @@
 			</div>
 		</div>
 	</div>
-</ng-template>
 
-<ng-template #mainIssues>
-	<div [@fadeIn]="isLoading" class="hot-issues-container container text-center"
-    	fxLayoutAlign="center center">
+	<div *ngSwitchCase="'serverError'" class="hot-issues-container container">
+			<div class="skeleton-issues-container">
+					<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
+					</app-skeleton-text-bar>
+				<div class="skeleton-card-list">
+					<app-skeleton-card>
+					</app-skeleton-card>
+					<app-skeleton-card>
+					</app-skeleton-card>
+					<app-skeleton-card>
+					</app-skeleton-card>
+				</div>
+				<div class="skeleton-issues-footer">
+					<app-skeleton-text-bar [isSubtitle]=true [width]="75">
+					</app-skeleton-text-bar>
+				</div>
+			</div>
+		</div>
+
+	<div *ngSwitchCase="'complete'" [@fadeIn]=true class="hot-issues-container container text-center"
+		fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
 			<h2 class="mat-h2">What's Hot?</h2>
-			<app-grid-list *ngIf="issues"
-				path="/issues"
-				model="Issue"
-				[itemLimit]="ISSUE_LIMIT"
-				[titleCard]=true
-				[items]=issues
-				(delete)="onDelete($event)"
-				(softDelete)="onSoftDelete($event)"></app-grid-list>
-			<div>
-				<button mat-button
-					routerLink="/issues">
-					SEE ALL ></button>
-			</div>
+			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">
+			</ng-container>
 		</div>
 	</div>
-</ng-template>
 
+	<ng-template #noIssues>
+		<h3 class="mat-h3">Currently there are no issues for this Organization</h3>
+			<div *ngIf="auth.isOwner() || auth.isAdmin()">
+				<p>Start engaging your community and create issues.</p>
+				<button mat-button
+					color="primary"
+					routerLink="/issues/create">
+					Create Issue
+				</button>
+			</div>
+	</ng-template>
+	<ng-template #issuesExist>
+		<app-grid-list *ngIf="issues"
+			path="/issues"
+			model="Issue"
+			[itemLimit]="ISSUE_LIMIT"
+			[titleCard]=true
+			[items]=issues
+			(delete)="onDelete($event)"
+			(softDelete)="onSoftDelete($event)"></app-grid-list>
+		<div>
+			<button mat-button
+				routerLink="/issues">
+				SEE ALL ></button>
+		</div>
+	</ng-template>
+</ng-container>
 
 <div class="about-community-container container text-center"
     fxLayoutAlign="center center"
@@ -212,10 +244,12 @@
 	</div>
 </div>
 
-<ng-container *ngIf="isLoading; 
+<ng-container *ngIf="loadingState !== 'complete'; 
 	then skeletonFooter; 
 	else mainFooter">
 </ng-container>
+
+<!-- Templates -->
 
 <ng-template #skeletonFooter>
 	<div class="final-container container">
