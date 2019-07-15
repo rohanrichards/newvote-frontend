@@ -3,12 +3,13 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { finalize, startWith, map } from 'rxjs/operators';
-import { zip } from 'rxjs/observable/zip';
+import { Observable, forkJoin, of } from 'rxjs';
+
+import { finalize, startWith, map, catchError } from 'rxjs/operators';
+// import { zip } from 'rxjs/observable/zip';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { IssueService } from '@app/core/http/issue/issue.service';
+import { IssueService, IssueContext } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 
@@ -19,6 +20,9 @@ import { MetaService } from '@app/core/meta.service';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
+
+import { AppState } from '@app/core/models/state.model';
+import { StateService } from '@app/core/http/state/state.service';
 
 @Component({
 	selector: 'app-issue',
@@ -60,10 +64,14 @@ export class IssueListComponent implements OnInit {
 		role: 'admin'
 	}];
 
+
 	topicFilter = new FormControl('');
 	topicParam: string; // filtered topics can be preselected via url param
 
+	loadingState: string;
+
 	constructor(
+		public stateService: StateService,
 		private issueService: IssueService,
 		private topicService: TopicService,
 		private organizationService: OrganizationService,
@@ -72,13 +80,17 @@ export class IssueListComponent implements OnInit {
 		private router: Router,
 		private meta: MetaService
 	) {
-		this.filteredTopics = this.topicFilter.valueChanges.pipe(
-			startWith(''),
-			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+		// this.filteredTopics = this.topicFilter.valueChanges.pipe(
+		// 	startWith(''),
+		// 	map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
 	}
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
 		});
@@ -95,40 +107,48 @@ export class IssueListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
-		this.isLoading = true;
+		this.setAppState(AppState.loading);
 		const isOwner = this.auth.isOwner();
 
-		const issueObs: Observable<Issue[]> = this.issueService.list({
+		const options = {
 			orgs: [],
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
-		});
-		// .subscribe(issues => { this.issues = issues; });
+		} as IssueContext;
 
-		const topicObs = this.topicService.list({ forceUpdate: force });
-		// .subscribe(topics => { this.topics = topics; });
+		const issueObs: Observable<any[]> = this.issueService.list(options);
+		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
 
-		const orgObs = this.organizationService.get();
-		// .subscribe(org => { this.organization = org; });
+		forkJoin({
+			issues: issueObs,
+			topics: topicObs
+		})
+		.subscribe(
+			results => {
+				const { issues, topics } = results;
 
-		const obsCollection = zip(issueObs, topicObs, orgObs);
+				this.issues = issues;
+				this.allTopics = topics;
 
-		obsCollection.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(result => {
-				this.issues = result[0];
-				this.allTopics = result[1];
-				this.organization = result[2];
 				if (this.topicParam) {
 					const topic = this._filter(this.topicParam);
 					if (topic.length) {
 						this.selectedTopics.push(topic[0]);
 					}
 				}
-			});
-	}
+				return this.stateService.setLoadingState(AppState.complete);
+			},
+			err => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
+		}
 
 	// filter the issue list for matching topicId's
 	getIssues(topicId: string) {
+		if (!topicId) {
+			return false;
+		}
 		const issues = this.issues.filter(issue => {
 			return issue.topics.some(topic => topic._id === topicId);
 		});
@@ -191,6 +211,10 @@ export class IssueListComponent implements OnInit {
 		if (index >= 0) {
 			this.selectedTopics.splice(index, 1);
 		}
+	}
+
+	setAppState(state: AppState) {
+		return this.loadingState = state;
 	}
 
 	private _filter(value: any): Topic[] {
