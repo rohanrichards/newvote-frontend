@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
+import { handleError } from '@app/core/http/errors';
 
 const routes = {
 	list: (c: SuggestionContext) => `/suggestions`,
@@ -41,7 +42,7 @@ export class SuggestionService {
 			.get(routes.list(context), { params })
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{ error: e }]))
+				catchError(handleError)
 			);
 	}
 
@@ -51,7 +52,7 @@ export class SuggestionService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -61,7 +62,7 @@ export class SuggestionService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -71,7 +72,7 @@ export class SuggestionService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -81,7 +82,7 @@ export class SuggestionService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 

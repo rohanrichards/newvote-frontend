@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { ITopic } from '@app/core/models/topic.model';
+import { handleError } from '@app/core/http/errors';
 
 const routes = {
 	list: (c: TopicContext) => `/topics`,
@@ -43,7 +44,7 @@ export class TopicService {
 			.get(routes.list(context), { params })
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{ error: e }]))
+				catchError(handleError)
 			);
 	}
 
@@ -53,7 +54,7 @@ export class TopicService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -63,7 +64,7 @@ export class TopicService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -73,7 +74,7 @@ export class TopicService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -83,7 +84,7 @@ export class TopicService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
