@@ -1,63 +1,28 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
 
-<ng-container 
-	*ngIf="isLoading;
-	then skeletonHeader;
-	else mainHeader">
-</ng-container>
-
-<ng-container *ngIf="isLoading;
-	then skeletonSolutions;
-	else mainSolutions">
-</ng-container>
-
-<ng-template #skeletonHeader>
-	<app-skeleton-header [noLogo]=true >
-	</app-skeleton-header>
-	<app-skeleton-panel [hasVote]=true>
-	</app-skeleton-panel>
-</ng-template>
-
-<ng-template #skeletonSolutions>
-	<div class="container"
-		fxLayout="column"
-		fxLayoutAlign="center start"
-		>
-		<div class="skeleton-card-list"
-			>
-			<app-skeleton-text-bar [isSubtitle]=true [width]="150">
-			</app-skeleton-text-bar>
-
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-				[showChildren]=true
-			>
-			</app-skeleton-wide-card>
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-			>
-			</app-skeleton-wide-card>
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-			>
-			</app-skeleton-wide-card>
-		</div>	
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'">
+		<app-skeleton-header [noLogo]=true >
+		</app-skeleton-header>
+		<app-skeleton-panel [hasVote]=true>
+		</app-skeleton-panel>
 	</div>
-</ng-template>
-
-<ng-template #mainHeader>
-	<mat-toolbar color="primary"
-		[@fadeIn]="!isLoading"
+	<div *ngSwitchCase="'serverError'">
+		<app-skeleton-header [noLogo]=true >
+		</app-skeleton-header>
+		<app-skeleton-panel [hasVote]=true>
+		</app-skeleton-panel>
+	</div>
+	<mat-toolbar 
+		color="primary"
+		*ngSwitchCase="'complete'"
+		[@fadeIn]=true
 		class="header-info-panel"
-		*ngIf="solution">
-		<div class="image-container"
+		>
+		<div 
+			*ngIf="solution"
+			class="image-container"
 			fxLayout="column"
 			[defaultImage]="imageToPlaceholder(solution.imageUrl)"
 			[lazyLoad]="solution.imageUrl ?
@@ -147,16 +112,52 @@
 			</div>
 		</div>
 	</mat-toolbar>
-</ng-template>
+</ng-container>
 
+<ng-container [ngSwitch]="loadingState">
+	<div 
+		*ngSwitchCase="'loading'"
+		class="container"
+		fxLayout="column"
+		fxLayoutAlign="center start"
+		>
+		<div class="skeleton-card-list"
+			>
+			<app-skeleton-text-bar [isSubtitle]=true [width]="150">
+			</app-skeleton-text-bar>
 
-<ng-template #mainSolutions>
-	<div class="container"
-		[@fadeIn]="!isLoading"
-		*ngIf="solution"
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+				[showChildren]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showImage]=true
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+		</div>	
+	</div>
+	<app-error-card *ngSwitchCase="'serverError'">
+	</app-error-card>
+	<div 
+		*ngSwitchCase="'complete'"
+		class="container"
+		[@fadeIn]=true
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">
-		<div fxFlex.gt-sm="690px"
+		<div 
+			*ngIf="solution"
+			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
 			<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
 			<app-card-list path="/proposals"
@@ -172,4 +173,13 @@
 				(vote)="onVote($event, 'Proposal')"></app-card-list>
 		</div>
 	</div>
-</ng-template>
+</ng-container>
+
+
+
+
+
+
+
+
+
