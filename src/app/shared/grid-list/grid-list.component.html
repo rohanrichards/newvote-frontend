@@ -16,37 +16,68 @@
 					[lazyLoad]="item.imageUrl ?
 						replaceImageUrl(item.imageUrl)
 						: ''">
-					<div class="button-panel"
-					    *ngIf="auth.isModerator(item)">
-						<button color="accent"
-							matTooltip="Edit the item"
-						    mat-icon-button
-						    (click)="$event.stopPropagation()"
-						    routerLink='{{path}}/edit/{{item._id}}'>
-    						<mat-icon aria-label="Edit the content">edit</mat-icon>
-  						</button>
-						<button color="accent"
-							matTooltip="Restore the item"
-							*ngIf="item.softDeleted"
-						    mat-icon-button
-						    (click)="onRestore(item, $event)">
-    						<mat-icon aria-label="Restore content">restore</mat-icon>
-  						</button>
-						<button color="accent"
-							matTooltip="Remove the item"
-							*ngIf="!item.softDeleted"
-						    mat-icon-button
-						    (click)="onSoftDelete(item, $event)">
-    						<mat-icon aria-label="Delete content forever">delete</mat-icon>
-  						</button>
-						<button color="warn"
-							matTooltip="Delete the item forever"
-						    mat-icon-button
-						    (click)="onDelete(item, $event)"
-							*ngIf="auth.isAdmin(item)">
-    						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
-  						</button>
-					</div>
+						<div class="button-panel"
+							*ngIf="auth.isAdmin() && model === 'Organization'">
+							<button color="accent"
+								matTooltip="Edit the item"
+								mat-icon-button
+								(click)="$event.stopPropagation()"
+								routerLink='{{path}}/edit/{{item._id}}'>
+								<mat-icon aria-label="Edit the content">edit</mat-icon>
+							</button>
+							<button color="accent"
+								matTooltip="Restore the item"
+								*ngIf="item.softDeleted"
+								mat-icon-button
+								(click)="onRestore(item, $event)">
+								<mat-icon aria-label="Restore content">restore</mat-icon>
+							</button>
+							<button color="accent"
+								matTooltip="Remove the item"
+								*ngIf="!item.softDeleted"
+								mat-icon-button
+								(click)="onSoftDelete(item, $event)">
+								<mat-icon aria-label="Delete content forever">delete</mat-icon>
+							</button>
+							<button color="warn"
+								matTooltip="Delete the item forever"
+								mat-icon-button
+								(click)="onDelete(item, $event)"
+								*ngIf="auth.isAdmin(item)">
+								<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
+							</button>
+						</div>
+						<div class="button-panel"
+							*ngIf="auth.isModerator() && model !== 'Organization'">
+							<button color="accent"
+								matTooltip="Edit the item"
+								mat-icon-button
+								(click)="$event.stopPropagation()"
+								routerLink='{{path}}/edit/{{item._id}}'>
+								<mat-icon aria-label="Edit the content">edit</mat-icon>
+							</button>
+							<button color="accent"
+								matTooltip="Restore the item"
+								*ngIf="item.softDeleted"
+								mat-icon-button
+								(click)="onRestore(item, $event)">
+								<mat-icon aria-label="Restore content">restore</mat-icon>
+							</button>
+							<button color="accent"
+								matTooltip="Remove the item"
+								*ngIf="!item.softDeleted"
+								mat-icon-button
+								(click)="onSoftDelete(item, $event)">
+								<mat-icon aria-label="Delete content forever">delete</mat-icon>
+							</button>
+							<button color="warn"
+								matTooltip="Delete the item forever"
+								mat-icon-button
+								(click)="onDelete(item, $event)"
+								*ngIf="auth.isAdmin(item)">
+								<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
+							</button>
+						</div>
 				</div>
 				<ng-container *ngIf="!titleCard; then noTitle; else isTitle">
 				</ng-container>
