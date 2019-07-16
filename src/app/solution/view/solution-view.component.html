@@ -147,8 +147,16 @@
 			</app-skeleton-wide-card>
 		</div>	
 	</div>
-	<app-error-card *ngSwitchCase="'serverError'">
-	</app-error-card>
+	<div 
+		*ngSwitchCase="'serverError'"
+		class="container"
+		fxLayout="column"
+		fxLayoutAlign="center center"
+		>
+		<app-error-card >
+		</app-error-card>
+	</div>
+	
 	<div 
 		*ngSwitchCase="'complete'"
 		class="container"
