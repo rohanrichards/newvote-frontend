@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { ISolution } from '@app/core/models/solution.model';
+import { handleError } from '@app/core/http/errors';
 
 const routes = {
 	list: (c: SolutionContext) => `/solutions`,
@@ -43,7 +44,7 @@ export class SolutionService {
 			.get(routes.list(context), { params })
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{ error: e }]))
+				catchError(handleError)
 			);
 	}
 
@@ -60,7 +61,7 @@ export class SolutionService {
 			.get(routes.view(context), { params })
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -70,7 +71,7 @@ export class SolutionService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -80,7 +81,7 @@ export class SolutionService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -90,7 +91,7 @@ export class SolutionService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 

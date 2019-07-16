@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 import { IIssue } from '@app/core/models/issue.model';
+import { handleError } from '@app/core/http/errors';
 
 const routes = {
 	list: (c: IssueContext) => `/issues`,
@@ -47,7 +48,7 @@ export class IssueService {
 			.get(routes.list(context), options)
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{ error: e }]))
+				catchError(handleError)
 			);
 	}
 
@@ -57,8 +58,7 @@ export class IssueService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
-			);
+				catchError(handleError)			);
 	}
 
 	create(context: IssueContext): Observable<any> {
@@ -66,8 +66,7 @@ export class IssueService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
-			);
+				catchError(handleError)			);
 	}
 
 	update(context: IssueContext): Observable<any> {
@@ -75,8 +74,7 @@ export class IssueService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
-			);
+				catchError(handleError)			);
 	}
 
 	delete(context: IssueContext): Observable<any> {
@@ -84,7 +82,7 @@ export class IssueService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
