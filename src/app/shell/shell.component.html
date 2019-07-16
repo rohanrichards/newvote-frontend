@@ -41,7 +41,7 @@
 					    routerLink="/suggestions"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-						<span translate>Suggestions</span>
+						<span translate>Your Suggestions</span>
 					</a>
 
 					<mat-divider></mat-divider>
@@ -74,6 +74,12 @@
 					    href="https://newvote.org/help"
 					    target="_blank">
 						<span translate>Help</span>
+					</a>
+
+					<a mat-list-item
+					    href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
+					    target="_blank">
+						<span translate>Give Feedback</span>
 					</a>
 				</mat-list>
 			</nav>
@@ -125,7 +131,7 @@
 					    color="warn"
 					    routerLink="/auth/signup">Create Account</button>
 				</div>
-				<div>
+				<!-- <div>
 					<button mat-icon-button
 					    [matMenuTriggerFor]="languageMenu">
 						<mat-icon>language</mat-icon>
@@ -137,7 +143,7 @@
 							{{language}}
 						</button>
 					</mat-menu>
-				</div>
+				</div> -->
 			</mat-toolbar>
 			<!-- only show if search button pressed -->
 			<app-search-bar class="sticky-search"

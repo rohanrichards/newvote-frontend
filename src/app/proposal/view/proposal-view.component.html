@@ -1,91 +1,109 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
 
-<mat-toolbar color="primary"
-    class="header-info-panel"
-    *ngIf="proposal">
-	<div class="image-container"
-	    fxLayout="column"
-	    [style.background-image]="'url(' + proposal.imageUrl + ')'">
-		<div class="admin-panel"
-		    *ngIf="auth.isModerator(proposal)"
-		    fxLayout="column"
-		    fxLayoutAlign="center end">
-			<div class="button-panel">
-				<button mat-icon-button
-				    matTooltip="Add a new Action"
-				    color="accent"
-				    routerLink="/proposals/create">
-					<mat-icon aria-label="Add a new action">playlist_add</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Edit this Action"
-				    color="accent"
-				    routerLink="/proposals/edit/{{proposal._id}}">
-					<mat-icon aria-label="Edit the action">edit</mat-icon>
-				</button>
-				<button mat-icon-button
-					*ngIf="proposal.softDeleted"
-					matTooltip="Restore Action"
-					color="accent"
-					(click)="onRestore()">
-					<mat-icon aria-label="Restore Action">restore</mat-icon>
-				</button>
-				<button mat-icon-button
-					*ngIf="!proposal.softDeleted"
-					matTooltip="Remove Action"
-					color="accent"
-					(click)="onSoftDelete()">
-					<mat-icon aria-label="Remove Action">delete</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Delete this Action"
-				    color="warn"
-				    (click)="onDelete()">
-					<mat-icon aria-label="Delete the action forever">delete_forever</mat-icon>
-				</button>
+<ng-container *ngIf="isLoading;
+	then skeletonHeader;
+	else mainHeader">
+</ng-container>
+
+<ng-template #skeletonHeader>
+	<app-skeleton-header [noLogo]=true >
+	</app-skeleton-header>
+	<app-skeleton-panel [hasVote]=true>
+	</app-skeleton-panel>
+</ng-template>
+
+<ng-template #mainHeader>
+	<mat-toolbar color="primary"
+		[@fadeIn]="!isLoading"
+		class="header-info-panel"
+		*ngIf="proposal">
+		<div class="image-container"
+			fxLayout="column"
+			[defaultImage]="imageToPlaceholder(proposal.imageUrl)"
+			[lazyLoad]="proposal.imageUrl ?
+				replaceImageUrl(proposal.imageUrl)
+				: ''">
+			<div class="admin-panel"
+				*ngIf="auth.isModerator(proposal)"
+				fxLayout="column"
+				fxLayoutAlign="center end">
+				<div class="button-panel">
+					<button mat-icon-button
+						matTooltip="Add a new Action"
+						color="accent"
+						routerLink="/proposals/create">
+						<mat-icon aria-label="Add a new action">playlist_add</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Edit this Action"
+						color="accent"
+						routerLink="/proposals/edit/{{proposal._id}}">
+						<mat-icon aria-label="Edit the action">edit</mat-icon>
+					</button>
+					<button mat-icon-button
+						*ngIf="proposal.softDeleted"
+						matTooltip="Restore Action"
+						color="accent"
+						(click)="onRestore()">
+						<mat-icon aria-label="Restore Action">restore</mat-icon>
+					</button>
+					<button mat-icon-button
+						*ngIf="!proposal.softDeleted"
+						matTooltip="Remove Action"
+						color="accent"
+						(click)="onSoftDelete()">
+						<mat-icon aria-label="Remove Action">delete</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Delete this Action"
+						color="warn"
+						(click)="onDelete()">
+						<mat-icon aria-label="Delete the action forever">delete_forever</mat-icon>
+					</button>
+				</div>
+			</div>
+			<div fxLayout="row"
+				fxFlex></div>
+			<!-- <div fxLayout="column"
+				fxLayoutAlign="start start">
+			</div> -->
+			<div fxLayout="row wrap"
+				fxLayoutAlign="center center">
+				<div fxFlex.gt-sm="690px"
+					fxFlex.gt-md="800px">
+					<app-share-buttons></app-share-buttons>
+				</div>
 			</div>
 		</div>
-		<div fxLayout="row"
-		    fxFlex></div>
-		<!-- <div fxLayout="column"
-		    fxLayoutAlign="start start">
-		</div> -->
 		<div fxLayout="row wrap"
-		    fxLayoutAlign="center center">
+			fxLayoutAlign="center center">
 			<div fxFlex.gt-sm="690px"
-			    fxFlex.gt-md="800px">
-				<app-share-buttons></app-share-buttons>
-			</div>
-		</div>
-	</div>
-	<div fxLayout="row wrap"
-	    fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
-		    fxFlex.gt-md="800px">
-			<div class="mat-display-1"
-			    translate>{{proposal.title}}</div>
+				fxFlex.gt-md="800px">
+				<div class="mat-display-1"
+					translate>{{proposal.title}}</div>
 
-			<span class="mat-body">This is a Action for:
-				<span *ngFor="let parent of proposal.solutions; let i = index">
-					<a mat-button
-					    routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
+				<span class="mat-body">This is a Action for:
+					<span *ngFor="let parent of proposal.solutions; let i = index">
+						<a mat-button
+							routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
+					</span>
 				</span>
-			</span>
-			<app-more-less [displayText]="proposal.description"
-			    maxHeight="200">
-			</app-more-less>
-			<mat-divider></mat-divider>
-			<p></p>
-			<div class="buttons">
-				<app-vote-buttons [item]="proposal"
-				    (vote)=onVote($event)>
-				</app-vote-buttons>
+				<app-more-less [displayText]="proposal.description"
+					maxHeight="200">
+				</app-more-less>
+				<mat-divider></mat-divider>
+				<p></p>
+				<div class="buttons">
+					<app-vote-buttons [item]="proposal"
+						(vote)=onVote($event)>
+					</app-vote-buttons>
+				</div>
 			</div>
 		</div>
-	</div>
+	</mat-toolbar>
+</ng-template>
 
-</mat-toolbar>
 
 <div class="container"
     *ngIf="proposal"

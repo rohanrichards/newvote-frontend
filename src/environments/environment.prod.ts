@@ -10,5 +10,5 @@ export const environment = {
 		'en-US',
 		'fr-FR'
 	],
-	recaptchaSitekey: '6Lca03AUAAAAALXV7A5FK-noIdCDZ7bpYwWoR2yy'
+	recaptchaSitekey: env.recaptcha_sitekey
 };

@@ -6,7 +6,7 @@
     *ngIf="topic">
 	<div class="image-container"
 		fxLayout="column"
-	    [style.background-image]="'url(' + topic.imageUrl + ')'">
+	    [style.background-image]="'url(' + replaceImageUrl(topic.imageUrl) + ')'">
 		<div class="admin-panel"
 		    *ngIf="auth.isModerator(topic)"
 		    fxLayout="column"

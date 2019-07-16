@@ -11,11 +11,18 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
 
 @Component({
 	selector: 'app-home',
 	templateUrl: './home.component.html',
-	styleUrls: ['./home.component.scss']
+	styleUrls: ['./home.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class HomeComponent implements OnInit {
 
@@ -75,4 +82,26 @@ export class HomeComponent implements OnInit {
 			.subscribe((t) => {	this.fetchData(true); });
 	}
 
+	onDelete(issue: any) {
+		this.issueService.delete({ id: issue._id }).subscribe(() => {
+			console.log('deleted');
+			this.fetchData(true);
+		});
+	}
+
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
+	}
 }

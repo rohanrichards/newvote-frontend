@@ -7,18 +7,51 @@
     size="1.5">
 </app-loader>
 
-
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<app-card-list path="/suggestions"
-		    [items]=suggestions
-			model="Suggestion"
-			(restore)="onRestore($event)"
-			(softDelete)="onSoftDelete($event)"
-		    (delete)="onDelete($event)"
-		    (vote)="onVote($event)"></app-card-list>
+		<ng-container *ngIf="isLoading;
+			then skeletonSuggestions;
+			else mainSuggestions">
+		</ng-container>
 	</div>
 </div>
+
+<!-- /* Template */ -->
+<ng-template #skeletonSuggestions>
+	<div class="container"
+		fxLayout="column"
+		fxLayoutAlign="center start"
+		>
+		<div class="skeleton-card-list">
+			<app-skeleton-wide-card
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+			<app-skeleton-wide-card
+				[showContent]=true
+				[showActions]=true
+			>
+			</app-skeleton-wide-card>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #mainSuggestions>
+	<app-card-list path="/suggestions"
+		[@fadeIn]="!isLoading"
+		[items]=suggestions
+		model="Suggestion"
+		(restore)="onRestore($event)"
+		(softDelete)="onSoftDelete($event)"
+		(delete)="onDelete($event)"
+		(vote)="onVote($event)"></app-card-list>
+</ng-template>

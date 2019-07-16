@@ -5,6 +5,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
+import { QuillSettings } from '@app/shared/quill/quill.settings';
+
 import { FileUploadModule } from 'ng2-file-upload';
 
 import { MaterialModule } from '@app/material.module';
@@ -19,6 +21,8 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -29,9 +33,12 @@ import { SharedModule } from '@app/shared';
 		ReactiveFormsModule,
 		MaterialModule,
 		MaterialFileInputModule,
-		QuillModule,
+		QuillModule.forRoot(QuillSettings),
 		FileUploadModule,
-		ProposalRoutingModule
+		ProposalRoutingModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		ProposalListComponent,
