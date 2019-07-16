@@ -87,3 +87,22 @@ router-outlet::after {
 .spacer {
 	height: 24px;
 }
+
+.secure-wrapper {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	display: flex;
+	flex-direction: column;
+    padding-bottom: 10px;
+	
+	img {
+		align-self: flex-end;
+		margin-left: auto;
+	}
+
+	p {
+		color: rgba(0, 0, 0, 0.87);
+	}
+}
+
