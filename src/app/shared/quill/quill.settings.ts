@@ -18,8 +18,7 @@ const formats = [
 	'direction',
 	'code-block',
 	'formula'
-	// 'image'
-	// 'video'
+
 ];
 
 
@@ -40,6 +39,5 @@ export const QuillSettings = {
 			[{ 'align': [] }],
 			['clean'],
 		]
-	},
-	format: formats,
+	}
 } as any;
