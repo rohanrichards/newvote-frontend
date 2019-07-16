@@ -4,6 +4,7 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { createUrl } from '../helpers/cloudinary';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-grid-list',
@@ -22,7 +23,7 @@ export class GridListComponent implements OnInit {
 	@Output() softDelete = new EventEmitter();
 	@Output() restore = new EventEmitter();
 
-	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+	constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	public get getItems() {
 
@@ -105,6 +106,22 @@ export class GridListComponent implements OnInit {
 		}
 
  		return createUrl(url, 'low', 'auto');
+	}
+
+	handleUrl (item: any) {
+
+		if (this.model !== 'Organization') {
+			return this.router.navigate([`/${this.path}/${item._id}`]);
+		}
+
+		const { hostname } = window.location;
+
+		// separate the current hostname into subdomain and main site
+		const splitHostname = hostname.split('.');
+		splitHostname[0] = item.url;
+
+		const newHostName = splitHostname.join('.');
+		window.location.href = `http://${newHostName}:4200`;
 	}
 
 }

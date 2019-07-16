@@ -19,8 +19,8 @@ export class OrganizationListComponent implements OnInit {
 
 	organizations: Array<any>;
 	isLoading: boolean;
-	headerTitle = 'Administrate Organizations';
-	headerText = 'Admin panel for managing organizations';
+	headerTitle = 'Explore Communities';
+	headerText = 'Discover other Organizations on NewVote';
 	headerButtons = [{
 		text: 'New Organization',
 		color: 'warn',
