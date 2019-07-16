@@ -12,6 +12,7 @@ export interface IOrganization {
 	organizationUrl?: string;
 	futureOwner?: string;
 	newLeaderEmail?: string;
+	softDeleted: boolean;
 }
 
 export class Organization implements IOrganization {
@@ -27,6 +28,7 @@ export class Organization implements IOrganization {
 		public iconUrl: string = '',
 		public organizationUrl: string =  '',
 		public futureOwner: any = {},
-		public newLeaderEmail: string = ''
+		public newLeaderEmail: string = '',
+		public softDeleted: boolean = false,
 	) { }
 }

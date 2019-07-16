@@ -11,11 +11,18 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
 
 @Component({
 	selector: 'app-home',
 	templateUrl: './home.component.html',
-	styleUrls: ['./home.component.scss']
+	styleUrls: ['./home.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class HomeComponent implements OnInit {
 
@@ -64,7 +71,7 @@ export class HomeComponent implements OnInit {
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(issues => { this.issues = issues; console.log(this.issues); });
+			.subscribe(issues => { this.issues = issues; });
 	}
 
 	onSoftDelete(issue: any) {
@@ -82,4 +89,19 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
+	}
 }

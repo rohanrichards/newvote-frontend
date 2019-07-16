@@ -5,6 +5,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
+import { QuillSettings } from '@app/shared/quill/quill.settings';
+
 import { FileUploadModule } from 'ng2-file-upload';
 import { MaterialModule } from '@app/material.module';
 import { IssueRoutingModule } from './issue-routing.module';
@@ -21,6 +23,8 @@ import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -31,9 +35,30 @@ import { SharedModule } from '@app/shared';
 		ReactiveFormsModule,
 		MaterialModule,
 		MaterialFileInputModule,
-		QuillModule,
+		QuillModule.forRoot({
+			modules: {
+				toolbar: [
+					['bold', 'italic', 'underline', 'strike'],
+					['blockquote', 'code-block'],
+					[{ 'header': 1 }, { 'header': 2 }],
+					[{ 'list': 'ordered' }, { 'list': 'bullet' }],
+					[{ 'script': 'sub' }, { 'script': 'super' }],
+					[{ 'indent': '-1' }, { 'indent': '+1' }],
+					[{ 'direction': 'rtl' }],
+					[{ 'size': ['small', false, 'large', 'huge'] }],
+					[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+					[{ 'color': [] }, { 'background': [] }],
+					[{ 'font': [] }],
+					[{ 'align': [] }],
+					['clean'],
+				]
+			}
+		}),
 		FileUploadModule,
-		IssueRoutingModule
+		IssueRoutingModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		IssueListComponent,

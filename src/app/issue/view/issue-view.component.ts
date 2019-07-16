@@ -20,10 +20,18 @@ import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
 
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-view.component.html',
-	styleUrls: ['./issue-view.component.scss']
+	styleUrls: ['./issue-view.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class IssueViewComponent implements OnInit {
 
@@ -270,4 +278,19 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
+	}
 }

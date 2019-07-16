@@ -34,7 +34,8 @@
 			    hidden
 			    autoComplete="off" />
 
-			<div class="image-select">
+			<div class="image-select"
+			 fxLayout="column">
 				<button mat-flat-button
 				    color="primary"
 				    (click)="fileInput.click()">Select Image</button>
@@ -42,6 +43,7 @@
 				    *ngIf="imageUrl">
 					<img [src]="imageUrl" />
 				</div>
+				<mat-hint>Images look best at approximately 200x200 pixels</mat-hint>
 			</div>
 
 			<button mat-flat-button

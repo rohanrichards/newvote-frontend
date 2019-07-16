@@ -39,6 +39,7 @@ import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
 	imports: [
@@ -55,7 +56,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 		SharedModule,
 		ShellModule,
 		HomeModule,
-		ShareModule.forRoot(),
+		ShareModule,
 		AngularFontAwesomeModule,
 		ChartsModule,
 		HttpClientXsrfModule.withOptions({
@@ -65,6 +66,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
 		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		SwiperModule,
+		LazyLoadImageModule,
 		AppRoutingModule // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [
