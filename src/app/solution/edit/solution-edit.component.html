@@ -1,19 +1,19 @@
 <app-loader [isLoading]="isLoading"
-	size="1.5"></app-loader>
+ size="1.5"></app-loader>
 <div class="container"
-    fxLayoutAlign="center center">
+ fxLayoutAlign="center center">
 	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
+	 fxFlex="100">
 		<form [formGroup]="solutionForm"
-		    fxLayout="column"
-		    (ngSubmit)="onSave()"
-		    novalidate>
+		 fxLayout="column"
+		 (ngSubmit)="onSave()"
+		 novalidate>
 			<mat-form-field>
 				<!-- {{solutionForm.status}} -->
 				<input matInput
-				    placeholder="Enter a name for the solution"
-				    formControlName="title"
-				    required>
+				 placeholder="Enter a name for the solution"
+				 formControlName="title"
+				 required>
 				<mat-error *ngIf="solutionForm.hasError('required', ['title'])">
 					Name is <strong>required</strong>
 				</mat-error>
@@ -22,25 +22,25 @@
 			<mat-form-field class="example-chip-list">
 				<mat-chip-list #chipList>
 					<mat-chip *ngFor="let issue of issues"
-						[selectable]="false"
-						[removable]="true"
-						(removed)="issueRemoved(issue)">
+					 [selectable]="false"
+					 [removable]="true"
+					 (removed)="issueRemoved(issue)">
 						{{issue.name}}
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
 					<input placeholder="Select an issue..."
-						#issueInput
-						formControlName="issues"
-						[matAutocomplete]="auto"
-						[matChipInputFor]="chipList"
-						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-						[matChipInputAddOnBlur]="true"
-						(matChipInputTokenEnd)="add($event)">
+					 #issueInput
+					 formControlName="issues"
+					 [matAutocomplete]="auto"
+					 [matChipInputFor]="chipList"
+					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					 [matChipInputAddOnBlur]="true"
+					 (matChipInputTokenEnd)="add($event)">
 				</mat-chip-list>
 				<mat-autocomplete #auto="matAutocomplete"
-					(optionSelected)="issueSelected($event)">
+				 (optionSelected)="issueSelected($event)">
 					<mat-option *ngFor="let issue of filteredIssues | async"
-						[value]="issue">
+					 [value]="issue">
 						{{issue.name}}
 					</mat-option>
 				</mat-autocomplete>
@@ -51,39 +51,45 @@
 			</div>
 
 			<input type="file"
-			    id="fileupload"
-			    #fileInput
-			    ng2FileSelect
-			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
-			    hidden
-			    autoComplete="off" />
+			 id="fileupload"
+			 #fileInput
+			 ng2FileSelect
+			 [uploader]="uploader"
+			 (change)="onFileChange($event)"
+			 hidden
+			 autoComplete="off" />
 
 			<input matInput
-			    hidden
-			    placeholder="Enter a name for the solution"
-			    formControlName="imageUrl"
-			    required>
+			 hidden
+			 placeholder="Enter a name for the solution"
+			 formControlName="imageUrl"
+			 required>
 
-			<div class="image-select">
-				<button mat-flat-button
-				    type="button"
-				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
-				<button mat-flat-button
-				    type="button"
-				    color="primary"
-				    (click)="onResetImage()">Reset Image</button>
+			<div class="image-select"
+			 fxLayout="column"
+			 fxFlex
+			 fxLayoutAlign="center center">
+				<div fxLayout="row">
+					<button mat-flat-button
+					 type="button"
+					 color="primary"
+					 (click)="fileInput.click()">Select Image</button>
+					<button mat-flat-button
+					 type="button"
+					 color="primary"
+					 (click)="onResetImage()">Reset Image</button>
+				</div>
 				<div class="image-preview"
-				    *ngIf="imageUrl">
+				 *ngIf="imageUrl">
 					<img [src]="imageUrl" />
 				</div>
+				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
 			</div>
 
 			<button mat-flat-button
-			    type="submit"
-			    [disabled]="!solutionForm.valid || isLoading"
-			    color="primary">Update</button>
+			 type="submit"
+			 [disabled]="!solutionForm.valid || isLoading"
+			 color="primary">Update</button>
 		</form>
 	</mat-card>
 </div>

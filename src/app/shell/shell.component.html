@@ -41,7 +41,7 @@
 					    routerLink="/suggestions"
 					    routerLinkActive="active"
 					    (click)="isMobile && sidenav.close()">
-						<span translate>Suggestions</span>
+						<span translate>Your Suggestions</span>
 					</a>
 
 					<mat-divider></mat-divider>
@@ -68,7 +68,16 @@
 					    target="_blank">
 						<span translate>Help</span>
 					</a>
+
+					<a mat-list-item
+					    href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
+					    target="_blank">
+						<span translate>Give Feedback</span>
+					</a>
 				</mat-list>
+				<div class="secure-wrapper">
+					<img src="assets/entersoft.png" />
+				</div>
 			</nav>
 		</mat-sidenav>
 		<mat-sidenav-content>
@@ -92,7 +101,7 @@
 					class="account-create-menu-icon"
 					mat-icon-button
 				    [matMenuTriggerFor]="loginMenu">
-					<mat-icon>more_vert</mat-icon>
+					<mat-icon color="warn">account_box</mat-icon>
 				</button>
 				<mat-menu #loginMenu="matMenu">
 					<mat-list>

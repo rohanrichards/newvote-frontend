@@ -100,6 +100,22 @@ router-outlet::after {
 	display: none;
 }
 
+.secure-wrapper {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	display: flex;
+	flex-direction: column;
+    padding-bottom: 10px;
+	
+	img {
+		align-self: flex-end;
+		margin-left: auto;
+	}
+
+}
+
+
 @media screen and (max-width: 450px) {
 	
 
@@ -118,3 +134,4 @@ router-outlet::after {
 		display: none;
 	}
 }
+

@@ -1,3 +1,7 @@
-<div class="progress-container" [hidden]="!isLoading">
-	<mat-progress-bar color="warn" mode="indeterminate"></mat-progress-bar>
+<div class="progress-container"
+    [hidden]="!isLoading"
+    ngClass.gt-sm="height-lg"
+    ngClass.lt-md="height-sm">
+	<mat-progress-bar color="warn"
+	    mode="indeterminate"></mat-progress-bar>
 </div>
