@@ -59,9 +59,11 @@
 	max-height: 48px;
 	height: 20px;
 	overflow: hidden;
+	max-width: 60vw;
 	p {
 		margin: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
