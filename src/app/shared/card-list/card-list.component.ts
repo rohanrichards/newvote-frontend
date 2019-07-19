@@ -96,17 +96,36 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
+	replaceImageUrl (url: string, child?: boolean) {
 		if (!url) {
 			return '';
+		}
+
+		if (url.includes('assets')) {
+
+			if (child) {
+				return '';
+			}
+
+			return url;
 		}
 
 		return createUrl(url, 'auto', 'auto');
 	}
 
-	imageToPlaceholder(url: string) {
+	imageToPlaceholder(url: string, child?: boolean) {
 		if (!url) {
 			return '';
+		}
+
+		// For child cards
+		if (url.includes('assets')) {
+
+			if (child) {
+				return '';
+			}
+
+			return url;
 		}
 
  		return createUrl(url, 'low', 'auto');

@@ -91,9 +91,9 @@
 								fxLayoutAlign="start center">
 								<div class="mini-proposal-image"
 									*ngIf="child.imageUrl"
-									[defaultImage]="imageToPlaceholder(child.imageUrl)"
+									[defaultImage]="imageToPlaceholder(child.imageUrl, true)"
 									[lazyLoad]="child.imageUrl ?
-										replaceImageUrl(child.imageUrl)
+										replaceImageUrl(child.imageUrl, true)
 										: ''">
 								</div>
 								<div fxLayout="column"
