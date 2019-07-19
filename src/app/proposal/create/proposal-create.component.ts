@@ -31,11 +31,13 @@ export class ProposalCreateComponent implements OnInit {
 	isLoading = true;
 	imageUrl: any;
 	uploader: FileUploader;
+	userImageUpload: boolean;
+
 	proposalForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		solutions: new FormControl(''),
-		imageUrl: new FormControl('', [Validators.required])
+		imageUrl: new FormControl('', [])
 	});
 
 	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
@@ -124,6 +126,8 @@ export class ProposalCreateComponent implements OnInit {
 			};
 
 			reader.readAsDataURL(file);
+			// flag - user has attempted to upload an image
+			this.userImageUpload = true;
 		}
 	}
 
@@ -132,12 +136,26 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal = <IProposal>this.proposalForm.value;
 		this.proposal.solutions = this.solutions;
 		this.proposal.organizations = this.organization;
-		console.log(this.proposal);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
 		};
+
+		if (!this.userImageUpload) {
+			// this.imageUrl = 'assets/action-default.png';
+			return this.proposalService.create({ entity: this.proposal })
+				.pipe(finalize(() => { this.isLoading = false; }))
+				.subscribe(t => {
+					if (t.error) {
+						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+					} else {
+						this.openSnackBar('Succesfully created', 'OK');
+						this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
+					}
+				}
+			);
+		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {

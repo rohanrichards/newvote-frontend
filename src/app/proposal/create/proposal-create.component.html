@@ -63,13 +63,17 @@
 
 			<div class="image-select"
 			 fxLayout="column">
+				<div>
+					<mat-hint>Optional: Change default image</mat-hint>
+				</div>
 				<button mat-flat-button
 					type="button"
 				    color="primary"
 				    (click)="fileInput.click()">Select Image</button>
 				<div class="image-preview"
-				    *ngIf="imageUrl">
-					<img [src]="imageUrl" />
+				    >
+					<img *ngIf="imageUrl" [src]="imageUrl" />
+					<img class="image-wrap" *ngIf="!imageUrl" src="assets/action-default.png"  />
 				</div>
 				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
 			</div>
