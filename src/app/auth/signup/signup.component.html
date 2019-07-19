@@ -13,7 +13,7 @@
 		 fxFlex.md="50%"
 		 fxFlex.gt-md="33%"
 		 class="signup-box">
-			<div *ngIf="this.org.authType!==0"
+			<div *ngIf="this.org.authType && this.org.authType!==0"
 			 fxFlex>
 				<button mat-raised-button
 				 fxFlex
@@ -24,7 +24,7 @@
 				</button>
 			</div>
 			<form (ngSubmit)="signup()"
-			 *ngIf="this.org.authType===0"
+			 *ngIf="!this.org.authType || this.org.authType===0"
 			 [formGroup]="signupForm"
 			 novalidate>
 				<div class="signup-error"
