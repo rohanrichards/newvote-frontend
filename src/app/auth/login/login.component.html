@@ -1,61 +1,71 @@
 <app-loader class="inline-loader"
-    [isLoading]="isLoading"></app-loader>
+ [isLoading]="isLoading"></app-loader>
 <div fxFill
-    fxLayout="column"
-    fxLayoutAlign="center center"
-    fxLayoutGap="1.5rem"
-    class="mat-typography">
+ fxLayout="column"
+ fxLayoutAlign="center center"
+ fxLayoutGap="1.5rem"
+ class="mat-typography">
 	<div class="login-container"
-	    fxLayout="row"
-	    fxLayoutAlign="center">
+	 fxLayout="row"
+	 fxLayoutAlign="center">
 		<mat-card fxFlex="90%"
-		    fxFlex.sm="66%"
-		    fxFlex.md="50%"
-		    fxFlex.gt-md="33%"
-		    class="login-box">
-			<form (ngSubmit)="login()"
-			    [formGroup]="loginForm"
-			    novalidate>
+		 fxFlex.sm="66%"
+		 fxFlex.md="50%"
+		 fxFlex.gt-md="33%"
+		 class="login-box">
+			<div *ngIf="this.org.authType!==0" fxFlex>
+				<button mat-raised-button
+				fxFlex
+				 color="primary"
+				 type="button"
+				 (click)="redirect()">
+					<span translate>Login with SSO</span>
+				</button>
+			</div>
+			<form *ngIf="this.org.authType===0"
+			 (ngSubmit)="login()"
+			 [formGroup]="loginForm"
+			 novalidate>
 				<div class="login-error"
-				    [hidden]="!error || isLoading"
-				    translate>
+				 [hidden]="!error || isLoading"
+				 translate>
 					Email or password incorrect.
 				</div>
-				<br/>
+				<br />
 				<div fxLayout="column">
 					<mat-form-field>
 						<input type="text"
-						    matInput
-						    formControlName="username"
-						    autocomplete="username"
-						    [placeholder]="'Email Address' | translate" />
+						 matInput
+						 formControlName="username"
+						 autocomplete="username"
+						 [placeholder]="'Email Address' | translate" />
 						<mat-error *ngIf="loginForm.controls.username.valid || loginForm.controls.username.untouched">
 							<span translate>Email is required</span>
 						</mat-error>
 					</mat-form-field>
 					<mat-form-field>
 						<input type="password"
-						    matInput
-						    formControlName="password"
-						    autocomplete="current-password"
-						    [placeholder]="'Password' | translate"
-						    required/>
+						 matInput
+						 formControlName="password"
+						 autocomplete="current-password"
+						 [placeholder]="'Password' | translate"
+						 required />
 						<mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
 							<span translate>Password is required</span>
 						</mat-error>
 					</mat-form-field>
 					<mat-slide-toggle color="accent"
-					    class="remember-toggle"
-					    formControlName="remember"
-					    translate>Remember me</mat-slide-toggle>
+					 class="remember-toggle"
+					 formControlName="remember"
+					 translate>Remember me</mat-slide-toggle>
 					<a routerLink="/auth/forgot">Forgot password?</a>
-					<br/>
+					<br />
 					<button mat-raised-button
-					    color="primary"
-					    type="submit"
-					    [disabled]="loginForm.invalid || isLoading">
-            <span translate>Login</span>
-          </button>
+					 color="primary"
+					 type="submit"
+					 [disabled]="loginForm.invalid || isLoading">
+						<span translate>Login</span>
+					</button>
 				</div>
 			</form>
 		</mat-card>

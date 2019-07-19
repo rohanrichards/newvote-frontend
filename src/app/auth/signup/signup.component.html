@@ -12,7 +12,17 @@
 		    fxFlex.md="50%"
 		    fxFlex.gt-md="33%"
 		    class="signup-box">
+   			<div *ngIf="this.org.authType!==0" fxFlex>
+   				<button mat-raised-button
+   				fxFlex
+   				 color="primary"
+   				 type="button"
+   				 (click)="redirect()">
+   					<span translate>Sign up with SSO</span>
+   				</button>
+   			</div>
 			<form (ngSubmit)="signup()"
+			 *ngIf="this.org.authType===0" 
 			    [formGroup]="signupForm"
 			    novalidate>
 				<div class="signup-error"
