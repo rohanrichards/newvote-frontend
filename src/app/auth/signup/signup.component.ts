@@ -3,9 +3,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { environment } from '@env/environment';
-import { Logger, I18nService, AuthenticationService } from '@app/core';
+import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
+import { Organization } from '@app/core/models/organization.model';
 import { arrayExpression } from 'babel-types';
 
 const log = new Logger('Signup');
@@ -22,6 +24,7 @@ export class SignupComponent implements OnInit {
 	signupForm: FormGroup;
 	isLoading = false;
 	verificationCode: string;
+	org: Organization;
 
 	constructor(private router: Router,
 		private route: ActivatedRoute,
@@ -29,8 +32,13 @@ export class SignupComponent implements OnInit {
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
 		private meta: MetaService,
+		private organizationService: OrganizationService,
+		private cookieService: CookieService
 	) {
 		this.createForm();
+		this.organizationService.get().subscribe(org => {
+			this.org = org;
+		});
 	}
 
 	ngOnInit() {
@@ -62,6 +70,11 @@ export class SignupComponent implements OnInit {
 				log.debug(`Signup error: ${res}`);
 				this.error = res.error ? res.error : res;
 			});
+	}
+
+	redirect() {
+		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		window.location.href = this.org.authUrl;
 	}
 
 	private createForm() {

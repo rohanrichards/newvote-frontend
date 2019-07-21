@@ -75,18 +75,21 @@ export class ProposalListComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe(
+				(res) => {
+					this.openSnackBar('Your vote was recorded', 'OK');
+					this.fetchData(true);
+				},
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.fetchData(true);
-			}
-		});
+			);
 	}
 
 	openSnackBar(message: string, action: string) {

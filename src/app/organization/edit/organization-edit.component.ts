@@ -45,6 +45,8 @@ export class OrganizationEditComponent implements OnInit {
 		futureOwner: new FormControl(''),
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email]),
+		authType: new FormControl(0, [Validators.required]),
+		authUrl: new FormControl('', [Validators.required])
 	});
 
 	backgroundImage = {
@@ -122,7 +124,9 @@ export class OrganizationEditComponent implements OnInit {
 						'moderators': organization.moderators,
 						'organizationUrl': organization.organizationUrl,
 						'futureOwner': organization.futureOwner,
-						'newLeaderEmail': ''
+						'newLeaderEmail': '',
+						'authType': organization.authType,
+						'authUrl': organization.authUrl,
 					});
 
 					this.meta.updateTags(
