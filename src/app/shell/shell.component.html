@@ -87,19 +87,36 @@
 				color="primary"
 			    class="sticky-toolbar"
 				ngClass.gt-sm="with-sidenav"
-				>
+				fxLayout="row wrap">
 				<button class="menu-button"
 				    mat-icon-button
 				    (click)="sidenav.toggle()"
 				    >
 					<mat-icon>menu</mat-icon>
 				</button>
-				<span>{{title}}</span>
+				<span class="toolbar-title">{{title}}</span>
 				<div fxFlex></div>
 				<button mat-icon-button
 				    (click)="toggleSearch()">
 					<mat-icon>search</mat-icon>
 				</button>
+				<button *ngIf="!isAuthenticated"
+					class="account-create-menu-icon"
+					mat-icon-button
+				    [matMenuTriggerFor]="loginMenu">
+					<mat-icon color="warn">account_box</mat-icon>
+				</button>
+				<mat-menu #loginMenu="matMenu">
+					<mat-list>
+						<a mat-menu-item
+							routerLink="/auth/login"
+							translate>Login</a>
+						<mat-divider></mat-divider>
+						<a mat-menu-item
+							routerLink="/auth/signup"
+							translate>Create Account</a>
+					</mat-list>
+				</mat-menu>
 				<div *ngIf="isAuthenticated">
 					<button mat-icon-button
 					    [matMenuTriggerFor]="userMenu"
@@ -123,7 +140,7 @@
 						    translate>Logout</button>
 					</mat-menu>
 				</div>
-				<div *ngIf="!isAuthenticated">
+				<div *ngIf="!isAuthenticated" class="hide-login-menu">
 					<button mat-stroked-button
 					    class="border-override"
 					    routerLink="/auth/login">Sign In</button>
@@ -136,7 +153,9 @@
 			<app-search-bar class="sticky-search"
 			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
 			    ngClass.lt-md="top-bar-height-sm"
-				[(isVisible)]="showSearch"></app-search-bar>
+				[isVisible]="showSearch"
+				(closeSearch)="toggleSearch()"
+				></app-search-bar>
 
 			<mat-toolbar color="warn"
 			    *ngIf="showVerify"
