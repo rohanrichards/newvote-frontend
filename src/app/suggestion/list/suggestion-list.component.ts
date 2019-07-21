@@ -55,6 +55,8 @@ export class SuggestionListComponent implements OnInit {
 			this.loadingState = state;
 		})
 
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
@@ -68,7 +70,7 @@ export class SuggestionListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		const isOwner = this.auth.isOwner();
-		this.stateService.setLoadingState(AppState.loading);
+
 		this.suggestionService.list({
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
@@ -119,6 +121,7 @@ export class SuggestionListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe((res) => {
 				this.openSnackBar('Your vote was recorded', 'OK');
 				this.fetchData(true);
