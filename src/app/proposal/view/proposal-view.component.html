@@ -29,7 +29,7 @@
 			class="image-container"
 			fxLayout="column"
 			[defaultImage]="handleImageUrl(proposal.imageUrl, true)"
-			[lazyLoad]="handleImageUrl(proposal.imageUrl)"
+			[lazyLoad]="handleImageUrl(proposal.imageUrl)">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(proposal)"
 				fxLayout="column"

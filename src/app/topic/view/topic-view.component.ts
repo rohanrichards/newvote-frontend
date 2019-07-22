@@ -10,7 +10,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { MetaService } from '@app/core/meta.service';
 
 import { ITopic } from '@app/core/models/topic.model';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 @Component({
 	selector: 'app-topic',
@@ -22,6 +22,7 @@ export class TopicViewComponent implements OnInit {
 	topic: ITopic;
 	issues: Array<any>;
 	isLoading: boolean;
+	handleImageUrl = optimizeImage;
 
 	constructor(
 		private topicService: TopicService,

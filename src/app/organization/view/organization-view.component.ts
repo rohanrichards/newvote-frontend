@@ -99,8 +99,4 @@ export class OrganizationViewComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
-		return createUrl(url, 'auto', 'auto');
-	}
-
 }

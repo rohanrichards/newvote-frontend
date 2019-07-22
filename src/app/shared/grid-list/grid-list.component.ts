@@ -91,29 +91,4 @@ export class GridListComponent implements OnInit {
 			}
 		});
 	}
-
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		if (url.includes('assets')) {
-			return url;
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
-		if (url.includes('assets')) {
-			return url;
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
-
 }
