@@ -1,4 +1,4 @@
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
 <ng-container [ngSwitch]="loadingState">
@@ -171,7 +171,7 @@
 			*ngIf="solution"
 			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<span class="mat-headline" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
+			<span class="mat-headline center-span" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
 			<app-card-list path="/proposals"
 				[items]="solution.proposals"
 				model="Action"

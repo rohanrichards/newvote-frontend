@@ -49,7 +49,9 @@ export class ProposalViewComponent implements OnInit {
 	ngOnInit() {
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
-		})
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
@@ -58,8 +60,6 @@ export class ProposalViewComponent implements OnInit {
 	}
 
 	getProposal(id: string, forceUpdate?: boolean) {
-		this.stateService.setLoadingState(AppState.loading);
-
 		this.proposalService.view({ id: id, orgs: [], forceUpdate })
 			.subscribe(
 				(proposal: Proposal) => {
@@ -90,6 +90,7 @@ export class ProposalViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
 					this.openSnackBar('Your vote was recorded', 'OK');
@@ -184,6 +185,6 @@ export class ProposalViewComponent implements OnInit {
 			return '';
 		}
 
- 		return createUrl(url, 'low', 'auto');
+		return createUrl(url, 'low', 'auto');
 	}
 }

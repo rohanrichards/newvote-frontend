@@ -55,7 +55,9 @@ export class SolutionListComponent implements OnInit {
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
+
 		this.stateService.setLoadingState(AppState.loading);
+
 		this.meta.updateTags(
 			{
 				title: 'All Solutions',
@@ -83,7 +85,7 @@ export class SolutionListComponent implements OnInit {
 				err => {
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
-			)
+			);
 	}
 
 	// find the different solution and only update it, not entire list
@@ -91,7 +93,6 @@ export class SolutionListComponent implements OnInit {
 	refreshData() {
 		const isOwner = this.auth.isOwner();
 
-		this.stateService.setLoadingState(AppState.loading);
 		this.solutionService.list({
 			orgs: [],
 			forceUpdate: true,
@@ -141,6 +142,7 @@ export class SolutionListComponent implements OnInit {
 	}
 
 	onVote(voteData: any, model: string) {
+		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
@@ -149,18 +151,23 @@ export class SolutionListComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe(
+				(res) => {
+					this.openSnackBar('Your vote was recorded', 'OK');
+					this.refreshData();
+				},
+				(error) => {
+					if (error) {
+						if (error.status === 401) {
+							this.openSnackBar('You must be logged in to vote', 'OK');
+						} else {
+							this.openSnackBar('There was an error recording your vote', 'OK');
+						}
+					}
 				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.refreshData();
-			}
-		});
+			);
 	}
 
 	openSnackBar(message: string, action: string) {

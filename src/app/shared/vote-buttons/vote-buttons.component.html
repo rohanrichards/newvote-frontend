@@ -4,19 +4,19 @@
 	<div fxFlex="100"
 	    fxFlex.gt-xs="250px"
 	    fxLayout="column">
-		<span class="mat-body-2">HAVE YOUR SAY</span>
+		<span class="mat-body-2">BE HEARD</span>
 		<div fxLayout="row">
 			<button mat-raised-button
 			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
 			    class="vote-button"
 				color="primary"
-			    (click)="onVote(item, 1, $event)"><mat-icon>arrow_upward</mat-icon><span fxHide="true" fxShow.gt-xs="true">VOTE UP</span></button>
+			    (click)="onVote(item, 1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE UP</span><mat-icon>arrow_upward</mat-icon></button>
 
 			<button mat-raised-button
 			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
 			    class="vote-button vote-button-dark"
 				color="primary"
-			    (click)="onVote(item, -1, $event)"><mat-icon>arrow_downward</mat-icon><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span></button>
+			    (click)="onVote(item, -1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span><mat-icon>arrow_downward</mat-icon></button>
 		</div>
 	</div>
 	<div fxFlex></div>

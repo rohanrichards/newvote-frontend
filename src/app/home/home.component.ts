@@ -83,7 +83,6 @@ export class HomeComponent implements OnInit {
 				this.userCount = count;
 			},
 			(err) => {
-				console.log(err, 'err has be thrown');
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		)

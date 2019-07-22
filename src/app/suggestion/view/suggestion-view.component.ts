@@ -48,6 +48,8 @@ export class SuggestionViewComponent implements OnInit {
 			this.loadingState = state;
 		});
 
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSuggestion(ID);
@@ -114,6 +116,7 @@ export class SuggestionViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
 						this.openSnackBar('Your vote was recorded', 'OK');

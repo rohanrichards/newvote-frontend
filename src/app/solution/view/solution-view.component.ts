@@ -46,10 +46,11 @@ export class SolutionViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		// this.isLoading = true;
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
+
+		this.stateService.setLoadingState(AppState.loading);
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
@@ -59,7 +60,6 @@ export class SolutionViewComponent implements OnInit {
 
 	getSolution(id: string, forceUpdate?: boolean) {
 		const isOwner = this.auth.isOwner();
-		this.stateService.setLoadingState(AppState.loading);
 
 		this.solutionService.view({
 			id: id,
@@ -98,13 +98,13 @@ export class SolutionViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
 					this.openSnackBar('Your vote was recorded', 'OK');
 					this.getSolution(this.solution._id, true);
 				},
 				(error) => {
-					console.log(error, 'this is error');
 					if (error.status === 401) {
 						this.openSnackBar('You must be logged in to vote', 'OK');
 					} else {

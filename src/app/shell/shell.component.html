@@ -1,16 +1,20 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
-		<mat-sidenav #sidenav
+		<mat-sidenav 
+			#sidenav
 		    [mode]="isMobile ? 'over' : 'side'"
 		    [opened]="!isMobile"
 		    [disableClose]="!isMobile"
-		    ngClass.gt-sm="has-border"
-		    fixedInViewport="true">
+			ngClass.gt-sm="has-border"
+			fixedInViewport="true"
+			>
 			<div class="logo-container">
 				<p>
-					<img class="logo"
-					    src="assets/logo-no-circle.png"
-					    alt="NewVote" />
+					<a href="https://newvote.org">
+						<img class="logo"
+							src="assets/logo-no-circle.png"
+							alt="NewVote" />
+					</a>
 				</p>
 			</div>
 			<nav>
@@ -53,11 +57,11 @@
 						target="_blank"
 						>
 						<span translate
-							matLine>About {{ organization.name }}</span>
+							matLine>About This Community</span>
 					</a>
 					
 					<a mat-list-item
-					    href="https://newvote.org/about-us"
+					    href="https://newvote.org/the-app"
 					    target="_blank">
 						<span translate
 						    matLine>About NewVote</span>
@@ -81,21 +85,40 @@
 			</nav>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<mat-toolbar color="primary"
+			<mat-toolbar 
+				color="primary"
 			    class="sticky-toolbar"
-			    ngClass.gt-sm="with-sidenav">
+				ngClass.gt-sm="with-sidenav"
+				fxLayout="row wrap">
 				<button class="menu-button"
 				    mat-icon-button
 				    (click)="sidenav.toggle()"
-				    fxHide.gt-sm>
+				    >
 					<mat-icon>menu</mat-icon>
 				</button>
-				<span>{{title}}</span>
+				<span class="toolbar-title">{{title}}</span>
 				<div fxFlex></div>
 				<button mat-icon-button
 				    (click)="toggleSearch()">
 					<mat-icon>search</mat-icon>
 				</button>
+				<button *ngIf="!isAuthenticated"
+					class="account-create-menu-icon"
+					mat-icon-button
+				    [matMenuTriggerFor]="loginMenu">
+					<mat-icon color="warn">account_box</mat-icon>
+				</button>
+				<mat-menu #loginMenu="matMenu">
+					<mat-list>
+						<a mat-menu-item
+							routerLink="/auth/login"
+							translate>Login</a>
+						<mat-divider></mat-divider>
+						<a mat-menu-item
+							routerLink="/auth/signup"
+							translate>Create Account</a>
+					</mat-list>
+				</mat-menu>
 				<div *ngIf="isAuthenticated">
 					<button mat-icon-button
 					    [matMenuTriggerFor]="userMenu"
@@ -119,7 +142,7 @@
 						    translate>Logout</button>
 					</mat-menu>
 				</div>
-				<div *ngIf="!isAuthenticated">
+				<div *ngIf="!isAuthenticated" class="hide-login-menu">
 					<button mat-stroked-button
 					    class="border-override"
 					    routerLink="/auth/login">Sign In</button>
@@ -127,25 +150,14 @@
 					    color="warn"
 					    routerLink="/auth/signup">Create Account</button>
 				</div>
-				<!-- <div>
-					<button mat-icon-button
-					    [matMenuTriggerFor]="languageMenu">
-						<mat-icon>language</mat-icon>
-					</button>
-					<mat-menu #languageMenu="matMenu">
-						<button mat-menu-item
-						    *ngFor="let language of languages"
-						    (click)="setLanguage(language)">
-							{{language}}
-						</button>
-					</mat-menu>
-				</div> -->
 			</mat-toolbar>
 			<!-- only show if search button pressed -->
 			<app-search-bar class="sticky-search"
 			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
 			    ngClass.lt-md="top-bar-height-sm"
-				[(isVisible)]="showSearch"></app-search-bar>
+				[isVisible]="showSearch"
+				(closeSearch)="toggleSearch()"
+				></app-search-bar>
 
 			<mat-toolbar color="warn"
 			    *ngIf="showVerify"
