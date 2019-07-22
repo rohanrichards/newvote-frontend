@@ -1,14 +1,14 @@
-<app-loader [isLoading]="isLoading"
+<app-loader  [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonHeader;
 	else mainIssueHeader">
 </ng-container>
 
 <div 
-	[@fadeIn]="!isLoading"
+	[@fadeIn]=true
 	class="container"
 	fxLayoutAlign="center center"
 	*ngIf="media"
@@ -61,7 +61,7 @@
 	</div>
 </div>
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonMedia;
 	else mainMedia">
 </ng-container>
@@ -93,7 +93,7 @@
 
 
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonCards
 	else mainCards">
 </ng-container>

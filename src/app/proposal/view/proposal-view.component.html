@@ -1,4 +1,4 @@
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
 <ng-container [ngSwitch]="loadingState">

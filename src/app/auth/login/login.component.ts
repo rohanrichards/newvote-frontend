@@ -3,9 +3,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { environment } from '@env/environment';
-import { Logger, I18nService, AuthenticationService } from '@app/core';
+import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
+import { Organization } from '@app/core/models/organization.model';
 
 const log = new Logger('Login');
 
@@ -20,15 +22,21 @@ export class LoginComponent implements OnInit {
 	error: string;
 	loginForm: FormGroup;
 	isLoading = false;
+	org: Organization;
 
 	constructor(private router: Router,
 		private route: ActivatedRoute,
 		private formBuilder: FormBuilder,
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
-		private meta: MetaService
+		private meta: MetaService,
+		private organizationService: OrganizationService,
+		private cookieService: CookieService
 	) {
 		this.createForm();
+		this.organizationService.get().subscribe(org => {
+			this.org = org;
+		});
 	}
 
 	ngOnInit() {
@@ -78,6 +86,11 @@ export class LoginComponent implements OnInit {
 		return this.i18nService.supportedLanguages;
 	}
 
+	redirect() {
+		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		window.location.href = this.org.authUrl;
+	}
+
 	private createForm() {
 		this.loginForm = this.formBuilder.group({
 			username: ['', Validators.required],
@@ -85,5 +98,6 @@ export class LoginComponent implements OnInit {
 			remember: true
 		});
 	}
+
 
 }

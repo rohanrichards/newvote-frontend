@@ -24,6 +24,8 @@ import { createUrl } from '@app/shared/helpers/cloudinary';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-issue',
@@ -41,8 +43,10 @@ export class IssueViewComponent implements OnInit {
 	isLoading: boolean;
 	voteSnack: any;
 	headingEdit = false;
+	loadingState: string;
 
 	constructor(
+		private stateService: StateService,
 		private topicService: TopicService,
 		private issueService: IssueService,
 		private solutionService: SolutionService,
@@ -57,7 +61,10 @@ export class IssueViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state) => this.loadingState = state );
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getIssue(ID);
@@ -66,17 +73,21 @@ export class IssueViewComponent implements OnInit {
 
 	getIssue(id: string) {
 		this.issueService.view({ id: id, orgs: [] })
-			.subscribe((issue: IIssue) => {
-				this.issue = issue;
-				this.getSolutions(issue._id);
-				this.meta.updateTags(
-					{
-						title: this.issue.name,
-						appBarTitle: 'View Issue',
-						description: this.issue.description,
-						image: this.issue.imageUrl
-					});
-			});
+			.subscribe(
+				(issue: IIssue) => {
+					this.issue = issue;
+					this.getSolutions(issue._id);
+					this.meta.updateTags(
+						{
+							title: this.issue.name,
+							appBarTitle: 'View Issue',
+							description: this.issue.description,
+							image: this.issue.imageUrl
+						});
+					this.stateService.setLoadingState(AppState.complete):
+				},
+				(error) => this.stateService.setLoadingState(AppState.serverError)
+			);
 	}
 
 	getSolutions(id: string, forceUpdate?: boolean) {
@@ -125,6 +136,7 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	onVote(voteData: any, model: string) {
+		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
@@ -133,19 +145,24 @@ export class IssueViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
-				}
-			} else {
+		this.voteService.create({ entity: vote })
+		.pipe(finalize(() => this.isLoading = false ))
+		.subscribe(
+			(res) => {
 				this.refreshData(this.issue._id);
 				this.getMedia(this.issue._id, true);
 				this.openSnackBar('Your vote was recorded', 'OK');
+			},
+			(error) => {
+				if (error) {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
+				} 
 			}
-		});
+		);
 	}
 
 	onDelete() {

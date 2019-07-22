@@ -49,6 +49,29 @@
 				 placeholder="(optional) URL to your organization"
 				 formControlName="organizationUrl">
 			</mat-form-field>
+
+			<mat-form-field
+			*ngIf="auth.isAdmin()">
+				<mat-label>Authentication Type</mat-label>
+				<mat-select formControlName="authType" required>
+					<mat-option [value]="0">
+						Local (email/password)
+					</mat-option>
+					<mat-option [value]="1">
+						UQ AAF
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field
+			*ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+				<input matInput
+				 type="url"
+				 placeholder="The redirect URL to use for AAF authentication"
+				 formControlName="authUrl"
+				 required>
+			</mat-form-field>
+
 			<div fxFlex.gt-sm="60"
 			 fxLayout="row">
 				<mat-form-field style="width: 100%; padding-right: 0.5rem"

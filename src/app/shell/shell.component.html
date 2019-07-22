@@ -1,11 +1,13 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
-		<mat-sidenav #sidenav
+		<mat-sidenav 
+			#sidenav
 		    [mode]="isMobile ? 'over' : 'side'"
 		    [opened]="!isMobile"
 		    [disableClose]="!isMobile"
-		    ngClass.gt-sm="has-border"
-		    fixedInViewport="true">
+			ngClass.gt-sm="has-border"
+			fixedInViewport="true"
+			>
 			<div class="logo-container">
 				<p>
 					<a href="https://newvote.org">
@@ -83,13 +85,15 @@
 			</nav>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<mat-toolbar color="primary"
+			<mat-toolbar 
+				color="primary"
 			    class="sticky-toolbar"
-			    ngClass.gt-sm="with-sidenav">
+				ngClass.gt-sm="with-sidenav"
+				>
 				<button class="menu-button"
 				    mat-icon-button
 				    (click)="sidenav.toggle()"
-				    fxHide.gt-sm>
+				    >
 					<mat-icon>menu</mat-icon>
 				</button>
 				<span>{{title}}</span>
@@ -129,19 +133,6 @@
 					    color="warn"
 					    routerLink="/auth/signup">Create Account</button>
 				</div>
-				<!-- <div>
-					<button mat-icon-button
-					    [matMenuTriggerFor]="languageMenu">
-						<mat-icon>language</mat-icon>
-					</button>
-					<mat-menu #languageMenu="matMenu">
-						<button mat-menu-item
-						    *ngFor="let language of languages"
-						    (click)="setLanguage(language)">
-							{{language}}
-						</button>
-					</mat-menu>
-				</div> -->
 			</mat-toolbar>
 			<!-- only show if search button pressed -->
 			<app-search-bar class="sticky-search"

@@ -40,6 +40,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
 	imports: [
@@ -78,6 +79,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 	providers: [
 		StatusBar,
 		SplashScreen,
+		CookieService,
 		{
 			provide: RECAPTCHA_SETTINGS,
 			useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
