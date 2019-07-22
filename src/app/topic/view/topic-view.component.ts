@@ -89,7 +89,4 @@ export class TopicViewComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
-		return createUrl(url, 'auto', 'auto');
-	}
 }
