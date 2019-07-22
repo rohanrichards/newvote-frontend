@@ -32,7 +32,7 @@ import { AppState } from '@app/core/models/state.model';
 	templateUrl: './issue-view.component.html',
 	styleUrls: ['./issue-view.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class IssueViewComponent implements OnInit {
@@ -61,7 +61,7 @@ export class IssueViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.stateService.loadingState$.subscribe((state) => this.loadingState = state );
+		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
 
 		this.stateService.setLoadingState(AppState.loading);
 
@@ -84,7 +84,7 @@ export class IssueViewComponent implements OnInit {
 							description: this.issue.description,
 							image: this.issue.imageUrl
 						});
-					this.stateService.setLoadingState(AppState.complete):
+					this.stateService.setLoadingState(AppState.complete);
 				},
 				(error) => this.stateService.setLoadingState(AppState.serverError)
 			);
@@ -96,7 +96,7 @@ export class IssueViewComponent implements OnInit {
 		this.solutionService.list({
 			params: isOwner
 				? { issueId: id, 'showDeleted': true }
-				:  { issueId: id },
+				: { issueId: id },
 			forceUpdate,
 		})
 			.subscribe((solutions: Array<Solution>) => {
@@ -112,7 +112,7 @@ export class IssueViewComponent implements OnInit {
 		this.mediaService.list({
 			params: isOwner
 				? { issueId: id, 'showDeleted': true }
-				:  { issueId: id },
+				: { issueId: id },
 			forceUpdate,
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
@@ -146,23 +146,23 @@ export class IssueViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-		.pipe(finalize(() => this.isLoading = false ))
-		.subscribe(
-			(res) => {
-				this.refreshData(this.issue._id);
-				this.getMedia(this.issue._id, true);
-				this.openSnackBar('Your vote was recorded', 'OK');
-			},
-			(error) => {
-				if (error) {
-					if (error.status === 401) {
-						this.openSnackBar('You must be logged in to vote', 'OK');
-					} else {
-						this.openSnackBar('There was an error recording your vote', 'OK');
+			.pipe(finalize(() => this.isLoading = false))
+			.subscribe(
+				(res) => {
+					this.refreshData(this.issue._id);
+					this.getMedia(this.issue._id, true);
+					this.openSnackBar('Your vote was recorded', 'OK');
+				},
+				(error) => {
+					if (error) {
+						if (error.status === 401) {
+							this.openSnackBar('You must be logged in to vote', 'OK');
+						} else {
+							this.openSnackBar('There was an error recording your vote', 'OK');
+						}
 					}
-				} 
-			}
-		);
+				}
+			);
 	}
 
 	onDelete() {
@@ -218,7 +218,7 @@ export class IssueViewComponent implements OnInit {
 				this.issue.softDeleted = false;
 				this.issueService.update({ id: this.issue._id, entity: this.issue }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -295,7 +295,7 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
-	replaceImageUrl (url: string) {
+	replaceImageUrl(url: string) {
 		if (!url) {
 			return '';
 		}
@@ -308,6 +308,6 @@ export class IssueViewComponent implements OnInit {
 			return '';
 		}
 
- 		return createUrl(url, 'low', 'auto');
+		return createUrl(url, 'low', 'auto');
 	}
 }
