@@ -12,10 +12,8 @@
 			    routerLink="{{path}}/{{item._id}}">
 				<div mat-card-image
 				    class="image-container"
-				    [defaultImage]="imageToPlaceholder(item.imageUrl)"
-					[lazyLoad]="item.imageUrl ?
-						replaceImageUrl(item.imageUrl)
-						: ''">
+					[defaultImage]="handleImageUrl(item.imageUrl, true)"
+					[lazyLoad]="handleImageUrl(item.imageUrl)">
 					<div class="button-panel"
 					    *ngIf="auth.isModerator(item)">
 						<button color="accent"

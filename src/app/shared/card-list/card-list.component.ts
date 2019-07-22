@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 @Component({
 	selector: 'app-card-list',
@@ -27,6 +27,7 @@ export class CardListComponent implements OnInit {
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() childVote = new EventEmitter();
+	handleImageUrl = optimizeImage;
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
@@ -96,38 +97,4 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string, child?: boolean) {
-		if (!url) {
-			return '';
-		}
-
-		if (url.includes('assets')) {
-
-			if (child) {
-				return '';
-			}
-
-			return url;
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string, child?: boolean) {
-		if (!url) {
-			return '';
-		}
-
-		// For child cards
-		if (url.includes('assets')) {
-
-			if (child) {
-				return '';
-			}
-
-			return url;
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
 }

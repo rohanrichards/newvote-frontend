@@ -28,10 +28,8 @@
 			*ngIf="proposal"
 			class="image-container"
 			fxLayout="column"
-			[defaultImage]="imageToPlaceholder(proposal.imageUrl)"
-			[lazyLoad]="proposal.imageUrl ?
-				replaceImageUrl(proposal.imageUrl)
-				: ''">
+			[defaultImage]="handleImageUrl(proposal.imageUrl, true)"
+			[lazyLoad]="handleImageUrl(proposal.imageUrl)"
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(proposal)"
 				fxLayout="column"
