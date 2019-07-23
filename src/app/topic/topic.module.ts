@@ -20,6 +20,8 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { SharedModule } from '@app/shared';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -32,7 +34,10 @@ import { SharedModule } from '@app/shared';
 		MaterialFileInputModule,
 		QuillModule.forRoot(QuillSettings),
 		FileUploadModule,
-		TopicRoutingModule
+		TopicRoutingModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		TopicListComponent,

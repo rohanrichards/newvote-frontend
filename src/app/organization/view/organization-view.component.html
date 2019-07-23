@@ -6,7 +6,8 @@
     *ngIf="organization">
 	<div class="image-container"
 	    fxLayout="column"
-	    [style.background-image]="'url(' + replaceImageUrl(organization.imageUrl) + ')'">
+		[defaultImage]="handleImageUrl(organization.imageUrl, true)"
+		[lazyLoad]="handleImageUrl(organization.imageUrl)">
 		<div class="admin-panel"
 		    *ngIf="auth.isOwner(organization)"
 		    fxLayout="column"

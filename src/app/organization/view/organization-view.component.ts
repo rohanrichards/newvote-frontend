@@ -12,7 +12,7 @@ import { MetaService } from '@app/core/meta.service';
 import { IOrganization } from '@app/core/models/organization.model';
 import { Organization } from '@app/core/models/organization.model';
 import { Vote } from '@app/core/models/vote.model';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 
@@ -27,6 +27,7 @@ export class OrganizationViewComponent implements OnInit {
 	organizations: Array<Organization>;
 	isLoading: boolean;
 	loadingState: string;
+	handleImageUrl = optimizeImage;
 
 	constructor(
 		private stateService: StateService,
@@ -96,10 +97,6 @@ export class OrganizationViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
-	}
-
-	replaceImageUrl (url: string) {
-		return createUrl(url, 'auto', 'auto');
 	}
 
 }

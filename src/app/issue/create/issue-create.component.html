@@ -52,26 +52,34 @@
 			</div>
 
 			<input type="file"
-			 id="fileupload"
-			 #fileInput
-			 ng2FileSelect
-			 [uploader]="uploader"
-			 (change)="onFileChange($event)"
-			 formControlName="imageUrl"
-			 hidden
-			 autoComplete="off" />
+				id="fileupload"
+				#fileInput
+				ng2FileSelect
+				[uploader]="uploader"
+				(change)="onFileChange($event)"
+				formControlName="imageUrl"
+				hidden
+				autoComplete="off" />
 
 			<div class="image-select"
 			 fxLayout="column">
-				<button mat-flat-button
-				 type="button"
-				 color="primary"
-				 (click)="fileInput.click()">Select Image</button>
-				<div class="image-preview"
-				 *ngIf="imageUrl">
-					<img [src]="imageUrl" />
+				<div>
+					<mat-hint>Optional: Change default image</mat-hint>
 				</div>
-				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
+				<button 
+					class="image-button"
+					mat-flat-button
+					type="button"
+					color="primary"
+					(click)="fileInput.click()">Select Image</button>
+				<div class="image-preview"
+				 >
+					<img *ngIf="imageUrl" [src]="imageUrl" />
+					<img class="image-wrap" *ngIf="!imageUrl" src="assets/issue-default.png"  />
+				</div>
+				<div>
+					<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
+				</div>
 			</div>
 			<span class=""></span>
 

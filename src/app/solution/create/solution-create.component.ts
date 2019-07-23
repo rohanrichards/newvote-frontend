@@ -31,11 +31,12 @@ export class SolutionCreateComponent implements OnInit {
 	isLoading = true;
 	imageUrl: any;
 	uploader: FileUploader;
+	userImageUpload: boolean;
 	solutionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		issues: new FormControl(''),
-		imageUrl: new FormControl('', [Validators.required])
+		imageUrl: new FormControl('', [])
 	});
 
 	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
@@ -123,6 +124,9 @@ export class SolutionCreateComponent implements OnInit {
 			};
 
 			reader.readAsDataURL(file);
+
+			// flag - user has attempted to upload an image
+			this.userImageUpload = true;
 		}
 	}
 
@@ -137,6 +141,20 @@ export class SolutionCreateComponent implements OnInit {
 			console.log('completed all');
 			this.isLoading = false;
 		};
+
+		if (!this.userImageUpload) {
+			// this.imageUrl = 'assets/solution-default.png';
+			return this.solutionService.create({ entity: this.solution })
+				.pipe(finalize(() => { this.isLoading = false; }))
+				.subscribe(t => {
+					if (t.error) {
+						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+					} else {
+						this.openSnackBar('Succesfully created', 'OK');
+						this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					}
+			});
+		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {

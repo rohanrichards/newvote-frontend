@@ -9,6 +9,8 @@
 	.image-preview {
 		width: 100%;
 		max-height: 250px;
+		margin-top: 1rem;
+		margin-bottom: 0.5rem;
 
 		img {
 			max-width: 100%;
@@ -16,6 +18,12 @@
 			height: auto;
 		}
 	}
+}
+
+.image-wrap {
+	width: 100%;
+	border: 1px solid lightgrey;
+	padding: 0.25rem;
 }
 
 .quill-editor-container {

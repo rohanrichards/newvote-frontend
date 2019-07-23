@@ -13,7 +13,7 @@ import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
@@ -32,6 +32,8 @@ export class SolutionViewComponent implements OnInit {
 	solution: Solution;
 	isLoading: boolean;
 	loadingState: string;
+	handleImageUrl = optimizeImage;
+
 	constructor(
 		private stateService: StateService,
 		private solutionService: SolutionService,
@@ -70,7 +72,6 @@ export class SolutionViewComponent implements OnInit {
 		.subscribe(
 			(solution: Solution) => {
 				this.solution = solution;
-				this.solution.imageUrl = this.replaceImageUrl(this.solution.imageUrl);
 				this.meta.updateTags(
 					{
 						title: solution.title,
@@ -209,22 +210,6 @@ export class SolutionViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
-	}
-
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
- 		return createUrl(url, 'low', 'auto');
 	}
 
 }

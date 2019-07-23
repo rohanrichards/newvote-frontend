@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { createUrl } from '../helpers/cloudinary';
+import { optimizeImage } from '../helpers/cloudinary';
 
 @Component({
 	selector: 'app-grid-list',
@@ -21,6 +21,7 @@ export class GridListComponent implements OnInit {
 	@Output() delete = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
 	@Output() restore = new EventEmitter();
+	handleImageUrl = optimizeImage;
 
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
@@ -90,21 +91,4 @@ export class GridListComponent implements OnInit {
 			}
 		});
 	}
-
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
-
 }

@@ -20,7 +20,7 @@ import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
 
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
@@ -44,6 +44,7 @@ export class IssueViewComponent implements OnInit {
 	voteSnack: any;
 	headingEdit = false;
 	loadingState: string;
+	handleImageUrl = optimizeImage;
 
 	constructor(
 		private stateService: StateService,
@@ -295,19 +296,4 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
-	replaceImageUrl(url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'low', 'auto');
-	}
 }

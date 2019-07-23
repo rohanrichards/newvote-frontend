@@ -1,6 +1,6 @@
 // EXAMPLE URL 'https://res.cloudinary.com/newvote/image/upload/v1557485661/yq3owxqczybbtjpuoaep.png';
 
-export function createUrl(url: string, quality: string, dimensions: any) {
+function createUrl(url: string, quality: string, dimensions: any) {
 	const removeHttps = url.slice().replace(/(^\w+:|^)\/\//, '');
 	const splitUrl = removeHttps.split('/');
 
@@ -40,4 +40,26 @@ function insertDimensionParams(dimensions: any) {
 	}
 
 	return param + 'auto';
+}
+
+export function optimizeImage (url: string, isLowQuality?: boolean, child?: boolean) {
+	if (!url) {
+		return '';
+	}
+
+	// For child cards we remove the image
+	if (url.includes('assets')) {
+
+		if (child) {
+			return '';
+		}
+
+		return url;
+	}
+
+	if (isLowQuality) {
+		return createUrl(url, 'low', 'auto');
+	}
+
+	return createUrl(url, 'auto', 'auto');
 }

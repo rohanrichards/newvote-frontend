@@ -12,7 +12,7 @@ import { MetaService } from '@app/core/meta.service';
 import { IProposal } from '@app/core/models/proposal.model';
 import { Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
@@ -33,6 +33,7 @@ export class ProposalViewComponent implements OnInit {
 	proposals: Array<Proposal>;
 	isLoading: boolean;
 	loadingState: string;
+	handleImageUrl = optimizeImage;
 
 	constructor(
 		private stateService: StateService,
@@ -172,19 +173,4 @@ export class ProposalViewComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'low', 'auto');
-	}
 }

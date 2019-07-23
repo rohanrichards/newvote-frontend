@@ -12,7 +12,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit {
 	proposals: any[];
 	userCount: number;
 	loadingState: string;
+	handleImageUrl = optimizeImage;
 
 	ISSUE_LIMIT = 6;
 
@@ -67,7 +68,7 @@ export class HomeComponent implements OnInit {
 
 		this.fetchData();
 
-		const getSolutions = this.solutionService.list({forceUpdate: false});
+		const getSolutions = this.solutionService.list({ forceUpdate: false });
 		const getProposals = this.proposalService.list({ forceUpdate: false });
 		const getUsers = this.userService.count({ forceUpdate: false });
 
@@ -76,18 +77,18 @@ export class HomeComponent implements OnInit {
 			proposals: getProposals,
 			count: getUsers
 		})
-		.subscribe(
-			(results) => {
-				const { solutions, proposals, count } = results;
+			.subscribe(
+				(results) => {
+					const { solutions, proposals, count } = results;
 
-				this.solutions = solutions;
-				this.proposals = proposals;
-				this.userCount = count;
-			},
-			(err) => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+					this.solutions = solutions;
+					this.proposals = proposals;
+					this.userCount = count;
+				},
+				(err) => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	fetchData(force?: boolean) {
@@ -101,16 +102,16 @@ export class HomeComponent implements OnInit {
 			forceUpdate: force,
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
-		.subscribe(
-			(issues) => {
-				this.issues = issues;
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			(err) => {
-				console.log(err, 'this is err');
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+			.subscribe(
+				(issues) => {
+					this.issues = issues;
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				(err) => {
+					console.log(err, 'this is err');
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	onSoftDelete(issue: any) {
@@ -118,7 +119,7 @@ export class HomeComponent implements OnInit {
 		issue.softDeleted = true;
 		this.issueService.update({ id: issue._id, entity: issue })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {	this.fetchData(true); });
+			.subscribe((t) => { this.fetchData(true); });
 	}
 
 	onDelete(issue: any) {
@@ -126,22 +127,6 @@ export class HomeComponent implements OnInit {
 			console.log('deleted');
 			this.fetchData(true);
 		});
-	}
-
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'low', 'auto');
 	}
 
 	redirect() {

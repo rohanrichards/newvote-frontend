@@ -12,17 +12,13 @@
 	 fxLayoutAlign="center center"
 	 class="hero-image-container">
 		<div *ngIf="org"
-		 class="hero-image"
-		 [defaultImage]="imageToPlaceholder(org.imageUrl)"
-		 [lazyLoad]="org.imageUrl ?
-				replaceImageUrl(org.imageUrl)
-				: ''">
+			class="hero-image"
+			[defaultImage]="handleImageUrl(org.imageUrl, true)"
+			[lazyLoad]="handleImageUrl(org.imageUrl)">
 		</div>
 		<div class="hero-logo-container"
-		 [defaultImage]="imageToPlaceholder(org.iconUrl)"
-		 [lazyLoad]="org.iconUrl ?
-				replaceImageUrl(org.iconUrl)
-				: ''">
+			[defaultImage]="handleImageUrl(org.iconUrl, true)"
+			[lazyLoad]="handleImageUrl(org.iconUrl)">
 		</div>
 	</div>
 </ng-template>

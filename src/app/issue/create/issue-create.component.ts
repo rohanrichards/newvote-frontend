@@ -31,11 +31,12 @@ export class IssueCreateComponent implements OnInit {
 	isLoading: boolean;
 	imageUrl: any;
 	uploader: FileUploader;
+	userImageUpload: boolean;
 	issueForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		topics: new FormControl(''),
-		imageUrl: new FormControl('', [Validators.required])
+		imageUrl: new FormControl('', [])
 	});
 
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
@@ -107,6 +108,8 @@ export class IssueCreateComponent implements OnInit {
 			};
 
 			reader.readAsDataURL(file);
+			// flag - user has attempted to upload an image
+			this.userImageUpload = true;
 		}
 	}
 
@@ -115,12 +118,25 @@ export class IssueCreateComponent implements OnInit {
 		this.issue = <IIssue>this.issueForm.value;
 		this.issue.topics = this.topics;
 		this.issue.organizations = this.organization;
-		console.log(this.issue);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
 		};
+
+		if (!this.userImageUpload) {
+			// this.imageUrl = 'assets/issue-default.png';
+			return this.issueService.create({ entity: this.issue })
+				.pipe(finalize(() => { this.isLoading = false; }))
+				.subscribe(t => {
+					if (t.error) {
+						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+					} else {
+						this.openSnackBar('Succesfully created', 'OK');
+						this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+					}
+				});
+		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
@@ -139,6 +155,8 @@ export class IssueCreateComponent implements OnInit {
 					});
 			}
 		};
+
+
 
 		this.uploader.uploadAll();
 	}
