@@ -1,5 +1,40 @@
 <div fxLayout="column">
+	<div 
+		*ngIf="getItems.length < 1"
+		fxLayoutAlign="start start"
+		fxLayoutAlign.lt-sm="start stretch"
+		>
+		<div class="item-card-row"
+		    fxFlex="0 0 calc(33.3% - 32px)"
+		    fxFlex.lt-sm="0 0 100%"
+		    >
+			<mat-card class="item-card placeholder-card">
+				<div mat-card-image
+					class="image-container" 
+					[lazyLoad]="'assets/issue-default.png'">
+				</div>
+				<mat-card-content>
+					<!-- <mat-card-title class="title-card-header">
+						No Issue for this Topic
+					</mat-card-title> -->
+					<!-- <mat-card-subtitle>
+						Create an issue for your community to discuss.
+					</mat-card-subtitle> -->
+					<mat-card-title [style.text-align]="'center'">
+						No issues for this Topic
+					</mat-card-title>
+					<!-- <mat-card-actions>
+						<button mat-button
+							routerLink="/issues/create"
+							>Create Issue
+						</button>
+					</mat-card-actions> -->
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
 	<div fxLayout="row wrap"
+		*ngIf="getItems"
 	    fxLayoutAlign="start start"
 		fxLayoutAlign.lt-sm="start stretch"
 	    fxLayoutGap="32px">
@@ -14,7 +49,7 @@
 				    class="image-container"
 					[defaultImage]="handleImageUrl(item.imageUrl, true)"
 					[lazyLoad]="handleImageUrl(item.imageUrl)">
-					<div class="button-panel"
+					<!-- <div class="button-panel"
 					    *ngIf="auth.isModerator(item)">
 						<button color="accent"
 							matTooltip="Edit the item"
@@ -44,7 +79,7 @@
 							*ngIf="auth.isAdmin(item)">
     						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
   						</button>
-					</div>
+					</div> -->
 				</div>
 				<ng-container *ngIf="!titleCard; then noTitle; else isTitle">
 				</ng-container>

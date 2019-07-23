@@ -89,7 +89,7 @@ q {
 }
 
 .empty-card-blank {
-	margin-top: 3rem;
+	margin-top: 0.5rem;
 	margin-left: auto;
 	margin-right: auto;
 	min-height: 200px;
@@ -99,11 +99,16 @@ q {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
-	margin-bottom: 1rem;
+	margin-bottom: 0.5rem;
 }
 
 .empty-title-container {
 	text-align: center;
+}
+
+.empty-card-wrap {
+	background-color: white;
+	padding: 1rem;
 }
 
 @media only screen and (max-width: 600px) {

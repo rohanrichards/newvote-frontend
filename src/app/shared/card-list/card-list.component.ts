@@ -4,6 +4,7 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { optimizeImage } from '@app/shared/helpers/cloudinary';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-card-list',
@@ -28,10 +29,16 @@ export class CardListComponent implements OnInit {
 	@Output() vote = new EventEmitter();
 	@Output() childVote = new EventEmitter();
 	handleImageUrl = optimizeImage;
+	organizationName: string;
 
-	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+	constructor(
+		public dialog: MatDialog,
+		private auth: AuthenticationService,
+		private meta: MetaService
+	) { }
 
 	ngOnInit() {
+		this.organizationName = this.meta.organization.name;
 	}
 
 	onDelete(item: any, event: any) {
