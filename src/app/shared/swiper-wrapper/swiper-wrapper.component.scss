@@ -12,7 +12,7 @@
 	}
 
 	.image-container {
-		min-height: 200px;
+		min-height: 250px;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -61,4 +61,12 @@
 
 .soft-deleted {
 	border: 2px solid red;
+}
+
+.placeholder-image {
+	background-color: lightgray;
+}
+
+.container {
+	padding: 0.5 rem;
 }

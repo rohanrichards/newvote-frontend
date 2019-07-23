@@ -11,10 +11,13 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 	styleUrls: ['./swiper-wrapper.component.scss']
 })
 export class SwiperWrapperComponent implements OnInit {
+
 	@ViewChild(SwiperComponent) componentRef?: SwiperComponent;
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
+	@Input() parent: string;
+	@Input() organization: any;
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
@@ -59,6 +62,7 @@ export class SwiperWrapperComponent implements OnInit {
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	ngOnInit() {
+
 	}
 
 	onDelete(item: any, event: any) {
