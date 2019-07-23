@@ -40,8 +40,8 @@
 					<mat-card-content>
 						<mat-card-title translate>
 							<div class="truncate-container">
-								<a href="{{item.url}}"
-								    target="_blank"
+								<a 
+								    (click)="visitUrl($event, item.url)"
 								    class="truncate title">{{item.title}}</a>
 							</div>
 							<mat-card-subtitle class="item-subtitle"
