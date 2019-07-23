@@ -123,7 +123,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="userCount">{{userCount}}</span>
+					 *ngIf="userCount">{{ handleUserCount(userCount) }}</span>
 					<span class="mat-h1"
 					 *ngIf="!userCount">0</span>
 					<span class="mat-h3">Members</span>
