@@ -64,14 +64,15 @@
 								<span *ngIf="item[parentPropName].length > 1 && i !== item[parentPropName].length - 1">,&nbsp;</span>
 							</span>
 						</p>
-						<p class="status" *ngIf="item.status != null">Suggestion Status: {{item.status === -1 ? 'Rejected' : item.status === 0 ? 'Pending' : 'Approved' }}
+						<p class="status" *ngIf="item && item.status && item.status != null">Suggestion Status: {{item.status === -1 ? 'Rejected' : item.status === 0 ? 'Pending' : 'Approved' }}
 						<p [innerHtml]="item.description"></p>
 					</mat-card-subtitle>
 				</mat-card-title>
 				<mat-divider></mat-divider>
 			</mat-card-content>
 			<mat-card-actions>
-				<app-vote-buttons [item]="item"
+				<app-vote-buttons 
+					[item]="item"
 					(vote)=onVote($event)>
 				</app-vote-buttons>
 			</mat-card-actions>

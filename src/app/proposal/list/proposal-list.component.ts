@@ -10,6 +10,8 @@ import { MetaService } from '@app/core/meta.service';
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-proposal',
@@ -20,6 +22,7 @@ export class ProposalListComponent implements OnInit {
 
 	proposals: Array<any>;
 	isLoading: boolean;
+	loadingState: string;
 	headerTitle = 'Browse By Proposal';
 	headerText = 'Proposals arrange the current proposals into broader categories. \
 		Select a proposal below to learn more about it and explore relevant proposals being discussed.';
@@ -30,7 +33,9 @@ export class ProposalListComponent implements OnInit {
 		role: 'admin'
 	}];
 
-	constructor(private proposalService: ProposalService,
+	constructor(
+		private stateService: StateService,
+		private proposalService: ProposalService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -40,6 +45,12 @@ export class ProposalListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		})
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
@@ -53,9 +64,16 @@ export class ProposalListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		this.isLoading = true;
+
 		this.proposalService.list({ orgs: [], forceUpdate: force })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(proposals => { this.proposals = proposals; });
+			.subscribe(
+				proposals => { 
+					this.proposals = proposals;
+					this.stateService.setLoadingState(AppState.complete);
+				},
+				error => this.stateService.setLoadingState(AppState.serverError)
+			);
 	}
 
 	onDelete(event: any) {
@@ -97,6 +115,28 @@ export class ProposalListComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	onSoftDelete(event: any) {
+		this.isLoading = true;
+		event.softDeleted = true;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.fetchData(true);
+			});
+	}
+
+	onRestore(event: any) {
+		this.isLoading = true;
+		event.softDeleted = false;
+
+		this.proposalService.update({ id: event._id, entity: event })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((t) => {
+				this.fetchData(true);
+			});
 	}
 
 }

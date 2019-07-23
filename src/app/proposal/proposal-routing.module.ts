@@ -5,13 +5,13 @@ import { OwnerGuard } from '@app/core/authentication/owner.guard';
 import { ModeratorGuard } from '@app/core/authentication/moderator.guard';
 
 import { extract } from '@app/core';
-// import { ProposalListComponent } from './list/proposal-list.component';
+import { ProposalListComponent } from './list/proposal-list.component';
 import { ProposalViewComponent } from './view/proposal-view.component';
 import { ProposalCreateComponent } from './create/proposal-create.component';
 import { ProposalEditComponent } from './edit/proposal-edit.component';
 
 const routes: Routes = [
-	// { path: '', component: ProposalListComponent, data: { title: extract('All Proposals') } },
+	{ path: '', component: ProposalListComponent, data: { title: extract('All Proposals') } },
 	{
 		path: 'create',
 		component: ProposalCreateComponent,
