@@ -87,8 +87,17 @@ export class LoginComponent implements OnInit {
 	}
 
 	redirect() {
+		debugger;
 		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		window.location.href = this.org.authUrl;
+		// window.location.href = this.org.authUrl;
+		console.log('cordova: ', window['cordova']);
+		if (window['cordova']) {
+			console.log('found cordova opening with inappbrowser');
+			const CORDOVA = window['cordova'];
+			CORDOVA.InAppBrowser.open(this.org.authUrl, '_blank');
+		} else {
+			window.open(this.org.authUrl, '_self');
+		}
 	}
 
 	private createForm() {

@@ -8,6 +8,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -24,7 +25,7 @@ import { AppState } from '@app/core/models/state.model';
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
 	animations: [
-		trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class HomeComponent implements OnInit {
@@ -48,7 +49,8 @@ export class HomeComponent implements OnInit {
 		private solutionService: SolutionService,
 		private proposalService: ProposalService,
 		private userService: UserService,
-		private meta: MetaService
+		private meta: MetaService,
+		private cookieService: CookieService
 	) { }
 
 	ngOnInit() {
@@ -66,7 +68,7 @@ export class HomeComponent implements OnInit {
 
 		this.fetchData();
 
-		const getSolutions = this.solutionService.list({forceUpdate: false});
+		const getSolutions = this.solutionService.list({ forceUpdate: false });
 		const getProposals = this.proposalService.list({ forceUpdate: false });
 		const getUsers = this.userService.count({ forceUpdate: false });
 
@@ -75,18 +77,18 @@ export class HomeComponent implements OnInit {
 			proposals: getProposals,
 			count: getUsers
 		})
-		.subscribe(
-			(results) => {
-				const { solutions, proposals, count } = results;
+			.subscribe(
+				(results) => {
+					const { solutions, proposals, count } = results;
 
-				this.solutions = solutions;
-				this.proposals = proposals;
-				this.userCount = count;
-			},
-			(err) => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		)
+					this.solutions = solutions;
+					this.proposals = proposals;
+					this.userCount = count;
+				},
+				(err) => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	fetchData(force?: boolean) {
@@ -100,16 +102,16 @@ export class HomeComponent implements OnInit {
 			forceUpdate: force,
 			// params: isOwner ? { 'showDeleted': true } :  {}
 		})
-		.subscribe(
-			(issues) => {
-				this.issues = issues;
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			(err) => {
-				console.log(err, 'this is err');
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+			.subscribe(
+				(issues) => {
+					this.issues = issues;
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				(err) => {
+					console.log(err, 'this is err');
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	onSoftDelete(issue: any) {
@@ -117,7 +119,7 @@ export class HomeComponent implements OnInit {
 		issue.softDeleted = true;
 		this.issueService.update({ id: issue._id, entity: issue })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {	this.fetchData(true); });
+			.subscribe((t) => { this.fetchData(true); });
 	}
 
 	onDelete(issue: any) {
@@ -127,4 +129,9 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+	redirect() {
+		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		// window.location.href = this.org.authUrl;
+		window.open(this.org.authUrl, '_self');
+	}
 }

@@ -74,7 +74,8 @@ export class SignupComponent implements OnInit {
 
 	redirect() {
 		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		window.location.href = this.org.authUrl;
+		// window.location.href = this.org.authUrl;
+		window.open(this.org.authUrl, '_self');
 	}
 
 	private createForm() {
