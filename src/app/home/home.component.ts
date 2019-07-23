@@ -8,6 +8,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -24,7 +25,7 @@ import { AppState } from '@app/core/models/state.model';
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
 	animations: [
-		trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class HomeComponent implements OnInit {
@@ -47,7 +48,8 @@ export class HomeComponent implements OnInit {
 		private solutionService: SolutionService,
 		private proposalService: ProposalService,
 		private userService: UserService,
-		private meta: MetaService
+		private meta: MetaService,
+		private cookieService: CookieService
 	) { }
 
 	ngOnInit() {
@@ -85,7 +87,7 @@ export class HomeComponent implements OnInit {
 			(err) => {
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
-		)
+		);
 	}
 
 	fetchData(force?: boolean) {
@@ -140,5 +142,11 @@ export class HomeComponent implements OnInit {
 		}
 
 		return createUrl(url, 'low', 'auto');
+	}
+
+	redirect() {
+		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		// window.location.href = this.org.authUrl;
+		window.open(this.org.authUrl, '_self');
 	}
 }

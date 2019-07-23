@@ -1,5 +1,3 @@
-
-
 <ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
 </ng-container>
 
@@ -7,22 +5,22 @@
 	<app-skeleton-header>
 	</app-skeleton-header>
 </ng-template>
-	
+
 <ng-template #mainContainer>
 	<div fxLayout="column"
-		[@fadeIn]="!isLoading"
-		fxLayoutAlign="center center"
-		class="hero-image-container">
+	 [@fadeIn]="!isLoading"
+	 fxLayoutAlign="center center"
+	 class="hero-image-container">
 		<div *ngIf="org"
-			class="hero-image"
-			[defaultImage]="imageToPlaceholder(org.imageUrl)"
-			[lazyLoad]="org.imageUrl ?
+		 class="hero-image"
+		 [defaultImage]="imageToPlaceholder(org.imageUrl)"
+		 [lazyLoad]="org.imageUrl ?
 				replaceImageUrl(org.imageUrl)
 				: ''">
 		</div>
 		<div class="hero-logo-container"
-			[defaultImage]="imageToPlaceholder(org.iconUrl)"
-			[lazyLoad]="org.iconUrl ?
+		 [defaultImage]="imageToPlaceholder(org.iconUrl)"
+		 [lazyLoad]="org.iconUrl ?
 				replaceImageUrl(org.iconUrl)
 				: ''">
 		</div>
@@ -30,57 +28,72 @@
 </ng-template>
 
 <ng-container [ngSwitch]="loadingState">
-	<div *ngSwitchCase="'loading'" class="community-container container">
-			<div fxLayout="column">
-				<div class="skeleton-title-wrap">
-					<app-skeleton-text-bar [isHeading]=true [width]="200">
+	<div *ngSwitchCase="'loading'"
+	 class="community-container container">
+		<div fxLayout="column">
+			<div class="skeleton-title-wrap">
+				<app-skeleton-text-bar [isHeading]=true
+				 [width]="200">
+				</app-skeleton-text-bar>
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="150">
+				</app-skeleton-text-bar>
+			</div>
+			<div class="skeleton-triple-divider-container">
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
 					</app-skeleton-text-bar>
-					<app-skeleton-text-bar [isSubtitle]=true [width]="150">
-					</app-skeleton-text-bar>
-				</div>
-				<div class="skeleton-triple-divider-container">
-					<div class="skeleton-triple-section">
-						<app-skeleton-text-bar [isHeading]=true [width]="25">
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="50">
-						</app-skeleton-text-bar>
-					</div>
-					<mat-divider vertical="true"></mat-divider>
-					<div class="skeleton-triple-section">
-						<app-skeleton-text-bar [isHeading]=true [width]="25">
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="50">
-						</app-skeleton-text-bar>
-					</div>
-					<mat-divider vertical="true">
-					</mat-divider>					
-					<div class="skeleton-triple-section">
-						<app-skeleton-text-bar [isHeading]=true [width]="25">
-						</app-skeleton-text-bar>
-						<app-skeleton-text-bar [isSubtitle]=true [width]="50">
-						</app-skeleton-text-bar>
-					</div>
-				</div>
-				<app-skeleton-button [width]="100">
-				</app-skeleton-button>
-				<div class="skeleton-community-footer"> 
-					<app-skeleton-text-bar [isText]=true>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
 					</app-skeleton-text-bar>
 				</div>
-				<div class="skeleton-community-cta"> 
-					<app-skeleton-text-bar [isSubtitle]=true width="40">
+				<mat-divider vertical="true"></mat-divider>
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
+					</app-skeleton-text-bar>
+				</div>
+				<mat-divider vertical="true">
+				</mat-divider>
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
 					</app-skeleton-text-bar>
 				</div>
 			</div>
+			<app-skeleton-button [width]="100">
+			</app-skeleton-button>
+			<div class="skeleton-community-footer">
+				<app-skeleton-text-bar [isText]=true>
+				</app-skeleton-text-bar>
+			</div>
+			<div class="skeleton-community-cta">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 width="40">
+				</app-skeleton-text-bar>
+			</div>
+		</div>
 	</div>
-	<div *ngSwitchCase="'serverError'" class="community-container container" fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px" fxLayout="column">
+	<div *ngSwitchCase="'serverError'"
+	 class="community-container container"
+	 fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+		 fxFlex.gt-md="800px"
+		 fxLayout="column">
 			<div class="mat-display-1 no-margin">
 				<span *ngIf="org">
 					Server Eror
 				</span>
 			</div>
-			<div class="mat-h2" *ngIf="org">
+			<div class="mat-h2"
+			 *ngIf="org">
 				Could not load organization data.
 			</div>
 			<div>
@@ -88,23 +101,25 @@
 			</div>
 		</div>
 	</div>
-	<div *ngSwitchCase="'complete'" [@fadeIn]=true class="community-container container"
-		fxLayoutAlign="center center">
+	<div *ngSwitchCase="'complete'"
+	 [@fadeIn]=true
+	 class="community-container container"
+	 fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px"
-			fxLayout="column">
+		 fxFlex.gt-md="800px"
+		 fxLayout="column">
 			<div class="mat-display-1 no-margin">
 				<span *ngIf="org">{{org.name}}</span>
 			</div>
 			<div class="mat-h2"
-				*ngIf="org">{{org.description}}</div>
+			 *ngIf="org">{{org.description}}</div>
 			<div fxLayout="row">
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-						*ngIf="userCount">{{userCount}}</span>
+					 *ngIf="userCount">{{userCount}}</span>
 					<span class="mat-h1"
-						*ngIf="!userCount">0</span>
+					 *ngIf="!userCount">0</span>
 					<span class="mat-h3">Members</span>
 				</div>
 				<div fxFlex></div>
@@ -112,9 +127,9 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-						*ngIf="issues">{{issues.length}}</span>
+					 *ngIf="issues">{{issues.length}}</span>
 					<span class="mat-h1"
-						*ngIf="!issues">0</span>
+					 *ngIf="!issues">0</span>
 					<span class="mat-h3">Issues</span>
 				</div>
 				<div fxFlex></div>
@@ -122,19 +137,27 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-						*ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
+					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
 					<span class="mat-h1"
-						*ngIf="!proposals || !solutions">0</span>
+					 *ngIf="!proposals || !solutions">0</span>
 					<span class="mat-h3">Solutions</span>
 				</div>
 				<div fxFlex></div>
 			</div>
 			<div *ngIf="!auth.isAuthenticated()">
-				<button mat-button
-					mat-raised-button
-					routerLink="/auth/signup"
-					color="warn"
-					class="mat-display-1">
+				<button *ngIf="!this.org || this.org.authType===0"
+				 mat-button
+				 mat-raised-button
+				 routerLink="/auth/signup"
+				 color="warn"
+				 class="mat-display-1">
+					CREATE ACCOUNT</button>
+				<button *ngIf="this.org && this.org.authType===1"
+				 mat-button
+				 mat-raised-button
+				 (click)="redirect()"
+				 color="warn"
+				 class="mat-display-1">
 					CREATE ACCOUNT</button>
 			</div>
 			<div *ngIf="org">
@@ -142,9 +165,9 @@
 					<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
 					<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
 						<button mat-button
-							[routerLink]="['/communities/claim/', org._id]"
-							color="primary"
-							class="mat-display-1">
+						 [routerLink]="['/communities/claim/', org._id]"
+						 color="primary"
+						 class="mat-display-1">
 							CLAIM HERE</button>
 					</span>
 				</div>
@@ -156,12 +179,14 @@
 	</div>
 </ng-container>
 
-
 <ng-container [ngSwitch]="loadingState">
-	<div *ngSwitchCase="'loading'" class="hot-issues-container container">
+	<div *ngSwitchCase="'loading'"
+	 class="hot-issues-container container">
 		<div class="skeleton-issues-container">
-				<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
-				</app-skeleton-text-bar>
+			<app-skeleton-text-bar class="skeleton-issue-header"
+			 [isSubtitle]="true"
+			 [width]="100">
+			</app-skeleton-text-bar>
 			<div class="skeleton-card-list">
 				<app-skeleton-card>
 				</app-skeleton-card>
@@ -171,35 +196,42 @@
 				</app-skeleton-card>
 			</div>
 			<div class="skeleton-issues-footer">
-				<app-skeleton-text-bar [isSubtitle]=true [width]="75">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="75">
 				</app-skeleton-text-bar>
 			</div>
 		</div>
 	</div>
 
-	<div *ngSwitchCase="'serverError'" class="hot-issues-container container">
-			<div class="skeleton-issues-container">
-					<app-skeleton-text-bar class="skeleton-issue-header" [isSubtitle]="true" [width]="100">			
-					</app-skeleton-text-bar>
-				<div class="skeleton-card-list">
-					<app-skeleton-card>
-					</app-skeleton-card>
-					<app-skeleton-card>
-					</app-skeleton-card>
-					<app-skeleton-card>
-					</app-skeleton-card>
-				</div>
-				<div class="skeleton-issues-footer">
-					<app-skeleton-text-bar [isSubtitle]=true [width]="75">
-					</app-skeleton-text-bar>
-				</div>
+	<div *ngSwitchCase="'serverError'"
+	 class="hot-issues-container container">
+		<div class="skeleton-issues-container">
+			<app-skeleton-text-bar class="skeleton-issue-header"
+			 [isSubtitle]="true"
+			 [width]="100">
+			</app-skeleton-text-bar>
+			<div class="skeleton-card-list">
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
+			</div>
+			<div class="skeleton-issues-footer">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="75">
+				</app-skeleton-text-bar>
 			</div>
 		</div>
+	</div>
 
-	<div *ngSwitchCase="'complete'" [@fadeIn]=true class="hot-issues-container container text-center"
-		fxLayoutAlign="center center">
+	<div *ngSwitchCase="'complete'"
+	 [@fadeIn]=true
+	 class="hot-issues-container container text-center"
+	 fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px">
+		 fxFlex.gt-md="800px">
 			<h2 class="mat-h2">What's Hot?</h2>
 			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>
@@ -208,44 +240,45 @@
 
 	<ng-template #noIssues>
 		<h3 class="mat-h3">Currently there are no issues for this Organization</h3>
-			<div *ngIf="auth.isOwner() || auth.isAdmin()">
-				<p>Start engaging your community and create issues.</p>
-				<button mat-button
-					color="primary"
-					routerLink="/issues/create">
-					Create Issue
-				</button>
-			</div>
+		<div *ngIf="auth.isOwner() || auth.isAdmin()">
+			<p>Start engaging your community and create issues.</p>
+			<button mat-button
+			 color="primary"
+			 routerLink="/issues/create">
+				Create Issue
+			</button>
+		</div>
 	</ng-template>
 	<ng-template #issuesExist>
 		<app-grid-list *ngIf="issues"
-			path="/issues"
-			model="Issue"
-			[itemLimit]="ISSUE_LIMIT"
-			[titleCard]=true
-			[items]=issues
-			(delete)="onDelete($event)"
-			(softDelete)="onSoftDelete($event)"></app-grid-list>
+		 path="/issues"
+		 model="Issue"
+		 [itemLimit]="ISSUE_LIMIT"
+		 [titleCard]=true
+		 [items]=issues
+		 (delete)="onDelete($event)"
+		 (softDelete)="onSoftDelete($event)"></app-grid-list>
 		<div>
 			<button mat-button
-				routerLink="/issues">
+			 routerLink="/issues">
 				SEE ALL ></button>
 		</div>
 	</ng-template>
 </ng-container>
 
 <div class="about-community-container container text-center"
-    fxLayoutAlign="center center"
-    *ngIf="org && org.longDescription">
+ fxLayoutAlign="center center"
+ *ngIf="org && org.longDescription">
 	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
+	 fxFlex.gt-md="800px">
 		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+		<span class='mat-body'
+		 [innerHtml]="org.longDescription"></span>
 	</div>
 </div>
 
-<ng-container *ngIf="loadingState !== 'complete'; 
-	then skeletonFooter; 
+<ng-container *ngIf="loadingState !== 'complete';
+	then skeletonFooter;
 	else mainFooter">
 </ng-container>
 
@@ -254,28 +287,39 @@
 <ng-template #skeletonFooter>
 	<div class="final-container container">
 		<div class="skeleton-footer">
-			<app-skeleton-button [width]="100" class="footer-button">
+			<app-skeleton-button [width]="100"
+			 class="footer-button">
 			</app-skeleton-button>
-			<app-skeleton-text-bar [isText]=true [width]="205"> 
+			<app-skeleton-text-bar [isText]=true
+			 [width]="205">
 			</app-skeleton-text-bar>
 		</div>
 	</div>
 </ng-template>
 
 <ng-template #mainFooter>
-	<div [@fadeIn]="isLoading" *ngIf="!auth.isAuthenticated()"
-		class="final-container container text-center"
-		fxLayoutAlign="center center"
-		routerLink="/auth/signup">
+	<div [@fadeIn]="isLoading"
+	 *ngIf="!auth.isAuthenticated()"
+	 class="final-container container text-center"
+	 fxLayoutAlign="center center"
+	 routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px">
-			<button mat-button
-				mat-raised-button
-				routerLink="/auth/signup"
-				color="warn">
+		 fxFlex.gt-md="800px">
+			<button *ngIf="!this.org || this.org.authType===0"
+			 mat-button
+			 mat-raised-button
+			 routerLink="/auth/signup"
+			 color="warn"
+			 class="mat-display-1">
+				CREATE ACCOUNT</button>
+			<button *ngIf="this.org && this.org.authType===1"
+			 mat-button
+			 mat-raised-button
+			 (click)="redirect()"
+			 color="warn"
+			 class="mat-display-1">
 				CREATE ACCOUNT</button>
 			<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
 		</div>
 	</div>
 </ng-template>
-
