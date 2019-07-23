@@ -29,6 +29,17 @@
 	</div>
 </ng-template>
 
+<div class="about-community-container container text-center container-white"
+    fxLayoutAlign="center center"
+    *ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<h2 class="mat-h2">About {{org.name}}</h2>
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+	</div>
+</div>
+
+
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'" class="community-container container">
 			<div fxLayout="column">
@@ -233,16 +244,6 @@
 		</div>
 	</ng-template>
 </ng-container>
-
-<div class="about-community-container container text-center"
-    fxLayoutAlign="center center"
-    *ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
 
 <ng-container *ngIf="loadingState !== 'complete'; 
 	then skeletonFooter; 
