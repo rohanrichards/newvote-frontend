@@ -73,7 +73,7 @@ export class MetaService {
 			return;
 		}
 
-		title = context.title ? `${context.title} | ${this.appName}` : this.appName;
+		title = context.title ? `${context.title} | ${this.appName || 'NewVote'}` : this.appName;
 		appBarTitle = context.appBarTitle ? context.appBarTitle : (context.title ? context.title : this.appName);
 		description = context.description ? context.description : this.appDescription;
 		description = description.replace(/<[^>]*>/g, ''); // strip the html out
