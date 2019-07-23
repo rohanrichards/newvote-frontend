@@ -9,6 +9,8 @@ import { MetaService } from '@app/core/meta.service';
 
 import { IOrganization, Organization } from '@app/core/models/organization.model';
 import { Vote } from '@app/core/models/vote.model';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-organization',
@@ -27,8 +29,11 @@ export class OrganizationListComponent implements OnInit {
 		routerLink: '/communities/create',
 		role: 'admin'
 	}];
+	loadingState: string;
 
-	constructor(private organizationService: OrganizationService,
+	constructor(
+		private stateService: StateService,
+		private organizationService: OrganizationService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -37,6 +42,10 @@ export class OrganizationListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
@@ -49,15 +58,47 @@ export class OrganizationListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
-		this.isLoading = true;
-		this.organizationService.list({ orgs: [], forceUpdate: force })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(organizations => { this.organizations = organizations; });
+		const isAdmin = this.auth.isAdmin();
+		this.stateService.setLoadingState(AppState.loading);
+
+		this.organizationService.list({
+			orgs: [], forceUpdate: force,
+			params: isAdmin ? { 'showDeleted': true } : {}
+		})
+		.subscribe(
+			organizations => {
+				this.organizations = organizations;
+				return this.stateService.setLoadingState(AppState.complete);
+			},
+			(error) => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	onDelete(event: any) {
 		this.organizationService.delete({ id: event._id }).subscribe(() => {
 			console.log('done');
+			this.fetchData(true);
+		});
+	}
+
+	onSoftDelete(event: any) {
+		if (!this.auth.isOwner()) {
+			return false;
+		}
+		event.softDeleted = true;
+		this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.fetchData(true);
+		});
+	}
+
+	onRestore(event: any) {
+		if (!this.auth.isOwner()) {
+			return false;
+		}
+		event.softDeleted = false;
+		this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
 			this.fetchData(true);
 		});
 	}

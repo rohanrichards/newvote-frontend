@@ -3,8 +3,10 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
 import { map, finalize, catchError } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 import { Organization } from '@app/core/models/organization.model';
+import { handleError } from '@app/core/http/errors';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -31,7 +33,9 @@ export class OrganizationService {
 	private _org: Organization;
 	private $org: BehaviorSubject<any>;
 
-	constructor(private httpClient: HttpClient
+	constructor(
+		private httpClient: HttpClient,
+		private cookieService: CookieService
 	) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
@@ -47,7 +51,7 @@ export class OrganizationService {
 				.get('/organizations', { params })
 				.pipe(
 					map((res: Array<Organization>) => res[0]),
-					catchError((e) => of({ error: e }))
+					catchError(handleError)
 				).subscribe((org: Organization) => {
 					this._org = org;
 					this.$org.next(org);
@@ -76,7 +80,7 @@ export class OrganizationService {
 			.get(routes.list(context), { params })
 			.pipe(
 				map((res: Array<any>) => res),
-				catchError((e) => of([{ error: e }]))
+				catchError(handleError)
 			);
 	}
 
@@ -86,7 +90,7 @@ export class OrganizationService {
 			.get(routes.view(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -96,7 +100,7 @@ export class OrganizationService {
 			.post(routes.create(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -106,7 +110,7 @@ export class OrganizationService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 
@@ -116,7 +120,7 @@ export class OrganizationService {
 			.put(routes.updateOwner(context), context.entity)
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e}))
+				catchError(handleError)
 			);
 	}
 
@@ -126,7 +130,7 @@ export class OrganizationService {
 			.delete(routes.delete(context))
 			.pipe(
 				map((res: any) => res),
-				catchError((e) => of({ error: e }))
+				catchError(handleError)
 			);
 	}
 

@@ -68,7 +68,7 @@ export class SearchService {
 			.pipe(
 				map((arr: Array<any>) => {
 					return arr.map(o => {
-						o.schema = 'Proposal';
+						o.schema = 'Action';
 						return o;
 					});
 				}),

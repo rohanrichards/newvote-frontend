@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { MetaService } from '@app/core/meta.service';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-topic',
@@ -15,6 +17,7 @@ export class TopicListComponent implements OnInit {
 
 	topics: Array<any>;
 	isLoading: boolean;
+	loadingState: string;
 	headerTitle = 'Browse By Topic';
 	headerText = 'Topics arrange the current issues into broader categories. \
 		Select a topic below to learn more about it and explore relevant issues being discussed.';
@@ -25,7 +28,9 @@ export class TopicListComponent implements OnInit {
 		role: 'admin'
 	}];
 
-	constructor(private topicService: TopicService,
+	constructor(
+		private stateService: StateService,
+		private topicService: TopicService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
@@ -33,6 +38,12 @@ export class TopicListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
@@ -45,10 +56,17 @@ export class TopicListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
-		this.isLoading = true;
+		this.stateService.setLoadingState(AppState.loading);
 		this.topicService.list({ orgs: [], forceUpdate: force, params: { 'showDeleted': true } })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(topics => { this.topics = topics; console.log(this.topics); });
+			.subscribe(
+			topics => {
+				this.topics = topics;
+				return this.stateService.setLoadingState(AppState.complete);
+			},
+			err => {
+				this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	onRestore(topic: any) {
@@ -56,8 +74,10 @@ export class TopicListComponent implements OnInit {
 		topic.softDeleted = false;
 
 		this.topicService.update({ id: topic._id, entity: topic })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {	this.fetchData(true); });
+			.subscribe(
+				(t) => {	this.fetchData(true); },
+				(err) => { console.log(err); }
+			);
 	}
 
 	onSoftDelete(topic: any) {
@@ -65,15 +85,17 @@ export class TopicListComponent implements OnInit {
 		topic.softDeleted = true;
 
 		this.topicService.update({ id: topic._id, entity: topic })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {	this.fetchData(true); });
+			.subscribe(
+				(t) => {	this.fetchData(true); },
+				(err) => { console.log(err); }
+			);
 	}
 
 	onDelete(event: any) {
-		this.topicService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
-			this.fetchData(true);
-		});
+		this.topicService.delete({ id: event._id })
+			.subscribe(
+				(t) => {	this.fetchData(true); },
+				(err) => { console.log(err); }
+			);
 	}
-
 }

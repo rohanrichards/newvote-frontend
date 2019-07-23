@@ -1,281 +1,325 @@
-<div fxLayout="column"
-    fxLayoutAlign="center center"
-    class="hero-image-container">
-	<div *ngIf="org"
-	    class="hero-image"
-	    [style.background-image]="'url(' + org.imageUrl + ')'">
-	</div>
-	<div class="hero-text-container">
-		<div *ngIf="org">
-			<img class="logo"
-			    src="{{org.iconUrl}}"
-			    alt="{{org.name}}" />
-		</div>
-		<div class="mat-display-3 no-margin">
-			<span *ngIf="org">{{org.name}}</span>
-		</div>
-		<div class="mat-h2"
-		    *ngIf="org">{{org.description}}</div>
-		<div *ngIf="!auth.isAuthenticated()">
-			<button mat-button
-			    mat-raised-button
-			    routerLink="/auth/signup"
-			    color="warn"
-			    class="mat-display-1">
-				SIGN UP NOW</button>
-		</div>
-	</div>
-</div>
+<ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
+</ng-container>
 
-<div class="about-community-container container"
-    fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">About {{org.name}}</h2>
-		<span [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
+<ng-template #skeletonHeader>
+	<app-skeleton-header>
+	</app-skeleton-header>
+</ng-template>
 
-<div class="hot-issues-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">What's Hot?</h2>
-		<app-grid-list *ngIf="issues"
-		    path="/issues"
-			model="Issue"
-			[itemLimit]="ISSUE_LIMIT"
-			[items]=issues
-			(softDelete)="onSoftDelete($event)"></app-grid-list>
-		<div>
-			<button mat-button
-			    routerLink="/issues">
-				SEE ALL ></button>
+<ng-template #mainContainer>
+	<div fxLayout="column"
+	 [@fadeIn]="!isLoading"
+	 fxLayoutAlign="center center"
+	 class="hero-image-container">
+		<div *ngIf="org"
+		 class="hero-image"
+		 [defaultImage]="imageToPlaceholder(org.imageUrl)"
+		 [lazyLoad]="org.imageUrl ?
+				replaceImageUrl(org.imageUrl)
+				: ''">
+		</div>
+		<div class="hero-logo-container"
+		 [defaultImage]="imageToPlaceholder(org.iconUrl)"
+		 [lazyLoad]="org.iconUrl ?
+				replaceImageUrl(org.iconUrl)
+				: ''">
 		</div>
 	</div>
-</div>
+</ng-template>
 
-<div class="community-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px"
-	    fxLayout="column">
-		<h2 class="mat-display-1">Community</h2>
-		<div fxLayout="row">
-			<div fxFlex></div>
-			<div fxLayout="column">
-				<span class="mat-h1"
-				    *ngIf="userCount">{{userCount}}</span>
-				<span class="mat-h1"
-				    *ngIf="!userCount">0</span>
-				<span class="mat-h3">Members</span>
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'"
+	 class="community-container container">
+		<div fxLayout="column">
+			<div class="skeleton-title-wrap">
+				<app-skeleton-text-bar [isHeading]=true
+				 [width]="200">
+				</app-skeleton-text-bar>
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="150">
+				</app-skeleton-text-bar>
 			</div>
-			<div fxFlex></div>
-			<mat-divider vertical="true"></mat-divider>
-			<div fxFlex></div>
-			<div fxLayout="column">
-				<span class="mat-h1"
-				    *ngIf="issues">{{issues.length}}</span>
-				<span class="mat-h1"
-				    *ngIf="!issues">0</span>
-				<span class="mat-h3">Issues</span>
+			<div class="skeleton-triple-divider-container">
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
+					</app-skeleton-text-bar>
+				</div>
+				<mat-divider vertical="true"></mat-divider>
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
+					</app-skeleton-text-bar>
+				</div>
+				<mat-divider vertical="true">
+				</mat-divider>
+				<div class="skeleton-triple-section">
+					<app-skeleton-text-bar [isHeading]=true
+					 [width]="25">
+					</app-skeleton-text-bar>
+					<app-skeleton-text-bar [isSubtitle]=true
+					 [width]="50">
+					</app-skeleton-text-bar>
+				</div>
 			</div>
-			<div fxFlex></div>
-			<mat-divider vertical="true"></mat-divider>
-			<div fxFlex></div>
-			<div fxLayout="column">
-				<span class="mat-h1"
-				    *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
-				<span class="mat-h1"
-				    *ngIf="!proposals || !solutions">0</span>
-				<span class="mat-h3">Solutions</span>
+			<app-skeleton-button [width]="100">
+			</app-skeleton-button>
+			<div class="skeleton-community-footer">
+				<app-skeleton-text-bar [isText]=true>
+				</app-skeleton-text-bar>
 			</div>
-			<div fxFlex></div>
+			<div class="skeleton-community-cta">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 width="40">
+				</app-skeleton-text-bar>
+			</div>
 		</div>
-		<div *ngIf="!auth.isAuthenticated()">
-			<button mat-button
-			    mat-raised-button
-			    routerLink="/auth/signup"
-			    color="warn"
-			    class="mat-display-1">
-				JOIN US</button>
-		</div>
-		<div *ngIf="org">
-			<div *ngIf="!org.owner">
-				<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
-				<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
-					<button mat-button
-					    [routerLink]="['/communities/claim/', org._id]"
-					    color="primary"
-					    class="mat-display-1">
-						CLAIM HERE</button>
+	</div>
+	<div *ngSwitchCase="'serverError'"
+	 class="community-container container"
+	 fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+		 fxFlex.gt-md="800px"
+		 fxLayout="column">
+			<div class="mat-display-1 no-margin">
+				<span *ngIf="org">
+					Server Eror
 				</span>
 			</div>
-			<div *ngIf="org.owner">
-				<span class="mat-caption">{{org.name}} has claimed leadership of this community.</span>
+			<div class="mat-h2"
+			 *ngIf="org">
+				Could not load organization data.
+			</div>
+			<div>
+				<span class="mat-caption">Try refreshing the page, otherwise contact NewVote</span>
 			</div>
 		</div>
 	</div>
-</div>
-
-<div class="about-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">What is NewVote?</h2>
-		<div fxLayout="row wrap">
-			<div fxFlex="100"
-			    fxFlex.gt-xs="25"
-			    fxLayoutAlign="center center"
-			    class="icon-container">
-				<img src="assets/earth-globe.svg" />
+	<div *ngSwitchCase="'complete'"
+	 [@fadeIn]=true
+	 class="community-container container"
+	 fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+		 fxFlex.gt-md="800px"
+		 fxLayout="column">
+			<div class="mat-display-1 no-margin">
+				<span *ngIf="org">{{org.name}}</span>
 			</div>
-			<div class="text-block"
-			    fxFlex="100"
-			    fxFlex.gt-xs="75">
-				<div class="mat-body-1">
-					<p>NewVote is a democracy app, and it’s all about you.</p>
-					<p>Your communities, your issues, your ideas and your decisions.</p>
-					<p>Our mission is to rebuild the relationship between everyday people and their leaders, so that we all have confidence in our democracies and the decisions they make.</p>
-					<p>We’re doing this across all levels of government worldwide, as well as “private” democratic communities, like unions, businesses, community groups, political parties, student councils, clubs and societies.</p>
-					<p>Connect with your community in a way that you can truly be heard - easily and directly - whilst leaders get the data they need.</p>
-					<p>Let’s enhance democracy together.</p>
-					<p>Your voice matters, and all you need is a profile to start voting!</p>
+			<div class="mat-h2"
+			 *ngIf="org">{{org.description}}</div>
+			<div fxLayout="row">
+				<div fxFlex></div>
+				<div fxLayout="column">
+					<span class="mat-h1"
+					 *ngIf="userCount">{{userCount}}</span>
+					<span class="mat-h1"
+					 *ngIf="!userCount">0</span>
+					<span class="mat-h3">Members</span>
+				</div>
+				<div fxFlex></div>
+				<mat-divider vertical="true"></mat-divider>
+				<div fxFlex></div>
+				<div fxLayout="column">
+					<span class="mat-h1"
+					 *ngIf="issues">{{issues.length}}</span>
+					<span class="mat-h1"
+					 *ngIf="!issues">0</span>
+					<span class="mat-h3">Issues</span>
+				</div>
+				<div fxFlex></div>
+				<mat-divider vertical="true"></mat-divider>
+				<div fxFlex></div>
+				<div fxLayout="column">
+					<span class="mat-h1"
+					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
+					<span class="mat-h1"
+					 *ngIf="!proposals || !solutions">0</span>
+					<span class="mat-h3">Solutions</span>
+				</div>
+				<div fxFlex></div>
+			</div>
+			<div *ngIf="!auth.isAuthenticated()">
+				<button *ngIf="!this.org || this.org.authType===0"
+				 mat-button
+				 mat-raised-button
+				 routerLink="/auth/signup"
+				 color="warn"
+				 class="mat-display-1">
+					CREATE ACCOUNT</button>
+				<button *ngIf="this.org && this.org.authType===1"
+				 mat-button
+				 mat-raised-button
+				 (click)="redirect()"
+				 color="warn"
+				 class="mat-display-1">
+					CREATE ACCOUNT</button>
+			</div>
+			<div *ngIf="org">
+				<div *ngIf="!org.owner">
+					<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
+					<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
+						<button mat-button
+						 [routerLink]="['/communities/claim/', org._id]"
+						 color="primary"
+						 class="mat-display-1">
+							CLAIM HERE</button>
+					</span>
+				</div>
+				<div *ngIf="org.owner">
+					<span class="mat-caption">{{org.name}} has claimed leadership of this community.</span>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</ng-container>
 
-<div class="vote-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">How do I Vote?</h2>
-		<div fxLayout="row wrap">
-			<div class="icon-container"
-			    fxFlex="10"
-			    fxFlex.gt-xs="15"
-			    fxLayoutAlign="center center">
-				<img class="icon"
-				    src="assets/sort-arrows.png" />
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'"
+	 class="hot-issues-container container">
+		<div class="skeleton-issues-container">
+			<app-skeleton-text-bar class="skeleton-issue-header"
+			 [isSubtitle]="true"
+			 [width]="100">
+			</app-skeleton-text-bar>
+			<div class="skeleton-card-list">
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
 			</div>
-			<div class="text-block"
-			    fxLayoutAlign="center center"
-			    fxFlex
-			    fxFlex.xs="90">
-				<div class="mat-body">
-					<p>You’ll need to make an account using an email address and your mobile number to get started. This is to make sure every user only votes once (in the name of democracy)!</p>
-				</div>
-			</div>
-			<div *ngIf="!auth.isAuthenticated()"
-			 fxLayoutAlign="center center"
-			    fxFlex.xs="100">
-				<button mat-button
-				    mat-raised-button
-				    routerLink="/auth/signup"
-				    color="warn">
-					SIGN UP NOW</button>
+			<div class="skeleton-issues-footer">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="75">
+				</app-skeleton-text-bar>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="how-container container"
-    fxLayoutAlign="center center">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<h2 class="mat-h2">How it Works</h2>
-		<div fxLayout="column">
-			<div class="mat-body">
-				<p>The voting process is quite simple. Explore this app to view issues, solutions and actions!</p>
+	<div *ngSwitchCase="'serverError'"
+	 class="hot-issues-container container">
+		<div class="skeleton-issues-container">
+			<app-skeleton-text-bar class="skeleton-issue-header"
+			 [isSubtitle]="true"
+			 [width]="100">
+			</app-skeleton-text-bar>
+			<div class="skeleton-card-list">
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
+				<app-skeleton-card>
+				</app-skeleton-card>
 			</div>
-			<div fxLayout="row wrap"
-			    class="">
-				<div fxFlex></div>
-				<div class="info-card-container mat-body"
-				    fxFlex="100"
-				    fxFlex.gt-sm="33"
-				    fxFlex.gt-md="266px">
-					<div class="info-card"
-					    id="issues-card"
-					    fxLayout="column">
-						<div class="mat-h3">ISSUES</div>
-						<div class="icon"
-						    fxLayoutAlign="center center">
-							<img class="icon"
-							    src="assets/problem.svg" />
-						</div>
-						<p class="text-block"
-						    fxFlex>Issues can be any problem or topic in your community that you think needs to be addressed.</p>
-						<div><button mat-button
-							    routerLink="/issues">
-								VIEW ISSUES ></button>
-						</div>
-					</div>
-				</div>
-				<div fxFlex></div>
-				<div class="info-card-container mat-body"
-				    fxFlex="100"
-				    fxFlex.gt-sm="33"
-				    fxFlex.gt-md="266px">
-					<div class="info-card"
-					    id="solutions-card"
-					    fxLayout="column">
-						<div class="mat-h3">SOLUTIONS</div>
-						<div class="icon"
-						    fxLayoutAlign="center center">
-							<img class="icon"
-							    src="assets/thought.svg" /></div>
-						<p class="text-block"
-						    fxFlex>Solutions are the decisions that you think your community should make.</p>
-						<div>
-							<button mat-button
-							    routerLink="/solutions">
-								VIEW SOLUTIONS ></button>
-						</div>
-					</div>
-				</div>
-				<div fxFlex></div>
-				<div class="info-card-container mat-body"
-				    fxFlex="100"
-				    fxFlex.gt-sm="33"
-				    fxFlex.gt-md="266px">
-					<div class="info-card"
-					    id="proposals-card"
-					    fxLayout="column">
-						<div class="mat-h3">ACTIONS</div>
-						<div class="icon"
-						    fxLayoutAlign="center center">
-							<img class="icon"
-							    src="assets/idea.svg" /></div>
-						<p fxFlex
-						    class="text-block">Actions provide further clarity to solutions and specific actions.</p>
-						<!-- <div>
-							<button mat-button
-							    routerLink="/proposals">
-								VIEW ACTIONS ></button>
-						</div> -->
-					</div>
-				</div>
-				<div fxFlex></div>
+			<div class="skeleton-issues-footer">
+				<app-skeleton-text-bar [isSubtitle]=true
+				 [width]="75">
+				</app-skeleton-text-bar>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div *ngIf="!auth.isAuthenticated()"
-    class="final-container container"
-    fxLayoutAlign="center center"
-    routerLink="/auth/signup">
+	<div *ngSwitchCase="'complete'"
+	 [@fadeIn]=true
+	 class="hot-issues-container container text-center"
+	 fxLayoutAlign="center center">
+		<div fxFlex.gt-sm="690px"
+		 fxFlex.gt-md="800px">
+			<h2 class="mat-h2">What's Hot?</h2>
+			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">
+			</ng-container>
+		</div>
+	</div>
+
+	<ng-template #noIssues>
+		<h3 class="mat-h3">Currently there are no issues for this Organization</h3>
+		<div *ngIf="auth.isOwner() || auth.isAdmin()">
+			<p>Start engaging your community and create issues.</p>
+			<button mat-button
+			 color="primary"
+			 routerLink="/issues/create">
+				Create Issue
+			</button>
+		</div>
+	</ng-template>
+	<ng-template #issuesExist>
+		<app-grid-list *ngIf="issues"
+		 path="/issues"
+		 model="Issue"
+		 [itemLimit]="ISSUE_LIMIT"
+		 [titleCard]=true
+		 [items]=issues
+		 (delete)="onDelete($event)"
+		 (softDelete)="onSoftDelete($event)"></app-grid-list>
+		<div>
+			<button mat-button
+			 routerLink="/issues">
+				SEE ALL ></button>
+		</div>
+	</ng-template>
+</ng-container>
+
+<div class="about-community-container container text-center"
+ fxLayoutAlign="center center"
+ *ngIf="org && org.longDescription">
 	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<button mat-button
-		    mat-raised-button
-		    routerLink="/auth/signup"
-		    color="warn">
-			SIGN UP NOW</button>
-		<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Thanks for supporting democracy!</em></span>
+	 fxFlex.gt-md="800px">
+		<h2 class="mat-h2">About {{org.name}}</h2>
+		<span class='mat-body'
+		 [innerHtml]="org.longDescription"></span>
 	</div>
 </div>
+
+<ng-container *ngIf="loadingState !== 'complete';
+	then skeletonFooter;
+	else mainFooter">
+</ng-container>
+
+<!-- Templates -->
+
+<ng-template #skeletonFooter>
+	<div class="final-container container">
+		<div class="skeleton-footer">
+			<app-skeleton-button [width]="100"
+			 class="footer-button">
+			</app-skeleton-button>
+			<app-skeleton-text-bar [isText]=true
+			 [width]="205">
+			</app-skeleton-text-bar>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #mainFooter>
+	<div [@fadeIn]="isLoading"
+	 *ngIf="!auth.isAuthenticated()"
+	 class="final-container container text-center"
+	 fxLayoutAlign="center center"
+	 routerLink="/auth/signup">
+		<div fxFlex.gt-sm="690px"
+		 fxFlex.gt-md="800px">
+			<button *ngIf="!this.org || this.org.authType===0"
+			 mat-button
+			 mat-raised-button
+			 routerLink="/auth/signup"
+			 color="warn"
+			 class="mat-display-1">
+				CREATE ACCOUNT</button>
+			<button *ngIf="this.org && this.org.authType===1"
+			 mat-button
+			 mat-raised-button
+			 (click)="redirect()"
+			 color="warn"
+			 class="mat-display-1">
+				CREATE ACCOUNT</button>
+			<span class="mat-body-2">&nbsp; to begin!</span> <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
+		</div>
+	</div>
+</ng-template>

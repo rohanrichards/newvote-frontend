@@ -3,7 +3,7 @@
     [buttons]="headerButtons">
 </app-header-bar>
 
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5">
 </app-loader>
 
@@ -13,19 +13,62 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<app-card-list path="/solutions"
-		    [items]=solutions
-		    model="Solution"
-		    [showChildren]="true"
-		    childPath="proposals"
-		    childName="Actions"
-			[showParent]="true"
-			parentPath="/issues"
-			parentPropName="issues"
-			(restore)="onRestore($event)"
-			(softDelete)="onSoftDelete($event)"
-		    (delete)="onDelete($event)"
-		    (vote)="onVote($event, 'Solution')"
-		    (childVote)="onVote($event, 'Proposal')"></app-card-list>
+		<ng-container [ngSwitch]="loadingState">
+				<div 
+					*ngSwitchCase="'loading'"
+					class="container"
+					fxLayout="column"
+					fxLayoutAlign="center start"
+					>
+					<div class="skeleton-card-list"
+						>
+						<!-- <app-skeleton-text-bar [isSubtitle]=true [width]="150">
+						</app-skeleton-text-bar> -->
+			
+						<app-skeleton-wide-card
+							[showImage]=true
+							[showContent]=true
+							[showActions]=true
+							[showChildren]=true
+						>
+						</app-skeleton-wide-card>
+						<app-skeleton-wide-card
+							[showImage]=true
+							[showContent]=true
+							[showActions]=true
+						>
+						</app-skeleton-wide-card>
+						<app-skeleton-wide-card
+							[showImage]=true
+							[showContent]=true
+							[showActions]=true
+						>
+						</app-skeleton-wide-card>
+					</div>	
+				</div>
+			<app-error-card *ngSwitchCase="'serverError'">
+			</app-error-card>
+			<app-card-list 
+				*ngSwitchCase="'complete'"
+				path="/solutions"
+				[@fadeIn]=true
+				[items]=solutions
+				model="Solution"
+				[showChildren]="true"
+				childPath="proposals"
+				childName="Actions"
+				[showParent]="true"
+				parentPath="/issues"
+				parentPropName="issues"
+				(restore)="onRestore($event)"
+				(softDelete)="onSoftDelete($event)"
+				(delete)="onDelete($event)"
+				(vote)="onVote($event, 'Solution')"
+				(childVote)="onVote($event, 'Proposal')">
+			</app-card-list>
+		</ng-container>
 	</div>
 </div>
+
+
+

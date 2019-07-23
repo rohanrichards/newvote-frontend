@@ -1,5 +1,5 @@
 [{
   "relation": ["delegate_permission/common.handle_all_urls"],
-  "target" : { "namespace": "android_app", "package_name": "org.newvote.twa.tests",
-               "sha256_cert_fingerprints": ["3A:60:EC:CD:0C:39:77:02:5E:07:05:69:2D:6B:FA:E5:F8:AE:AC:92:9E:8B:6F:2F:9E:C6:0E:86:8B:78:AA:EA"] }
+  "target" : { "namespace": "android_app", "package_name": "org.newvote.twa",
+               "sha256_cert_fingerprints": ["45:65:B1:00:5F:EA:98:20:64:3F:6A:94:39:FB:BF:EC:57:81:78:8F:4B:24:48:6B:06:2C:BE:C9:5E:CF:95:58"] }
 }]

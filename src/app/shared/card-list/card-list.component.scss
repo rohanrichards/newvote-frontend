@@ -22,6 +22,34 @@
 	cursor: pointer;
 }
 
+.error-card {
+	margin-bottom: 32px;
+	border: 1px solid red;
+	cursor: default;
+}
+
+.empty-card {
+	cursor: default;
+}
+
+.empty-card-blank {
+	margin-top: 3rem;
+	margin-left: auto;
+	margin-right: auto;
+	min-height: 200px;
+	max-height: 350px;
+	width: 50%;
+	background-image: url("assets/logo-no-text.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-bottom: 1rem;
+}
+
+.empty-title-container {
+	text-align: center;
+}
+
 .status {
 	text-decoration: underline;
 }

@@ -1,131 +1,164 @@
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
-<mat-toolbar color="primary"
-    class="header-info-panel"
-    *ngIf="suggestion">
-	<div class="image-container"
-	    fxLayout="column"
-	    [style.background-image]="'url(' + suggestion.imageUrl + ')'">
-		<div class="admin-panel"
-		    *ngIf="auth.isModerator() || auth.isCreator(suggestion)"
-		    fxLayout="column"
-		    fxLayoutAlign="center end">
-			<div class="button-panel">
-				<!-- only show these buttons for admins/org owners -->
-				<span *ngIf="auth.isModerator()">
-					<button mat-icon-button
-					    matTooltip="Set Suggestion Approved"
-					    [color]="suggestion.status === 1 ? 'warn' : 'primary'"
-					    (click)="approveSuggestion()">
-						<mat-icon aria-label="Add a new suggestion">check_circle</mat-icon>
-					</button>
-					<button mat-icon-button
-					    matTooltip="Set Suggestion Pending"
-					    [color]="suggestion.status === 0 ? 'warn' : 'primary'"
-					    (click)="pendSuggestion()">
-						<mat-icon aria-label="Add a new suggestion">help_outline</mat-icon>
-					</button>
-					<button mat-icon-button
-					    matTooltip="Set Suggestion Denied"
-					    [color]="suggestion.status === -1 ? 'warn' : 'primary'"
-					    (click)="denySuggestion()">
-						<mat-icon aria-label="Add a new suggestion">block</mat-icon>
-					</button>
-				</span>
+<ng-container [ngSwitch]="loadingState">
+	<app-skeleton-panel *ngSwitchCase="'loading'" [hasVote]=true>
+	</app-skeleton-panel>
+	<app-skeleton-panel *ngSwitchCase="'serverError'" [hasVote]=true>
+	</app-skeleton-panel>
+	<mat-toolbar 
+		*ngSwitchCase="'complete'"
+		color="primary"
+		[@fadeIn]="!isLoading"
+		class="header-info-panel"
+		>
+		<div 
+			*ngIf="suggestion"
+			class="image-container"
+			fxLayout="column"
+			[style.background-image]="'url(' + suggestion.imageUrl + ')'">
+			<div class="admin-panel"
+				*ngIf="auth.isModerator() || auth.isCreator(suggestion)"
+				fxLayout="column"
+				fxLayoutAlign="center end">
+				<div class="button-panel">
+					<!-- only show these buttons for admins/org owners -->
+					<span *ngIf="auth.isModerator()">
+						<button mat-icon-button
+							matTooltip="Set Suggestion Approved"
+							[color]="suggestion.status === 1 ? 'warn' : 'primary'"
+							(click)="approveSuggestion()">
+							<mat-icon aria-label="Add a new suggestion">check_circle</mat-icon>
+						</button>
+						<button mat-icon-button
+							matTooltip="Set Suggestion Pending"
+							[color]="suggestion.status === 0 ? 'warn' : 'primary'"
+							(click)="pendSuggestion()">
+							<mat-icon aria-label="Add a new suggestion">help_outline</mat-icon>
+						</button>
+						<button mat-icon-button
+							matTooltip="Set Suggestion Denied"
+							[color]="suggestion.status === -1 ? 'warn' : 'primary'"
+							(click)="denySuggestion()">
+							<mat-icon aria-label="Add a new suggestion">block</mat-icon>
+						</button>
+					</span>
 
-				<button mat-icon-button
-				    matTooltip="Add a new Suggestion"
-				    color="accent"
-				    routerLink="/suggestions/create">
-					<mat-icon aria-label="Add a new suggestion">playlist_add</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Edit this Suggestion"
-				    color="accent"
-				    routerLink="/suggestions/edit/{{suggestion._id}}">
-					<mat-icon aria-label="Edit the suggestion">edit</mat-icon>
-				</button>
-				<button color="accent"
-					*ngIf="suggestion.softDeleted"
-					mat-icon-button
-					(click)="onRestore()">
-					<mat-icon aria-label="Restore suggestion">restore</mat-icon>
-				</button>
-				<button mat-icon-button
-					matTooltip="Remove solution"
-					*ngIf="!suggestion.softDeleted"
-					color="accent"
-					(click)="onSoftDelete()">
-					<mat-icon aria-label="Remove suggestion">delete</mat-icon>
-				</button>
-				<button mat-icon-button
-				    matTooltip="Delete this Suggestion"
-				    color="warn"
-				    (click)="onDelete()">
-					<mat-icon aria-label="Delete the suggestion forever">delete_forever</mat-icon>
-				</button>
+					<button mat-icon-button
+						matTooltip="Add a new Suggestion"
+						color="accent"
+						routerLink="/suggestions/create">
+						<mat-icon aria-label="Add a new suggestion">playlist_add</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Edit this Suggestion"
+						color="accent"
+						routerLink="/suggestions/edit/{{suggestion._id}}">
+						<mat-icon aria-label="Edit the suggestion">edit</mat-icon>
+					</button>
+					<button color="accent"
+						*ngIf="suggestion.softDeleted"
+						mat-icon-button
+						(click)="onRestore()">
+						<mat-icon aria-label="Restore suggestion">restore</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Remove solution"
+						*ngIf="!suggestion.softDeleted"
+						color="accent"
+						(click)="onSoftDelete()">
+						<mat-icon aria-label="Remove suggestion">delete</mat-icon>
+					</button>
+					<button mat-icon-button
+						matTooltip="Delete this Suggestion"
+						color="warn"
+						(click)="onDelete()">
+						<mat-icon aria-label="Delete the suggestion forever">delete_forever</mat-icon>
+					</button>
+				</div>
+			</div>
+			<div fxLayout="row"
+				fxFlex></div>
+			<!-- <div fxLayout="column"
+				fxLayoutAlign="start start">
+			</div> -->
+			<div fxLayout="row wrap"
+				fxLayoutAlign="center center">
+				<div fxFlex.gt-sm="690px"
+					fxFlex.gt-md="800px">
+					<app-share-buttons></app-share-buttons>
+				</div>
 			</div>
 		</div>
-		<div fxLayout="row"
-		    fxFlex></div>
-		<!-- <div fxLayout="column"
-		    fxLayoutAlign="start start">
-		</div> -->
 		<div fxLayout="row wrap"
-		    fxLayoutAlign="center center">
+			fxLayoutAlign="center center">
 			<div fxFlex.gt-sm="690px"
-			    fxFlex.gt-md="800px">
-				<app-share-buttons></app-share-buttons>
+				fxFlex.gt-md="800px">
+				<div class="mat-display-1"
+					translate>{{suggestion.title}}</div>
+				<app-more-less 
+					[displayText]="suggestion.description"
+					maxHeight="200">
+				</app-more-less>
+				<mat-divider></mat-divider>
+				<p></p>
+				<div class="buttons">
+					<app-vote-buttons [item]="suggestion"
+						(vote)=onVote($event)>
+					</app-vote-buttons>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div fxLayout="row wrap"
-	    fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
-		    fxFlex.gt-md="800px">
-			<div class="mat-display-1"
-			    translate>{{suggestion.title}}</div>
+	</mat-toolbar>
+</ng-container> 
 
-			<app-more-less [displayText]="suggestion.description"
-			    maxHeight="200">
-			</app-more-less>
-			<mat-divider></mat-divider>
-			<p></p>
-			<div class="buttons">
-				<app-vote-buttons [item]="suggestion"
-				    (vote)=onVote($event)>
-				</app-vote-buttons>
-			</div>
+<ng-container [ngSwitch]="loadingState">
+	<div 
+		*ngSwitchCase="'loading'"
+		class="container"
+		fxLayout="column"
+		fxLayoutAlign="center start"
+		>
+		<div class="skeleton-card-list"
+			>
+			<app-skeleton-wide-card
+				[showContent]=true
+			>
+			</app-skeleton-wide-card>
 		</div>
 	</div>
-
-</mat-toolbar>
-
-<div class="container"
-    *ngIf="suggestion"
-    fxLayout="row wrap"
-    fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<mat-card class='info-card' *ngIf="suggestion.statements">
-			<mat-card-header>
-				<mat-card-title>Starting Statements</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
-				<p [innerHtml]="suggestion.statements">
-				</p>
-			</mat-card-content>
-		</mat-card>
-
-		<mat-card class='info-card'  *ngIf="suggestion.media.length > 0">
-			<mat-card-header>
-				<mat-card-title>Related Media</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
-				<p *ngFor="let media of suggestion.media" [innerHtml]="media">
-				</p>
-			</mat-card-content>
-		</mat-card>
+	<div 
+		*ngSwitchCase="'serverError'"
+		class="container"
+		fxLayout="column"
+		fxLayoutAlign="center center"
+		>
+		<div
+		fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<app-error-card >
+			</app-error-card>
+		</div>
 	</div>
-</div>
+	<div 
+		*ngSwitchCase="'complete'"
+		class="container"
+		[@fadeIn]=true
+		fxLayout="row wrap"
+		fxLayoutAlign="center start">
+		<div 
+			*ngIf="suggestion"
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<mat-card class='info-card'  *ngIf="suggestion.media.length > 0">
+				<mat-card-header>
+					<mat-card-title>Related Media</mat-card-title>
+				</mat-card-header>
+				<mat-card-content>
+					<p *ngFor="let media of suggestion.media" [innerHtml]="media">
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</ng-container>

@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { includes as _includes } from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { CookieService } from 'ngx-cookie-service';
 
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { Organization } from '@app/core/models/organization.model';
@@ -43,6 +44,7 @@ const routes = {
 	randomGet: () => `/topics`,
 	sms: () => `/users/sms`,
 	verify: () => `/users/verify`,
+	sso: () => '/auth/jwt'
 };
 
 const credentialsKey = 'credentials';
@@ -60,11 +62,15 @@ export class AuthenticationService {
 	constructor(
 		private httpClient: HttpClient,
 		private jwt: JwtHelperService,
-		private organizationService: OrganizationService
+		private organizationService: OrganizationService,
+		private cookieService: CookieService
 	) {
-		const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+		const savedCredentials = sessionStorage.getItem(credentialsKey) ||
+			localStorage.getItem(credentialsKey) ||
+			cookieService.get(credentialsKey);
 		if (savedCredentials) {
-			this._credentials = JSON.parse(savedCredentials);
+			const creds: Credentials = <Credentials>JSON.parse(savedCredentials);
+			this.setCredentials(creds, true);
 			if (this.isTokenExpired()) {
 				this.logout();
 			}
@@ -147,12 +153,16 @@ export class AuthenticationService {
 			.post<Boolean>(routes.reset(), context);
 	}
 
+	sso(): Observable<Boolean> {
+		return this.httpClient.get<Boolean>(routes.sso());
+	}
+
 	/**
 	 * Checks is the user is authenticated.
 	 * @return True if the user is authenticated.
 	 */
 	isAuthenticated(): boolean {
-		return !!this.credentials && !this.isTokenExpired();
+		return !!this._credentials && !this.isTokenExpired();
 	}
 
 	isTokenExpired(): boolean {
@@ -318,6 +328,7 @@ export class AuthenticationService {
 		} else {
 			sessionStorage.removeItem(credentialsKey);
 			localStorage.removeItem(credentialsKey);
+			this.cookieService.delete(credentialsKey, '/', '.newvote.org');
 		}
 	}
 

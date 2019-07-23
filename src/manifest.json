@@ -1,14 +1,21 @@
 {
-  "name": "NewVote",
-  "short_name": "NewVote",
-  "theme_color": "#0277bd",
-  "background_color": "#0277bd",
-  "scope": "/",
-  "start_url": "/",
-  "display": "standalone",
-  "icons": [{
-    "src": "assets/logo-no-text.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }]
+	"name": "NewVote",
+	"short_name": "NewVote",
+	"theme_color": "#0277bd",
+	"background_color": "#0277bd",
+	"scope": "/",
+	"start_url": "/",
+	"display": "standalone",
+	"icons": [{
+		"src": "assets/logo-no-text.png",
+		"sizes": "512x512",
+		"type": "image/png"
+	}],
+	"mjs_cordova": {
+		"plugin_mode": "client"
+	},
+	"mjs_api_access": [{
+			"match": "*"
+		}
+	]
 }

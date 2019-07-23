@@ -5,6 +5,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
+import { QuillSettings } from '@app/shared/quill/quill.settings';
+
 import { FileUploadModule } from 'ng2-file-upload';
 
 import { MaterialModule } from '@app/material.module';
@@ -27,7 +29,7 @@ import { SharedModule } from '@app/shared';
 		ReactiveFormsModule,
 		MaterialModule,
 		MaterialFileInputModule,
-		QuillModule,
+		QuillModule.forRoot(QuillSettings),
 		FileUploadModule,
 		MediaRoutingModule
 	],

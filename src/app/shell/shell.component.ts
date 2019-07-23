@@ -1,7 +1,8 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
@@ -18,13 +19,16 @@ export class ShellComponent implements OnInit {
 	hideVerify = false;
 	showSearch = false;
 
+	@Output() closeSearch = new EventEmitter();
+
 	constructor(private router: Router,
 		private titleService: Title,
 		private media: ObservableMedia,
 		private auth: AuthenticationService,
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
-		private meta: MetaService
+		private meta: MetaService,
+		private cookieService: CookieService
 	) { }
 
 	ngOnInit() {
@@ -99,5 +103,11 @@ export class ShellComponent implements OnInit {
 			link = 'https://' + link;
 		}
 		return link;
+	}
+
+	redirect() {
+		this.cookieService.set('org', this.organization.url, null, '/', '.newvote.org');
+		// window.location.href = this.org.authUrl;
+		window.open(this.organization.authUrl, '_self');
 	}
 }

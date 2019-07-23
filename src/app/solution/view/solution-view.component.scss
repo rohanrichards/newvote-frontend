@@ -47,3 +47,34 @@ q {
 .buttons {
 	margin-bottom: 16px;
 }
+
+/* Skeleton Section */
+
+.skeleton-panel {
+	height: 23.5vh;
+	background-color: #039BE5;
+	padding: 2.5rem 1em;
+}
+
+.skeleton-chip {
+	display: block;
+    padding: 7px 12px;
+    border-radius: 16px;
+    align-items: center;
+    cursor: default;
+    min-height: 32px;
+    height: 1px;
+	background-color: #e0e0e0;
+	width: 64px;
+	margin-bottom: 1rem;
+}
+
+.skeleton-card-list {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.center-span {
+	text-align: center;
+    display: block;
+}

@@ -12,19 +12,30 @@ import { MetaService } from '@app/core/meta.service';
 import { IProposal } from '@app/core/models/proposal.model';
 import { Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
+
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-proposal',
 	templateUrl: './proposal-view.component.html',
-	styleUrls: ['./proposal-view.component.scss']
+	styleUrls: ['./proposal-view.component.scss'],
+		animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class ProposalViewComponent implements OnInit {
 
 	proposal: Proposal;
 	proposals: Array<Proposal>;
 	isLoading: boolean;
+	loadingState: string;
 
 	constructor(
+		private stateService: StateService,
 		private proposalService: ProposalService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
@@ -36,7 +47,12 @@ export class ProposalViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getProposal(ID);
@@ -45,17 +61,22 @@ export class ProposalViewComponent implements OnInit {
 
 	getProposal(id: string, forceUpdate?: boolean) {
 		this.proposalService.view({ id: id, orgs: [], forceUpdate })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((proposal: Proposal) => {
-				this.proposal = proposal;
-				this.meta.updateTags(
-					{
-						title: `${this.proposal.title}`,
-						appBarTitle: 'View Action',
-						description: this.proposal.description,
-						image: this.proposal.imageUrl
-					});
-			});
+			.subscribe(
+				(proposal: Proposal) => {
+					this.proposal = proposal;
+					this.meta.updateTags(
+						{
+							title: `${this.proposal.title}`,
+							appBarTitle: 'View Action',
+							description: this.proposal.description,
+							image: this.proposal.imageUrl
+						});
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				(error) => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	onVote(voteData: any) {
@@ -68,18 +89,21 @@ export class ProposalViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe(
+				(res) => {
+					this.openSnackBar('Your vote was recorded', 'OK');
+					this.getProposal(this.proposal._id, true);
+				},
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getProposal(this.proposal._id, true);
-			}
-		});
+			);
 	}
 
 	onDelete() {
@@ -148,4 +172,19 @@ export class ProposalViewComponent implements OnInit {
 		});
 	}
 
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'low', 'auto');
+	}
 }

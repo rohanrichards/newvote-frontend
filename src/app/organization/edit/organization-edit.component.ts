@@ -45,6 +45,8 @@ export class OrganizationEditComponent implements OnInit {
 		futureOwner: new FormControl(''),
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email]),
+		authType: new FormControl(0, [Validators.required]),
+		authUrl: new FormControl('', [Validators.required])
 	});
 
 	backgroundImage = {
@@ -105,6 +107,7 @@ export class OrganizationEditComponent implements OnInit {
 			this.organizationService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe((organization: Organization) => {
+					console.log(organization);
 					this.organization = organization;
 					this.backgroundImage.src = organization.imageUrl;
 					this.iconImage.src = organization.iconUrl;
@@ -121,7 +124,9 @@ export class OrganizationEditComponent implements OnInit {
 						'moderators': organization.moderators,
 						'organizationUrl': organization.organizationUrl,
 						'futureOwner': organization.futureOwner,
-						'newLeaderEmail': ''
+						'newLeaderEmail': '',
+						'authType': organization.authType,
+						'authUrl': organization.authUrl,
 					});
 
 					this.meta.updateTags(

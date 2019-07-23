@@ -1,35 +1,47 @@
-<app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+<app-loader class="inline-loader"
+ [isLoading]="isLoading"></app-loader>
 <div fxFill
-    fxLayout="column"
-    fxLayoutAlign="center center"
-    fxLayoutGap="1.5rem"
-    class="mat-typography">
+ fxLayout="column"
+ fxLayoutAlign="center center"
+ fxLayoutGap="1.5rem"
+ class="mat-typography">
 	<div class="signup-container"
-	    fxLayout="row"
-	    fxLayoutAlign="center">
+	 fxLayout="row"
+	 fxLayoutAlign="center">
 		<mat-card fxFlex="90%"
-		    fxFlex.sm="66%"
-		    fxFlex.md="50%"
-		    fxFlex.gt-md="33%"
-		    class="signup-box">
+		 fxFlex.sm="66%"
+		 fxFlex.md="50%"
+		 fxFlex.gt-md="33%"
+		 class="signup-box">
+			<div *ngIf="this.org.authType && this.org.authType!==0"
+			 fxFlex>
+				<button mat-raised-button
+				 fxFlex
+				 color="primary"
+				 type="button"
+				 (click)="redirect()">
+					<span translate>Sign up with SSO</span>
+				</button>
+			</div>
 			<form (ngSubmit)="signup()"
-			    [formGroup]="signupForm"
-			    novalidate>
+			 *ngIf="!this.org.authType || this.org.authType===0"
+			 [formGroup]="signupForm"
+			 novalidate>
 				<div class="signup-error"
-					*ngIf="error && error.message"
-				    [hidden]="!error || isLoading"
-				    translate>
+				 *ngIf="error && error.message"
+				 [hidden]="!error || isLoading"
+				 translate>
 					{{error.message}}
 				</div>
-				<br/>
+				<br />
 				<div fxLayout="column">
 					<mat-form-field>
 						<input type="text"
-						    matInput
-						    formControlName="email"
-						    autocomplete="email"
-						    [placeholder]="'Email' | translate"
-							required />
+						 matInput
+						 formControlName="email"
+						 autocomplete="email"
+						 [placeholder]="'Email' | translate"
+						 required />
 						<mat-error *ngIf="signupForm.controls.email.errors && signupForm.controls.email.errors.required">
 							<span translate>Email is required</span>
 						</mat-error>
@@ -41,11 +53,11 @@
 
 					<mat-form-field>
 						<input type="password"
-						    matInput
-						    formControlName="password"
-						    autocomplete="current-password"
-						    [placeholder]="'Password' | translate"
-						    required/>
+						 matInput
+						 formControlName="password"
+						 autocomplete="current-password"
+						 [placeholder]="'Password' | translate"
+						 required />
 						<mat-hint align="start"><strong>Must be 6 characters long.</strong> </mat-hint>
 						<mat-error *ngIf="!signupForm.controls.password.valid || signupForm.controls.password.untouched">
 							<span translate>Password is required</span>
@@ -53,19 +65,20 @@
 					</mat-form-field>
 
 					<re-captcha class="recaptcha"
-					    formControlName="recaptchaResponse"></re-captcha>
+					 formControlName="recaptchaResponse"></re-captcha>
 
 					<mat-slide-toggle color="accent"
 					    class="remember-toggle"
 					    formControlName="remember"
-					    translate>Remember me</mat-slide-toggle>
+						translate>Remember me</mat-slide-toggle>
+					<a href="https://newvote.org/privacy-policy">Terms of Service</a>
 					<br/>
 					<button mat-raised-button
-					    color="primary"
-					    type="submit"
-					    [disabled]="signupForm.invalid || isLoading">
-            <span translate>Signup</span>
-          </button>
+					 color="primary"
+					 type="submit"
+					 [disabled]="signupForm.invalid || isLoading">
+						<span translate>Signup</span>
+					</button>
 				</div>
 			</form>
 		</mat-card>

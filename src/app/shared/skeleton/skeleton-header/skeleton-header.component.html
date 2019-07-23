@@ -1,0 +1,18 @@
+<ng-container *ngIf="noLogo;
+    then noLogoHeader;
+    else logoHeader">
+</ng-container>
+
+<ng-template #logoHeader>
+    <div class="skeleton-header-wrapper">
+        <div class="skeleton-logo">
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #noLogoHeader>
+    <div class="skeleton-nologo-wrapper">
+        <app-skeleton-social-bar [buttons]=6 >
+        </app-skeleton-social-bar>
+    </div>
+</ng-template>

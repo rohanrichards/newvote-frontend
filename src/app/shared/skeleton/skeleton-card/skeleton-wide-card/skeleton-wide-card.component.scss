@@ -1,0 +1,150 @@
+.skeleton-card {
+	box-shadow: 3px 4px 5px 0px #ababab;
+	border-radius: 5px;
+	margin-bottom: 2rem;
+}
+
+.skeleton-card-image {
+	background-color: #d3d3d8;
+	width: 100%;
+	min-height: 175px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: 5px 5px 0 0;
+}
+
+.skeleton-card-content {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.skeleton-issues-footer {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.skeleton-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.skeleton-action-container {
+	display: flex;
+	flex-direction: row;
+	padding: 1rem;
+	flex-wrap: wrap;
+}
+
+.skeleton-vote-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.skeleton-button-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.skeleton-result-container {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.button-spacer {
+	margin-right: 2rem;
+}
+
+.skeleton-child-container {
+	margin-top: 1.0rem;
+	padding: 1rem;
+}
+
+@media only screen and (max-width: 660px) {
+
+	.skeleton-vote-container {
+		justify-content: center;
+		align-items: center;
+	}
+
+	.skeleton-result-container {
+		justify-content: center;
+		align-items: center;
+	}
+
+	.button-spacer {
+		margin: 0;
+	}
+
+	.skeleton-button-row {
+		width: 100%;
+		justify-content: space-around;
+	}
+}
+
+
+
+@media only screen and (max-width: 600px) {
+
+	.skeleton-card-list {
+		width: 100%;
+		flex-direction: column;
+	}
+
+	.skeleton-card {
+		width: 100%;
+		max-width: 510px;
+		margin-right: 0;
+	}
+
+	.skeleton-form-wrap {
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+	}
+
+	.skeleton-topic-wrap {
+		padding-left: 0.75rem;
+		padding-right: 0.75rem
+	}
+}
+
+@media only screen and (max-width: 400px) {
+
+	.skeleton-card-list {
+		width: 100%;
+		flex-direction: column;
+	}
+
+	.skeleton-card {
+		width: 100%;
+		max-width: 450px;
+	}
+
+	.skeleton-form-wrap {
+		padding-left: 0.25rem;
+		padding-right: 0.25rem
+	}
+
+	.skeleton-topic-wrap {
+		padding-left: 0.25rem;
+		padding-right: 0.25rem
+	}
+}
+
+@media only screen and  (min-width: 800px) {
+	.skeleton-card {
+		min-width: 690px;
+	}
+}

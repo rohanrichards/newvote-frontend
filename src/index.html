@@ -20,6 +20,9 @@
 		    sizes="180x180"
 		    href="apple-touch-icon.png" />
 
+		<link rel='manifest' href='/manifest.json'>
+		<script type="text/javascript" src="cordova.js"></script>
+
 		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600"
 		    rel="stylesheet">
 	</head>
@@ -46,6 +49,9 @@
         })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
         ga('create', 'UA-142186995-1', 'auto');
       }
+		</script>
+		<script>
+			document.addEventListener('deviceready', () => {console.log('deviceready fired')}, false);
 		</script>
 		<!-- End Google Analytics -->
 		<!--[if lt IE 10]>

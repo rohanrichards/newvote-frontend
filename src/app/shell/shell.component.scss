@@ -13,9 +13,9 @@
 }
 
 .sticky-toolbar {
-	position: fixed;
 	top: 0px;
 	z-index: 200;
+	position: sticky;
 }
 
 .sticky-verify {
@@ -37,19 +37,15 @@
 	top: 56px;
 }
 
-.with-sidenav {
-	width: calc(100% - 270px);
-}
-
-// need a spacer because the toolbar is fixed now
-router-outlet::after {
-	min-height: 64px;
-	content:"";
-	display: block;
-	@media screen and (max-width: 599px) {
-		min-height: 44px;
-	}
-}
+// // need a spacer because the toolbar is fixed now
+// router-outlet::after {
+// 	min-height: 64px;
+// 	content:"";
+// 	display: block;
+// 	@media screen and (max-width: 599px) {
+// 		min-height: 44px;
+// 	}
+// }
 
 .has-border {
   border-right: 1px solid rgba(0, 0, 0, 0.12);
@@ -86,4 +82,51 @@ router-outlet::after {
 
 .spacer {
 	height: 24px;
+}
+
+::ng-deep .mat-input-underline {
+    display: none;
+}
+
+.hide-login-menu {
+	display: block;
+}
+
+.account-create-menu-icon {
+	display: none;
+}
+
+.secure-wrapper {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	display: flex;
+	flex-direction: column;
+    padding-bottom: 10px;
+	
+	img {
+		align-self: flex-end;
+		margin-left: auto;
+	}
+ 
+}
+
+
+@media screen and (max-width: 500px) {
+	
+
+	.hide-login-menu {
+		display: none;
+	}
+
+	.account-create-menu-icon {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 300px) {
+	
+	.toolbar-title {
+		display: none;
+	}
 }

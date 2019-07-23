@@ -23,6 +23,19 @@ import { HeaderBarComponent } from './header-bar/header-bar.component';
 import { TopicTagsComponent } from './topic-tags/topic-tags.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { MoreLessComponent } from './more-less/more-less.component';
+import { SkeletonHeaderComponent } from './skeleton/skeleton-header/skeleton-header.component';
+import { SkeletonTextBarComponent } from './skeleton/skeleton-text-bar/skeleton-text-bar.component';
+import { SkeletonButtonComponent } from './skeleton/skeleton-button/skeleton-button.component';
+import { SkeletonSocialButtonComponent } from './skeleton/skeleton-social-button/skeleton-social-button.component';
+import { SkeletonSocialBarComponent } from './skeleton/skeleton-social-bar/skeleton-social-bar.component';
+import { SkeletonWideCardComponent } from './skeleton/skeleton-card/skeleton-wide-card/skeleton-wide-card.component';
+import { SkeletonChildCardComponent } from './skeleton/skeleton-card/skeleton-child-card/skeleton-child-card.component';
+import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-media-card/skeleton-media-card.component';
+import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component';
+import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component';
+
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { ErrorCardComponent } from './error/error-card/error-card.component';
 
 @NgModule({
 	imports: [
@@ -39,6 +52,9 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		MatBadgeModule,
 		ClipboardModule,
 		RouterModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		LoaderComponent,
@@ -51,7 +67,18 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		MoreLessComponent,
 		HeaderBarComponent,
 		TopicTagsComponent,
-		SearchBarComponent
+		SearchBarComponent,
+		SkeletonHeaderComponent,
+		SkeletonTextBarComponent,
+		SkeletonButtonComponent,
+		SkeletonSocialButtonComponent,
+		SkeletonSocialBarComponent,
+		SkeletonWideCardComponent,
+		SkeletonChildCardComponent,
+		SkeletonMediaCardComponent,
+		SkeletonCardComponent,
+		SkeletonPanelComponent,
+		ErrorCardComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -64,7 +91,18 @@ import { MoreLessComponent } from './more-less/more-less.component';
 		MoreLessComponent,
 		HeaderBarComponent,
 		TopicTagsComponent,
-		SearchBarComponent
+		SearchBarComponent,
+		SkeletonHeaderComponent,
+		SkeletonTextBarComponent,
+		SkeletonButtonComponent,
+		SkeletonSocialButtonComponent,
+		SkeletonSocialBarComponent,
+		SkeletonWideCardComponent,
+		SkeletonChildCardComponent,
+		SkeletonMediaCardComponent,
+		SkeletonCardComponent,
+		SkeletonPanelComponent,
+		ErrorCardComponent
 	]
 })
 export class SharedModule { }

@@ -2,16 +2,18 @@
  * Global application theme.
  * Framework overrides and customization goes here.
  */
-
 // stylelint-disable-next-line selector-max-universal
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-html,
-body {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  height: 100%;
+body,
+html {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	overflow: auto;
+	-webkit-overflow-scrolling: auto;
 }

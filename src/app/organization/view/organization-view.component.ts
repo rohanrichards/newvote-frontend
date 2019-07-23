@@ -12,6 +12,9 @@ import { MetaService } from '@app/core/meta.service';
 import { IOrganization } from '@app/core/models/organization.model';
 import { Organization } from '@app/core/models/organization.model';
 import { Vote } from '@app/core/models/vote.model';
+import { createUrl } from '@app/shared/helpers/cloudinary';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-organization',
@@ -23,8 +26,10 @@ export class OrganizationViewComponent implements OnInit {
 	organization: Organization;
 	organizations: Array<Organization>;
 	isLoading: boolean;
+	loadingState: string;
 
 	constructor(
+		private stateService: StateService,
 		private organizationService: OrganizationService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
@@ -36,7 +41,10 @@ export class OrganizationViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getOrganization(ID);
@@ -44,16 +52,24 @@ export class OrganizationViewComponent implements OnInit {
 	}
 
 	getOrganization(id: string, forceUpdate?: boolean) {
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.organizationService.view({ id: id, orgs: [], forceUpdate })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((organization: Organization) => {
-				this.organization = organization;
-				this.meta.updateTags(
-					{
-						title: `${organization.name} Community`,
-						description: 'Viewing a community page.'
-					});
-			});
+			.subscribe(
+				(organization: Organization) => {
+					this.organization = organization;
+					this.meta.updateTags(
+						{
+							title: `${organization.name} Community`,
+							description: 'Viewing a community page.'
+						});
+					return this.stateService.setLoadingState(AppState.complete);
+
+				},
+				(error) => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			)
 	}
 
 	onDelete() {
@@ -80,6 +96,10 @@ export class OrganizationViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	replaceImageUrl (url: string) {
+		return createUrl(url, 'auto', 'auto');
 	}
 
 }

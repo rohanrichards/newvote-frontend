@@ -61,7 +61,8 @@
 			    hidden
 			    autoComplete="off" />
 
-			<div class="image-select">
+			<div class="image-select"
+			 fxLayout="column">
 				<button mat-flat-button
 					type="button"
 				    color="primary"
@@ -70,6 +71,7 @@
 				    *ngIf="imageUrl">
 					<img [src]="imageUrl" />
 				</div>
+				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
 			</div>
 
 			<button mat-flat-button

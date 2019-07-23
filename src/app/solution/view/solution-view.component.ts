@@ -13,17 +13,27 @@ import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
+import { createUrl } from '@app/shared/helpers/cloudinary';
+import { trigger } from '@angular/animations';
+import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
+
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-view.component.html',
-	styleUrls: ['./solution-view.component.scss']
+	styleUrls: ['./solution-view.component.scss'],
+	animations: [
+    	trigger('fadeIn', fadeIn(':enter')) 
+	]
 })
 export class SolutionViewComponent implements OnInit {
 
 	solution: Solution;
 	isLoading: boolean;
-
+	loadingState: string;
 	constructor(
+		private stateService: StateService,
 		private solutionService: SolutionService,
 		private voteService: VoteService,
 		private proposalService: ProposalService,
@@ -36,7 +46,12 @@ export class SolutionViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSolution(ID);
@@ -52,9 +67,10 @@ export class SolutionViewComponent implements OnInit {
 			forceUpdate,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((solution: Solution) => {
+		.subscribe(
+			(solution: Solution) => {
 				this.solution = solution;
+				this.solution.imageUrl = this.replaceImageUrl(this.solution.imageUrl);
 				this.meta.updateTags(
 					{
 						title: solution.title,
@@ -62,7 +78,13 @@ export class SolutionViewComponent implements OnInit {
 						description: solution.description,
 						image: solution.imageUrl
 					});
-			});
+
+				return this.stateService.setLoadingState(AppState.complete);
+			},
+			(err) => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	onVote(voteData: any, model: string) {
@@ -75,18 +97,21 @@ export class SolutionViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe(
+				(res) => {
+					this.openSnackBar('Your vote was recorded', 'OK');
+					this.getSolution(this.solution._id, true);
+				},
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSolution(this.solution._id, true);
-			}
-		});
+			);
 	}
 
 	onDelete() {
@@ -184,6 +209,22 @@ export class SolutionViewComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	replaceImageUrl (url: string) {
+		if (!url) {
+			return '';
+		}
+
+		return createUrl(url, 'auto', 'auto');
+	}
+
+	imageToPlaceholder(url: string) {
+		if (!url) {
+			return '';
+		}
+
+ 		return createUrl(url, 'low', 'auto');
 	}
 
 }
