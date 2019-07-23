@@ -14,7 +14,7 @@
 		 fxFlex.gt-md="33%"
 		 class="signup-box">
 			<div *ngIf="this.org.authType && this.org.authType!==0"
-			 fxFlex>
+				fxFlex>
 				<button mat-raised-button
 				 fxFlex
 				 color="primary"
@@ -22,6 +22,7 @@
 				 (click)="redirect()">
 					<span translate>Sign up with SSO</span>
 				</button>
+				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>	
 			</div>
 			<form (ngSubmit)="signup()"
 			 *ngIf="!this.org.authType || this.org.authType===0"
