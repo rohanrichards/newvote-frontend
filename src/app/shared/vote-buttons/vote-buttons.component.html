@@ -36,12 +36,12 @@
 	</div>
 	<div 
 		fxLayout="column"
-		fxFlex.gt-md="1 1 300px"
+		fxFlex.gt-md="1 1 250px"
 		fxFlex.lt-xs="1"
 		>
 		<span class="mat-body-2">BE HEARD</span>
 		<div fxLayout="row" 
-			fxFlex="1 0 100%"
+			fxFlex="1 1 100%"
 
 			>
 			<button mat-raised-button
@@ -61,60 +61,4 @@
 		</div>
 	</div>
 </div>
-
-<!-- <div 
-	fxLayout.gt-md="row-reverse wrap"
-	fxLayout.gt-sm="row-reverse wrap"
-	fxLayoutAlign="space-evenly center"
-	class="container">
-	<div fxLayout="column"
-		fxFlex="0 1 250px"
-		fxFlex.xs="1 1 100%"
-		>
-		<span class="mat-body-2">RESULTS</span>
-		<div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock" class="chart-container">
-			<canvas class="chart-canvas"
-				baseChart
-				[colors]="chartColors"
-				[options]="chartOptions"
-				[chartType]="chartType"
-				[datasets]="dataSetOverride"
-				height="40px">
-			</canvas>
-
-			<div class="chart-score"
-				fxLayout="row"
-				fxFlex>
-				<span>{{item.votes.up}} Votes</span>
-				<span fxFlex></span>
-				<span>{{item.votes.down}} Votes</span>
-			</div>
-		</div>
-		<ng-template #elseBlock>
-			<button mat-raised-button 
-				(click)="voteToRevealMessage($event)"
-			>
-				VOTE TO REVEAL
-			</button>
-		</ng-template>
-	</div>
-	<div fxFlex="1 1 50%"
-		fxFlex.xs="1 1 100%"
-	    fxLayout="column">
-		<span class="mat-body-2">BE HEARD</span>
-		<div fxLayout="row">
-			<button mat-raised-button
-			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
-			    class="vote-button"
-				color="primary"
-			    (click)="onVote(item, 1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE UP</span><mat-icon>arrow_upward</mat-icon></button>
-
-			<button mat-raised-button
-			    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
-			    class="vote-button vote-button-dark"
-				color="primary"
-			    (click)="onVote(item, -1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span><mat-icon>arrow_downward</mat-icon></button>
-		</div>
-	</div>
-</div> -->
 		
