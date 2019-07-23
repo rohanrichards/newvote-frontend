@@ -104,4 +104,18 @@ export class SwiperWrapperComponent implements OnInit {
 	onVote(item: any, voteValue: number, event: any) {
 		this.vote.emit({item, voteValue});
 	}
+
+	visitUrl (event: any, url: string) {
+		event.preventDefault();
+		// url isn't trimmed on backend - do here so not to get bad urls
+		url = this.setHttp(url.trim());
+		window.open(url, '_blank');
+	}
+
+	setHttp(link: string) {
+		if (link.search(/^http[s]?\:\/\//) === -1) {
+			link = 'https://' + link;
+		}
+		return link;
+	}
 }
