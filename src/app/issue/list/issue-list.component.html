@@ -112,16 +112,18 @@
 				</div>
 				<div *ngSwitchCase="'complete'">
 					<ng-container *ngIf="allTopics.length === 0">
-						<div class="item-card-row"
-							fxFlex="100%"
-							>
-							<div class="empty-card-blank">
+						<mat-card class="empty-card-wrap">
+							<div class="item-card-row"
+								fxFlex="100%"
+								>
+								<div class="empty-card-blank">
+								</div>
+								<div class="empty-title-container">
+									<h2 class="mat-h2">Topics</h2>
+									<h4 class="mat-h4">There's no topics to review at the moment.</h4>
+								</div>
 							</div>
-							<div class="empty-title-container">
-								<h2 class="mat-h2">Topics</h2>
-								<h4 class="mat-h4">There's no topics to review at the moment.</h4>
-							</div>
-						</div>
+						</mat-card>
 					</ng-container>		
 					<div [@fadeIn]=true 
 						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
