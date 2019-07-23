@@ -1,81 +1,78 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
-		<mat-sidenav 
-			#sidenav
-		    [mode]="isMobile ? 'over' : 'side'"
-		    [opened]="!isMobile"
-		    [disableClose]="!isMobile"
-			ngClass.gt-sm="has-border"
-			fixedInViewport="true"
-			>
+		<mat-sidenav #sidenav
+		 [mode]="isMobile ? 'over' : 'side'"
+		 [opened]="!isMobile"
+		 [disableClose]="!isMobile"
+		 ngClass.gt-sm="has-border"
+		 fixedInViewport="true">
 			<div class="logo-container">
 				<p>
 					<a href="https://newvote.org">
 						<img class="logo"
-							src="assets/logo-no-circle.png"
-							alt="NewVote" />
+						 src="assets/logo-no-circle.png"
+						 alt="NewVote" />
 					</a>
 				</p>
 			</div>
 			<nav>
 				<mat-list>
 					<a mat-list-item
-					    routerLink="/home"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
+					 routerLink="/home"
+					 routerLinkActive="active"
+					 (click)="isMobile && sidenav.close()">
 						<span translate>Home</span>
 					</a>
 
 					<mat-divider></mat-divider>
 
 					<a mat-list-item
-					    routerLink="/issues"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
+					 routerLink="/issues"
+					 routerLinkActive="active"
+					 (click)="isMobile && sidenav.close()">
 						<span translate>Issues</span>
 					</a>
 					<a mat-list-item
-					    routerLink="/solutions"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
+					 routerLink="/solutions"
+					 routerLinkActive="active"
+					 (click)="isMobile && sidenav.close()">
 						<span translate>Solutions</span>
 					</a>
 
 					<a mat-list-item
-					    routerLink="/suggestions"
-					    routerLinkActive="active"
-					    (click)="isMobile && sidenav.close()">
+					 routerLink="/suggestions"
+					 routerLinkActive="active"
+					 (click)="isMobile && sidenav.close()">
 						<span translate>Your Suggestions</span>
 					</a>
 
 					<mat-divider></mat-divider>
 
 					<a mat-list-item
-						*ngIf="organization && organization.organizationUrl"
-						href="#"
-						(click)="visitOrganizationUrl($event)"
-						target="_blank"
-						>
+					 *ngIf="organization && organization.organizationUrl"
+					 href="#"
+					 (click)="visitOrganizationUrl($event)"
+					 target="_blank">
 						<span translate
-							matLine>About This Community</span>
-					</a>
-					
-					<a mat-list-item
-					    href="https://newvote.org/the-app"
-					    target="_blank">
-						<span translate
-						    matLine>About NewVote</span>
+						 matLine>About This Community</span>
 					</a>
 
 					<a mat-list-item
-					    href="https://newvote.org/help"
-					    target="_blank">
+					 href="https://newvote.org/the-app"
+					 target="_blank">
+						<span translate
+						 matLine>About NewVote</span>
+					</a>
+
+					<a mat-list-item
+					 href="https://newvote.org/help"
+					 target="_blank">
 						<span translate>Help</span>
 					</a>
 
 					<a mat-list-item
-					    href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
-					    target="_blank">
+					 href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
+					 target="_blank">
 						<span translate>Give Feedback</span>
 					</a>
 				</mat-list>
@@ -86,44 +83,51 @@
 			</nav>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<mat-toolbar 
-				color="primary"
-			    class="sticky-toolbar"
-				ngClass.gt-sm="with-sidenav"
-				fxLayout="row wrap">
+			<mat-toolbar color="primary"
+			 class="sticky-toolbar"
+			 ngClass.gt-sm="with-sidenav"
+			 fxLayout="row wrap">
 				<button class="menu-button"
-				    mat-icon-button
-				    (click)="sidenav.toggle()"
-				    >
+				 mat-icon-button
+				 (click)="sidenav.toggle()">
 					<mat-icon>menu</mat-icon>
 				</button>
 				<span class="toolbar-title">{{title}}</span>
 				<div fxFlex></div>
 				<button mat-icon-button
-				    (click)="toggleSearch()">
+				 (click)="toggleSearch()">
 					<mat-icon>search</mat-icon>
 				</button>
 				<button *ngIf="!isAuthenticated"
-					class="account-create-menu-icon"
-					mat-icon-button
-				    [matMenuTriggerFor]="loginMenu">
+				 class="account-create-menu-icon"
+				 mat-icon-button
+				 [matMenuTriggerFor]="loginMenu">
 					<mat-icon color="warn">account_box</mat-icon>
 				</button>
 				<mat-menu #loginMenu="matMenu">
-					<mat-list>
+					<mat-list *ngIf="!this.organization || this.organization.authType === 0">
 						<a mat-menu-item
-							routerLink="/auth/login"
-							translate>Login</a>
+						 routerLink="/auth/login"
+						 translate>Login</a>
 						<mat-divider></mat-divider>
 						<a mat-menu-item
-							routerLink="/auth/signup"
-							translate>Create Account</a>
+						 routerLink="/auth/signup"
+						 translate>Create Account</a>
+					</mat-list>
+					<mat-list *ngIf="this.organization && this.organization.authType === 1">
+						<a mat-menu-item
+						 (click)="redirect()"
+						 translate>Login</a>
+						<mat-divider></mat-divider>
+						<a mat-menu-item
+						 (click)="redirect()"
+						 translate>Create Account</a>
 					</mat-list>
 				</mat-menu>
 				<div *ngIf="isAuthenticated">
 					<button mat-icon-button
-					    [matMenuTriggerFor]="userMenu"
-					    translate>
+					 [matMenuTriggerFor]="userMenu"
+					 translate>
 						<mat-icon>person</mat-icon>
 					</button>
 					<mat-menu #userMenu="matMenu">
@@ -133,44 +137,53 @@
 							</mat-list-item>
 							<mat-divider></mat-divider>
 							<a mat-menu-item
-							    *ngIf="auth.isOwner() && organization"
-							    routerLink="/communities/edit/{{organization._id}}"
-							    translate>Edit Community</a>
+							 *ngIf="auth.isOwner() && organization"
+							 routerLink="/communities/edit/{{organization._id}}"
+							 translate>Edit Community</a>
 							<mat-divider></mat-divider>
 						</mat-list>
 						<button mat-menu-item
-						    (click)="logout()"
-						    translate>Logout</button>
+						 (click)="logout()"
+						 translate>Logout</button>
 					</mat-menu>
 				</div>
-				<div *ngIf="!isAuthenticated" class="hide-login-menu">
+				<div *ngIf="!isAuthenticated && (!this.organization || this.organization.authType === 0)"
+				 class="hide-login-menu">
 					<button mat-stroked-button
-					    class="border-override"
-					    routerLink="/auth/login">Sign In</button>
+					 class="border-override"
+					 routerLink="/auth/login">Sign In</button>
 					<button mat-flat-button
-					    color="warn"
-					    routerLink="/auth/signup">Create Account</button>
+					 color="warn"
+					 routerLink="/auth/signup">Create Account</button>
+				</div>
+				<div *ngIf="!isAuthenticated && (this.organization && this.organization.authType === 1)"
+				 class="hide-login-menu">
+					<button mat-stroked-button
+					 class="border-override"
+					 (click)="redirect()">Sign In</button>
+					<button mat-flat-button
+					 color="warn"
+					 (click)="redirect()">Create Account</button>
 				</div>
 			</mat-toolbar>
 			<!-- only show if search button pressed -->
 			<app-search-bar class="sticky-search"
-			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
-			    ngClass.lt-md="top-bar-height-sm"
-				[isVisible]="showSearch"
-				(closeSearch)="toggleSearch()"
-				></app-search-bar>
+			 ngClass.gt-sm="with-sidenav top-bar-height-lg"
+			 ngClass.lt-md="top-bar-height-sm"
+			 [isVisible]="showSearch"
+			 (closeSearch)="toggleSearch()"></app-search-bar>
 
 			<mat-toolbar color="warn"
-			    *ngIf="showVerify"
-			    class="sticky-verify"
-			    ngClass.gt-sm="with-sidenav top-bar-height-lg"
-			    ngClass.lt-md="top-bar-height-sm">
+			 *ngIf="showVerify"
+			 class="sticky-verify"
+			 ngClass.gt-sm="with-sidenav top-bar-height-lg"
+			 ngClass.lt-md="top-bar-height-sm">
 				<span class="mat-body">Your account is not yet verified</span>
 				<div fxFlex></div>
 				<button mat-stroked-button
-				    routerLink="/auth/verify">Verify Now</button>
+				 routerLink="/auth/verify">Verify Now</button>
 				<button mat-icon-button
-				    (click)="hideVerify = true">
+				 (click)="hideVerify = true">
 					<mat-icon>close</mat-icon>
 				</button>
 			</mat-toolbar>
