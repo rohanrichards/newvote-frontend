@@ -1,11 +1,11 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
 		<mat-sidenav #sidenav
-		 [mode]="isMobile ? 'over' : 'side'"
-		 [opened]="!isMobile"
-		 [disableClose]="!isMobile"
-		 ngClass.gt-sm="has-border"
-		 fixedInViewport="true">
+			[mode]="isMobile ? 'over' : 'side'"
+			[opened]="!isMobile"
+			[disableClose]="!isMobile"
+			ngClass.gt-sm="has-border"
+			fixedInViewport="true">
 			<div class="logo-container">
 				<p>
 					<a href="https://newvote.org">
@@ -76,11 +76,11 @@
 						<span translate>Give Feedback</span>
 					</a>
 				</mat-list>
-				<div class="secure-wrapper">
-					<p class="secure-text"><small>SECURED BY</small></p>
-					<img src="assets/entersoft-light.png" />
-				</div>
 			</nav>
+			<div class="secure-wrapper">
+				<p class="secure-text mat-caption"><small>SECURED BY</small></p>
+				<img src="assets/entersoft-light.png" />
+			</div>
 		</mat-sidenav>
 		<mat-sidenav-content>
 			<mat-toolbar color="primary"
