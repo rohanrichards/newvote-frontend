@@ -48,9 +48,8 @@ export class OrganizationService {
 			this.$org = <BehaviorSubject<any>>new BehaviorSubject({});
 
 			this.httpClient
-				.get('/organizations', { params })
+				.get('/organization', { params })
 				.pipe(
-					map((res: Array<Organization>) => res[0]),
 					catchError(handleError)
 				).subscribe((org: Organization) => {
 					this._org = org;
