@@ -17,6 +17,7 @@ import { OrganizationCreateComponent } from './create/organization-create.compon
 import { OrganizationEditComponent } from './edit/organization-edit.component';
 import { OrganizationClaimComponent } from './claim/organization-claim.component';
 
+
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
@@ -46,7 +47,7 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 		OrganizationEditComponent,
 		OrganizationListComponent,
 		OrganizationViewComponent,
-		OrganizationClaimComponent
+		OrganizationClaimComponent,
 	],
 	providers: [
 		OrganizationService,
