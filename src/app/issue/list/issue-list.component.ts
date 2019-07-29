@@ -80,9 +80,9 @@ export class IssueListComponent implements OnInit {
 		private router: Router,
 		private meta: MetaService
 	) {
-		// this.filteredTopics = this.topicFilter.valueChanges.pipe(
-		// 	startWith(''),
-		// 	map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+		this.filteredTopics = this.topicFilter.valueChanges.pipe(
+			startWith(''),
+			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
 	}
 
 	ngOnInit() {
