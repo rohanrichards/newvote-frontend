@@ -9,6 +9,7 @@ import { SharedModule } from '@app/shared';
 import { SearchService } from '@app/core/http/search/search.service';
 
 import { ShellComponent } from './shell.component';
+import { JoyrideModule } from 'ngx-joyride';
 
 @NgModule({
 	imports: [
@@ -17,6 +18,7 @@ import { ShellComponent } from './shell.component';
 		TranslateModule,
 		FlexLayoutModule,
 		MaterialModule,
+		JoyrideModule.forChild(),
 		RouterModule
 	],
 	declarations: [

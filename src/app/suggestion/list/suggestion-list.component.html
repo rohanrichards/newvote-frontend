@@ -1,4 +1,7 @@
-<app-header-bar [title]="headerTitle"
+<app-header-bar 
+	joyrideStep="suggestion2"
+	stepPosition="'bottom'"
+	[title]="headerTitle"
     [text]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
@@ -7,7 +10,10 @@
     size="1.5">
 </app-loader>
 
-<div class="container"
+<div 
+	joyrideStep="suggestion1"
+	stepPosition="'top'"
+	class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"

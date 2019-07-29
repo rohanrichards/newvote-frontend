@@ -1,3 +1,33 @@
+<div class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" (click)="startTour()"> 
+	<h4 joyrideStep="step1" 
+	class="mat-subtitle-1">New to NewVote? Let us help you get started.</h4>
+	<button 
+		
+		stepPosition="right"
+		mat-flat-button color="warn">
+		Start Tour
+	</button>
+</div>
+
+<joyrideStep
+	[title]="'Hello World'"
+	joyrideStep="step1"
+	stepPosition="center"
+	[stepContent]="myCustomContent"
+	(prev)="onPrev()"
+	>
+	<ng-template #myCustomContent>
+		<div style="width: 300px">
+			Della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un
+			anonimo della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo,
+			quando un anonimo della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo
+			secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. Lorem
+			Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo della tipografia e della
+			stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo
+		</div>
+	</ng-template>
+</joyrideStep>
+
 <ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
 </ng-container>
 
@@ -7,7 +37,8 @@
 </ng-template>
 
 <ng-template #mainContainer>
-	<div fxLayout="column"
+	<div 
+	fxLayout="column"
 	 [@fadeIn]="!isLoading"
 	 fxLayoutAlign="center center"
 	 class="hero-image-container">
@@ -22,16 +53,6 @@
 		</div>
 	</div>
 </ng-template>
-
-<div class="about-community-container container text-center container-white"
-    fxLayoutAlign="center center"
-    *ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
-
 
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
@@ -107,11 +128,14 @@
 			</div>
 		</div>
 	</div>
-	<div *ngSwitchCase="'complete'"
+	<div 
+	
+	*ngSwitchCase="'complete'"
 	 [@fadeIn]=true
 	 class="community-container container"
 	 fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
+		<div 
+			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px"
 		 fxLayout="column">
 			<div class="mat-display-1 no-margin">
@@ -133,7 +157,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="issues">{{issues.length}}</span>
+					 *ngIf="issues"><a routerLink="/issues">{{issues.length}}</a></span>
 					<span class="mat-h1"
 					 *ngIf="!issues">0</span>
 					<span class="mat-h3">Issues</span>
@@ -143,7 +167,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
+					 *ngIf="proposals && solutions"><a routerLink="/solutions">{{proposals.length + solutions.length}}</a></span>
 					<span class="mat-h1"
 					 *ngIf="!proposals || !solutions">0</span>
 					<span class="mat-h3">Solutions</span>
@@ -184,6 +208,15 @@
 		</div>
 	</div>
 </ng-container>
+
+<div class="about-community-container container text-center container-white"
+    fxLayoutAlign="center center"
+    *ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+	</div>
+</div>
 
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
@@ -233,10 +266,13 @@
 	</div>
 
 	<div *ngSwitchCase="'complete'"
+	joyrideStep="step2"
+	stepPosition="top"
 	 [@fadeIn]=true
 	 class="hot-issues-container container text-center"
 	 fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
+		<div 
+			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
 			<h2 class="mat-h2">What's Hot?</h2>
 			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">

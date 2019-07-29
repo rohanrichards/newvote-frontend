@@ -19,6 +19,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyrideService } from 'ngx-joyride';
 
 @Component({
 	selector: 'app-home',
@@ -38,10 +39,12 @@ export class HomeComponent implements OnInit {
 	userCount: number;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
+	loadTour = true;
 
 	ISSUE_LIMIT = 6;
 
 	constructor(
+		private readonly joyrideService: JoyrideService,
 		public stateService: StateService,
 		public auth: AuthenticationService,
 		private organizationService: OrganizationService,
@@ -145,5 +148,23 @@ export class HomeComponent implements OnInit {
 		}
 
 		return `${Math.floor(count / 1000)}K+`;
+	}
+
+	onPrev() {
+		console.log('previous');
+	}
+
+	onNext() {
+		console.log('NEXT');
+	}
+
+	startTour() {
+		this.joyrideService.startTour(
+			{ steps: ['step1', 'step2', 'navbar1@app', 'navbar2@app', 'navbar3@app', 'suggestion1@suggestions', 'suggestion2@suggestions']}
+		).subscribe(
+			(step) => { console.log('moose') },
+			(error) => { console.log('err') },
+			() => {console.log('finished')}
+		)
 	}
 }

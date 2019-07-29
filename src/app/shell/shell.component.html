@@ -27,19 +27,23 @@
 					<mat-divider></mat-divider>
 
 					<a mat-list-item
+					 joyrideStep="navbar1"
 					 routerLink="/issues"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">
 						<span translate>Issues</span>
 					</a>
 					<a mat-list-item
-					 routerLink="/solutions"
-					 routerLinkActive="active"
-					 (click)="isMobile && sidenav.close()">
+						joyrideStep="navbar2"
+						stepPosition="right"
+					 	routerLink="/solutions"
+					 	routerLinkActive="active"
+					 	(click)="isMobile && sidenav.close()">
 						<span translate>Solutions</span>
 					</a>
 
 					<a mat-list-item
+					 joyrideStep="navbar3"
 					 routerLink="/suggestions"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">

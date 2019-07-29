@@ -41,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { CookieService } from 'ngx-cookie-service';
+import { JoyrideModule } from 'ngx-joyride';
 
 @NgModule({
 	imports: [
@@ -68,6 +69,7 @@ import { CookieService } from 'ngx-cookie-service';
 		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		SwiperModule,
 		LazyLoadImageModule,
+		JoyrideModule.forRoot(),
 		AppRoutingModule // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [
