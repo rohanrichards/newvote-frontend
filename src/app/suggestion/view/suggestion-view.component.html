@@ -1,30 +1,20 @@
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
-
-<ng-container *ngIf="isLoading;
-	then skeletonHeader;
-	else mainHeader">
-</ng-container>
-
-<ng-container *ngIf="isLoading;
-	then skeletonSuggestion;
-	else mainSuggestion">
-</ng-container>
-
-<ng-template #skeletonHeader>
-	<!-- <app-skeleton-header [noLogo]=true >
-	</app-skeleton-header> -->
-	<app-skeleton-panel [hasVote]=true>
+<ng-container [ngSwitch]="loadingState">
+	<app-skeleton-panel *ngSwitchCase="'loading'" [hasVote]=true>
 	</app-skeleton-panel>
-</ng-template>
-
-<ng-template #mainHeader>
-	<mat-toolbar color="primary"
+	<app-skeleton-panel *ngSwitchCase="'serverError'" [hasVote]=true>
+	</app-skeleton-panel>
+	<mat-toolbar 
+		*ngSwitchCase="'complete'"
+		color="primary"
 		[@fadeIn]="!isLoading"
 		class="header-info-panel"
-		*ngIf="suggestion">
-		<div class="image-container"
+		>
+		<div 
+			*ngIf="suggestion"
+			class="image-container"
 			fxLayout="column"
 			[style.background-image]="'url(' + suggestion.imageUrl + ')'">
 			<div class="admin-panel"
@@ -106,8 +96,8 @@
 				fxFlex.gt-md="800px">
 				<div class="mat-display-1"
 					translate>{{suggestion.title}}</div>
-
-				<app-more-less [displayText]="suggestion.description"
+				<app-more-less 
+					[displayText]="suggestion.description"
 					maxHeight="200">
 				</app-more-less>
 				<mat-divider></mat-divider>
@@ -120,10 +110,12 @@
 			</div>
 		</div>
 	</mat-toolbar>
-</ng-template>
+</ng-container> 
 
-<ng-template #skeletonSuggestion>
-	<div class="container"
+<ng-container [ngSwitch]="loadingState">
+	<div 
+		*ngSwitchCase="'loading'"
+		class="container"
 		fxLayout="column"
 		fxLayoutAlign="center start"
 		>
@@ -135,26 +127,29 @@
 			</app-skeleton-wide-card>
 		</div>
 	</div>
-</ng-template>
-
-<ng-template #mainSuggestion>
-	<div class="container"
-		[@fadeIn]="!isLoading"
-		*ngIf="suggestion"
+	<div 
+		*ngSwitchCase="'serverError'"
+		class="container"
+		fxLayout="column"
+		fxLayoutAlign="center center"
+		>
+		<div
+		fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+			<app-error-card >
+			</app-error-card>
+		</div>
+	</div>
+	<div 
+		*ngSwitchCase="'complete'"
+		class="container"
+		[@fadeIn]=true
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">
-		<div fxFlex.gt-sm="690px"
+		<div 
+			*ngIf="suggestion"
+			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<!-- <mat-card class='info-card' *ngIf="suggestion.statements">
-				<mat-card-header>
-					<mat-card-title>Starting Statements</mat-card-title>
-				</mat-card-header>
-				<mat-card-content>
-					<p [innerHtml]="suggestion.statements">
-					</p>
-				</mat-card-content>
-			</mat-card> -->
-
 			<mat-card class='info-card'  *ngIf="suggestion.media.length > 0">
 				<mat-card-header>
 					<mat-card-title>Related Media</mat-card-title>
@@ -166,4 +161,4 @@
 			</mat-card>
 		</div>
 	</div>
-</ng-template>
+</ng-container>

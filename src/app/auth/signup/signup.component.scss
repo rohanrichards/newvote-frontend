@@ -5,6 +5,7 @@
   flex: 1;
   background-color: #ECEFF1;
   height: calc(100% - 64px);
+  min-height: 400px;
 }
 
 .inline-loader {
@@ -30,4 +31,9 @@
 
 .signup-error {
   color: mat-color($app-warn);
+}
+
+.signup-terms {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }

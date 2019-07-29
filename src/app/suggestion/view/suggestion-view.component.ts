@@ -13,6 +13,8 @@ import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { Vote } from '@app/core/models/vote.model';
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-suggestion',
@@ -27,8 +29,10 @@ export class SuggestionViewComponent implements OnInit {
 	suggestion: Suggestion;
 	suggestions: Array<Suggestion>;
 	isLoading: boolean;
+	loadingState: string;
 
 	constructor(
+		private stateService: StateService,
 		private suggestionService: SuggestionService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
@@ -40,7 +44,12 @@ export class SuggestionViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		});
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSuggestion(ID);
@@ -49,16 +58,21 @@ export class SuggestionViewComponent implements OnInit {
 
 	getSuggestion(id: string, forceUpdate?: boolean) {
 		this.suggestionService.view({ id: id, forceUpdate })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((suggestion: Suggestion) => {
-				this.suggestion = suggestion;
-				this.meta.updateTags(
-					{
-						title: `${this.suggestion.title}`,
-						appBarTitle: 'View Suggestion',
-						description: this.suggestion.description
-					});
-			});
+			.subscribe(
+				(suggestion: Suggestion) => {
+					this.suggestion = suggestion;
+					this.meta.updateTags(
+						{
+							title: `${this.suggestion.title}`,
+							appBarTitle: 'View Suggestion',
+							description: this.suggestion.description
+						});
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				(err) => {
+					this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
 	approveSuggestion() {
@@ -80,14 +94,15 @@ export class SuggestionViewComponent implements OnInit {
 		this.isLoading = true;
 		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.suggestion = t;
+				},
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
 				}
-			});
+		);
 	}
 
 	onVote(voteData: any) {
@@ -100,18 +115,21 @@ export class SuggestionViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
-				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestion(this.suggestion._id, true);
-			}
-		});
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe(
+				(res) => {
+						this.openSnackBar('Your vote was recorded', 'OK');
+						this.getSuggestion(this.suggestion._id, true);
+				},
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
+				},
+			);
 	}
 
 	onDelete() {
@@ -145,10 +163,11 @@ export class SuggestionViewComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				this.suggestion.softDeleted = true;
-				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion }).subscribe(() => {
-					this.openSnackBar('Succesfully removed', 'OK');
-					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-				});
+				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+					.subscribe(() => {
+						this.openSnackBar('Succesfully removed', 'OK');
+						this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+					});
 			}
 		});
 	}
@@ -165,10 +184,11 @@ export class SuggestionViewComponent implements OnInit {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				this.suggestion.softDeleted = false;
-				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion }).subscribe(() => {
-					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-				});
+				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+					.subscribe(() => {
+						this.openSnackBar('Succesfully restored', 'OK');
+						this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+					});
 			}
 		});
 	}

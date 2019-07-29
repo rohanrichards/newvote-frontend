@@ -23,6 +23,8 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -35,7 +37,10 @@ import { SharedModule } from '@app/shared';
 		MaterialFileInputModule,
 		QuillModule.forRoot(QuillSettings),
 		FileUploadModule,
-		OrganizationRoutingModule
+		OrganizationRoutingModule,
+		LazyLoadImageModule.forRoot({
+			preset: intersectionObserverPreset
+		})
 	],
 	declarations: [
 		OrganizationCreateComponent,

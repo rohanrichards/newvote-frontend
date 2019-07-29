@@ -59,9 +59,10 @@
 	max-height: 48px;
 	height: 20px;
 	overflow: hidden;
-	min-width: 0;
-	max-width: 350px;
-	margin: 0 !important;
+	max-width: 60vw;
+	margin-left: auto;
+    margin-right: auto;
+	
 	p {
 		margin: 0;
 		overflow: hidden;
@@ -70,26 +71,6 @@
 	}
 }
 
-@media only screen and (max-width: 600px) {
-	.title-card-subheader {
-		max-width: 400px;
-	}
-}
-
-@media only screen and (max-width: 500px) {
-	.title-card-subheader {
-		max-width: 310px;
-	}
-}
-
-@media only screen and (max-width: 400px) {
-	.title-card-subheader {
-		max-width: 272px;
-	}
-}
-
-@media only screen and (max-width: 360px) {
-	.title-card-subheader {
-		max-width: 240px;
-	}
+.placeholder-card {
+	cursor: default;
 }

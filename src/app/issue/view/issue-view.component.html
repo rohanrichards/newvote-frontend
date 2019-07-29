@@ -1,14 +1,14 @@
-<app-loader [isLoading]="isLoading"
+<app-loader  [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonHeader;
 	else mainIssueHeader">
 </ng-container>
 
 <div 
-	[@fadeIn]="!isLoading"
+	[@fadeIn]=true
 	class="container"
 	fxLayoutAlign="center center"
 	*ngIf="media"
@@ -20,7 +20,6 @@
 		*ngIf="media && !headingEdit"
 		>
 		<h3 class="mat-headline" 
-			*ngIf="media && media.length > 0"
 			[ngStyle]="{ 'margin-bottom': '0px'}"
 			>
 			{{ this.issue.mediaHeading || "Third Party Media"}}
@@ -61,7 +60,7 @@
 	</div>
 </div>
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonMedia;
 	else mainMedia">
 </ng-container>
@@ -81,10 +80,12 @@
 
 <ng-template #mainMedia>
 	<app-swiper-wrapper 
-		[@fadeIn]="!isLoading"
+		[@fadeIn]=true
 		path="/media"
 		[items]="media"
 		model="Media"
+		parent="Issue"
+		[organization]="issue.organizations.name"
 		(restore)="onMediaRestore($event)"
 		(softDelete)="onMediaSoftDelete($event)"
 		(delete)="onMediaDelete($event)"
@@ -93,7 +94,7 @@
 
 
 
-<ng-container *ngIf="isLoading;
+<ng-container *ngIf="loadingState === 'loading';
 	then skeletonCards
 	else mainCards">
 </ng-container>
@@ -116,10 +117,8 @@
 		<div class="image-container"
 			
 			fxLayout="column"
-			[defaultImage]="imageToPlaceholder(issue.imageUrl)"
-			[lazyLoad]="issue.imageUrl ?
-				replaceImageUrl(issue.imageUrl)
-				: ''">
+			[defaultImage]="handleImageUrl(issue.imageUrl, true)"
+			[lazyLoad]="handleImageUrl(issue.imageUrl)">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(issue)"
 				fxLayout="column"
@@ -243,7 +242,7 @@
 		fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<span class="mat-headline" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			<span class="mat-headline center-span" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
 			<app-card-list path="/solutions"
 				[items]=solutions
 				model="Solution"

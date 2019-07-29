@@ -1,29 +1,35 @@
-<app-loader [isLoading]="isLoading"
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
-<ng-container *ngIf="isLoading;
-	then skeletonHeader;
-	else mainHeader">
-</ng-container>
-
-<ng-template #skeletonHeader>
-	<app-skeleton-header [noLogo]=true >
-	</app-skeleton-header>
-	<app-skeleton-panel [hasVote]=true>
-	</app-skeleton-panel>
-</ng-template>
-
-<ng-template #mainHeader>
-	<mat-toolbar color="primary"
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'">
+		<app-skeleton-header [noLogo]=true >
+		</app-skeleton-header>
+		<app-skeleton-panel [hasVote]=true>
+		</app-skeleton-panel>
+	</div>
+	<div *ngSwitchCase="'serverError'">
+		<app-skeleton-header [noLogo]=true >
+		</app-skeleton-header>
+		<app-skeleton-panel [hasVote]=true>
+		</app-skeleton-panel>
+		<div class="error-container">
+			<app-error-card>
+			</app-error-card>
+		</div>
+	</div>
+	<mat-toolbar 
+		*ngSwitchCase="'complete'"
+		color="primary"
 		[@fadeIn]="!isLoading"
 		class="header-info-panel"
-		*ngIf="proposal">
-		<div class="image-container"
+		>
+		<div 
+			*ngIf="proposal"
+			class="image-container"
 			fxLayout="column"
-			[defaultImage]="imageToPlaceholder(proposal.imageUrl)"
-			[lazyLoad]="proposal.imageUrl ?
-				replaceImageUrl(proposal.imageUrl)
-				: ''">
+			[defaultImage]="handleImageUrl(proposal.imageUrl, true)"
+			[lazyLoad]="handleImageUrl(proposal.imageUrl)">
 			<div class="admin-panel"
 				*ngIf="auth.isModerator(proposal)"
 				fxLayout="column"
@@ -102,8 +108,7 @@
 			</div>
 		</div>
 	</mat-toolbar>
-</ng-template>
-
+</ng-container>
 
 <div class="container"
     *ngIf="proposal"

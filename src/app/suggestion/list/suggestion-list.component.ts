@@ -13,6 +13,8 @@ import { Vote } from '@app/core/models/vote.model';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-suggestion',
@@ -24,6 +26,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 })
 export class SuggestionListComponent implements OnInit {
 
+	loadingState: string;
 	suggestions: Array<any>;
 	isLoading: boolean;
 	headerTitle = 'Make a new contribution';
@@ -38,6 +41,7 @@ export class SuggestionListComponent implements OnInit {
 	}];
 
 	constructor(private suggestionService: SuggestionService,
+		private stateService: StateService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -47,6 +51,12 @@ export class SuggestionListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.stateService.loadingState$.subscribe((state: string) => {
+			this.loadingState = state;
+		})
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.queryParamMap.subscribe(params => {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
@@ -60,13 +70,20 @@ export class SuggestionListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		const isOwner = this.auth.isOwner();
-		this.isLoading = true;
+
 		this.suggestionService.list({
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(suggestions => { this.suggestions = suggestions; });
+		.subscribe(
+			suggestions => {
+				this.suggestions = suggestions;
+				this.stateService.setLoadingState(AppState.complete);
+			},
+			err => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	onDelete(event: any) {
@@ -103,18 +120,20 @@ export class SuggestionListComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe((res) => {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.fetchData(true);
+			},
+			(error) => {
+				if (error.status === 401) {
 					this.openSnackBar('You must be logged in to vote', 'OK');
 				} else {
 					this.openSnackBar('There was an error recording your vote', 'OK');
 				}
-			} else {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.fetchData(true);
 			}
-		});
+		);
 	}
 
 	openSnackBar(message: string, action: string) {

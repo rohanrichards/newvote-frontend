@@ -10,12 +10,22 @@
 			<mat-form-field>
 				<!-- {{organizationForm.status}} -->
 				<input matInput
-				 placeholder="Enter a name for the organization (properly formatted e.g UQ Union)"
+				 placeholder="Name of community (properly formatted e.g UQ Union)"
 				 formControlName="name"
 				 required>
 				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
 					The name is <strong>required</strong>
 				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field *ngIf="auth.isOwner()">
+				<input matInput
+				 placeholder="Organization name (will appear as leader of community)"
+				 formControlName="organizationName"
+				 >
+				<!-- <mat-error *ngIf="organizationForm.hasError('required', ['organizationName'])">
+					The organization name is <strong>required</strong>
+				</mat-error> -->
 			</mat-form-field>
 
 			<mat-form-field>
@@ -49,6 +59,29 @@
 				 placeholder="(optional) URL to your organization"
 				 formControlName="organizationUrl">
 			</mat-form-field>
+
+			<mat-form-field
+			*ngIf="auth.isAdmin()">
+				<mat-label>Authentication Type</mat-label>
+				<mat-select formControlName="authType" required>
+					<mat-option [value]="0">
+						Local (email/password)
+					</mat-option>
+					<mat-option [value]="1">
+						UQ AAF
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field
+			*ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+				<input matInput
+				 type="url"
+				 placeholder="The redirect URL to use for AAF authentication"
+				 formControlName="authUrl"
+				 required>
+			</mat-form-field>
+
 			<div fxFlex.gt-sm="60"
 			 fxLayout="row">
 				<mat-form-field style="width: 100%; padding-right: 0.5rem"

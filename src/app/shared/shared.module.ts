@@ -35,6 +35,7 @@ import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.co
 import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component';
 
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { ErrorCardComponent } from './error/error-card/error-card.component';
 
 @NgModule({
 	imports: [
@@ -76,7 +77,8 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 		SkeletonChildCardComponent,
 		SkeletonMediaCardComponent,
 		SkeletonCardComponent,
-		SkeletonPanelComponent
+		SkeletonPanelComponent,
+		ErrorCardComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -99,7 +101,8 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 		SkeletonChildCardComponent,
 		SkeletonMediaCardComponent,
 		SkeletonCardComponent,
-		SkeletonPanelComponent
+		SkeletonPanelComponent,
+		ErrorCardComponent
 	]
 })
 export class SharedModule { }

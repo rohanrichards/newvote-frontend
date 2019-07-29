@@ -3,7 +3,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
+import { MetaService } from '@app/core/meta.service';
 
 @Component({
 	selector: 'app-card-list',
@@ -21,15 +22,23 @@ export class CardListComponent implements OnInit {
 	@Input() showParent = false;
 	@Input() parentPath: string;
 	@Input() parentPropName: string;
+	@Input() isError: boolean;
 	@Output() restore = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() childVote = new EventEmitter();
+	handleImageUrl = optimizeImage;
+	organizationName: string;
 
-	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+	constructor(
+		public dialog: MatDialog,
+		private auth: AuthenticationService,
+		private meta: MetaService
+	) { }
 
 	ngOnInit() {
+		this.organizationName = this.meta.organization.name;
 	}
 
 	onDelete(item: any, event: any) {
@@ -95,19 +104,4 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
 }

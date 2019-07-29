@@ -20,17 +20,19 @@ import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
 
-import { createUrl } from '@app/shared/helpers/cloudinary';
+import { optimizeImage } from '@app/shared/helpers/cloudinary';
 
 import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-view.component.html',
 	styleUrls: ['./issue-view.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class IssueViewComponent implements OnInit {
@@ -41,8 +43,11 @@ export class IssueViewComponent implements OnInit {
 	isLoading: boolean;
 	voteSnack: any;
 	headingEdit = false;
+	loadingState: string;
+	handleImageUrl = optimizeImage;
 
 	constructor(
+		private stateService: StateService,
 		private topicService: TopicService,
 		private issueService: IssueService,
 		private solutionService: SolutionService,
@@ -57,7 +62,10 @@ export class IssueViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.isLoading = true;
+		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
+
+		this.stateService.setLoadingState(AppState.loading);
+
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getIssue(ID);
@@ -66,17 +74,21 @@ export class IssueViewComponent implements OnInit {
 
 	getIssue(id: string) {
 		this.issueService.view({ id: id, orgs: [] })
-			.subscribe((issue: IIssue) => {
-				this.issue = issue;
-				this.getSolutions(issue._id);
-				this.meta.updateTags(
-					{
-						title: this.issue.name,
-						appBarTitle: 'View Issue',
-						description: this.issue.description,
-						image: this.issue.imageUrl
-					});
-			});
+			.subscribe(
+				(issue: IIssue) => {
+					this.issue = issue;
+					this.getSolutions(issue._id);
+					this.meta.updateTags(
+						{
+							title: this.issue.name,
+							appBarTitle: 'View Issue',
+							description: this.issue.description,
+							image: this.issue.imageUrl
+						});
+					this.stateService.setLoadingState(AppState.complete);
+				},
+				(error) => this.stateService.setLoadingState(AppState.serverError)
+			);
 	}
 
 	getSolutions(id: string, forceUpdate?: boolean) {
@@ -85,7 +97,7 @@ export class IssueViewComponent implements OnInit {
 		this.solutionService.list({
 			params: isOwner
 				? { issueId: id, 'showDeleted': true }
-				:  { issueId: id },
+				: { issueId: id },
 			forceUpdate,
 		})
 			.subscribe((solutions: Array<Solution>) => {
@@ -101,7 +113,7 @@ export class IssueViewComponent implements OnInit {
 		this.mediaService.list({
 			params: isOwner
 				? { issueId: id, 'showDeleted': true }
-				:  { issueId: id },
+				: { issueId: id },
 			forceUpdate,
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
@@ -125,6 +137,7 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	onVote(voteData: any, model: string) {
+		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
 		const existingVote = item.votes.currentUser;
@@ -133,19 +146,24 @@ export class IssueViewComponent implements OnInit {
 			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
 		}
 
-		this.voteService.create({ entity: vote }).subscribe((res) => {
-			if (res.error) {
-				if (res.error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false))
+			.subscribe(
+				(res) => {
+					this.refreshData(this.issue._id);
+					this.getMedia(this.issue._id, true);
+					this.openSnackBar('Your vote was recorded', 'OK');
+				},
+				(error) => {
+					if (error) {
+						if (error.status === 401) {
+							this.openSnackBar('You must be logged in to vote', 'OK');
+						} else {
+							this.openSnackBar('There was an error recording your vote', 'OK');
+						}
+					}
 				}
-			} else {
-				this.refreshData(this.issue._id);
-				this.getMedia(this.issue._id, true);
-				this.openSnackBar('Your vote was recorded', 'OK');
-			}
-		});
+			);
 	}
 
 	onDelete() {
@@ -201,7 +219,7 @@ export class IssueViewComponent implements OnInit {
 				this.issue.softDeleted = false;
 				this.issueService.update({ id: this.issue._id, entity: this.issue }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/issues'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -278,19 +296,4 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
 }

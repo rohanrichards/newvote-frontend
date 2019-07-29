@@ -42,7 +42,9 @@ export class OrganizationCreateComponent implements OnInit {
 		iconUrl: new FormControl('', [Validators.required]),
 		owner: new FormControl(''),
 		moderators: new FormControl([]),
-		moderatorsControl: new FormControl([], [Validators.email])
+		moderatorsControl: new FormControl([], [Validators.email]),
+		authType: new FormControl(0, [Validators.required]),
+		authUrl: new FormControl('', [Validators.required])
 	});
 
 	uploaderOptions: FileUploaderOptions = {

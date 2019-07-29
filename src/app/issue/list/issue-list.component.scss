@@ -84,6 +84,33 @@ q {
 	flex-wrap: wrap;
 }
 
+.empty-card {
+	cursor: default;
+}
+
+.empty-card-blank {
+	margin-top: 0.5rem;
+	margin-left: auto;
+	margin-right: auto;
+	min-height: 200px;
+	max-height: 350px;
+	width: 50%;
+	background-image: url("assets/logo-no-text.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin-bottom: 0.5rem;
+}
+
+.empty-title-container {
+	text-align: center;
+}
+
+.empty-card-wrap {
+	background-color: white;
+	padding: 1rem;
+}
+
 @media only screen and (max-width: 600px) {
 
 	.skeleton-card-list {

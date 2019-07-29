@@ -3,8 +3,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { createUrl } from '../helpers/cloudinary';
 import { Router } from '@angular/router';
+import { optimizeImage } from '../helpers/cloudinary';
 
 @Component({
 	selector: 'app-grid-list',
@@ -22,6 +22,7 @@ export class GridListComponent implements OnInit {
 	@Output() delete = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
 	@Output() restore = new EventEmitter();
+	handleImageUrl = optimizeImage;
 
 	constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
@@ -92,23 +93,7 @@ export class GridListComponent implements OnInit {
 		});
 	}
 
-	replaceImageUrl (url: string) {
-		if (!url) {
-			return '';
-		}
-
-		return createUrl(url, 'auto', 'auto');
-	}
-
-	imageToPlaceholder(url: string) {
-		if (!url) {
-			return '';
-		}
-
- 		return createUrl(url, 'low', 'auto');
-	}
-
-	handleUrl (item: any) {
+	handleUrl(item: any) {
 
 		if (this.model !== 'Organization') {
 			return this.router.navigate([`/${this.path}/${item._id}`]);
@@ -121,7 +106,7 @@ export class GridListComponent implements OnInit {
 		splitHostname[0] = item.url;
 
 		const newHostName = splitHostname.join('.');
-		window.location.href = `http://${newHostName}:4200`;
+		window.location.href = `http://${newHostName}:${window.location.port}`;
 	}
 
 }

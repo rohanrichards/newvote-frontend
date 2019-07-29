@@ -70,6 +70,14 @@
 	padding: 16px;
 }
 
+.container-white {
+	background-color: #FFFFFF;
+}
+
+.container-grey {
+	background-color: #FAFAFA;
+}
+
 .hot-issues-container {
 	background-color: #FFFFFF;
 }
@@ -189,6 +197,14 @@
 
 	.skeleton-card-list {
 		flex-direction: column;
+	}
+
+}
+
+@media only screen and (max-width: 450px) {
+
+	.container {
+		padding: 1em;
 	}
 
 }
