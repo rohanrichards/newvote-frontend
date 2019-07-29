@@ -110,7 +110,6 @@
 
 .secure-text {
 	text-transform: uppercase;
-	padding-left: 0.5rem;
 	margin-bottom: 0;
 }
 
@@ -131,7 +130,7 @@
 }
 
 @media screen and (max-width: 300px) {
-	
+
 	.toolbar-title {
 		display: none;
 	}

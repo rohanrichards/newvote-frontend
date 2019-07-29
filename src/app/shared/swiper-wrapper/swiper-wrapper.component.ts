@@ -11,10 +11,13 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 	styleUrls: ['./swiper-wrapper.component.scss']
 })
 export class SwiperWrapperComponent implements OnInit {
+
 	@ViewChild(SwiperComponent) componentRef?: SwiperComponent;
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
+	@Input() parent: string;
+	@Input() organization: any;
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
@@ -59,6 +62,7 @@ export class SwiperWrapperComponent implements OnInit {
 	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	ngOnInit() {
+
 	}
 
 	onDelete(item: any, event: any) {
@@ -99,5 +103,19 @@ export class SwiperWrapperComponent implements OnInit {
 
 	onVote(item: any, voteValue: number, event: any) {
 		this.vote.emit({item, voteValue});
+	}
+
+	visitUrl (event: any, url: string) {
+		event.preventDefault();
+		// url isn't trimmed on backend - do here so not to get bad urls
+		url = this.setHttp(url.trim());
+		window.open(url, '_blank');
+	}
+
+	setHttp(link: string) {
+		if (link.search(/^http[s]?\:\/\//) === -1) {
+			link = 'https://' + link;
+		}
+		return link;
 	}
 }

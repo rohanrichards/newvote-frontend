@@ -134,4 +134,16 @@ export class HomeComponent implements OnInit {
 		// window.location.href = this.org.authUrl;
 		window.open(this.org.authUrl, '_self');
 	}
+
+	handleUserCount(count: number) {
+		if (!count) {
+			return `0`;
+		}
+
+		if (count < 1000) {
+			return `< 1K`;
+		}
+
+		return `${Math.floor(count / 1000)}K+`;
+	}
 }
