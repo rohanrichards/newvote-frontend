@@ -123,7 +123,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="userCount">{{userCount}}</span>
+					 *ngIf="userCount">{{ handleUserCount(userCount) }}</span>
 					<span class="mat-h1"
 					 *ngIf="!userCount">0</span>
 					<span class="mat-h3">Members</span>
@@ -178,7 +178,7 @@
 					</span>
 				</div>
 				<div *ngIf="org.owner">
-					<span class="mat-caption">{{org.name}} has claimed leadership of this community.</span>
+					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
 				</div>
 			</div>
 		</div>

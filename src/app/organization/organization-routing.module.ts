@@ -20,8 +20,7 @@ const routes: Routes = [
 	{
 		path: '',
 		component: OrganizationListComponent,
-		data: { title: extract('All Communities') },
-		canActivate: [AdminGuard]
+		data: { title: extract('All Communities') }
 	},
 	{
 		path: 'create',
