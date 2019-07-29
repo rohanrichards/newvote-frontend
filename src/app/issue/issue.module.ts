@@ -24,6 +24,7 @@ import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
 
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { JoyrideModule } from 'ngx-joyride';
 
 @NgModule({
 	imports: [
@@ -35,6 +36,7 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 		ReactiveFormsModule,
 		MaterialModule,
 		MaterialFileInputModule,
+		JoyrideModule.forChild(),
 		QuillModule.forRoot({
 			modules: {
 				toolbar: [

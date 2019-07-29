@@ -1,5 +1,5 @@
-<app-header-bar [title]="headerTitle"
-    [text]="headerText"
+<app-header-bar [headerTitle]="headerTitle"
+    [headerText]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
 
@@ -9,7 +9,17 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
+	<div 
+		joyrideStep="issues1"
+		joyridePosition="top"
+		[title]="'The Issues'"
+		[text]="'Here\'s where you\'ll find all the issues your community is currently discussing
+		You can also filter issues by what topic they are under.
+		Otherwise you can click on any issue
+		to find out more information or potentially vote on solutions.
+		Solutions are the answers your community have thought of to tackle the current issues.
+		We\'ll go there next.'"
+		fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<div>
 			<ng-container [ngSwitch]="loadingState">

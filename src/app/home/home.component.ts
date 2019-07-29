@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit {
 	loadingState: string;
 	handleImageUrl = optimizeImage;
 	loadTour = true;
-
 	ISSUE_LIMIT = 6;
 
 	constructor(
@@ -160,7 +159,11 @@ export class HomeComponent implements OnInit {
 
 	startTour() {
 		this.joyrideService.startTour(
-			{ steps: ['step1', 'step2', 'navbar1@app', 'navbar2@app', 'navbar3@app', 'suggestion1@suggestions', 'suggestion2@suggestions']}
+			{
+				steps: ['step1', 'step2', 'nav1@app', 'issues1@issues',
+					'solution1@solutions', 'suggestion1@suggestions',
+					'suggestion2@suggestions']
+			}
 		).subscribe(
 			(step) => { console.log('moose') },
 			(error) => { console.log('err') },

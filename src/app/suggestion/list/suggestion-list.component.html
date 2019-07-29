@@ -1,8 +1,12 @@
 <app-header-bar 
 	joyrideStep="suggestion2"
+	[title]="'Make a Suggestion'"
+	[text]="'If there is an issue/action/topic which was missing and you feel strongly about here\'s the place to make ngOnInit
+		You can create a suggestion, and the community leaders will see if it\'s suitable. Get your message heard!.
+	'"
 	stepPosition="'bottom'"
-	[title]="headerTitle"
-    [text]="headerText"
+	
+    [headerText]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
 
@@ -11,12 +15,15 @@
 </app-loader>
 
 <div 
-	joyrideStep="suggestion1"
-	stepPosition="'top'"
 	class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
+	<div 
+		joyrideStep="suggestion1"
+		stepPosition="center"
+		[title]="joyrideSuggestionListTitle"
+		[text]="joyrideSuggestionListText"
+		fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<ng-container [ngSwitch]="loadingState">
 			<div 

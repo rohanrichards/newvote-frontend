@@ -18,12 +18,11 @@
 	>
 	<ng-template #myCustomContent>
 		<div style="width: 300px">
-			Della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un
-			anonimo della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo,
-			quando un anonimo della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo
-			secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. Lorem
-			Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo della tipografia e della
-			stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo
+			Welcome to NewVote here you can discover the topics and issues that are important to your community. 
+			Then vote on the solutions that have been put forward by members community leaders and sometimes from the 
+			members themselves.
+
+			Let's get started and see where we can find out more abuot those issues.
 		</div>
 	</ng-template>
 </joyrideStep>
@@ -266,11 +265,16 @@
 	</div>
 
 	<div *ngSwitchCase="'complete'"
-	joyrideStep="step2"
-	stepPosition="top"
-	 [@fadeIn]=true
-	 class="hot-issues-container container text-center"
-	 fxLayoutAlign="center center">
+		joyrideStep="step2"
+		[title]="'The Most Popular Issues'"
+		[text]="'For each community you can find the most discussed / voted on issues here. 
+		You can click through here to find out more about those issues and what people want do about them.
+		But dont stop here, this is only a limited selection, you can find more issues by navigating to the issues page.
+		We will navigate there next'"
+		stepPosition="top"
+		[@fadeIn]=true
+		class="hot-issues-container container text-center"
+		fxLayoutAlign="center center">
 		<div 
 			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">

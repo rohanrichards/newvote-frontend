@@ -27,14 +27,12 @@
 					<mat-divider></mat-divider>
 
 					<a mat-list-item
-					 joyrideStep="navbar1"
 					 routerLink="/issues"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">
 						<span translate>Issues</span>
 					</a>
 					<a mat-list-item
-						joyrideStep="navbar2"
 						stepPosition="right"
 					 	routerLink="/solutions"
 					 	routerLinkActive="active"
@@ -43,7 +41,6 @@
 					</a>
 
 					<a mat-list-item
-					 joyrideStep="navbar3"
 					 routerLink="/suggestions"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">
@@ -91,9 +88,13 @@
 			 class="sticky-toolbar"
 			 ngClass.gt-sm="with-sidenav"
 			 fxLayout="row wrap">
-				<button class="menu-button"
-				 mat-icon-button
-				 (click)="sidenav.toggle()">
+				<button 
+					joyrideStep="nav1"
+					[title]="'App navigation Menu'"
+					[text]="'You can find the main site links here, whether you want to see the current solutions / actions / suggestions. They are all easily accessible.'"
+					class="menu-button"
+					mat-icon-button
+					(click)="sidenav.toggle()">
 					<mat-icon>menu</mat-icon>
 				</button>
 				<span class="toolbar-title">{{title}}</span>

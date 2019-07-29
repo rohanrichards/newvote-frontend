@@ -40,6 +40,9 @@ export class SuggestionListComponent implements OnInit {
 		role: 'user'
 	}];
 
+	joyrideSuggestionListTitle = 'Here are the Suggestions';
+	joyrideSuggestionListText = 'You can read and vote on suggestions made by other members of the community here.';
+
 	constructor(private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private voteService: VoteService,
