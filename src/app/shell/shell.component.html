@@ -112,7 +112,7 @@
 					<mat-icon color="warn">account_box</mat-icon>
 				</button>
 				<mat-menu #loginMenu="matMenu">
-					<mat-list *ngIf="!this.organization || this.organization.authType === 0">
+					<mat-list *ngIf="!this.organization || !this.organization.authType || this.organization.authType === 0">
 						<a mat-menu-item
 						 routerLink="/auth/login"
 						 translate>Login</a>
@@ -154,7 +154,7 @@
 						 translate>Logout</button>
 					</mat-menu>
 				</div>
-				<div *ngIf="!isAuthenticated && (!this.organization || this.organization.authType === 0)"
+				<div *ngIf="!isAuthenticated && (!this.organization || !this.organization.authType || this.organization.authType === 0)"
 				 class="hide-login-menu">
 					<button mat-stroked-button
 					 class="border-override"
