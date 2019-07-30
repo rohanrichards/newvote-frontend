@@ -14,12 +14,12 @@
             fxFlex.gt-sm="690px"
             fxFlex.gt-md="800px"
             fxLayout="column">
-            <h3 class="mat-display-1 no-margin">
+            <h1 class="mat-display-1 no-margin">
                 About New Vote
-            </h3>
-            <p class="mat-subheading-2">
+            </h1>
+            <h3 class="mat-subheading-2">
                 NewVote is an online crowdsourcing, co-design and communication and decision-making tool accessible on all devices with in-built privacy, transparency and accountability features.  This is what we call ‘democracy as a service’. The code of the app is open source and secure democratic infrastructure. 
-            </p>
+            </h3>
         </div>
     </div>
     <div
@@ -50,8 +50,8 @@
             *ngFor="let org of organizations"
             (click)="openCommunityURL($event, org.url)">
             <div mat-card-image class="organization-image" 
-                [style.background-image]="'url(' + org.imageUrl + ')'">
-                <img class="organization-icon" [src]="org.iconUrl" />
+                [style.background-image]="'url(' + (org.imageUrl || 'assets/solution-default.png') + ')'">
+                <img *ngIf="org.iconUrl" class="organization-icon" [src]="org.iconUrl" />
             </div>
             <mat-card-content>
                 <mat-card-title>
