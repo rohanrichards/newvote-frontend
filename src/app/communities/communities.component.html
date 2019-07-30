@@ -1,0 +1,85 @@
+<div class="home-wrapper" fxLayout="column">
+    <mat-toolbar class="toolbar" color="primary">
+        <span>Discover Communities</span>
+    </mat-toolbar>
+    <div class="home-hero">
+        <img class="hero-logo" src="assets/logo-no-text.png" />
+    </div>
+    <div class="about-section"
+        fxFlex="0 1 auto"
+        fxLayoutAlign="center center"
+        >
+        <div 
+            class="about-container"
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px"
+            fxLayout="column">
+            <h3 class="mat-display-1 no-margin">
+                About New Vote
+            </h3>
+            <p class="mat-subheading-2">
+                NewVote is an online crowdsourcing, co-design and communication and decision-making tool accessible on all devices with in-built privacy, transparency and accountability features.  This is what we call ‘democracy as a service’. The code of the app is open source and secure democratic infrastructure. 
+            </p>
+        </div>
+    </div>
+    <div
+        class="container"
+        fxLayout="row wrap"
+        fxLayoutAlign="center start"
+        >
+        <div 
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px"
+            class="center-text"
+            >
+            <span class="mat-headline center-span">
+                Pick Your Community
+            </span>
+        </div>
+    </div>
+    <div 
+        gdColumns.gt-md="1fr 1fr 1fr"
+        gdColumns.gt-xs="1fr 1fr"
+        class="card-grid"
+        gdColumns.xs="1fr"
+        gdRows="auto"
+        gdGap="20px"
+        >
+        <mat-card 
+            class="organization-card"
+            *ngFor="let org of organizations"
+            (click)="openCommunityURL($event, org.url)">
+            <div mat-card-image class="organization-image" 
+                [style.background-image]="'url(' + org.imageUrl + ')'">
+            </div>
+            <mat-card-content>
+                <mat-card-title>
+                    {{ org.name }}
+                </mat-card-title>
+                <mat-card-subtitle>
+                    By {{ org.organizationName || ''}}
+                </mat-card-subtitle>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div
+        class="footer container"
+        fxLayoutAlign="center center"
+        >
+        <div 
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+             >
+            <h4 class="mat-subheading-1 ">Interested in having your own community?</h4>
+            <button
+                mat-button
+                mat-raised-button
+                (click)="handleClick()"
+                color="warn"
+                class="mat-display-1">
+                Start Your Community
+            </button>
+    </div>
+</div>
