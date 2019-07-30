@@ -51,6 +51,7 @@
             (click)="openCommunityURL($event, org.url)">
             <div mat-card-image class="organization-image" 
                 [style.background-image]="'url(' + org.imageUrl + ')'">
+                <img class="organization-icon" [src]="org.iconUrl" />
             </div>
             <mat-card-content>
                 <mat-card-title>

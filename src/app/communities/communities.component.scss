@@ -59,6 +59,19 @@
         background-repeat: no-repeat;
         min-height: 300px;
         height: auto;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+
+        .organization-icon {
+            width: 150px;
+            height: 150px;
+            object-position: cover;
+        }
+
+        .circle-icon {
+            border-radius: 50%;
+        }
 	}
 	cursor: pointer;
 }
