@@ -7,7 +7,6 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
-import { Router } from '@angular/router';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -35,7 +34,6 @@ export class OrganizationService {
 	private $org: BehaviorSubject<any>;
 
 	constructor(
-		private router: Router,
 		private httpClient: HttpClient,
 		private cookieService: CookieService
 	) {
