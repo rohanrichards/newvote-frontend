@@ -27,13 +27,16 @@ export class CommunitiesComponent implements OnInit {
 		// this.state.setLoadingState(AppState.loading);
 
 		this.organizationService.list({
-			orgs: [], forceUpdate: force,
-			params: isAdmin ? { 'showDeleted': true } : {}
+			orgs: [],
+			forceUpdate: force,
+			params: {
+				'showDeleted': isAdmin ? 'true' : '',
+				'showPrivate': isAdmin ? 'true' : 'false'
+			}
 		})
 		.subscribe(
 			organizations => {
 				this.organizations = organizations;
-				console.log(organizations, 'this is organizations');
 				// return this.stateService.setLoadingState(AppState.complete);
 			},
 			(error) => {

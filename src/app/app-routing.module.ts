@@ -13,7 +13,7 @@ const routes: Routes = [
 		{ path: 'suggestions', loadChildren: 'app/suggestion/suggestion.module#SuggestionModule' },
 		{ path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
 		{ path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
-		// { path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' }
+		{ path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' }
 	]),
 	Landing.childRoutes([
 		{ path: 'landing', loadChildren: 'app/communities/communities.module#CommunitiesModule'},

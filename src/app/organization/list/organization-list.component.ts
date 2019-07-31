@@ -37,7 +37,6 @@ export class OrganizationListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router,
 		private meta: MetaService
 	) { }
 
@@ -62,8 +61,12 @@ export class OrganizationListComponent implements OnInit {
 		this.stateService.setLoadingState(AppState.loading);
 
 		this.organizationService.list({
-			orgs: [], forceUpdate: force,
-			params: isAdmin ? { 'showDeleted': true } : {}
+			orgs: [],
+			forceUpdate: force,
+			params: {
+				'showDeleted': isAdmin ? 'true' : '',
+				'showPrivate': isAdmin ? 'true' : ''
+			}
 		})
 		.subscribe(
 			organizations => {

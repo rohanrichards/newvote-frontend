@@ -75,6 +75,20 @@
 				 required>
 			</mat-form-field>
 
+			<mat-form-field>
+				<mat-label>Public / Private Organization</mat-label>
+				<mat-select formControlName="privateOrg" 
+				 required>
+					<mat-option [value]="false">
+						Public
+					</mat-option>
+					<mat-option [value]="true">
+						Private
+					</mat-option>
+				</mat-select>
+				<mat-hint>By setting organization to private it will be hidden from NewVotes community lists.</mat-hint>
+			</mat-form-field>
+
 			<mat-form-field class="example-chip-list"
 			 *ngIf="auth.isAdmin()">
 				<mat-chip-list #chipList>
