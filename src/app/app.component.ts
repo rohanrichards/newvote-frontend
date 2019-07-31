@@ -9,7 +9,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { environment } from '@env/environment';
-import { Logger, I18nService } from '@app/core';
+import { Logger, I18nService, OrganizationService } from '@app/core';
+import { Organization } from './core/models/organization.model';
 
 const log = new Logger('App');
 
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit {
 		// do not remove the analytics injection, even if the call in ngOnInit() is removed
 		// this injection initializes page tracking through the router
 		private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
-		private i18nService: I18nService) { }
+		private i18nService: I18nService,
+		private organizationService: OrganizationService) { }
 
 	ngOnInit() {
 		// Setup logger
@@ -70,6 +72,15 @@ export class AppComponent implements OnInit {
 		document.addEventListener('deviceready', () => {
 			this.zone.run(() => this.onCordovaReady());
 		}, false);
+
+		this.organizationService.get().subscribe((org: Organization) => {
+			console.log('app org: ', org);
+			if (!org) {
+				// debugger;
+				console.log('no org');
+				this.router.navigate(['/landing']);
+			}
+		});
 	}
 
 	private onCordovaReady() {

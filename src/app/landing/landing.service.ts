@@ -12,7 +12,7 @@ export class Landing {
 			path: '',
 			component: LandingComponent,
 			children: routes,
-			data: { reuse: true }
+			// data: { reuse: true }
 		};
 	}
 }
