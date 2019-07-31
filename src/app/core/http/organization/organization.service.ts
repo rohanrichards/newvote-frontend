@@ -7,6 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
+import { Router } from '@angular/router';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -34,6 +35,7 @@ export class OrganizationService {
 	private $org: BehaviorSubject<any>;
 
 	constructor(
+		private router: Router,
 		private httpClient: HttpClient,
 		private cookieService: CookieService
 	) {
@@ -48,14 +50,18 @@ export class OrganizationService {
 			this.$org = <BehaviorSubject<any>>new BehaviorSubject({});
 
 			this.httpClient
-				.get('/organizations', { params })
+				.get('/organizations/' + this._subdomain)
 				.pipe(
-					map((res: Array<Organization>) => res[0]),
 					catchError(handleError)
-				).subscribe((org: Organization) => {
-					this._org = org;
-					this.$org.next(org);
-				});
+				).subscribe(
+					(org: Organization) => {
+						this._org = org;
+						this.$org.next(org);
+					},
+					(err) => {
+						this.$org.next(null);
+					}
+				);
 		}
 	}
 
