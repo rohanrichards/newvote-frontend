@@ -1,11 +1,7 @@
+import { LandingComponent } from './landing.component';
 import { Routes, Route } from '@angular/router';
-import { ShellComponent } from './shell.component';
 
-/**
- * Provides helper methods to create routes.
- */
-export class Shell {
-
+export class Landing {
 	/**
 	 * Creates routes using the shell component and authentication.
 	 * @param routes The routes to add.
@@ -14,11 +10,9 @@ export class Shell {
 	static childRoutes(routes: Routes): Route {
 		return {
 			path: '',
-			component: ShellComponent,
+			component: LandingComponent,
 			children: routes,
-			// Reuse ShellComponent instance when navigating between child views
-			// data: { reuse: true },
-			// outlet: 'appoutlet'
+			// data: { reuse: true }
 		};
 	}
 }

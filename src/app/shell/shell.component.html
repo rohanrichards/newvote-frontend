@@ -65,7 +65,7 @@
 					</a>
 
 					<a mat-list-item
-						routerLink="/communities"
+						(click)="isMobile && sidenav.close(); redirectToLanding()"
 					    >
 						<span translate
 						    matLine>Explore Communities</span>

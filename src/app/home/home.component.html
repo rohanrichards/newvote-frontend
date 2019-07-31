@@ -296,7 +296,7 @@
 	 routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
-			<button *ngIf="!this.org || this.org.authType || this.org.authType===0"
+			<button *ngIf="!this.org || !this.org.authType || this.org.authType===0"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/signup"

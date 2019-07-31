@@ -3,6 +3,6 @@ import { throwError } from 'rxjs';
 
 export const handleError = (error: HttpErrorResponse) => {
 	// (e) => of([{ error: e }])
-	console.log('throwiing Error');
+	console.log('throwing Error, ', error);
 	return throwError(error);
 };
