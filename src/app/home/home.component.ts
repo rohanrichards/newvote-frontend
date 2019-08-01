@@ -151,11 +151,13 @@ export class HomeComponent implements OnInit {
 		return `${Math.floor(count / 1000)}K+`;
 	}
 
-	onDone() {
+	onDone(event: any) {
+		event.stopPropagation();
 		this.completeTour();
 	}
 
-	startTour() {
+	startTour(event: any) {
+		event.stopPropagation();
 		this.joyrideService.startTour(
 			{
 				steps: ['step1', 'step2', 'nav1@app', 'issues1@issues',
@@ -166,7 +168,7 @@ export class HomeComponent implements OnInit {
 			}
 		).subscribe(
 			() => {
-				this.onDone();
+				this.completeTour();
 			}
 		);
 	}
@@ -186,7 +188,6 @@ export class HomeComponent implements OnInit {
 			)
 	}
 
-	
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,

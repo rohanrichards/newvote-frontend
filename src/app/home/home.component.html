@@ -1,11 +1,21 @@
-<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" (click)="startTour()"> 
+<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" > 
 	<h4 joyrideStep="step1" 
 	class="mat-subtitle-1">New to NewVote? Let us help you get started.</h4>
-	<button 
-		stepPosition="right"
-		mat-flat-button color="warn">
-		Start Tour
-	</button>
+	<div>
+		<button 
+			(click)="onDone($event)"
+			stepPosition="right"
+			mat-flat-button>
+			Dismiss
+		</button>
+		<button 
+			(click)="startTour($event)"
+			stepPosition="right"
+			mat-flat-button color="warn">
+			Start Tour
+		</button>
+	</div>
+
 </div>
 
 <joyrideStep
@@ -13,8 +23,7 @@
 	joyrideStep="step1"
 	stepPosition="center"
 	[stepContent]="myCustomContent"
-	(prev)="onPrev()"
-	(done)="onDone()"
+	(done)="onDone($event)"
 	>
 	<ng-template #myCustomContent>
 		<div style="width: 300px">
