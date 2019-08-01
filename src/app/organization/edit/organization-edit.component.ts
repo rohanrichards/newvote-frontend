@@ -35,6 +35,7 @@ export class OrganizationEditComponent implements OnInit {
 
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
+		organizationName: new FormControl(''),
 		url: new FormControl('', [Validators.required]),
 		organizationUrl: new FormControl(''),
 		description: new FormControl('', [Validators.required]),
@@ -46,7 +47,8 @@ export class OrganizationEditComponent implements OnInit {
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email]),
 		authType: new FormControl(0, [Validators.required]),
-		authUrl: new FormControl('', [Validators.required])
+		authUrl: new FormControl('', [Validators.required]),
+		privateOrg: new FormControl(false, [Validators.required])
 	});
 
 	backgroundImage = {
@@ -118,6 +120,7 @@ export class OrganizationEditComponent implements OnInit {
 
 					this.organizationForm.patchValue({
 						'name': organization.name,
+						'organizationName': organization.organizationName,
 						'description': organization.description,
 						'longDescription': organization.longDescription,
 						'url': organization.url,
@@ -127,6 +130,7 @@ export class OrganizationEditComponent implements OnInit {
 						'newLeaderEmail': '',
 						'authType': organization.authType,
 						'authUrl': organization.authUrl,
+						'privateOrg': organization.privateOrg || false
 					});
 
 					this.meta.updateTags(

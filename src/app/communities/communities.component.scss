@@ -1,0 +1,85 @@
+.home-wrapper {
+    height: 100%;
+}
+
+.toolbar {
+    min-height: 64px;
+}
+
+.home-hero {
+    min-height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-image: url('assets/newvote-banner-no-text.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.hero-logo {
+    padding: 0.5rem;
+    object-fit: contain;
+    width: 100%;
+    max-height: 250px;
+    max-width: 250px;
+}
+
+.about-section {
+    background-color: #FAFAFA;
+    padding: 2rem;
+}
+
+.about-container {
+    text-align: center;
+}
+
+.about-body-text {
+    text-align: left;
+}
+
+.container {
+    padding: 2rem;
+}
+
+.footer {
+    background-color: #FAFAFA;
+    margin-top: auto;
+}
+
+.card-grid {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 1200px;
+    margin-bottom: 2rem;
+}
+
+.center-text {
+    text-align: center;
+}
+
+
+.organization-card {
+    .organization-image {
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        min-height: 300px;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+
+        .organization-icon {
+            width: 150px;
+            height: 150px;
+            object-position: cover;
+        }
+
+        .circle-icon {
+            border-radius: 50%;
+        }
+	}
+	cursor: pointer;
+}

@@ -42,6 +42,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { CookieService } from 'ngx-cookie-service';
 import { JoyrideModule } from 'ngx-joyride';
+import { LandingModule } from './landing/landing.module';
 
 @NgModule({
 	imports: [
@@ -70,10 +71,11 @@ import { JoyrideModule } from 'ngx-joyride';
 		SwiperModule,
 		LazyLoadImageModule,
 		JoyrideModule.forRoot(),
-		AppRoutingModule // must be imported as the last module as it contains the fallback route
+		LandingModule,
+		AppRoutingModule  // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [
-		AppComponent
+		AppComponent,
 	],
 	entryComponents: [
 		ConfirmDialogComponent

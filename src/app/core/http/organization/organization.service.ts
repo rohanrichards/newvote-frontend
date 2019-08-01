@@ -48,14 +48,18 @@ export class OrganizationService {
 			this.$org = <BehaviorSubject<any>>new BehaviorSubject({});
 
 			this.httpClient
-				.get('/organizations', { params })
+				.get('/organizations/' + this._subdomain)
 				.pipe(
-					map((res: Array<Organization>) => res[0]),
 					catchError(handleError)
-				).subscribe((org: Organization) => {
-					this._org = org;
-					this.$org.next(org);
-				});
+				).subscribe(
+					(org: Organization) => {
+						this._org = org;
+						this.$org.next(org);
+					},
+					(err) => {
+						this.$org.next(null);
+					}
+				);
 		}
 	}
 

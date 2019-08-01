@@ -13,7 +13,6 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
-import { HomeSkeletonComponent } from './home-skeleton/home-skeleton.component';
 
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
 import { JoyrideModule } from 'ngx-joyride';
@@ -35,7 +34,6 @@ import { JoyrideModule } from 'ngx-joyride';
 	],
 	declarations: [
 		HomeComponent,
-		HomeSkeletonComponent
 	],
 	providers: [
 		IssueService,
