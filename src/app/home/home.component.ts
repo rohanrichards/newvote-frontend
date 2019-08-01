@@ -151,16 +151,7 @@ export class HomeComponent implements OnInit {
 		return `${Math.floor(count / 1000)}K+`;
 	}
 
-	onPrev() {
-		console.log('previous');
-	}
-
-	onNext() {
-		console.log('NEXT');
-	}
-
 	onDone() {
-		console.log('DONE CLICKED');
 		this.completeTour();
 	}
 
@@ -174,8 +165,6 @@ export class HomeComponent implements OnInit {
 				stepDefaultPosition: 'top'
 			}
 		).subscribe(
-			(step) => { console.log('moose') },
-			(error) => { console.log('err') },
 			() => {
 				this.onDone();
 			}

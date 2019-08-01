@@ -276,7 +276,6 @@ export class AuthenticationService {
 
 	tourComplete(): boolean {
 		if (this._credentials) {
-			console.log(this._credentials.user.completedTour, 'this is completed tour');
 			return this._credentials.user.completedTour;
 		}
 	}
