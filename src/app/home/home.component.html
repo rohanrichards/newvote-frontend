@@ -52,10 +52,7 @@
 		</div>
 	</div>
 </ng-template>
-<<<<<<< HEAD
 
-=======
->>>>>>> master
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
 	 class="community-container container">
@@ -159,7 +156,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="issues"><a routerLink="/issues">{{issues.length}}</a></span>
+					 *ngIf="issues"><p  class="counter-click" routerLink="/issues">{{issues.length}}</p></span>
 					<span class="mat-h1"
 					 *ngIf="!issues">0</span>
 					<span class="mat-h3">Issues</span>
@@ -169,7 +166,7 @@
 				<div fxFlex></div>
 				<div fxLayout="column">
 					<span class="mat-h1"
-					 *ngIf="proposals && solutions"><a routerLink="/solutions">{{proposals.length + solutions.length}}</a></span>
+					 *ngIf="proposals && solutions"><p class="counter-click" routerLink="/solutions">{{proposals.length + solutions.length}}</p></span>
 					<span class="mat-h1"
 					 *ngIf="!proposals || !solutions">0</span>
 					<span class="mat-h3">Solutions</span>

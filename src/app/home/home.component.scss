@@ -198,6 +198,12 @@
 	background-color: #039BE5;
 }
 
+.counter-click {
+	margin: 0;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 @media only screen and (max-width: 750px) {
 
 	.skeleton-card-list {
