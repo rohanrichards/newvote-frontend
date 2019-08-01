@@ -64,7 +64,13 @@
 }
 
 .placeholder-image {
-	background-color: lightgray;
+	// background-color: lightgray;
+	background-image: url('assets/logo-no-text.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center center;
+	min-height: 250px;
+	margin-top: 0.25rem !important;
 }
 
 .container {
