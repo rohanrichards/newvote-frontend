@@ -274,6 +274,17 @@ export class AuthenticationService {
 		}
 	}
 
+	tourComplete(): boolean {
+		if (this._credentials) {
+			console.log(this._credentials.user.completedTour, 'this is completed tour');
+			return this._credentials.user.completedTour;
+		}
+	}
+
+	saveTourToLocalStorage() {
+		this.setCredentials(this._credentials, true);
+	}
+
 	setVerified(credentials: Credentials) {
 		// debugger;
 		if (localStorage.getItem(credentialsKey)) {

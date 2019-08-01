@@ -20,6 +20,7 @@ import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyrideService } from 'ngx-joyride';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
 	selector: 'app-home',
@@ -52,7 +53,8 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService
+		private cookieService: CookieService,
+		public snackBar: MatSnackBar
 	) { }
 
 	ngOnInit() {
@@ -157,17 +159,49 @@ export class HomeComponent implements OnInit {
 		console.log('NEXT');
 	}
 
+	onDone() {
+		console.log('DONE CLICKED');
+		this.completeTour();
+	}
+
 	startTour() {
 		this.joyrideService.startTour(
 			{
 				steps: ['step1', 'step2', 'nav1@app', 'issues1@issues',
 					'solution1@solutions', 'suggestion1@suggestions',
-					'suggestion2@suggestions']
+					'suggestion2@suggestions'],
+				showPrevButton: true,
+				stepDefaultPosition: 'top'
 			}
 		).subscribe(
 			(step) => { console.log('moose') },
 			(error) => { console.log('err') },
-			() => {console.log('finished')}
-		)
+			() => {
+				this.onDone();
+			}
+		);
+	}
+
+	completeTour() {
+		const user = this.auth.credentials.user;
+		user.completedTour = true;
+		this.userService.patch({ id: user._id, entity: user })
+			.subscribe(
+				(res) => {
+					this.auth.saveTourToLocalStorage();
+					this.openSnackBar('Tour Complete', 'OK');
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			)
+	}
+
+	
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 4000,
+			horizontalPosition: 'right'
+		});
 	}
 }

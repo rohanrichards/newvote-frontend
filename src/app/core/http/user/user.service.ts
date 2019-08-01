@@ -12,6 +12,7 @@ const routes = {
 	// create: (c: UserContext) => `/users`,
 	// update: (c: UserContext) => `/users/${c.id}`,
 	// delete: (c: UserContext) => `/users/${c.id}`
+	patch: (c: UserContext) => `/users/tour/${c.id}`
 };
 
 export interface UserContext {
@@ -88,6 +89,15 @@ export class UserService {
 	// 		);
 	// }
 
+	patch(context: UserContext): Observable<any> {
+		return this.httpClient
+			.cache(context.forceUpdate)
+			.patch(routes.patch(context), context.entity)
+			.pipe(
+				map((res: any) => res),
+				catchError((e) => of({ error: e }))
+			);
+	}
 	// delete(context: UserContext): Observable<any> {
 	// 	return this.httpClient
 	// 		.delete(routes.delete(context))
