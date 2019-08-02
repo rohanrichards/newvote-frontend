@@ -21,8 +21,8 @@ export class OrganizationListComponent implements OnInit {
 
 	organizations: Array<any>;
 	isLoading: boolean;
-	headerTitle = 'Administrate Organizations';
-	headerText = 'Admin panel for managing organizations';
+	headerTitle = 'Explore Communities';
+	headerText = 'Discover other Organizations on NewVote';
 	headerButtons = [{
 		text: 'New Organization',
 		color: 'warn',
@@ -37,7 +37,6 @@ export class OrganizationListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router,
 		private meta: MetaService
 	) { }
 
@@ -62,8 +61,12 @@ export class OrganizationListComponent implements OnInit {
 		this.stateService.setLoadingState(AppState.loading);
 
 		this.organizationService.list({
-			orgs: [], forceUpdate: force,
-			params: isAdmin ? { 'showDeleted': true } : {}
+			orgs: [],
+			forceUpdate: force,
+			params: {
+				'showDeleted': isAdmin ? 'true' : '',
+				'showPrivate': isAdmin ? 'true' : ''
+			}
 		})
 		.subscribe(
 			organizations => {

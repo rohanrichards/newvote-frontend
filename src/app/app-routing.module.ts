@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { Shell } from '@app/shell/shell.service';
+import { Landing } from '@app/landing/landing.service';
 
 const routes: Routes = [
 	Shell.childRoutes([
@@ -14,6 +15,10 @@ const routes: Routes = [
 		{ path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
 		{ path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' }
 	]),
+	Landing.childRoutes([
+		{ path: 'landing', loadChildren: 'app/communities/communities.module#CommunitiesModule'},
+	]),
+
 	// Fallback when no prior route is matched
 	{ path: '**', redirectTo: '', pathMatch: 'full' }
 ];

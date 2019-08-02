@@ -1,11 +1,11 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
 		<mat-sidenav #sidenav
-		 [mode]="isMobile ? 'over' : 'side'"
-		 [opened]="!isMobile"
-		 [disableClose]="!isMobile"
-		 ngClass.gt-sm="has-border"
-		 fixedInViewport="true">
+			[mode]="isMobile ? 'over' : 'side'"
+			[opened]="!isMobile"
+			[disableClose]="!isMobile"
+			ngClass.gt-sm="has-border"
+			fixedInViewport="true">
 			<div class="logo-container">
 				<p>
 					<a href="https://newvote.org">
@@ -65,8 +65,15 @@
 					</a>
 
 					<a mat-list-item
-					 href="https://newvote.org/help"
-					 target="_blank">
+						(click)="isMobile && sidenav.close(); redirectToLanding()"
+					    >
+						<span translate
+						    matLine>Explore Communities</span>
+					</a>
+
+					<a mat-list-item
+					    href="https://newvote.org/help"
+					    target="_blank">
 						<span translate>Help</span>
 					</a>
 
@@ -76,11 +83,11 @@
 						<span translate>Give Feedback</span>
 					</a>
 				</mat-list>
-				<div class="secure-wrapper">
-					<p class="secure-text"><small>SECURED BY</small></p>
-					<img src="assets/entersoft-light.png" />
-				</div>
 			</nav>
+			<div class="secure-wrapper">
+				<p class="secure-text mat-caption"><small>SECURED BY</small></p>
+				<img src="assets/entersoft-light.png" />
+			</div>
 		</mat-sidenav>
 		<mat-sidenav-content>
 			<mat-toolbar color="primary"
@@ -105,7 +112,7 @@
 					<mat-icon color="warn">account_box</mat-icon>
 				</button>
 				<mat-menu #loginMenu="matMenu">
-					<mat-list *ngIf="!this.organization || this.organization.authType === 0">
+					<mat-list *ngIf="!this.organization || !this.organization.authType || this.organization.authType === 0">
 						<a mat-menu-item
 						 routerLink="/auth/login"
 						 translate>Login</a>
@@ -147,7 +154,7 @@
 						 translate>Logout</button>
 					</mat-menu>
 				</div>
-				<div *ngIf="!isAuthenticated && (!this.organization || this.organization.authType === 0)"
+				<div *ngIf="!isAuthenticated && (!this.organization || !this.organization.authType || this.organization.authType === 0)"
 				 class="hide-login-menu">
 					<button mat-stroked-button
 					 class="border-override"

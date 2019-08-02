@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { Router } from '@angular/router';
 import { optimizeImage } from '../helpers/cloudinary';
 
 @Component({
@@ -23,7 +24,7 @@ export class GridListComponent implements OnInit {
 	@Output() restore = new EventEmitter();
 	handleImageUrl = optimizeImage;
 
-	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+	constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
 	public get getItems() {
 
@@ -91,4 +92,21 @@ export class GridListComponent implements OnInit {
 			}
 		});
 	}
+
+	handleUrl(item: any) {
+
+		if (this.model !== 'Organization') {
+			return this.router.navigate([`/${this.path}/${item._id}`]);
+		}
+
+		const { hostname } = window.location;
+
+		// separate the current hostname into subdomain and main site
+		const splitHostname = hostname.split('.');
+		splitHostname[0] = item.url;
+
+		const newHostName = splitHostname.join('.');
+		window.location.href = `http://${newHostName}:${window.location.port}`;
+	}
+
 }

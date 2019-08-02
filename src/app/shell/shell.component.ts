@@ -110,4 +110,17 @@ export class ShellComponent implements OnInit {
 		// window.location.href = this.org.authUrl;
 		window.open(this.organization.authUrl, '_self');
 	}
+
+	redirectToLanding() {
+		const { hostname } = window.location;
+
+		// separate the current hostname into subdomain and main site
+		const splitHostname = hostname.split('.');
+		splitHostname[0] = 'app';
+
+		const newHostName = splitHostname.join('.');
+		// window.location.href = `http://${newHostName}:${window.location.port}`;
+		// window.open(`http://${newHostName}:${window.location.port}`, '_self');
+		this.router.navigate(['/landing']);
+	}
 }
