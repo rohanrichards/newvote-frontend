@@ -82,6 +82,20 @@
 				 required>
 			</mat-form-field>
 
+			<mat-form-field>
+				<mat-label>Public / Private Organization</mat-label>
+				<mat-select formControlName="privateOrg" [value]="false"
+				 required>
+					<mat-option [value]="false">
+						Public
+					</mat-option>
+					<mat-option [value]="true">
+						Private
+					</mat-option>
+				</mat-select>
+				<mat-hint>By setting organization to private it will be hidden from NewVotes community lists.</mat-hint>
+			</mat-form-field>
+
 			<div fxFlex.gt-sm="60"
 			 fxLayout="row">
 				<mat-form-field style="width: 100%; padding-right: 0.5rem"

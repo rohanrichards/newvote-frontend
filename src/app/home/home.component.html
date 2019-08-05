@@ -22,17 +22,6 @@
 		</div>
 	</div>
 </ng-template>
-
-<div class="about-community-container container text-center container-white"
-    fxLayoutAlign="center center"
-    *ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
-
-
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
 	 class="community-container container">
@@ -151,7 +140,7 @@
 				<div fxFlex></div>
 			</div>
 			<div *ngIf="!auth.isAuthenticated()">
-				<button *ngIf="!this.org || this.org.authType===0"
+				<button *ngIf="!this.org || !this.org.authType || this.org.authType===0"
 				 mat-button
 				 mat-raised-button
 				 routerLink="/auth/signup"
@@ -184,6 +173,13 @@
 		</div>
 	</div>
 </ng-container>
+
+<div class="about-community-container container text-center container-white" fxLayoutAlign="center center"
+	*ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+	</div>
+</div>
 
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
@@ -300,7 +296,7 @@
 	 routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
-			<button *ngIf="!this.org || this.org.authType===0"
+			<button *ngIf="!this.org || !this.org.authType || this.org.authType===0"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/signup"
