@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, forwardRef, AfterViewInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
@@ -18,6 +18,8 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 
+import { ShellComponent } from '@app/shell/shell.component';
+
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-list.component.html',
@@ -26,7 +28,7 @@ import { AppState } from '@app/core/models/state.model';
     	trigger('fadeIn', fadeIn(':enter')) 
 	]
 })
-export class SolutionListComponent implements OnInit {
+export class SolutionListComponent implements OnInit, AfterViewInit {
 
 	loadingState: string;
 	solutions: Array<any>;
@@ -48,7 +50,8 @@ export class SolutionListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -67,6 +70,12 @@ export class SolutionListComponent implements OnInit {
 				const force: boolean = !!params.get('forceUpdate');
 				this.fetchData(force);
 			});
+
+	}
+
+	ngAfterViewInit(): void {
+		// Initializing scroll
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {

@@ -1,5 +1,6 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, 
+	ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { CookieService } from 'ngx-cookie-service';
@@ -7,11 +8,13 @@ import { CookieService } from 'ngx-cookie-service';
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
-import { MatSidenavContent } from '@angular/material';
+import { MatSidenavContent, MatSidenavContainer } from '@angular/material';
 
-import { asyncScheduler, fromEvent } from 'rxjs';
-import { filter, observeOn, scan, debounceTime, tap } from 'rxjs/operators';
+import { asyncScheduler, fromEvent, Subscription } from 'rxjs';
+import { filter, observeOn, scan, debounceTime, tap, auditTime, finalize } from 'rxjs/operators';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
+import { ScrollService } from '@app/core/scroll/scroll.service';
+
 
 interface ScrollPositionRestore {
 	event: Event;
@@ -29,13 +32,17 @@ export class ShellComponent implements OnInit {
 	organization: any;
 	hideVerify = false;
 	showSearch = false;
+	currentRoute: any;
+	oldRouteState: any;
+	pageLoading = false;
 
 	@Output() closeSearch = new EventEmitter();
-	@ViewChild(CdkScrollable) scrollable: CdkScrollable;
+	@ViewChild(MatSidenavContainer) sidenavContainer: MatSidenavContainer;
 
 	scrollingSubscription: any;
 
 	constructor(
+		private scrollService: ScrollService,
 		public scroll: ScrollDispatcher,
 		private router: Router,
 		private titleService: Title,
@@ -54,14 +61,68 @@ export class ShellComponent implements OnInit {
 		// need to find a way of tracking the page, the scroll position (scrollTop on data.elementRef)
 		// saving that data and then triggering on page forward a scroll reset to 0
 		// or if back is pushed the scrollposition is then applied after view init
-		this.scrollingSubscription = this.scroll
-		.scrolled()
-		.subscribe((data: CdkScrollable) => {
-			let element = data.elementRef;
-			console.log(element, 'this is element');
+		this.scrollService.currentRoute$
+			.subscribe((route: any) => {
+				this.currentRoute = route;
+			});
 
-			
-		});
+		this.scrollingSubscription = this.scroll
+			.scrolled()
+			.subscribe((data: CdkScrollable) => {
+				const scrollTop = data.getElementRef().nativeElement.scrollTop;
+				this.scrollService.updateCurrentRoutePosition(scrollTop);
+			});
+
+		this.router.events
+			.pipe(
+				filter(
+					event =>
+						event instanceof NavigationStart ||
+						event instanceof NavigationEnd
+				),
+			)
+			.subscribe((e: any) => {
+				if (e instanceof NavigationStart) {
+					if (e.navigationTrigger === 'popstate') {
+						// User has hit the back button
+
+						// Make sure we only load the state once
+						if (this.oldRouteState && this.oldRouteState.id === e.restoredState.navigationId) {
+							return false;
+						}
+
+						this.oldRouteState = this.scrollService.getSavedRoutes().find((ele: any) => {
+							return e.restoredState.navigationId === ele.id;
+						});
+						console.log(this.oldRouteState, 'this is oldRoute');
+					}
+					if (e.navigationTrigger === 'imperative') {
+						// User has user the router navigation
+						this.oldRouteState = null;
+					}
+				}
+
+				if (e instanceof NavigationEnd) {
+					const currentRoute = {
+						id: e.id,
+						route: e.url
+					};
+
+					this.scrollService.currentRoute = currentRoute;
+				}
+			});
+	}
+
+
+	restoreScrollPosition() {
+		console.log('restore called');
+		// scroll finish
+		if (!this.oldRouteState) {
+			console.log('NO STATE, GOING TOP');
+			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
+		}
+		console.log('We got state OFFSETTING');
+		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
 
@@ -69,6 +130,7 @@ export class ShellComponent implements OnInit {
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
 		});
+
 	}
 
 	setLanguage(language: string) {

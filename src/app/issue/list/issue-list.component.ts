@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Inject, forwardRef, AfterViewInit } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -23,6 +23,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-issue',
@@ -32,7 +33,7 @@ import { StateService } from '@app/core/http/state/state.service';
 		trigger('fadeIn', fadeIn(':enter')) 
 	]
 })
-export class IssueListComponent implements OnInit {
+export class IssueListComponent implements OnInit, AfterViewInit {
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
@@ -78,7 +79,9 @@ export class IssueListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
+
 	) {
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),
@@ -104,6 +107,11 @@ export class IssueListComponent implements OnInit {
 				title: 'All Issues',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
+
+	}
+
+	ngAfterViewInit(): void {
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {

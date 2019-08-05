@@ -1,9 +1,9 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute, Scroll } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { merge } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { merge, Subscription } from 'rxjs';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';

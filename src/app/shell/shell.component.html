@@ -1,4 +1,4 @@
-<div>
+<div fxFlex>
 	<mat-sidenav-container>
 		<mat-sidenav #sidenav
 			[mode]="isMobile ? 'over' : 'side'"
@@ -89,7 +89,9 @@
 				<img src="assets/entersoft-light.png" />
 			</div>
 		</mat-sidenav>
-		<mat-sidenav-content [style.height]="'100vh'" cdkScrollable>
+		<mat-sidenav-content 
+			[style.height]="'100vh'" 
+			cdkScrollable>
 				<mat-toolbar color="primary"
 				class="sticky-toolbar"
 				ngClass.gt-sm="with-sidenav"

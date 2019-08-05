@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, forwardRef, AfterViewInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { OrganizationService } from '@app/core';
@@ -19,6 +19,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-home',
@@ -28,7 +29,7 @@ import { AppState } from '@app/core/models/state.model';
 		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 
 	isLoading: boolean;
 	org: Organization;
@@ -50,7 +51,8 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService
+		private cookieService: CookieService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -89,6 +91,10 @@ export class HomeComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);
+	}
+
+	ngAfterViewInit(): void {
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {
