@@ -27,9 +27,6 @@
 }
 
 .chart-score {
-	position: absolute;
-	top: 0;
-	left: 0;
 	height: 40px;
 	width: 100%;
 	padding: 8px;
@@ -42,6 +39,8 @@
 	font-size: 14px;
 
 	color: white;
+	background-color: black;
+	border-radius: 5px;
 }
 
 .vote-total {
