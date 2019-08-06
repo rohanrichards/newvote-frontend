@@ -1,18 +1,17 @@
 <div
 	class="container"
 	*ngIf="items && !items.length">
-	<div 
-		fxLayout="row"	
+	<div
+		fxLayout="row"
 		fxLayoutAlign="center"
 		>
-			<div 
+			<div
 				fxFlex="0 1 400px"
-				
 				>
-				<mat-card 
-					class="item-card">
+				<mat-card
+					class="item-card error-card">
 					<div mat-card-image
-						class="image-container placeholder-image"
+						class="placeholder-image"
 						>
 					</div>
 					<mat-card-content>
@@ -42,7 +41,7 @@
 		    [config]="config">
 			<div *ngFor="let item of items"
 			    class="swiper-slide">
-				<mat-card 
+				<mat-card
 					[ngClass]="{'soft-deleted': item.softDeleted}"
 					class="item-card">
 					<div mat-card-image
@@ -71,7 +70,7 @@
 					<mat-card-content>
 						<mat-card-title translate>
 							<div class="truncate-container">
-								<a 
+								<a
 								    (click)="visitUrl($event, item.url)"
 								    class="truncate title">{{item.title}}</a>
 							</div>

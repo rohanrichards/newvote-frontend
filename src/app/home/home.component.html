@@ -1,14 +1,14 @@
-<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" > 
-	<h4 joyrideStep="step1" 
+<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" >
+	<h4 joyrideStep="step1"
 	class="mat-subtitle-1">New to NewVote? Let us help you get started.</h4>
 	<div>
-		<button 
+		<button
 			(click)="onDone($event)"
 			stepPosition="right"
 			mat-flat-button>
 			Dismiss
 		</button>
-		<button 
+		<button
 			(click)="startTour($event)"
 			stepPosition="right"
 			mat-flat-button color="warn">
@@ -27,8 +27,8 @@
 	>
 	<ng-template #myCustomContent>
 		<div style="width: 300px">
-			Welcome to NewVote here you can discover the topics and issues that are important to your community. 
-			Then vote on the solutions that have been put forward by members community leaders and sometimes from the 
+			Welcome to NewVote here you can discover the topics and issues that are important to your community.
+			Then vote on the solutions that have been put forward by members community leaders and sometimes from the
 			members themselves.
 
 			Let's get started and see where we can find out more abuot those issues.
@@ -45,7 +45,7 @@
 </ng-template>
 
 <ng-template #mainContainer>
-	<div 
+	<div
 	fxLayout="column"
 	 [@fadeIn]="!isLoading"
 	 fxLayoutAlign="center center"
@@ -136,13 +136,13 @@
 			</div>
 		</div>
 	</div>
-	<div 
-	
+	<div
+
 	*ngSwitchCase="'complete'"
 	 [@fadeIn]=true
 	 class="community-container container"
 	 fxLayoutAlign="center center">
-		<div 
+		<div
 			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px"
 		 fxLayout="column">
@@ -274,7 +274,7 @@
 	<div *ngSwitchCase="'complete'"
 		joyrideStep="step2"
 		[title]="'The Most Popular Issues'"
-		[text]="'For each community you can find the most discussed / voted on issues here. 
+		[text]="'For each community you can find the most discussed / voted on issues here.
 		You can click through here to find out more about those issues and what people want do about them.
 		But dont stop here, this is only a limited selection, you can find more issues by navigating to the issues page.
 		We will navigate there next'"
@@ -283,7 +283,7 @@
 		[@fadeIn]=true
 		class="hot-issues-container container text-center"
 		fxLayoutAlign="center center">
-		<div 
+		<div
 			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
 			<h2 class="mat-h2">What's Hot?</h2>
