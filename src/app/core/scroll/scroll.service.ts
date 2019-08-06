@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { filter, observeOn, scan, debounceTime, tap } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 interface Route {
 	route: string;
@@ -14,13 +12,12 @@ interface Route {
 })
 export class ScrollService {
 	currentRoute$ = new BehaviorSubject<any>({});
-	// currentRoute$ = this._currentRoute.asObservable();
 
 	private savedRoutes = {
 		routeHistory: <any>[]
 	}
 
-	constructor(private router: Router) {
+	constructor() {
 	}
 
 	get currentRoute() {
@@ -28,7 +25,10 @@ export class ScrollService {
 		return this.currentRoute$.next(this.savedRoutes.routeHistory[lastRoute - 1]);
 	}
 
-	set currentRoute(route: any) {
+	saveRoute(route: any) {
+		if (this.savedRoutes.routeHistory.find((e: any) => e.id === route.id)) {
+			return false;
+		}
 		this.savedRoutes.routeHistory.push(route);
 	}
 
@@ -38,9 +38,6 @@ export class ScrollService {
 
 	updateCurrentRoutePosition(position: number) {
 		const lastRoute = this.savedRoutes.routeHistory.length;
-		const theRoute = this.savedRoutes.routeHistory[lastRoute - 1];
-		theRoute.topOffset = position;
-		console.log(this.savedRoutes, 'this is savedRoutes');
-		console.log(theRoute, 'this is theRoute');
+		this.savedRoutes.routeHistory[lastRoute - 1].topOffset = position;
 	}
 }

@@ -53,25 +53,28 @@ export class ShellComponent implements OnInit {
 		private meta: MetaService,
 		private cookieService: CookieService
 	) { 
-		// NOTES
-		// unless mat-sidenav-container / children have a fixed height i.e 100vh
-		// the height property is passed all the way to the root app
-		// at root we can't get scroll info
-		// using CDK scrollable + container 'vh100' we can listen into scroll events on the content
-		// need to find a way of tracking the page, the scroll position (scrollTop on data.elementRef)
-		// saving that data and then triggering on page forward a scroll reset to 0
-		// or if back is pushed the scrollposition is then applied after view init
+
+		// Subscribe to the route data from service,
+		// Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
+		// Without service data is saved multiple times
 		this.scrollService.currentRoute$
 			.subscribe((route: any) => {
 				this.currentRoute = route;
 			});
 
+
+		// Listen in to the scroll data and update the scroll position on service
+		// We save on the service so we can handle multiple scroll listners not copying / resetting
 		this.scrollingSubscription = this.scroll
 			.scrolled()
 			.subscribe((data: CdkScrollable) => {
 				const scrollTop = data.getElementRef().nativeElement.scrollTop;
 				this.scrollService.updateCurrentRoutePosition(scrollTop);
 			});
+		
+		// NavigationStart/Navigation End router events
+		// NavigationStart tells us whether we are navigating forwards or backwards
+		// Navigation end saves the current route to the scrollService
 
 		this.router.events
 			.pipe(
@@ -86,42 +89,45 @@ export class ShellComponent implements OnInit {
 					if (e.navigationTrigger === 'popstate') {
 						// User has hit the back button
 
-						// Make sure we only load the state once
+						// Only load old page state once if it exists and is the same as current route
 						if (this.oldRouteState && this.oldRouteState.id === e.restoredState.navigationId) {
 							return false;
 						}
 
+						// If previous page state is not loaded, search the saved page states on service for match
+						// & save page state so the offset can be used once the new route has fully loaded
 						this.oldRouteState = this.scrollService.getSavedRoutes().find((ele: any) => {
 							return e.restoredState.navigationId === ele.id;
 						});
-						console.log(this.oldRouteState, 'this is oldRoute');
 					}
+
+					// If navigation is not a back click, remove previous page state
+					// so the scroll is not saved going forwards
 					if (e.navigationTrigger === 'imperative') {
 						// User has user the router navigation
 						this.oldRouteState = null;
 					}
 				}
 
+				// NavigationEnd - only router event that fires on pageLoad
+				// saves the current page to service
 				if (e instanceof NavigationEnd) {
 					const currentRoute = {
 						id: e.id,
 						route: e.url
 					};
 
-					this.scrollService.currentRoute = currentRoute;
+					this.scrollService.saveRoute(currentRoute);
 				}
 			});
 	}
 
-
+	// function is called by child pages after they have loaded
+	// updates scroll position on sidenav container
 	restoreScrollPosition() {
-		console.log('restore called');
-		// scroll finish
 		if (!this.oldRouteState) {
-			console.log('NO STATE, GOING TOP');
 			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
 		}
-		console.log('We got state OFFSETTING');
 		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
