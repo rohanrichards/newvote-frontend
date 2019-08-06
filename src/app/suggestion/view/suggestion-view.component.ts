@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, forwardRef, Inject, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -15,6 +15,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-suggestion',
@@ -24,7 +25,7 @@ import { AppState } from '@app/core/models/state.model';
     	trigger('fadeIn', fadeIn(':enter')) 
 	]
 })
-export class SuggestionViewComponent implements OnInit {
+export class SuggestionViewComponent implements OnInit, AfterViewInit {
 
 	suggestion: Suggestion;
 	suggestions: Array<Suggestion>;
@@ -40,7 +41,8 @@ export class SuggestionViewComponent implements OnInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -54,6 +56,10 @@ export class SuggestionViewComponent implements OnInit {
 			const ID = params.get('id');
 			this.getSuggestion(ID);
 		});
+	}
+
+	ngAfterViewInit(): void {
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	getSuggestion(id: string, forceUpdate?: boolean) {

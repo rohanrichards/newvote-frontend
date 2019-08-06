@@ -71,7 +71,7 @@ export class ShellComponent implements OnInit {
 				const scrollTop = data.getElementRef().nativeElement.scrollTop;
 				this.scrollService.updateCurrentRoutePosition(scrollTop);
 			});
-		
+
 		// NavigationStart/Navigation End router events
 		// NavigationStart tells us whether we are navigating forwards or backwards
 		// Navigation end saves the current route to the scrollService

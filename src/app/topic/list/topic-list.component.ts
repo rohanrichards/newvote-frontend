@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, forwardRef, Inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -7,13 +7,14 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { MetaService } from '@app/core/meta.service';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-topic',
 	templateUrl: './topic-list.component.html',
 	styleUrls: ['./topic-list.component.scss']
 })
-export class TopicListComponent implements OnInit {
+export class TopicListComponent implements OnInit, AfterViewInit {
 
 	topics: Array<any>;
 	isLoading: boolean;
@@ -34,7 +35,8 @@ export class TopicListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -53,6 +55,10 @@ export class TopicListComponent implements OnInit {
 				title: 'All Topics',
 				description: 'List all topics.'
 			});
+	}
+
+	ngAfterViewInit(): void {
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {

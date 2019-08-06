@@ -81,7 +81,6 @@ export class IssueListComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		private meta: MetaService,
 		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
-
 	) {
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),

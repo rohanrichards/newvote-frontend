@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, forwardRef, Inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
@@ -12,13 +12,14 @@ import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-proposal',
 	templateUrl: './proposal-list.component.html',
 	styleUrls: ['./proposal-list.component.scss']
 })
-export class ProposalListComponent implements OnInit {
+export class ProposalListComponent implements OnInit, AfterViewInit {
 
 	proposals: Array<any>;
 	isLoading: boolean;
@@ -41,7 +42,8 @@ export class ProposalListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -60,6 +62,10 @@ export class ProposalListComponent implements OnInit {
 				title: 'All Actions',
 				description: 'List all actions.'
 			});
+	}
+
+	ngAfterViewInit(): void {
+		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {
