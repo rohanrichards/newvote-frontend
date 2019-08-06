@@ -91,24 +91,22 @@ export class LoginComponent implements OnInit {
 
 	redirect() {
 		let url;
+		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		console.log('cordova: ', window['cordova']);
 
 		if (this.org.authEntityId) {
-			url = this.adminLogin ? this.org.authUrl : this.org.authUrl + this.org.authEntityId;
+			url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`;
 		} else {
-			url = this.org.authUrl;
+			url = `${this.org.authUrl}`;
 		}
 
-		// debugger;
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		console.log('cordova: ', window['cordova']);
 		if (window['cordova']) {
 			console.log('found cordova opening with inappbrowser');
 			const CORDOVA = window['cordova'];
-			CORDOVA.InAppBrowser.open(this.org.authUrl, '_blank');
-		} else {
-			window.open(this.org.authUrl, '_self');
+			return CORDOVA.InAppBrowser.open(url, '_blank');
 		}
+		
+		return window.open(url, '_self');
 	}
 
 	private createForm() {
