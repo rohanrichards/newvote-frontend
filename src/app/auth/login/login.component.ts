@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
 	loginForm: FormGroup;
 	isLoading = false;
 	org: Organization;
+	adminLogin: boolean;
 
 	constructor(private router: Router,
 		private route: ActivatedRoute,
@@ -45,6 +46,8 @@ export class LoginComponent implements OnInit {
 				title: `Sign in`,
 				description: 'Fill in your account information to sign in.'
 			});
+
+		this.adminLogin = this.route.snapshot.queryParamMap.get('admin') ? true : false;
 	}
 
 	login() {
@@ -87,6 +90,8 @@ export class LoginComponent implements OnInit {
 	}
 
 	redirect() {
+		const url = this.adminLogin ? this.org.authUrl : this.org.authUrl + this.org.authEntityId;
+
 		debugger;
 		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
