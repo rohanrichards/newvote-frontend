@@ -90,9 +90,15 @@ export class LoginComponent implements OnInit {
 	}
 
 	redirect() {
-		const url = this.adminLogin ? this.org.authUrl : this.org.authUrl + this.org.authEntityId;
+		let url;
 
-		debugger;
+		if (this.org.authEntityId) {
+			url = this.adminLogin ? this.org.authUrl : this.org.authUrl + this.org.authEntityId;
+		} else {
+			url = this.org.authUrl;
+		}
+
+		// debugger;
 		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		console.log('cordova: ', window['cordova']);
