@@ -45,6 +45,7 @@ export class OrganizationCreateComponent implements OnInit {
 		moderatorsControl: new FormControl([], [Validators.email]),
 		authType: new FormControl(0, [Validators.required]),
 		authUrl: new FormControl('', [Validators.required]),
+		authEntityId: new FormControl('', [Validators.required]),
 		privateOrg: new FormControl(false, [Validators.required])
 	});
 

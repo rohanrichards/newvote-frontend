@@ -75,6 +75,14 @@
 				 required>
 			</mat-form-field>
 
+			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+				<input matInput
+				 type="text"
+				 placeholder="Enter the Entity ID for AAF authentication"
+				 formControlName="authEntityId"
+				 required>
+			</mat-form-field>
+
 			<mat-form-field>
 				<mat-label>Public / Private Organization</mat-label>
 				<mat-select formControlName="privateOrg" 

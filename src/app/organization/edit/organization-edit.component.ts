@@ -130,6 +130,7 @@ export class OrganizationEditComponent implements OnInit {
 						'newLeaderEmail': '',
 						'authType': organization.authType,
 						'authUrl': organization.authUrl,
+						'authEntityId': organization.authEntityId || '',
 						'privateOrg': organization.privateOrg || false
 					});
 

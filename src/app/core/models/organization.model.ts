@@ -16,6 +16,7 @@ export interface IOrganization {
 	softDeleted: boolean;
 	authType: Number;
 	authUrl: string;
+	authEntityId: string;
 	privateOrg: boolean;
 }
 
@@ -37,6 +38,7 @@ export class Organization implements IOrganization {
 		public softDeleted: boolean = false,
 		public authType: Number = 0,
 		public authUrl: string = '',
+		public authEntityId: string = '',
 		public privateOrg: boolean = false
 	) { }
 }
