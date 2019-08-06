@@ -106,7 +106,7 @@ export class ShellComponent implements OnInit {
 	}
 
 	redirect() {
-		this.cookieService.set('org', this.organization.url, null, '/', '.newvote.org');
+		// this.cookieService.set('org', this.organization.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		window.open(this.organization.authUrl, '_self');
 	}

@@ -130,7 +130,7 @@ export class HomeComponent implements OnInit {
 	}
 
 	redirect() {
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		// this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		window.open(this.org.authUrl, '_self');
 	}

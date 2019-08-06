@@ -87,8 +87,8 @@ export class LoginComponent implements OnInit {
 	}
 
 	redirect() {
-		debugger;
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
+		// debugger;
+		// this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		console.log('cordova: ', window['cordova']);
 		if (window['cordova']) {
