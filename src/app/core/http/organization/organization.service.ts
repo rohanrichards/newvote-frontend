@@ -40,9 +40,9 @@ export class OrganizationService {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
 
-		let params = new HttpParams();
-		const paramObject = { 'url': this._subdomain };
-		params = new HttpParams({ fromObject: paramObject });
+		// let params = new HttpParams();
+		// const paramObject = { 'url': this._subdomain };
+		// params = new HttpParams({ fromObject: paramObject });
 
 		if (!this.$org) {
 			this.$org = <BehaviorSubject<any>>new BehaviorSubject({});
