@@ -8,7 +8,6 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -49,8 +48,7 @@ export class HomeComponent implements OnInit {
 		private solutionService: SolutionService,
 		private proposalService: ProposalService,
 		private userService: UserService,
-		private meta: MetaService,
-		private cookieService: CookieService
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -130,7 +128,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	redirect() {
-		// this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		window.open(this.org.authUrl, '_self');
 	}

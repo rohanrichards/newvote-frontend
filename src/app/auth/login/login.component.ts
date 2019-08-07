@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
@@ -30,8 +29,7 @@ export class LoginComponent implements OnInit {
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
 		private meta: MetaService,
-		private organizationService: OrganizationService,
-		private cookieService: CookieService
+		private organizationService: OrganizationService
 	) {
 		this.createForm();
 		this.organizationService.get().subscribe(org => {
@@ -88,7 +86,6 @@ export class LoginComponent implements OnInit {
 
 	redirect() {
 		// debugger;
-		// this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
 		// window.location.href = this.org.authUrl;
 		console.log('cordova: ', window['cordova']);
 		if (window['cordova']) {

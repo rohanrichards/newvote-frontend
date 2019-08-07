@@ -3,7 +3,6 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
 import { map, finalize, catchError } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
 
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
@@ -35,7 +34,6 @@ export class OrganizationService {
 
 	constructor(
 		private httpClient: HttpClient,
-		private cookieService: CookieService
 	) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
