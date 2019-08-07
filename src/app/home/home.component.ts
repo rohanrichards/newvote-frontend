@@ -131,12 +131,6 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	redirect() {
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		this.router.navigate(['/auth/login'])
-	}
-
 	handleUserCount(count: number) {
 		if (!count) {
 			return `0`;

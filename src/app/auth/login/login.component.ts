@@ -89,10 +89,8 @@ export class LoginComponent implements OnInit {
 		return this.i18nService.supportedLanguages;
 	}
 
-	redirect() {
+	loginWithSSO() {
 		let url;
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		console.log('cordova: ', window['cordova']);
 
 		if (this.org.authEntityId) {
 			url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`;
@@ -100,12 +98,6 @@ export class LoginComponent implements OnInit {
 			url = `${this.org.authUrl}`;
 		}
 
-		if (window['cordova']) {
-			console.log('found cordova opening with inappbrowser');
-			const CORDOVA = window['cordova'];
-			return CORDOVA.InAppBrowser.open(url, '_blank');
-		}
-		
 		return window.open(url, '_self');
 	}
 

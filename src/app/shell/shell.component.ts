@@ -105,16 +105,6 @@ export class ShellComponent implements OnInit {
 		return link;
 	}
 
-	redirect() {
-		this.cookieService.set('org', this.organization.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		if (this.auth.isAdmin()) {
-			return this.router.navigate(['/auth/login?admin="true']);
-		}
-
-		return this.router.navigate(['/auth/login']);
-	}
-
 	redirectToLanding() {
 		const { hostname } = window.location;
 
