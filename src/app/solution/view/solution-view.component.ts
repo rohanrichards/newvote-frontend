@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, forwardRef, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -18,7 +18,6 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
-import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-solution',
@@ -28,7 +27,7 @@ import { ShellComponent } from '@app/shell/shell.component';
     	trigger('fadeIn', fadeIn(':enter')) 
 	]
 })
-export class SolutionViewComponent implements OnInit, AfterViewInit {
+export class SolutionViewComponent implements OnInit {
 
 	solution: Solution;
 	isLoading: boolean;
@@ -46,7 +45,6 @@ export class SolutionViewComponent implements OnInit, AfterViewInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -60,10 +58,6 @@ export class SolutionViewComponent implements OnInit, AfterViewInit {
 			const ID = params.get('id');
 			this.getSolution(ID);
 		});
-	}
-
-	ngAfterViewInit(): void {
-		this.shellComponent.restoreScrollPosition();
 	}
 
 	getSolution(id: string, forceUpdate?: boolean) {

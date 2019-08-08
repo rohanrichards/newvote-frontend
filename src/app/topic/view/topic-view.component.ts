@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, forwardRef, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -11,14 +11,13 @@ import { MetaService } from '@app/core/meta.service';
 
 import { ITopic } from '@app/core/models/topic.model';
 import { optimizeImage } from '@app/shared/helpers/cloudinary';
-import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-topic',
 	templateUrl: './topic-view.component.html',
 	styleUrls: ['./topic-view.component.scss']
 })
-export class TopicViewComponent implements OnInit, AfterViewInit {
+export class TopicViewComponent implements OnInit {
 
 	topic: ITopic;
 	issues: Array<any>;
@@ -33,8 +32,7 @@ export class TopicViewComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
+		private meta: MetaService
 	) { }
 
 	ngOnInit() {
@@ -49,10 +47,6 @@ export class TopicViewComponent implements OnInit, AfterViewInit {
 			const ID = params.get('id');
 			this.getTopic(ID);
 		});
-	}
-
-	ngAfterViewInit(): void {
-		this.shellComponent.restoreScrollPosition();
 	}
 
 	getTopic(id: string) {

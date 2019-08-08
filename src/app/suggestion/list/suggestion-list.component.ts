@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
@@ -15,7 +15,6 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
-import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-suggestion',
@@ -25,7 +24,7 @@ import { ShellComponent } from '@app/shell/shell.component';
     	trigger('fadeIn', fadeIn(':enter'))
 	]
 })
-export class SuggestionListComponent implements OnInit, AfterViewInit {
+export class SuggestionListComponent implements OnInit {
 
 	loadingState: string;
 	suggestions: Array<any>;
@@ -49,7 +48,6 @@ export class SuggestionListComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -68,10 +66,6 @@ export class SuggestionListComponent implements OnInit, AfterViewInit {
 				title: 'All Suggestions',
 				description: 'Showing all suggestions.'
 			});
-	}
-
-	ngAfterViewInit(): void {
-		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {

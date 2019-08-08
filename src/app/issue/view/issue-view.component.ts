@@ -36,7 +36,7 @@ import { ShellComponent } from '@app/shell/shell.component';
 		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
-export class IssueViewComponent implements OnInit, AfterViewInit {
+export class IssueViewComponent implements OnInit {
 
 	issue: IIssue;
 	solutions: Array<Solution>;
@@ -72,10 +72,6 @@ export class IssueViewComponent implements OnInit, AfterViewInit {
 			const ID = params.get('id');
 			this.getIssue(ID);
 		});
-	}
-
-	ngAfterViewInit(): void {
-		this.shellComponent.restoreScrollPosition();
 	}
 
 	getIssue(id: string) {

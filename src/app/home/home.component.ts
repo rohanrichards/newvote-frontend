@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, forwardRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { OrganizationService } from '@app/core';
@@ -29,7 +29,7 @@ import { ShellComponent } from '@app/shell/shell.component';
 		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
 
 	isLoading: boolean;
 	org: Organization;
@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		private userService: UserService,
 		private meta: MetaService,
 		private cookieService: CookieService,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {
@@ -91,10 +90,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);
-	}
-
-	ngAfterViewInit(): void {
-		this.shellComponent.restoreScrollPosition();
 	}
 
 	fetchData(force?: boolean) {

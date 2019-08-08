@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit, Input, Output, EventEmitter, 
-	ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
+	ViewChild, ElementRef, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { CookieService } from 'ngx-cookie-service';
@@ -28,7 +28,7 @@ interface ScrollPositionRestore {
 	templateUrl: './shell.component.html',
 	styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent implements OnInit {
+export class ShellComponent implements OnInit, AfterViewChecked {
 	organization: any;
 	hideVerify = false;
 	showSearch = false;
@@ -122,21 +122,18 @@ export class ShellComponent implements OnInit {
 			});
 	}
 
-	// function is called by child pages after they have loaded
-	// updates scroll position on sidenav container
-	restoreScrollPosition() {
-		if (!this.oldRouteState) {
-			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
-		}
-		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
-	}
-
-
 	ngOnInit() {
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
 		});
 
+	}
+
+	ngAfterViewChecked() {
+		if (!this.oldRouteState) {
+			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
+		}
+		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
 	setLanguage(language: string) {
