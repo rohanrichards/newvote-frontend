@@ -8,7 +8,6 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -132,6 +131,10 @@ export class HomeComponent implements OnInit {
 	}
 
 	handleUserCount(count: number) {
+		if (this.auth.isAdmin() || this.auth.isOwner()) {
+			return `${count}`;
+		}
+
 		if (!count) {
 			return `0`;
 		}

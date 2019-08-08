@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
@@ -31,8 +30,7 @@ export class LoginComponent implements OnInit {
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
 		private meta: MetaService,
-		private organizationService: OrganizationService,
-		private cookieService: CookieService
+		private organizationService: OrganizationService
 	) {
 		this.createForm();
 		this.organizationService.get().subscribe(org => {
