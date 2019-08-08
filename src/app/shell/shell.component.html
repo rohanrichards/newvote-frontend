@@ -123,11 +123,11 @@
 					</mat-list>
 					<mat-list *ngIf="this.organization && this.organization.authType === 1">
 						<a mat-menu-item
-						 (click)="redirect()"
+						 routerLink="/auth/login"
 						 translate>Login</a>
 						<mat-divider></mat-divider>
 						<a mat-menu-item
-						 (click)="redirect()"
+						 routerLink="/auth/login"
 						 translate>Create Account</a>
 					</mat-list>
 				</mat-menu>
@@ -167,10 +167,10 @@
 				 class="hide-login-menu">
 					<button mat-stroked-button
 					 class="border-override"
-					 (click)="redirect()">Sign In</button>
+					 routerLink="/auth/login">Sign In</button>
 					<button mat-flat-button
 					 color="warn"
-					 (click)="redirect()">Create Account</button>
+					 routerLink="/auth/login">Create Account</button>
 				</div>
 			</mat-toolbar>
 			<!-- only show if search button pressed -->

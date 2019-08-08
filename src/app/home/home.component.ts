@@ -18,6 +18,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-home',
@@ -48,7 +49,9 @@ export class HomeComponent implements OnInit {
 		private solutionService: SolutionService,
 		private proposalService: ProposalService,
 		private userService: UserService,
-		private meta: MetaService
+		private meta: MetaService,
+		private cookieService: CookieService,
+		private router: Router
 	) { }
 
 	ngOnInit() {
@@ -125,11 +128,6 @@ export class HomeComponent implements OnInit {
 			console.log('deleted');
 			this.fetchData(true);
 		});
-	}
-
-	redirect() {
-		// window.location.href = this.org.authUrl;
-		window.open(this.org.authUrl, '_self');
 	}
 
 	handleUserCount(count: number) {

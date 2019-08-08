@@ -48,6 +48,7 @@ export class OrganizationEditComponent implements OnInit {
 		moderatorsControl: new FormControl([], [Validators.email]),
 		authType: new FormControl(0, [Validators.required]),
 		authUrl: new FormControl('', [Validators.required]),
+		authEntityId: new FormControl('', [Validators.required]),
 		privateOrg: new FormControl(false, [Validators.required])
 	});
 
@@ -130,6 +131,7 @@ export class OrganizationEditComponent implements OnInit {
 						'newLeaderEmail': '',
 						'authType': organization.authType,
 						'authUrl': organization.authUrl,
+						'authEntityId': organization.authEntityId,
 						'privateOrg': organization.privateOrg || false
 					});
 
@@ -148,6 +150,30 @@ export class OrganizationEditComponent implements OnInit {
 		if (this.auth.isAdmin()) {
 			this.userService.list({}).subscribe(users => this.allUsers = users);
 		}
+
+		this.setAuthtypeValidators();
+	}
+
+	setAuthtypeValidators() {
+		const authUrl = this.organizationForm.get('authUrl');
+		const authEntityId = this.organizationForm.get('authEntityId');
+
+		this.organizationForm.get('authType').valueChanges
+			.subscribe((authType) => {
+
+				if (authType === 0) {
+					authUrl.setValidators(null);
+					authEntityId.setValidators(null);
+				}
+
+				if (authType === 1) {
+					authUrl.setValidators([Validators.required]);
+					authEntityId.setValidators([Validators.required]);
+				}
+
+				authUrl.updateValueAndValidity();
+				authEntityId.updateValueAndValidity();
+			});
 	}
 
 	buildItemForm() {

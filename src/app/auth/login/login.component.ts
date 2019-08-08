@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
 	loginForm: FormGroup;
 	isLoading = false;
 	org: Organization;
+	adminLogin: boolean;
 
 	constructor(private router: Router,
 		private route: ActivatedRoute,
@@ -43,6 +44,8 @@ export class LoginComponent implements OnInit {
 				title: `Sign in`,
 				description: 'Fill in your account information to sign in.'
 			});
+
+		this.adminLogin = this.route.snapshot.queryParamMap.get('admin') ? true : false;
 	}
 
 	login() {
@@ -84,17 +87,16 @@ export class LoginComponent implements OnInit {
 		return this.i18nService.supportedLanguages;
 	}
 
-	redirect() {
-		// debugger;
-		// window.location.href = this.org.authUrl;
-		console.log('cordova: ', window['cordova']);
-		if (window['cordova']) {
-			console.log('found cordova opening with inappbrowser');
-			const CORDOVA = window['cordova'];
-			CORDOVA.InAppBrowser.open(this.org.authUrl, '_blank');
+	loginWithSSO() {
+		let url;
+
+		if (this.org.authEntityId) {
+			url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`;
 		} else {
-			window.open(this.org.authUrl, '_self');
+			url = `${this.org.authUrl}`;
 		}
+
+		return window.open(url, '_self');
 	}
 
 	private createForm() {

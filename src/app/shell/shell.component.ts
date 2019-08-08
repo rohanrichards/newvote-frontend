@@ -103,11 +103,6 @@ export class ShellComponent implements OnInit {
 		return link;
 	}
 
-	redirect() {
-		// window.location.href = this.org.authUrl;
-		window.open(this.organization.authUrl, '_self');
-	}
-
 	redirectToLanding() {
 		const { hostname } = window.location;
 
