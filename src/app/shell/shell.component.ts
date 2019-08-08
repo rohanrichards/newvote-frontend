@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit, Input, Output, EventEmitter, 
-	ViewChild, ElementRef, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
+	ViewChild, ElementRef, OnDestroy, AfterViewInit, AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 import { CookieService } from 'ngx-cookie-service';
@@ -28,7 +28,7 @@ interface ScrollPositionRestore {
 	templateUrl: './shell.component.html',
 	styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent implements OnInit, AfterViewChecked {
+export class ShellComponent implements OnInit, AfterContentChecked {
 	organization: any;
 	hideVerify = false;
 	showSearch = false;
@@ -129,7 +129,7 @@ export class ShellComponent implements OnInit, AfterViewChecked {
 
 	}
 
-	ngAfterViewChecked() {
+	ngAfterContentChecked() {
 		if (!this.oldRouteState) {
 			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
 		}
