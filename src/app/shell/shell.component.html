@@ -91,7 +91,7 @@
 		</mat-sidenav>
 		<mat-sidenav-content 
 			[style.height]="'100vh'" 
-			cdkScrollable>
+			>
 				<mat-toolbar color="primary"
 				class="sticky-toolbar"
 				ngClass.gt-sm="with-sidenav"
@@ -125,11 +125,11 @@
 						</mat-list>
 						<mat-list *ngIf="this.organization && this.organization.authType === 1">
 							<a mat-menu-item
-							(click)="redirect()"
+							routerLink="/auth/login"
 							translate>Login</a>
 							<mat-divider></mat-divider>
 							<a mat-menu-item
-							(click)="redirect()"
+							routerLink="/auth/login"
 							translate>Create Account</a>
 						</mat-list>
 					</mat-menu>
@@ -169,14 +169,14 @@
 					class="hide-login-menu">
 						<button mat-stroked-button
 						class="border-override"
-						(click)="redirect()">Sign In</button>
+						routerLink="/auth/login">Sign In</button>
 						<button mat-flat-button
 						color="warn"
-						(click)="redirect()">Create Account</button>
+						routerLink="/auth/login">Create Account</button>
 					</div>
 				</mat-toolbar>
 				<!-- only show if search button pressed -->
-				<!-- <app-search-bar class="sticky-search"
+				<app-search-bar class="sticky-search"
 				ngClass.gt-sm="with-sidenav top-bar-height-lg"
 				ngClass.lt-md="top-bar-height-sm"
 				[isVisible]="showSearch"
@@ -195,7 +195,7 @@
 					(click)="hideVerify = true">
 						<mat-icon>close</mat-icon>
 					</button>
-				</mat-toolbar> -->
+				</mat-toolbar>
 			<router-outlet></router-outlet>
 		</mat-sidenav-content>
 	</mat-sidenav-container>

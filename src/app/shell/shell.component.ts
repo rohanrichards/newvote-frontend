@@ -3,7 +3,6 @@ import { Component, OnInit, Input, Output, EventEmitter,
 	ViewChild, ElementRef, OnDestroy, AfterViewInit, AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
-import { CookieService } from 'ngx-cookie-service';
 
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
@@ -50,10 +49,8 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 		private auth: AuthenticationService,
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
-		private meta: MetaService,
-		private cookieService: CookieService
-	) { 
-
+		private meta: MetaService
+	) {
 		// Subscribe to the route data from service,
 		// Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
 		// Without service data is saved multiple times
@@ -202,12 +199,6 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 			link = 'https://' + link;
 		}
 		return link;
-	}
-
-	redirect() {
-		this.cookieService.set('org', this.organization.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		window.open(this.organization.authUrl, '_self');
 	}
 
 	redirectToLanding() {

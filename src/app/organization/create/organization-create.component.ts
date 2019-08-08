@@ -45,6 +45,7 @@ export class OrganizationCreateComponent implements OnInit {
 		moderatorsControl: new FormControl([], [Validators.email]),
 		authType: new FormControl(0, [Validators.required]),
 		authUrl: new FormControl('', [Validators.required]),
+		authEntityId: new FormControl('', [Validators.required]),
 		privateOrg: new FormControl(false, [Validators.required])
 	});
 
@@ -99,6 +100,30 @@ export class OrganizationCreateComponent implements OnInit {
 			{
 				title: 'Create Community',
 				description: 'Create a new community on the NewVote platform.'
+			});
+
+		this.setAuthtypeValidators();
+	}
+
+	setAuthtypeValidators() {
+		const authUrl = this.organizationForm.get('authUrl');
+		const authEntityId = this.organizationForm.get('authEntityId');
+
+		this.organizationForm.get('authType').valueChanges
+			.subscribe((authType) => {
+
+				if (authType === 0) {
+					authUrl.setValidators(null);
+					authEntityId.setValidators(null);
+				}
+
+				if (authType === 1) {
+					authUrl.setValidators([Validators.required]);
+					authEntityId.setValidators([Validators.required]);
+				}
+
+				authUrl.updateValueAndValidity();
+				authEntityId.updateValueAndValidity();
 			});
 	}
 

@@ -8,7 +8,6 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -19,7 +18,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
-import { ShellComponent } from '@app/shell/shell.component';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-home',
@@ -51,7 +50,7 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService,
+		private router: Router
 	) { }
 
 	ngOnInit() {
@@ -130,13 +129,11 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	redirect() {
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		window.open(this.org.authUrl, '_self');
-	}
-
 	handleUserCount(count: number) {
+		if (this.auth.isAdmin() || this.auth.isOwner()) {
+			return `${count}`;
+		}
+
 		if (!count) {
 			return `0`;
 		}
