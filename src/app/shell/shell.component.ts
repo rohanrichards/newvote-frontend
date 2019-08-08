@@ -1,12 +1,12 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ObservableMedia } from '@angular/flex-layout';
 
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
-
+import {MatSidenavModule, MatDrawer} from '@angular/material/sidenav';
+import { ObservableMedia } from '@angular/flex-layout';
 
 @Component({
 	selector: 'app-shell',
@@ -15,21 +15,21 @@ import { MetaService } from '@app/core/meta.service';
 })
 export class ShellComponent implements OnInit {
 	organization: any;
-	hideVerify = false;
-	showSearch = false;
-
 	@Output() closeSearch = new EventEmitter();
+	opened: boolean;
+	@ViewChild(MatDrawer) matDrawer: MatDrawer;
 
-	constructor(private router: Router,
+	constructor(
 		private titleService: Title,
-		private media: ObservableMedia,
-		private auth: AuthenticationService,
+		private router: Router,
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
-		private meta: MetaService
+		private matSideNav: MatSidenavModule,
+		private media: ObservableMedia
 	) { }
 
 	ngOnInit() {
+		console.log(this.matSideNav, 'this is mat')
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
 		});
@@ -39,43 +39,6 @@ export class ShellComponent implements OnInit {
 		this.i18nService.language = language;
 	}
 
-	logout() {
-		this.auth.logout()
-			.subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
-	}
-
-	get username(): string | null {
-		const credentials = this.auth.credentials;
-		return credentials ? credentials.user.username : null;
-	}
-
-	get isAuthenticated(): boolean {
-		return this.auth.isAuthenticated();
-	}
-
-	get isVerified(): boolean {
-		// debugger;
-		if (this.isAuthenticated) {
-			return (this.auth.isVerified());
-		} else {
-			return true;
-		}
-	}
-
-	get showVerify(): boolean {
-		if (this.isVerified) {
-			return false;
-		}
-		if (!this.isVerified && !this.hideVerify) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	toggleSearch() {
-		this.showSearch = !this.showSearch;
-	}
 
 	get languages(): string[] {
 		return this.i18nService.supportedLanguages;
@@ -83,10 +46,6 @@ export class ShellComponent implements OnInit {
 
 	get isMobile(): boolean {
 		return this.media.isActive('xs') || this.media.isActive('sm');
-	}
-
-	get title(): string {
-		return this.meta.getAppBarTitle();
 	}
 
 	visitOrganizationUrl (event: any) {
@@ -115,4 +74,5 @@ export class ShellComponent implements OnInit {
 		// window.open(`http://${newHostName}:${window.location.port}`, '_self');
 		this.router.navigate(['/landing']);
 	}
+
 }
