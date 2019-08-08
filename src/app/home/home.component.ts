@@ -50,7 +50,6 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService,
 		private router: Router
 	) { }
 

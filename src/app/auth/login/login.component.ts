@@ -7,6 +7,7 @@ import { MetaService } from '@app/core/meta.service';
 import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
 import { Organization } from '@app/core/models/organization.model';
+import { CookieService } from 'ngx-cookie-service';
 
 const log = new Logger('Login');
 
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit {
 		private i18nService: I18nService,
 		private authenticationService: AuthenticationService,
 		private meta: MetaService,
-		private organizationService: OrganizationService
+		private organizationService: OrganizationService,
+		private cookieService: CookieService
 	) {
 		this.createForm();
 		this.organizationService.get().subscribe(org => {
@@ -90,6 +92,7 @@ export class LoginComponent implements OnInit {
 	loginWithSSO() {
 		let url;
 
+		this.cookieService.set('orgUrl', this.org.url, null, '/', '.newvote.org')
 		if (this.org.authEntityId) {
 			url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`;
 		} else {
