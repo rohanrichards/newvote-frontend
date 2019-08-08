@@ -136,6 +136,10 @@ export class HomeComponent implements OnInit {
 	}
 
 	handleUserCount(count: number) {
+		if (this.auth.isAdmin() || this.auth.isOwner()) {
+			return `${count}`;
+		}
+
 		if (!count) {
 			return `0`;
 		}
