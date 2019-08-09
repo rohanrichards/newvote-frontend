@@ -12,6 +12,18 @@ q {
 	topics: "« "" »";
 }
 
+.no-margin {
+	margin: 0;
+}
+
+.mat-divider {
+	min-height: 2px;
+}
+
+.topic-header {
+	margin-bottom: 1rem;
+}
+
 .skeleton-form-wrap {
 	padding: 0 0.5rem;
 	margin-top: 0.5rem;
@@ -57,8 +69,6 @@ q {
 	background-size: cover;
 	border-radius: 5px 5px 0 0;
 }
-
-
 
 .skeleton-card-content {
 	padding: 1rem;
