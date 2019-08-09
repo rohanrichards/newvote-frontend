@@ -16,12 +16,14 @@ q {
 	margin: 0;
 }
 
-.mat-divider {
-	min-height: 2px;
-}
+
 
 .topic-header {
 	margin-bottom: 1rem;
+
+	.mat-divider {
+		min-height: 2px;
+	}
 }
 
 .skeleton-form-wrap {
