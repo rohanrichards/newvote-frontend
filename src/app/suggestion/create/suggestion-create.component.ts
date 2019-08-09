@@ -94,18 +94,17 @@ export class SuggestionCreateComponent implements OnInit {
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
 		this.suggestion.parent = this.selectedObject;
-		console.log(this.suggestion);
 
 		this.suggestionService.create({ entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(t => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
-					this.openSnackBar('Succesfully created', 'OK');
-					this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
-				}
-			});
+				this.openSnackBar('Succesfully created', 'OK');
+				this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
+			},
+			(error => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+		);
 	}
 
 	openSnackBar(message: string, action: string) {
