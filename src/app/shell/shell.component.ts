@@ -1,6 +1,7 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit, Input, Output, EventEmitter, 
-	ViewChild, ElementRef, OnDestroy, AfterViewInit, AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter,
+	ViewChild, ElementRef, OnDestroy, AfterViewInit,
+	AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 
@@ -45,11 +46,10 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 		public scroll: ScrollDispatcher,
 		private router: Router,
 		private titleService: Title,
-		private media: ObservableMedia,
-		private auth: AuthenticationService,
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
-		private meta: MetaService
+		private meta: MetaService,
+		private media: ObservableMedia
 	) {
 		// Subscribe to the route data from service,
 		// Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
@@ -137,43 +137,6 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 		this.i18nService.language = language;
 	}
 
-	logout() {
-		this.auth.logout()
-			.subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
-	}
-
-	get username(): string | null {
-		const credentials = this.auth.credentials;
-		return credentials ? credentials.user.username : null;
-	}
-
-	get isAuthenticated(): boolean {
-		return this.auth.isAuthenticated();
-	}
-
-	get isVerified(): boolean {
-		// debugger;
-		if (this.isAuthenticated) {
-			return (this.auth.isVerified());
-		} else {
-			return true;
-		}
-	}
-
-	get showVerify(): boolean {
-		if (this.isVerified) {
-			return false;
-		}
-		if (!this.isVerified && !this.hideVerify) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	toggleSearch() {
-		this.showSearch = !this.showSearch;
-	}
 
 	get languages(): string[] {
 		return this.i18nService.supportedLanguages;
@@ -181,10 +144,6 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 
 	get isMobile(): boolean {
 		return this.media.isActive('xs') || this.media.isActive('sm');
-	}
-
-	get title(): string {
-		return this.meta.getAppBarTitle();
 	}
 
 	visitOrganizationUrl (event: any) {
@@ -213,4 +172,5 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 		// window.open(`http://${newHostName}:${window.location.port}`, '_self');
 		this.router.navigate(['/landing']);
 	}
+
 }

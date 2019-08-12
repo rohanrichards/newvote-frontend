@@ -3,30 +3,9 @@
 	flex: 1;
   }
 
-.border-override {
-	border: 1px solid rgba(255, 255, 255, 0.8);
-}
-
 .mat-sidenav {
 	min-width: 270px;
 	max-width: 28%;
-}
-
-.sticky-toolbar {
-	top: 0px;
-	z-index: 200;
-	position: sticky;
-}
-
-.sticky-verify {
-	position: fixed;
-	z-index: 210;
-	height: 38px;
-}
-
-.sticky-search {
-	position: fixed;
-	z-index: 220;
 }
 
 .top-bar-height-lg {
@@ -88,13 +67,6 @@
 	display: none;
 }
 
-.hide-login-menu {
-	display: block;
-}
-
-.account-create-menu-icon {
-	display: none;
-}
 
 .secure-wrapper {
 	display: flex;
@@ -116,22 +88,4 @@
 ::ng-deep .mat-drawer-inner-container {
 	display: flex;
 	flex-direction: column;
-}
-
-
-@media screen and (max-width: 500px) {
-	.hide-login-menu {
-		display: none;
-	}
-
-	.account-create-menu-icon {
-		display: block;
-	}
-}
-
-@media screen and (max-width: 300px) {
-
-	.toolbar-title {
-		display: none;
-	}
 }

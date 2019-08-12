@@ -1,6 +1,7 @@
 <div fxFlex>
-	<mat-sidenav-container>
-		<mat-sidenav #sidenav
+	<mat-sidenav-container fxFill>
+		<mat-sidenav
+			#sidenav
 			[mode]="isMobile ? 'over' : 'side'"
 			[opened]="!isMobile"
 			[disableClose]="!isMobile"
@@ -89,113 +90,11 @@
 				<img src="assets/entersoft-light.png" />
 			</div>
 		</mat-sidenav>
-		<mat-sidenav-content 
-			[style.height]="'100vh'" 
-			>
-				<mat-toolbar color="primary"
-				class="sticky-toolbar"
-				ngClass.gt-sm="with-sidenav"
-				fxLayout="row wrap">
-					<button class="menu-button"
-					mat-icon-button
-					(click)="sidenav.toggle()">
-						<mat-icon>menu</mat-icon>
-					</button>
-					<span class="toolbar-title">{{title}}</span>
-					<div fxFlex></div>
-					<button mat-icon-button
-					(click)="toggleSearch()">
-						<mat-icon>search</mat-icon>
-					</button>
-					<button *ngIf="!isAuthenticated"
-					class="account-create-menu-icon"
-					mat-icon-button
-					[matMenuTriggerFor]="loginMenu">
-						<mat-icon color="warn">account_box</mat-icon>
-					</button>
-					<mat-menu #loginMenu="matMenu">
-						<mat-list *ngIf="!this.organization || !this.organization.authType || this.organization.authType === 0">
-							<a mat-menu-item
-							routerLink="/auth/login"
-							translate>Login</a>
-							<mat-divider></mat-divider>
-							<a mat-menu-item
-							routerLink="/auth/signup"
-							translate>Create Account</a>
-						</mat-list>
-						<mat-list *ngIf="this.organization && this.organization.authType === 1">
-							<a mat-menu-item
-							routerLink="/auth/login"
-							translate>Login</a>
-							<mat-divider></mat-divider>
-							<a mat-menu-item
-							routerLink="/auth/login"
-							translate>Create Account</a>
-						</mat-list>
-					</mat-menu>
-					<div *ngIf="isAuthenticated">
-						<button mat-icon-button
-						[matMenuTriggerFor]="userMenu"
-						translate>
-							<mat-icon>person</mat-icon>
-						</button>
-						<mat-menu #userMenu="matMenu">
-							<mat-list>
-								<mat-list-item>
-									<span translate>Logged in as</span>&nbsp;<b>{{username}}</b>
-								</mat-list-item>
-								<mat-divider></mat-divider>
-								<a mat-menu-item
-								*ngIf="auth.isOwner() && organization"
-								routerLink="/communities/edit/{{organization._id}}"
-								translate>Edit Community</a>
-								<mat-divider></mat-divider>
-							</mat-list>
-							<button mat-menu-item
-							(click)="logout()"
-							translate>Logout</button>
-						</mat-menu>
-					</div>
-					<div *ngIf="!isAuthenticated && (!this.organization || !this.organization.authType || this.organization.authType === 0)"
-					class="hide-login-menu">
-						<button mat-stroked-button
-						class="border-override"
-						routerLink="/auth/login">Sign In</button>
-						<button mat-flat-button
-						color="warn"
-						routerLink="/auth/signup">Create Account</button>
-					</div>
-					<div *ngIf="!isAuthenticated && (this.organization && this.organization.authType === 1)"
-					class="hide-login-menu">
-						<button mat-stroked-button
-						class="border-override"
-						routerLink="/auth/login">Sign In</button>
-						<button mat-flat-button
-						color="warn"
-						routerLink="/auth/login">Create Account</button>
-					</div>
-				</mat-toolbar>
-				<!-- only show if search button pressed -->
-				<app-search-bar class="sticky-search"
-				ngClass.gt-sm="with-sidenav top-bar-height-lg"
-				ngClass.lt-md="top-bar-height-sm"
-				[isVisible]="showSearch"
-				(closeSearch)="toggleSearch()"></app-search-bar>
-
-				<mat-toolbar color="warn"
-				*ngIf="showVerify"
-				class="sticky-verify"
-				ngClass.gt-sm="with-sidenav top-bar-height-lg"
-				ngClass.lt-md="top-bar-height-sm">
-					<span class="mat-body">Your account is not yet verified</span>
-					<div fxFlex></div>
-					<button mat-stroked-button
-					routerLink="/auth/verify">Verify Now</button>
-					<button mat-icon-button
-					(click)="hideVerify = true">
-						<mat-icon>close</mat-icon>
-					</button>
-				</mat-toolbar>
+		<mat-sidenav-content [style.height]="'100vh'" >
+			<app-navbar
+				[sideNavRef]="sidenav"
+				[organization]="organization"
+			></app-navbar>
 			<router-outlet></router-outlet>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
