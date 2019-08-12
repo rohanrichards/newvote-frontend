@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -34,7 +33,7 @@ export class TopicListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
 	) { }
 
 	ngOnInit() {

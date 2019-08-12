@@ -44,7 +44,7 @@ export class ProposalViewComponent implements OnInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
 	) { }
 
 	ngOnInit() {

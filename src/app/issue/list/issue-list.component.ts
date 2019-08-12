@@ -79,7 +79,7 @@ export class IssueListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private meta: MetaService
-	) {
+		) {
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),
 			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
@@ -104,6 +104,7 @@ export class IssueListComponent implements OnInit {
 				title: 'All Issues',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
+
 	}
 
 	fetchData(force?: boolean) {

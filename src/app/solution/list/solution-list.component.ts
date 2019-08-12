@@ -67,6 +67,7 @@ export class SolutionListComponent implements OnInit {
 				const force: boolean = !!params.get('forceUpdate');
 				this.fetchData(force);
 			});
+
 	}
 
 	fetchData(force?: boolean) {
