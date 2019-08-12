@@ -23,7 +23,7 @@
 	joyrideStep="step1"
 	stepPosition="center"
 	[stepContent]="myCustomContent"
-	(done)="onDone($event)"
+	(done)="onDone()"
 	>
 	<ng-template #myCustomContent>
 		<div style="width: 300px">
@@ -37,7 +37,7 @@
 	joyrideStep="step2"
 	stepPosition="center"
 	[stepContent]="myCustomContent2"
-	(done)="onDone($event)"
+	(done)="onDone()"
 	>
 	<ng-template #myCustomContent2>
 		<div style="width: 300px">
@@ -51,7 +51,7 @@
 	joyrideStep="finish"
 	stepPosition="center"
 	[stepContent]="myCustomContent3"
-	(done)="onDone($event)"
+	(done)="onDone()"
 	>
 	<ng-template #myCustomContent3>
 		<div style="width: 300px">

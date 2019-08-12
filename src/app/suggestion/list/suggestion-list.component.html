@@ -1,8 +1,4 @@
 <app-header-bar 
-	joyrideStep="suggestion2"
-	[title]="stepsArray[5].title"
-	[stepContent]="customContent1"
-	stepPosition="'bottom'"
     [headerText]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
@@ -17,11 +13,11 @@
 	</div>
 </ng-template>
 
-<ng-template #customContent2>	
+<!-- <ng-template #customContent2>	
 	<div style="width: 300px">
 		<p class="mat-subheading-2">{{stepsArray[6].description}}</p>
 	</div>
-</ng-template>
+</ng-template> -->
 
 <div 
 	class="container"
@@ -30,8 +26,8 @@
 	<div 
 		joyrideStep="suggestion1"
 		stepPosition="center"
-		[title]="stepsArray[6].title"
-		[stepContent]="customContent2"
+		[title]="stepsArray[5].title"
+		[stepContent]="customContent1"
 		fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<ng-container [ngSwitch]="loadingState">

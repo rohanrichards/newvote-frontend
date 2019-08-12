@@ -156,8 +156,7 @@ export class HomeComponent implements OnInit {
 	}
 
 	onDone(event: any) {
-		event.stopPropagation();
-		this.completeTour();
+		return this.completeTour();
 	}
 
 	startTour(event: any) {
@@ -165,15 +164,10 @@ export class HomeComponent implements OnInit {
 		this.joyrideService.startTour(
 			{
 				steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
-					'solution1@solutions', 'suggestion1@suggestions',
-					'suggestion2@suggestions', 'finish@home'],
+					'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
 				showPrevButton: true,
 				stepDefaultPosition: 'top',
 				waitingTime: 500,
-			}
-		).subscribe(
-			() => {
-				this.completeTour();
 			}
 		);
 	}
