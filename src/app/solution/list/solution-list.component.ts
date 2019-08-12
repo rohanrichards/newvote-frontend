@@ -17,6 +17,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 
 @Component({
 	selector: 'app-solution',
@@ -39,7 +40,8 @@ export class SolutionListComponent implements OnInit {
 		routerLink: '/solutions/create',
 		role: 'admin'
 	}];
-
+	stepsArray = [...JoyRideSteps];
+	
 	constructor(
 		private stateService: StateService,
 		private solutionService: SolutionService,

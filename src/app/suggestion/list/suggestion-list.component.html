@@ -1,11 +1,8 @@
 <app-header-bar 
 	joyrideStep="suggestion2"
-	[title]="'Make a Suggestion'"
-	[text]="'If there is an issue/action/topic which was missing and you feel strongly about here\'s the place to make ngOnInit
-		You can create a suggestion, and the community leaders will see if it\'s suitable. Get your message heard!.
-	'"
+	[title]="stepsArray[5].title"
+	[stepContent]="customContent1"
 	stepPosition="'bottom'"
-	
     [headerText]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
@@ -14,6 +11,18 @@
     size="1.5">
 </app-loader>
 
+<ng-template #customContent1>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[5].description}}</p>
+	</div>
+</ng-template>
+
+<ng-template #customContent2>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[6].description}}</p>
+	</div>
+</ng-template>
+
 <div 
 	class="container"
     fxLayout="row wrap"
@@ -21,8 +30,8 @@
 	<div 
 		joyrideStep="suggestion1"
 		stepPosition="center"
-		[title]="joyrideSuggestionListTitle"
-		[text]="joyrideSuggestionListText"
+		[title]="stepsArray[6].title"
+		[stepContent]="customContent2"
 		fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<ng-container [ngSwitch]="loadingState">

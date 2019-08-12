@@ -4,7 +4,13 @@
 </app-header-bar>
 
 <app-loader [isLoading]="loadingState === 'loading'"
-    size="1.5"></app-loader>
+	size="1.5"></app-loader>
+	
+<ng-template #customContent>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[3].description}}</p>
+	</div>
+</ng-template>
 
 <div class="container"
     fxLayout="row wrap"
@@ -12,13 +18,8 @@
 	<div 
 		joyrideStep="issues1"
 		joyridePosition="top"
-		[title]="'The Issues'"
-		[text]="'Here\'s where you\'ll find all the issues your community is currently discussing
-		You can also filter issues by what topic they are under.
-		Otherwise you can click on any issue
-		to find out more information or potentially vote on solutions.
-		Solutions are the answers your community have thought of to tackle the current issues.
-		We\'ll go there next.'"
+		[title]="stepsArray[3].title"
+		[stepContent]="customContent"
 		fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
 		<div>

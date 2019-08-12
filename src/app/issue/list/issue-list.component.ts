@@ -23,6 +23,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 
 @Component({
 	selector: 'app-issue',
@@ -63,7 +64,7 @@ export class IssueListComponent implements OnInit {
 		routerLink: '/topics',
 		role: 'admin'
 	}];
-
+	stepsArray = [...JoyRideSteps];
 
 	topicFilter = new FormControl('');
 	topicParam: string; // filtered topics can be preselected via url param

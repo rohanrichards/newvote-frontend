@@ -7,21 +7,21 @@
     size="1.5">
 </app-loader>
 
+<ng-template #customContent>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[4].description}}</p>
+	</div>
+</ng-template>
 
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div 
 		joyrideStep="solution1"
-		[title]="'The solutions'"
-		[text]="'If you are more interested in solutions they will all be listed here 
-			You\'ll be able to vote as well as view their related actions. 
-			Actions are the next step to be take to implement a solution. Which can also be voted on.
-			If you think there is something is missing in the way of solutions or actions, there\'s one more step you can take.
-		'"
+		[title]="stepsArray[4].title"
+		[stepContent]="customContent"
 		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
-		
 		>
 		<ng-container [ngSwitch]="loadingState">
 				<div 

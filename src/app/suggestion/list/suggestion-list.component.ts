@@ -15,6 +15,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 
 @Component({
 	selector: 'app-suggestion',
@@ -40,8 +41,7 @@ export class SuggestionListComponent implements OnInit {
 		role: 'user'
 	}];
 
-	joyrideSuggestionListTitle = 'Here are the Suggestions';
-	joyrideSuggestionListText = 'You can read and vote on suggestions made by other members of the community here.';
+	stepsArray = [...JoyRideSteps];
 
 	constructor(private suggestionService: SuggestionService,
 		private stateService: StateService,

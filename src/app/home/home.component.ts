@@ -23,6 +23,8 @@ import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
+
 @Component({
 	selector: 'app-home',
 	templateUrl: './home.component.html',
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit {
 	handleImageUrl = optimizeImage;
 	loadTour = true;
 	ISSUE_LIMIT = 6;
+	stepsArray = [...JoyRideSteps];
 
 	constructor(
 		private readonly joyrideService: JoyrideService,
@@ -60,6 +63,7 @@ export class HomeComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		console.log(this.stepsArray, 'this is steps');
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -160,11 +164,12 @@ export class HomeComponent implements OnInit {
 		event.stopPropagation();
 		this.joyrideService.startTour(
 			{
-				steps: ['step1', 'step2', 'nav1@app', 'issues1@issues',
+				steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
 					'solution1@solutions', 'suggestion1@suggestions',
-					'suggestion2@suggestions'],
+					'suggestion2@suggestions', 'finish@home'],
 				showPrevButton: true,
-				stepDefaultPosition: 'top'
+				stepDefaultPosition: 'top',
+				waitingTime: 500,
 			}
 		).subscribe(
 			() => {

@@ -19,7 +19,7 @@
 </div>
 
 <joyrideStep
-	[title]="'Hello World'"
+	[title]="stepsArray[0].title"
 	joyrideStep="step1"
 	stepPosition="center"
 	[stepContent]="myCustomContent"
@@ -27,14 +27,39 @@
 	>
 	<ng-template #myCustomContent>
 		<div style="width: 300px">
-			Welcome to NewVote here you can discover the topics and issues that are important to your community.
-			Then vote on the solutions that have been put forward by members community leaders and sometimes from the
-			members themselves.
-
-			Let's get started and see where we can find out more abuot those issues.
+			<h4 class="mat-subheading-2">{{stepsArray[0].description}}</h4>
 		</div>
 	</ng-template>
 </joyrideStep>
+
+<joyrideStep
+	[title]="stepsArray[1].title"
+	joyrideStep="step2"
+	stepPosition="center"
+	[stepContent]="myCustomContent2"
+	(done)="onDone($event)"
+	>
+	<ng-template #myCustomContent2>
+		<div style="width: 300px">
+			<p class="mat-subheading-2">{{stepsArray[1].description}}</p>
+		</div>
+	</ng-template>
+</joyrideStep>
+
+<joyrideStep
+	[title]="stepsArray[7].title"
+	joyrideStep="finish"
+	stepPosition="center"
+	[stepContent]="myCustomContent3"
+	(done)="onDone($event)"
+	>
+	<ng-template #myCustomContent3>
+		<div style="width: 300px">
+			<p class="mat-subheading-2">{{stepsArray[7].description}}</p>
+		</div>
+	</ng-template>
+</joyrideStep>
+
 
 <ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
 </ng-container>
@@ -271,13 +296,16 @@
 		</div>
 	</div>
 
+	<ng-template #customContent>	
+		<div style="width: 300px">
+			<p class="mat-subheading-2">{{stepsArray[2].description}}</p>
+		</div>
+	</ng-template>
+
 	<div *ngSwitchCase="'complete'"
-		joyrideStep="step2"
-		[title]="'The Most Popular Issues'"
-		[text]="'For each community you can find the most discussed / voted on issues here.
-		You can click through here to find out more about those issues and what people want do about them.
-		But dont stop here, this is only a limited selection, you can find more issues by navigating to the issues page.
-		We will navigate there next'"
+		joyrideStep="step3"
+		[title]="stepsArray[2].title"
+		[stepContent]="customContent"
 		stepPosition="top"
 		(done)="onDone()"
 		[@fadeIn]=true
@@ -285,9 +313,11 @@
 		fxLayoutAlign="center center">
 		<div
 			fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px">
+			fxFlex.gt-md="800px"
+		 	>
 			<h2 class="mat-h2">What's Hot?</h2>
-			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">
+			<ng-container 
+			*ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>
 		</div>
 	</div>
@@ -304,7 +334,8 @@
 		</div>
 	</ng-template>
 	<ng-template #issuesExist>
-		<app-grid-list *ngIf="issues"
+		<app-grid-list 
+		*ngIf="issues"
 		 path="/issues"
 		 model="Issue"
 		 [itemLimit]="ISSUE_LIMIT"
