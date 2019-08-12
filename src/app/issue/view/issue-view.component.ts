@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, forwardRef, Inject, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -26,6 +26,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ShellComponent } from '@app/shell/shell.component';
 
 @Component({
 	selector: 'app-issue',
@@ -58,7 +59,8 @@ export class IssueViewComponent implements OnInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
 	) { }
 
 	ngOnInit() {

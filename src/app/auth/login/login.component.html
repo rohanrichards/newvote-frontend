@@ -9,20 +9,23 @@
 	 fxLayout="row"
 	 fxLayoutAlign="center">
 		<mat-card fxFlex="90%"
-		 fxFlex.sm="66%"
-		 fxFlex.md="50%"
-		 fxFlex.gt-md="33%"
-		 class="login-box">
-			<div *ngIf="this.org.authType && this.org.authType!==0" fxFlex>
+			fxFlex.lt-sm="90%"
+			fxFlex.sm="66%"
+			fxFlex.md="50%"
+			fxFlex.gt-md="33%"
+			class="login-box">
+			<div *ngIf="org.authType && org.authType!==0" 
+				fxFlex="1 0 100%"
+				fxLayout="column">
 				<button mat-raised-button
-				fxFlex
-				 color="primary"
-				 type="button"
-				 (click)="redirect()">
+					color="primary"
+					type="button"
+				 	(click)="loginWithSSO()">
 					<span translate>Login with SSO</span>
 				</button>
+				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>
 			</div>
-			<form *ngIf="!this.org.authType || this.org.authType===0"
+			<form *ngIf="!org.authType || org.authType===0"
 			 (ngSubmit)="login()"
 			 [formGroup]="loginForm"
 			 novalidate>

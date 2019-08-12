@@ -21,7 +21,7 @@ import { AppState } from '@app/core/models/state.model';
 	templateUrl: './suggestion-list.component.html',
 	styleUrls: ['./suggestion-list.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+    	trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SuggestionListComponent implements OnInit {
@@ -50,7 +50,7 @@ export class SuggestionListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
 	) { }
 
 	ngOnInit() {

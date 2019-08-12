@@ -1,0 +1,51 @@
+.sticky {
+    position: sticky;
+    top: 0px;
+    z-index: 200;
+}
+
+.border-override {
+	border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+// .sticky-toolbar {
+// 	top: 0px;
+// 	z-index: 200;
+// 	position: sticky;
+// }
+
+// .sticky-verify {
+// 	position: fixed;
+// 	z-index: 210;
+// 	height: 38px;
+// }
+
+// .sticky-search {
+// 	position: fixed;
+// 	z-index: 220;
+// }
+
+.hide-login-menu {
+	display: block;
+}
+
+.account-create-menu-icon {
+	display: none;
+}
+
+@media screen and (max-width: 500px) {
+	.hide-login-menu {
+		display: none;
+	}
+
+	.account-create-menu-icon {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 300px) {
+
+	.toolbar-title {
+		display: none;
+	}
+}

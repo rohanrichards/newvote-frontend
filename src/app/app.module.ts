@@ -43,9 +43,11 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { CookieService } from 'ngx-cookie-service';
 import { JoyrideModule } from 'ngx-joyride';
 import { LandingModule } from './landing/landing.module';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
 	imports: [
+		ScrollingModule,
 		BrowserModule,
 		ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
 		FormsModule,

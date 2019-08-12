@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { OrganizationService } from '@app/core';
@@ -8,7 +8,6 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MetaService } from '@app/core/meta.service';
-import { CookieService } from 'ngx-cookie-service';
 
 import { Issue } from '@app/core/models/issue.model';
 import { Organization } from '@app/core/models/organization.model';
@@ -21,6 +20,8 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyrideService } from 'ngx-joyride';
 import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
 	selector: 'app-home',
@@ -54,7 +55,8 @@ export class HomeComponent implements OnInit {
 		private userService: UserService,
 		private meta: MetaService,
 		private cookieService: CookieService,
-		public snackBar: MatSnackBar
+		public snackBar: MatSnackBar,
+		private router: Router
 	) { }
 
 	ngOnInit() {
@@ -133,13 +135,11 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	redirect() {
-		this.cookieService.set('org', this.org.url, null, '/', '.newvote.org');
-		// window.location.href = this.org.authUrl;
-		window.open(this.org.authUrl, '_self');
-	}
-
 	handleUserCount(count: number) {
+		if (this.auth.isAdmin() || this.auth.isOwner()) {
+			return `${count}`;
+		}
+
 		if (!count) {
 			return `0`;
 		}
