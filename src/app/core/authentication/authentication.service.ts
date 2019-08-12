@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { includes as _includes } from 'lodash';
+import { includes } from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -183,7 +183,7 @@ export class AuthenticationService {
 	 */
 	isAdmin(): boolean {
 		if (this._credentials) {
-			return _includes(this._credentials.user.roles, 'admin');
+			return includes(this._credentials.user.roles, 'admin');
 		} else {
 			return false;
 		}
@@ -196,7 +196,7 @@ export class AuthenticationService {
 	isOwner(): boolean {
 		if (this._credentials) {
 			// admin owns everything
-			if (_includes(this._credentials.user.roles, 'admin')) {
+			if (includes(this._credentials.user.roles, 'admin')) {
 				return true;
 			}
 
@@ -225,7 +225,7 @@ export class AuthenticationService {
 			}
 
 			// check if user is within moderators list
-			if (this._org && this._org.moderators && _includes(this._org.moderators, this._credentials.user._id)) {
+			if (this._org && this._org.moderators && includes(this._org.moderators, this._credentials.user._id)) {
 				return true;
 			}
 
@@ -259,7 +259,7 @@ export class AuthenticationService {
 
 	hasRole(role: string): boolean {
 		if (this._credentials) {
-			return _includes(this._credentials.user.roles, role);
+			return includes(this._credentials.user.roles, role);
 		}
 	}
 
