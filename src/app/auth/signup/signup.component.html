@@ -8,16 +8,17 @@
 	<div class="signup-container"
 	 fxLayout="row"
 	 fxLayoutAlign="center">
-		<mat-card fxFlex="90%"
+		<mat-card 
+		 fxFlex="90%"
+		 fxFlex.lt-sm="90%"
 		 fxFlex.sm="66%"
 		 fxFlex.md="50%"
 		 fxFlex.gt-md="33%"
 		 class="signup-box">
-			<div *ngIf="this.org.authType && this.org.authType!==0"
+			<div *ngIf="org.authType && org.authType!==0"
 				fxLayout="column"
-				fxFlex>
+				fxFlex="1 0 100%">
 				<button mat-raised-button
-				 fxFlex
 				 color="primary"
 				 type="button"
 				 (click)="redirect()">
@@ -26,7 +27,7 @@
 				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>	
 			</div>
 			<form (ngSubmit)="signup()"
-			 *ngIf="!this.org.authType || this.org.authType===0"
+			 *ngIf="!org.authType || org.authType===0"
 			 [formGroup]="signupForm"
 			 novalidate>
 				<div class="signup-error"

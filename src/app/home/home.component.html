@@ -145,14 +145,14 @@
 				<div fxFlex></div>
 			</div>
 			<div *ngIf="!auth.isAuthenticated()">
-				<button *ngIf="!this.org || !this.org.authType || this.org.authType===0"
+				<button *ngIf="!org || !org.authType || org.authType===0"
 				 mat-button
 				 mat-raised-button
 				 routerLink="/auth/signup"
 				 color="warn"
 				 class="mat-display-1">
 					CREATE ACCOUNT</button>
-				<button *ngIf="this.org && this.org.authType===1"
+				<button *ngIf="org && org.authType===1"
 				 mat-button
 				 mat-raised-button
 				 routerLink="/auth/login"
@@ -301,14 +301,14 @@
 	 routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
-			<button *ngIf="!this.org || !this.org.authType || this.org.authType===0"
+			<button *ngIf="!org || !org.authType || org.authType===0"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/signup"
 			 color="warn"
 			 class="mat-display-1">
 				CREATE ACCOUNT</button>
-			<button *ngIf="this.org && this.org.authType===1"
+			<button *ngIf="org && org.authType===1"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/login"

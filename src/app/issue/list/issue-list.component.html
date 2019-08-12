@@ -127,8 +127,10 @@
 					</ng-container>		
 					<div [@fadeIn]=true 
 						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
-						<h2 class="mat-h1">
-							{{topic.name}}
+						<div class="topic-header">
+							<h2 class="mat-h1 no-margin">
+								{{topic.name}}
+							</h2>
 							<div class="button-panel"
 								*ngIf="auth.isModerator(topic)">
 								<button color="accent"
@@ -149,7 +151,7 @@
 								</button>
 							</div>
 							<mat-divider></mat-divider>
-						</h2>
+						</div>
 						<app-grid-list path="/issues"
 							[items]="getIssues(topic._id)"
 							model="Issue"
