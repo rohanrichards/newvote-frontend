@@ -1,10 +1,8 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit, Input, Output, EventEmitter,
-	ViewChild, ElementRef, OnDestroy, AfterViewInit,
-	AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
+	ViewChild, AfterContentChecked } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { ObservableMedia } from '@angular/flex-layout';
-
+import { MediaObserver } from '@angular/flex-layout';
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
@@ -49,7 +47,7 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
 		private meta: MetaService,
-		private media: ObservableMedia
+		private media: MediaObserver
 	) {
 		// Subscribe to the route data from service,
 		// Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
