@@ -42,7 +42,7 @@ export class ProposalListComponent implements OnInit {
 		private router: Router,
 		public snackBar: MatSnackBar,
 		private meta: MetaService
-	) { }
+		) { }
 
 	ngOnInit() {
 		this.stateService.loadingState$.subscribe((state: string) => {

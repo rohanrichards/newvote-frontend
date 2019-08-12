@@ -1,15 +1,15 @@
 :host {
-  display: flex;
-  flex: 1;
-}
+	display: flex;
+	flex: 1;
+  }
 
 .border-override {
 	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .mat-sidenav {
-  min-width: 270px;
-  max-width: 28%;
+	min-width: 270px;
+	max-width: 28%;
 }
 
 .sticky-toolbar {
@@ -48,23 +48,23 @@
 // }
 
 .has-border {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .mat-list {
-  padding-top: 0;
+	padding-top: 0;
 }
 
 .mat-list-item {
-  text-decoration: none;
+	text-decoration: none;
 
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
 }
 
 .menu-button {
-  margin-right: 1rem;
+	margin-right: 1rem;
 }
 
 .logo-container {
@@ -74,9 +74,9 @@
 	cursor: pointer;
 
 	.logo {
-			width: 100%;
-			height: auto;
-			padding: 16px;
+		width: 100%;
+		height: auto;
+		padding: 16px;
 	}
 }
 
@@ -85,7 +85,7 @@
 }
 
 ::ng-deep .mat-input-underline {
-    display: none;
+	display: none;
 }
 
 .hide-login-menu {
@@ -101,7 +101,7 @@
 	flex-direction: column;
 	padding-bottom: 10px;
 	margin-top: auto;
-	
+
 	img {
 		width: 200px;
 		height: auto;

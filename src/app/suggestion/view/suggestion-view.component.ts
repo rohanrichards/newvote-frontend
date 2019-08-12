@@ -40,7 +40,7 @@ export class SuggestionViewComponent implements OnInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
 	) { }
 
 	ngOnInit() {
