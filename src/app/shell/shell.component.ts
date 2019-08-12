@@ -1,38 +1,136 @@
 import { Title } from '@angular/platform-browser';
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, Output, EventEmitter,
+	ViewChild, ElementRef, OnDestroy, AfterViewInit,
+	AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
+import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ObservableMedia } from '@angular/flex-layout';
 
 import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
-import {MatSidenavModule, MatDrawer} from '@angular/material/sidenav';
-import { ObservableMedia } from '@angular/flex-layout';
+import { MatSidenavContent, MatSidenavContainer } from '@angular/material';
+
+import { asyncScheduler, fromEvent, Subscription } from 'rxjs';
+import { filter, observeOn, scan, debounceTime, tap, auditTime, finalize } from 'rxjs/operators';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
+import { ScrollService } from '@app/core/scroll/scroll.service';
+
+
+interface ScrollPositionRestore {
+	event: Event;
+	positions: { [K: number]: number };
+	trigger: 'imperative' | 'popstate';
+	idToRestore: number;
+}
 
 @Component({
 	selector: 'app-shell',
 	templateUrl: './shell.component.html',
 	styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent implements OnInit {
+export class ShellComponent implements OnInit, AfterContentChecked {
 	organization: any;
+	hideVerify = false;
+	showSearch = false;
+	currentRoute: any;
+	oldRouteState: any;
+	pageLoading = false;
+
 	@Output() closeSearch = new EventEmitter();
-	opened: boolean;
-	@ViewChild(MatDrawer) matDrawer: MatDrawer;
+	@ViewChild(MatSidenavContainer) sidenavContainer: MatSidenavContainer;
+
+	scrollingSubscription: any;
 
 	constructor(
-		private titleService: Title,
+		private scrollService: ScrollService,
+		public scroll: ScrollDispatcher,
 		private router: Router,
+		private titleService: Title,
 		private i18nService: I18nService,
 		private organizationService: OrganizationService,
-		private matSideNav: MatSidenavModule,
+		private meta: MetaService,
 		private media: ObservableMedia
-	) { }
+	) {
+		// Subscribe to the route data from service,
+		// Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
+		// Without service data is saved multiple times
+		this.scrollService.currentRoute$
+			.subscribe((route: any) => {
+				this.currentRoute = route;
+			});
+
+
+		// Listen in to the scroll data and update the scroll position on service
+		// We save on the service so we can handle multiple scroll listners not copying / resetting
+		this.scrollingSubscription = this.scroll
+			.scrolled()
+			.subscribe((data: CdkScrollable) => {
+				const scrollTop = data.getElementRef().nativeElement.scrollTop;
+				this.scrollService.updateCurrentRoutePosition(scrollTop);
+			});
+
+		// NavigationStart/Navigation End router events
+		// NavigationStart tells us whether we are navigating forwards or backwards
+		// Navigation end saves the current route to the scrollService
+
+		this.router.events
+			.pipe(
+				filter(
+					event =>
+						event instanceof NavigationStart ||
+						event instanceof NavigationEnd
+				),
+			)
+			.subscribe((e: any) => {
+				if (e instanceof NavigationStart) {
+					if (e.navigationTrigger === 'popstate') {
+						// User has hit the back button
+
+						// Only load old page state once if it exists and is the same as current route
+						if (this.oldRouteState && this.oldRouteState.id === e.restoredState.navigationId) {
+							return false;
+						}
+
+						// If previous page state is not loaded, search the saved page states on service for match
+						// & save page state so the offset can be used once the new route has fully loaded
+						this.oldRouteState = this.scrollService.getSavedRoutes().find((ele: any) => {
+							return e.restoredState.navigationId === ele.id;
+						});
+					}
+
+					// If navigation is not a back click, remove previous page state
+					// so the scroll is not saved going forwards
+					if (e.navigationTrigger === 'imperative') {
+						// User has user the router navigation
+						this.oldRouteState = null;
+					}
+				}
+
+				// NavigationEnd - only router event that fires on pageLoad
+				// saves the current page to service
+				if (e instanceof NavigationEnd) {
+					const currentRoute = {
+						id: e.id,
+						route: e.url
+					};
+
+					this.scrollService.saveRoute(currentRoute);
+				}
+			});
+	}
 
 	ngOnInit() {
-		console.log(this.matSideNav, 'this is mat')
 		this.organizationService.get().subscribe(org => {
 			this.organization = org;
 		});
+
+	}
+
+	ngAfterContentChecked() {
+		if (!this.oldRouteState) {
+			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
+		}
+		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
 	setLanguage(language: string) {

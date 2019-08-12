@@ -1,6 +1,6 @@
 <div fxFlex>
 	<mat-sidenav-container fxFill>
-		<mat-sidenav 
+		<mat-sidenav
 			#sidenav
 			[mode]="isMobile ? 'over' : 'side'"
 			[opened]="!isMobile"
@@ -91,7 +91,7 @@
 			</div>
 		</mat-sidenav>
 		<mat-sidenav-content [style.height]="'100vh'" >
-			<app-navbar 
+			<app-navbar
 				[sideNavRef]="sidenav"
 				[organization]="organization"
 			></app-navbar>
