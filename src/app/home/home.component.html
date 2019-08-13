@@ -1,21 +1,25 @@
 <div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" >
-	<h4 joyrideStep="step1"
-	class="mat-subtitle-1">New to NewVote? Let us help you get started.</h4>
-	<div>
+	<div >
+		<h4 joyrideStep="step1"
+			class="mat-subtitle-1">New to NewVote? Let us help you get started.</h4>
+	</div>
+	<div 
+		[style.margin-left]="'0.5rem'"
+		fxFlex
+		fxLayout="row wrap"
+		fxLayoutAlign="end center"
+		>
 		<button
 			(click)="onDone($event)"
-			stepPosition="right"
 			mat-flat-button>
 			Dismiss
 		</button>
-		<button
+		<button	
 			(click)="startTour($event)"
-			stepPosition="right"
 			mat-flat-button color="warn">
 			Start Tour
 		</button>
 	</div>
-
 </div>
 
 <joyrideStep
