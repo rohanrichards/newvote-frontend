@@ -13,13 +13,14 @@
 	</div>
 </ng-template>
 
-<div class="container"
+<div 
+	joyrideStep="solution1"
+	[title]="stepsArray[4].title"
+	[stepContent]="customContent"
+	class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div 
-		joyrideStep="solution1"
-		[title]="stepsArray[4].title"
-		[stepContent]="customContent"
 		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
 		>

@@ -166,8 +166,8 @@ export class HomeComponent implements OnInit {
 				steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
 					'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
 				showPrevButton: true,
-				stepDefaultPosition: 'top',
-				waitingTime: 500,
+				stepDefaultPosition: 'center',
+				waitingTime: 750,
 			}
 		);
 	}
