@@ -155,7 +155,7 @@ export class HomeComponent implements OnInit {
 		return `${Math.floor(count / 1000)}K+`;
 	}
 
-	onDone(event: any) {
+	onDone() {
 		return this.completeTour();
 	}
 
@@ -167,7 +167,7 @@ export class HomeComponent implements OnInit {
 					'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
 				showPrevButton: true,
 				stepDefaultPosition: 'center',
-				waitingTime: 750,
+				waitingTime: 1150,
 			}
 		);
 	}

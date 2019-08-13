@@ -125,10 +125,10 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 	}
 
 	ngAfterContentChecked() {
-		if (!this.oldRouteState) {
-			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
-		}
-		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
+		// if (!this.oldRouteState) {
+		// 	return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
+		// }
+		// return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
 	setLanguage(language: string) {

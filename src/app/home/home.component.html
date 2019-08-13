@@ -26,7 +26,7 @@
 	(done)="onDone()"
 	>
 	<ng-template #myCustomContent>
-		<div style="width: 300px">
+		<div style="width: 250px">
 			<h4 class="mat-subheading-2">{{stepsArray[0].description}}</h4>
 		</div>
 	</ng-template>
@@ -40,7 +40,7 @@
 	(done)="onDone()"
 	>
 	<ng-template #myCustomContent2>
-		<div style="width: 300px">
+		<div style="width: 250px">
 			<p class="mat-subheading-2">{{stepsArray[1].description}}</p>
 		</div>
 	</ng-template>
@@ -297,7 +297,7 @@
 	</div>
 
 	<ng-template #customContent>	
-		<div style="width: 300px">
+		<div style="width: 200px">
 			<p class="mat-subheading-2">{{stepsArray[2].description}}</p>
 		</div>
 	</ng-template>
@@ -306,7 +306,7 @@
 		joyrideStep="step3"
 		[title]="stepsArray[2].title"
 		[stepContent]="customContent"
-		stepPosition="top"
+		stepPosition="center"
 		(done)="onDone()"
 		[@fadeIn]=true
 		class="hot-issues-container container text-center"

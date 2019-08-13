@@ -58,16 +58,16 @@
 				<mat-label>Authentication Type</mat-label>
 				<mat-select formControlName="authType"
 				 required>
-					<mat-option value="0">
+					<mat-option [value]="0">
 						Local (email/password)
 					</mat-option>
-					<mat-option value="1">
+					<mat-option [value]="1">
 						UQ AAF
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
 				<input matInput
 				 type="url"
 				 placeholder="The redirect URL to use for AAF authentication"
@@ -75,7 +75,7 @@
 				 required>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
 				<input matInput
 				 type="text"
 				 placeholder="Enter the Entity ID for AAF authentication"
