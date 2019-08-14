@@ -1,17 +1,15 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit, Input, Output, EventEmitter,
-	ViewChild, ElementRef, OnDestroy, AfterViewInit,
-	AfterViewChecked, AfterContentChecked, AfterContentInit } from '@angular/core';
+	ViewChild } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ObservableMedia } from '@angular/flex-layout';
 
-import { AuthenticationService, I18nService } from '@app/core';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
-import { MatSidenavContent, MatSidenavContainer } from '@angular/material';
+import { MatSidenavContainer } from '@angular/material';
 
-import { asyncScheduler, fromEvent, Subscription } from 'rxjs';
-import { filter, observeOn, scan, debounceTime, tap, auditTime, finalize } from 'rxjs/operators';
+import { asyncScheduler } from 'rxjs';
+import { filter, observeOn } from 'rxjs/operators';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
 import { ScrollService } from '@app/core/scroll/scroll.service';
 
@@ -28,7 +26,7 @@ interface ScrollPositionRestore {
 	templateUrl: './shell.component.html',
 	styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent implements OnInit, AfterContentChecked {
+export class ShellComponent implements OnInit {
 	organization: any;
 	hideVerify = false;
 	showSearch = false;
@@ -81,6 +79,11 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 						event instanceof NavigationEnd
 				),
 			)
+			.pipe(
+				// https://blog.angularindepth.com/reactive-scroll-position-restoration-with-rxjs-792577f842c
+				// delays the navigation events during the lifecycle so scroll position is restored
+				observeOn(asyncScheduler)
+			)
 			.subscribe((e: any) => {
 				if (e instanceof NavigationStart) {
 					if (e.navigationTrigger === 'popstate') {
@@ -115,6 +118,11 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 					};
 
 					this.scrollService.saveRoute(currentRoute);
+
+					if (!this.oldRouteState) {
+						return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
+					}
+					return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 				}
 			});
 	}
@@ -124,13 +132,6 @@ export class ShellComponent implements OnInit, AfterContentChecked {
 			this.organization = org;
 		});
 
-	}
-
-	ngAfterContentChecked() {
-		if (!this.oldRouteState) {
-			return this.sidenavContainer.scrollable.scrollTo({left: 0, top: 0, behavior: 'auto'});
-		}
-		return this.sidenavContainer.scrollable.scrollTo({left: 0, top: this.oldRouteState.topOffset, behavior: 'auto'});
 	}
 
 	setLanguage(language: string) {
