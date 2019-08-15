@@ -63,4 +63,11 @@
 			<mat-icon>close</mat-icon>
 		</button>
 	</mat-toolbar>
+
+	<mat-toolbar color="warn" *ngIf="!auth.isCommunityVerified()" class="sticky-verify" ngClass.gt-sm="with-sidenav top-bar-height-lg"
+		ngClass.lt-md="top-bar-height-sm">
+		<span class="mat-body">Your account is not verified with this community</span>
+		<div fxFlex></div>
+		<button mat-stroked-button routerLink="/auth/login">Verify with this Community</button>
+	</mat-toolbar>
 </div>

@@ -61,6 +61,9 @@ export class AuthenticationService {
 	private _credentials: Credentials | null;
 	private _org: Organization;
 
+	// Only use if a user has a verified account and is visiting a new community
+	private communityVerified = false;
+
 	constructor(
 		private httpClient: HttpClient,
 		private jwt: JwtHelperService,
@@ -84,10 +87,11 @@ export class AuthenticationService {
 		this.checkStatus()
 			.subscribe(
 				(res) => {
-					this.setCredentials(res, true);
+					this.checkIfCommunityVerified(res.user);
+					return this.setCredentials(res, true);
 				},
 				(err) => {
-					this.setCredentials();
+					// this.setCredentials();
 				}
 			)
 
@@ -114,6 +118,8 @@ export class AuthenticationService {
 			.post<Credentials>(routes.signin(), context)
 			.pipe(
 				map((res) => {
+					console.log(res, 'this is res on login');
+					this.checkIfCommunityVerified(res.user);
 					this.setCredentials(res, context.remember);
 					return res;
 				})
@@ -125,8 +131,6 @@ export class AuthenticationService {
 			.get<Credentials>(routes.checkAuth())
 			.pipe(
 				map((res) => {
-					console.log(res, 'this is res');
-					// this.setCredentials(res, true);
 					return res;
 				}),
 				catchError(handleError)
@@ -298,6 +302,21 @@ export class AuthenticationService {
 		// debugger;
 		if (this._credentials) {
 			return (this._credentials.user.verified === true);
+		}
+	}
+
+	isCommunityVerified(): boolean {
+		return this.communityVerified;
+	}
+
+	checkIfCommunityVerified(user: any) {
+		const { organizations } = user
+		const isUserPartOfOrg = organizations.find((id: string) => {
+			return this._org._id === id;
+		});
+		if (isUserPartOfOrg) {
+			console.log('User is part of org');
+			this.communityVerified = true;	
 		}
 	}
 
