@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { includes } from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { Organization } from '@app/core/models/organization.model';
+import { handleError } from '../http/errors';
 
 export interface Credentials {
 	// Customize received credentials here
@@ -44,7 +45,8 @@ const routes = {
 	randomGet: () => `/topics`,
 	sms: () => `/users/sms`,
 	verify: () => `/users/verify`,
-	sso: () => '/auth/jwt'
+	sso: () => '/auth/jwt',
+	checkAuth: () => '/auth/check-status'
 };
 
 const credentialsKey = 'credentials';
@@ -77,6 +79,18 @@ export class AuthenticationService {
 		}
 
 		this.organizationService.get().subscribe(org => this._org = org);
+
+
+		this.checkStatus()
+			.subscribe(
+				(res) => {
+					this.setCredentials(res, true);
+				},
+				(err) => {
+					this.setCredentials();
+				}
+			)
+
 	}
 
 	randomGet() {
@@ -103,6 +117,19 @@ export class AuthenticationService {
 					this.setCredentials(res, context.remember);
 					return res;
 				})
+			);
+	}
+
+	checkStatus(): Observable<Credentials> {
+		return this.httpClient
+			.get<Credentials>(routes.checkAuth())
+			.pipe(
+				map((res) => {
+					console.log(res, 'this is res');
+					// this.setCredentials(res, true);
+					return res;
+				}),
+				catchError(handleError)
 			);
 	}
 
