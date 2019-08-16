@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => {
-					console.log(err, 'this is err');
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);

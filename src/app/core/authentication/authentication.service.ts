@@ -91,7 +91,6 @@ export class AuthenticationService {
 					return this.setCredentials(res, true);
 				},
 				(err) => {
-					console.log(err, 'this is err');
 					if (err.status === 400) {
 						this.setCredentials();
 					}
