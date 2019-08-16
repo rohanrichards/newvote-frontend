@@ -162,6 +162,8 @@ export class AuthenticationService {
 	logout(): Observable<boolean> {
 		// Customize credentials invalidation here
 		this.setCredentials();
+		// reset community verified once no user is there (only shows if logged in)
+		this.communityVerified = true;
 		this.cookieService.delete('credentials');
 		return of(true);
 	}
@@ -311,7 +313,8 @@ export class AuthenticationService {
 		return this.communityVerified;
 	}
 
-	checkIfCommunityVerified(user: any) {
+	checkIfCommunityVerified(user?: any) {
+
 		const { organizations } = user
 		const isUserPartOfOrg = organizations.find((id: string) => {
 			return this._org._id === id;
