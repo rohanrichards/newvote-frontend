@@ -62,7 +62,7 @@ export class AuthenticationService {
 	private _org: Organization;
 
 	// Only use if a user has a verified account and is visiting a new community
-	private communityVerified = false;
+	private communityVerified = true;
 
 	constructor(
 		private httpClient: HttpClient,
@@ -91,6 +91,7 @@ export class AuthenticationService {
 					return this.setCredentials(res, true);
 				},
 				(err) => {
+					console.log(err, 'this is err');
 					// this.setCredentials();
 				}
 			)
@@ -118,7 +119,6 @@ export class AuthenticationService {
 			.post<Credentials>(routes.signin(), context)
 			.pipe(
 				map((res) => {
-					console.log(res, 'this is res on login');
 					this.checkIfCommunityVerified(res.user);
 					this.setCredentials(res, context.remember);
 					return res;
@@ -161,6 +161,7 @@ export class AuthenticationService {
 	logout(): Observable<boolean> {
 		// Customize credentials invalidation here
 		this.setCredentials();
+		this.cookieService.delete('credentials');
 		return of(true);
 	}
 
@@ -314,10 +315,18 @@ export class AuthenticationService {
 		const isUserPartOfOrg = organizations.find((id: string) => {
 			return this._org._id === id;
 		});
-		if (isUserPartOfOrg) {
-			console.log('User is part of org');
-			this.communityVerified = true;	
+
+		// community verification only for verified users
+		if (!user.verified) {
+			return false;
 		}
+
+		if (!isUserPartOfOrg) {
+			console.log('User is part of org');
+			return this.communityVerified = false;
+		}
+
+		return this.communityVerified = true;
 	}
 
 	setVerified(credentials: Credentials) {
