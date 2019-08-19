@@ -8,7 +8,7 @@ import { MatSidenav } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
-	selector: 'app-navbar',
+	selector: 'div[sticky-component]',
 	templateUrl: './navbar.component.html',
 	styleUrls: ['./navbar.component.scss']
 })
