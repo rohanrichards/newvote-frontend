@@ -9,7 +9,9 @@
 			fixedInViewport="true">
 			<div class="logo-container">
 				<p>
-					<a href="https://newvote.org">
+					<a 	
+						(click)="redirectToLanding()"
+						>
 						<img class="logo"
 						 src="assets/logo-no-circle.png"
 						 alt="NewVote" />
@@ -18,14 +20,21 @@
 			</div>
 			<nav>
 				<mat-list>
+
+
+					<a mat-list-item
+					routerLink="/home"
+					routerLinkActive="active"
+					>
+						<span translate>{{ organization.name }}</span>
+					</a>
+					<mat-divider></mat-divider>
 					<a mat-list-item
 					 routerLink="/home"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">
 						<span translate>Home</span>
 					</a>
-
-					<mat-divider></mat-divider>
 
 					<a mat-list-item
 					 routerLink="/issues"
@@ -47,29 +56,22 @@
 						<span translate>Your Suggestions</span>
 					</a>
 
-					<mat-divider></mat-divider>
-
 					<a mat-list-item
-					 *ngIf="organization && organization.organizationUrl"
-					 href="#"
-					 (click)="visitOrganizationUrl($event)"
-					 target="_blank">
-						<span translate
-						 matLine>About This Community</span>
-					</a>
+					*ngIf="organization && organization.organizationUrl"
+					href="#"
+					(click)="visitOrganizationUrl($event)"
+					target="_blank">
+					   <span translate
+						matLine>About This Community</span>
+				   </a>
+
+					<mat-divider></mat-divider>
 
 					<a mat-list-item
 					 href="https://newvote.org/the-app"
 					 target="_blank">
 						<span translate
 						 matLine>About NewVote</span>
-					</a>
-
-					<a mat-list-item
-						(click)="isMobile && sidenav.close(); redirectToLanding()"
-					    >
-						<span translate
-						    matLine>Explore Communities</span>
 					</a>
 
 					<a mat-list-item
