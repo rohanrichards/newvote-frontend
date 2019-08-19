@@ -92,12 +92,16 @@
 				<img src="assets/entersoft-light.png" />
 			</div>
 		</mat-sidenav>
-		<mat-sidenav-content [style.height]="'100vh'" >
-			<div sticky-component
-				[sideNavRef]="sidenav"
-				[organization]="organization"
-			></div>
-			<router-outlet></router-outlet>
+		<mat-sidenav-content 
+			[style.height]="'100vh'" 
+			>
+			<div>
+				<div sticky-component
+					[sideNavRef]="sidenav"
+					[organization]="organization"
+				></div>
+				<router-outlet></router-outlet>
+			</div>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
 </div>
