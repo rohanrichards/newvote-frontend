@@ -8,14 +8,14 @@
 	<div class="signup-container"
 	 fxLayout="row"
 	 fxLayoutAlign="center">
-		<mat-card 
+		<mat-card
 		 fxFlex="90%"
 		 fxFlex.lt-sm="90%"
 		 fxFlex.sm="66%"
 		 fxFlex.md="50%"
 		 fxFlex.gt-md="33%"
 		 class="signup-box">
-			<div *ngIf="org.authType && org.authType!==0"
+			<div *ngIf="org && org.authType && org.authType!==0"
 				fxLayout="column"
 				fxFlex="1 0 100%">
 				<button mat-raised-button
@@ -24,7 +24,7 @@
 				 (click)="redirect()">
 					<span translate>Sign up with SSO</span>
 				</button>
-				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>	
+				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>
 			</div>
 			<form (ngSubmit)="signup()"
 			 *ngIf="!org.authType || org.authType===0"
