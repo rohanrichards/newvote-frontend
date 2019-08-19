@@ -31,9 +31,12 @@ export class SuggestionEditComponent implements OnInit {
 
 	suggestionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
+		type: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		statements: new FormControl(''),
 		media: new FormControl(''),
+		parent: new FormControl(''),
+		parentType: new FormControl('')
 	});
 
 	@ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
@@ -63,6 +66,7 @@ export class SuggestionEditComponent implements OnInit {
 
 					this.suggestionForm.patchValue({
 						'title': suggestion.title,
+						'type': suggestion.type || '',
 						'description': suggestion.description,
 						'statements': suggestion.statements
 					});

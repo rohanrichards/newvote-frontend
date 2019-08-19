@@ -33,6 +33,7 @@ export class SuggestionCreateComponent implements OnInit {
 
 	suggestionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
+		type: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
 		statements: new FormControl(''),
 		media: new FormControl(''),

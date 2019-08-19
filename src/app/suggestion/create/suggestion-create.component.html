@@ -73,6 +73,21 @@
 					</mat-error>
 				</mat-form-field>
 
+				<mat-form-field>
+					<mat-label>Suggestion Type</mat-label>
+					<mat-select formControlName="type" required>
+						<mat-option value="issue">
+							Issue
+						</mat-option>
+						<mat-option value="solution">
+							Solution
+						</mat-option>
+						<mat-option value="action">
+							Action
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
 				<span class='group-label'>Summary</span>
 				<span class="mat-caption group-label">
 					Hint: Please provide a general introduction to your contribution (which will be a full-scale "wiki" in a future development of the app). Write your summary for an audience of people that don't know about politics or your contribution. the tone should be simple, clear, friendly and authoritative (like Wikipedia, in fact, try to write your contribution in line with wikipedias principles: encyclopedic, neutral point of view, verifiable accuracy and sighting reliable and authoritative sources). Aim for 250 words max.

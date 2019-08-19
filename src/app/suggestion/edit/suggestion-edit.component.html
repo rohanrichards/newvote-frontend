@@ -22,7 +22,22 @@
 					</mat-error>
 				</mat-form-field>
 
-				<span class='group-label'>Suggestion Summary</span>
+				<mat-form-field>
+					<mat-label>Suggestion Type</mat-label>
+					<mat-select formControlName="type" required>
+						<mat-option value="issue">
+							Issue
+						</mat-option>
+						<mat-option value="solution">
+							Solution
+						</mat-option>
+						<mat-option value="action">
+							Action
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<span class='group-label'>Suggestion Details (Optional)</span>
 				<span class="mat-caption group-label">Hint: The summary is a general introduction to the Issue (which will be a wiki, eventually). Written for an audience of people that don’t know about politics. The tone is simple, clear, friendly and authoritative (like Wikipedia, in fact, we should emulate Wikipedia’s core pillars). Include links to sources (feel free to use Wikipedia as a source of this information). Aim for 250 words max.</span>
 				<div class="quill-editor-container cf">
 					<quill-editor formControlName="description"></quill-editor>
@@ -36,7 +51,7 @@
 					</div>
 				</ng-container> -->
 
-				<span class='group-label'>Related Media</span>
+				<span class='group-label'>Add links (Optional)</span>
 				<span class="mat-caption group-label">Hint: At least five third-party media sources (articles, videos, podcast or memes) that relate to the Issue.</span>
 				<mat-form-field class="example-chip-list">
 					<mat-chip-list #mediaChipList>
