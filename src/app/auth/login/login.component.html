@@ -19,7 +19,7 @@
 				fxLayout="column">
 				<ul class="mat-body">
 					<li>
-						{{org.name}} by {{org.organizationName}} requires verification of your account through Single Sign-on.
+						{{org.name}} <span *ngIf='org && org.organizationName'>by {{org.organizationName}}</span>requires verification of your account through Single Sign-on.
 						(don't worry, your votes and suggestions will only be anonymously available to your community leader)
 					</li>
 					<li>
