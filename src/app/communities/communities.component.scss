@@ -8,10 +8,10 @@
 
 .home-hero {
     min-height: 40vh;
+    max-height: 40vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
     background-image: url('assets/newvote-banner-no-text.jpg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -28,6 +28,7 @@
 
 .about-section {
     background-color: #FAFAFA;
+    height: 100%;
     padding: 2rem;
 }
 
