@@ -14,16 +14,31 @@
 			fxFlex.md="50%"
 			fxFlex.gt-md="33%"
 			class="login-box">
-			<div *ngIf="org.authType && org.authType!==0" 
+			<div *ngIf="org  && org.authType && org.authType!==0"
 				fxFlex="1 0 100%"
 				fxLayout="column">
+				<ul class="mat-body">
+					<li>
+						{{org.name}} <span *ngIf='org && org.organizationName'>by {{org.organizationName}}</span>requires verification of your account through Single Sign-on.
+						(don't worry, your votes and suggestions will only be anonymously available to your community leader)
+					</li>
+					<li>
+
+						By creating an account on NewVote, you are agreeing to our <a href="https://newvote.org/terms" target="_blank">Terms of Service</a>
+						and <a class="signup-terms" href="https://newvote.org/privacy-policy" target="_blank">Privacy Policy</a>
+					</li>
+					<li>
+						During this verification process, you may get a notice from the Australian Access Federation asking you
+						to share your details with us. For your convenience, please tick the last of the three options so you will
+						not need to give permission again.
+					</li>
+				</ul>
 				<button mat-raised-button
 					color="primary"
 					type="button"
 				 	(click)="loginWithSSO()">
-					<span translate>Login with SSO</span>
+					<span translate>Verify Account</span>
 				</button>
-				<a class="signup-terms" href="https://newvote.org/privacy-policy">Terms & Conditions</a>
 			</div>
 			<form *ngIf="!org.authType || org.authType===0"
 			 (ngSubmit)="login()"
