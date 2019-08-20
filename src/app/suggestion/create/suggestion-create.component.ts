@@ -2,10 +2,10 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { switchMap, startWith, finalize, debounceTime } from 'rxjs/operators';
+import { switchMap, startWith, finalize, debounceTime, filter, map } from 'rxjs/operators';
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { SearchService } from '@app/core/http/search/search.service';
@@ -14,6 +14,7 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { Organization } from '@app/core/models/organization.model';
+import { InternalFormsSharedModule } from '@angular/forms/src/directives';
 
 @Component({
 	selector: 'app-suggestion',
@@ -30,6 +31,9 @@ export class SuggestionCreateComponent implements OnInit {
 	separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
 	isLoading = true;
 	createOrEdit = 'create';
+	suggestionType: string;
+
+	state$: Observable<object>;
 
 	suggestionForm = new FormGroup({
 		title: new FormControl('', [Validators.required]),
@@ -37,7 +41,7 @@ export class SuggestionCreateComponent implements OnInit {
 		description: new FormControl('', [Validators.required]),
 		statements: new FormControl(''),
 		media: new FormControl(''),
-		parent: new FormControl(''),
+		parentTitle: new FormControl(''),
 		parentType: new FormControl('')
 	});
 
@@ -55,11 +59,11 @@ export class SuggestionCreateComponent implements OnInit {
 		private router: Router,
 		private meta: MetaService
 	) {
-		this.filteredObjects = this.suggestionForm.get('parent').valueChanges
-			.pipe(
-				debounceTime(300),
-				switchMap((search: string) => search ? this.searchService.all({ query: search }) : of([]))
-			);
+		// this.filteredObjects = this.suggestionForm.get('parent').valueChanges
+		// 	.pipe(
+		// 		debounceTime(300),
+		// 		switchMap((search: string) => search ? this.searchService.all({ query: search }) : of([]))
+		// 	);
 	}
 
 	ngOnInit() {
@@ -87,6 +91,27 @@ export class SuggestionCreateComponent implements OnInit {
 
 		this.organizationService.get().subscribe(org => this.organization = org);
 		this.isLoading = false;
+
+		// if there is a suggestion type
+		this.suggestionType = this.route.snapshot.queryParamMap.get('type');
+
+		if (this.suggestionType) {
+			this.suggestionForm.patchValue({type: this.suggestionType});
+		}
+
+		this.route.paramMap
+			.pipe(
+				map(() => window.history.state)
+			)
+			.subscribe((res) => {
+				if (res._id || res.parentTitle || res.type) {
+					if (res.parentType) {
+						this.suggestionForm.patchValue({type: res.parentType})
+					}
+					console.log(res, 'this is res');
+					this.suggestionForm.patchValue(res);
+				}
+			});
 	}
 
 	onSave() {

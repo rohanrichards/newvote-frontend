@@ -62,7 +62,15 @@ export class IssueListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/topics',
 		role: 'admin'
-	}];
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'issue' }
+	}
+	];
 
 
 	topicFilter = new FormControl('');

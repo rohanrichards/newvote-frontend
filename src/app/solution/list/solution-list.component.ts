@@ -38,6 +38,13 @@ export class SolutionListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/solutions/create',
 		role: 'admin'
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'solution' }
 	}];
 
 	constructor(
@@ -67,7 +74,7 @@ export class SolutionListComponent implements OnInit {
 				const force: boolean = !!params.get('forceUpdate');
 				this.fetchData(force);
 			});
-
+		
 	}
 
 	fetchData(force?: boolean) {

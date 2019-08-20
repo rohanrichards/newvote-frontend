@@ -4,7 +4,8 @@
 <div class="container"
     fxLayoutAlign="center center">
 	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
+		fxFlex="100">
+		
 
 		<div *ngIf="!createOrEdit">
 			<h2 class="mat-display-1">Thank you for your interest in the {{this.organization.name}} community, what would you like to do?</h2>
@@ -28,7 +29,20 @@
 		    [formGroup]="suggestionForm"
 		    fxLayout="column"
 		    (ngSubmit)="onSave()"
-		    novalidate>
+			novalidate>
+			
+			<div *ngIf="suggestionForm.value.parentTitle" fxLayout="row" fxLayoutGap="12px">
+				<mat-form-field fxFlex="2 1 50%">
+					<mat-label>Parent Name</mat-label>
+					<input matInput placeholder="Parent Field" formControlName="parentTitle" readonly>
+				</mat-form-field>
+				
+				<mat-form-field fxFlex="1 1 50%">
+					<mat-label>Parent Type</mat-label>
+					<input matInput placeholder="Parent Type" formControlName="parentType" readonly>
+				</mat-form-field>
+			</div>
+		
 			<span *ngIf="createOrEdit === 'edit'"
 			    class="mat-caption group-label">
 				Hint: Start by searching for the content you'd like to suggest an edit to.

@@ -31,6 +31,13 @@ export class ProposalListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/proposals/create',
 		role: 'admin'
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'action' }
 	}];
 
 	constructor(

@@ -212,4 +212,18 @@ export class SolutionViewComponent implements OnInit {
 		});
 	}
 
+	populateSuggestion() {
+		const {_id, title } = this.solution;
+		const suggestionParentInfo = {
+			_id,
+			parentTitle: title,
+			parentType: 'solution',
+		}
+
+		this.router.navigateByUrl('/suggestions/create', { 
+			state: {
+				...suggestionParentInfo
+			}
+		})
+	}
 }
