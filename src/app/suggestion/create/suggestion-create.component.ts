@@ -108,7 +108,6 @@ export class SuggestionCreateComponent implements OnInit {
 					if (res.parentType) {
 						this.suggestionForm.patchValue({type: res.parentType})
 					}
-					console.log(res, 'this is res');
 					this.suggestionForm.patchValue(res);
 				}
 			});

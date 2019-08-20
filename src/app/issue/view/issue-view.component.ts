@@ -298,4 +298,19 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
+	populateSuggestion() {
+		const {_id, name: title } = this.issue;
+		const suggestionParentInfo = {
+			_id,
+			parentTitle: title,
+			parentType: 'issue',
+		}
+
+		this.router.navigateByUrl('/suggestions/create', { 
+			state: {
+				...suggestionParentInfo
+			}
+		})
+	}
+
 }

@@ -173,4 +173,19 @@ export class ProposalViewComponent implements OnInit {
 		});
 	}
 
+	populateSuggestion() {
+		const {_id, title } = this.proposal;
+		const suggestionParentInfo = {
+			_id,
+			parentTitle: title,
+			parentType: 'proposal',
+		}
+
+		this.router.navigateByUrl('/suggestions/create', { 
+			state: {
+				...suggestionParentInfo
+			}
+		})
+	}
+
 }
