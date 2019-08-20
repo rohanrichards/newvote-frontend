@@ -2,6 +2,7 @@ export interface ISuggestion {
 	_id?: string;
 	created?: Date;
 	title: string;
+	type: string;
 	description: string;
 	statements: string;
 	media: string[];
@@ -18,6 +19,7 @@ export class Suggestion implements ISuggestion {
 	public constructor(
 		public _id: string = '',
 		public title: string = '',
+		public type: string = '',
 		public description: string = '',
 		public statements: string = '',
 		public media: string[] = [],

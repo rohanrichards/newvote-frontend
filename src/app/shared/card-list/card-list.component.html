@@ -35,11 +35,11 @@
 			</div>
 			<mat-card-content>
 					<div fxLayout="row">
-						<div *ngIf="item.status" 
+						<div *ngIf="item.type" 
 							class="suggestion-image-container" 
 							fxFlex 
 							fxLayoutAlign="center center">
-							<img class="suggestion-image" [lazyLoad]="suggestionIcons[0]" />
+							<img class="suggestion-image" [lazyLoad]="getSuggestionIcon(item.type)" />
 						</div>
 						<mat-card-title fxFlex="1 1 80%" translate>
 							{{item.title}}
