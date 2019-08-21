@@ -9,20 +9,20 @@
 		    [formGroup]="suggestionForm"
 		    fxLayout="column"
 		    (ngSubmit)="onSave()"
-		    novalidate>
-			<ng-container>
-
-				<div *ngIf="suggestionForm.parent" fxLayout="row" fxLayoutGap="12px">
-					<mat-form-field fxFlex="2 1 50%">
-						<mat-label>Parent Name</mat-label>
-						<input matInput placeholder="Parent Field" formControlName="parent" readonly>
-					</mat-form-field>
+			novalidate>
+			
+			<div *ngIf="suggestionForm.value.parent" fxLayout="row" fxLayoutGap="12px">
+				<mat-form-field fxFlex="2 1 50%">
+					<mat-label>Parent Name</mat-label>
+					<input matInput placeholder="Parent Field" formControlName="parentTitle" readonly>
+				</mat-form-field>
 				
-					<mat-form-field fxFlex="1 1 50%">
-						<mat-label>Parent Type</mat-label>
-						<input matInput placeholder="Parent Type" formControlName="parentType" readonly>
-					</mat-form-field>
-				</div>
+				<mat-form-field fxFlex="1 1 50%">
+					<mat-label>Parent Type</mat-label>
+					<input matInput placeholder="Parent Type" formControlName="parentType" readonly>
+				</mat-form-field>
+			</div>
+			<ng-container>
 
 				<mat-form-field>
 					<input matInput
@@ -34,7 +34,7 @@
 					</mat-error>
 				</mat-form-field>
 
-				<mat-form-field>
+				<mat-form-field *ngIf="!suggestionForm.value.parent">
 					<mat-label>Suggestion Type</mat-label>
 					<mat-select formControlName="type" required>
 						<mat-option value="issue">

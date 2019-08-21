@@ -6,6 +6,7 @@ export interface ISuggestion {
 	description: string;
 	statements: string;
 	media: string[];
+	parentTitle?: string;
 	parentType?: string;
 	parent?: any;
 	votes?: any;
@@ -26,6 +27,7 @@ export class Suggestion implements ISuggestion {
 		public status: number = 0,
 		public organizations: any = {},
 		public parent: any = {},
+		public parentTitle: string = '',
 		public parentType: string = '',
 		public softDeleted: boolean = false
 	) { }

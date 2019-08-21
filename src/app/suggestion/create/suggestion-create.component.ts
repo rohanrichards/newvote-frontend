@@ -39,8 +39,8 @@ export class SuggestionCreateComponent implements OnInit {
 		title: new FormControl('', [Validators.required]),
 		type: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required]),
-		statements: new FormControl(''),
 		media: new FormControl(''),
+		parent: new FormControl(''),                                         
 		parentTitle: new FormControl(''),
 		parentType: new FormControl('')
 	});
@@ -105,10 +105,15 @@ export class SuggestionCreateComponent implements OnInit {
 			)
 			.subscribe((res) => {
 				if (res._id || res.parentTitle || res.type) {
-					if (res.parentType) {
-						this.suggestionForm.patchValue({type: res.parentType})
+					if (res._id) {
+						this.suggestionForm.patchValue({parent: res._id});
 					}
+
 					this.suggestionForm.patchValue(res);
+					this.suggestionForm.controls['type'].disable();
+				} else {
+					this.suggestionForm.controls['parentTitle'].disable();
+					this.suggestionForm.controls['parentType'].disable();
 				}
 			});
 	}

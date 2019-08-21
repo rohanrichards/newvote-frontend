@@ -23,6 +23,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-issue',
@@ -77,8 +78,10 @@ export class IssueListComponent implements OnInit {
 	topicParam: string; // filtered topics can be preselected via url param
 
 	loadingState: string;
+	suggestions: any[];
 
 	constructor(
+		private suggestionService: SuggestionService,
 		public stateService: StateService,
 		private issueService: IssueService,
 		private topicService: TopicService,
@@ -127,17 +130,26 @@ export class IssueListComponent implements OnInit {
 
 		const issueObs: Observable<any[]> = this.issueService.list(options);
 		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
+		const suggestionObs: Observable<any[]> = this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
 
 		forkJoin({
 			issues: issueObs,
-			topics: topicObs
+			topics: topicObs,
+			suggestions: suggestionObs
 		})
 		.subscribe(
 			results => {
-				const { issues, topics } = results;
+				const { issues, topics, suggestions } = results;
 
 				this.issues = issues;
 				this.allTopics = topics;
+				this.suggestions = suggestions;
 
 				if (this.topicParam) {
 					const topic = this._filter(this.topicParam);

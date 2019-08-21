@@ -36,7 +36,8 @@ export class SuggestionEditComponent implements OnInit {
 		statements: new FormControl(''),
 		media: new FormControl(''),
 		parent: new FormControl(''),
-		parentType: new FormControl('')
+		parentType: new FormControl(''),
+		parentTitle: new FormControl('')
 	});
 
 	@ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
@@ -68,7 +69,9 @@ export class SuggestionEditComponent implements OnInit {
 						'title': suggestion.title,
 						'type': suggestion.type || '',
 						'description': suggestion.description,
-						'statements': suggestion.statements
+						'parent': suggestion.parent,
+						'parentTitle': suggestion.parentTitle,
+						'parentType': suggestion.parentType
 					});
 
 					this.meta.updateTags(
@@ -88,7 +91,6 @@ export class SuggestionEditComponent implements OnInit {
 		merge(this.suggestion, <Suggestion>this.suggestionForm.value);
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
-		console.log(this.suggestion);
 
 		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))

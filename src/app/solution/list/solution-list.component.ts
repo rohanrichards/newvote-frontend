@@ -17,6 +17,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-solution',
@@ -46,10 +47,12 @@ export class SolutionListComponent implements OnInit {
 		role: 'user',
 		params: { type: 'solution' }
 	}];
+	suggestions: Array<any>;
 
 	constructor(
 		private stateService: StateService,
 		private solutionService: SolutionService,
+		private suggestionService: SuggestionService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -85,15 +88,26 @@ export class SolutionListComponent implements OnInit {
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.subscribe(
-				solutions => {
-					this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-					return 	this.stateService.setLoadingState(AppState.complete);
-				},
-				err => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
-			);
+		.subscribe(
+			solutions => {
+				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
+				return 	this.stateService.setLoadingState(AppState.complete);
+			},
+			err => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
+		.subscribe((suggestions) => {
+			this.suggestions = suggestions;
+		});
 	}
 
 	// find the different solution and only update it, not entire list
@@ -118,6 +132,18 @@ export class SolutionListComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
+		.subscribe((suggestions) => {
+			console.log(suggestions, 'this is suggestions');
+			this.suggestions = suggestions;
+		});
 	}
 
 	onRestore(event: any) {
