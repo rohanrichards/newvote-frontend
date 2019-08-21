@@ -141,7 +141,6 @@ export class SolutionListComponent implements OnInit {
 			} 
 		})
 		.subscribe((suggestions) => {
-			console.log(suggestions, 'this is suggestions');
 			this.suggestions = suggestions;
 		});
 	}

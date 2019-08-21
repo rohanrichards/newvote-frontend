@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';
@@ -63,20 +63,34 @@ export class SolutionCreateComponent implements OnInit {
 				title: 'Create Solution',
 				description: 'Solutions are the decisions that you think your community should make.'
 			});
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			if (ID) {
-				this.issueService.view({ id: ID, orgs: [] })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(issue => {
-						if (issue) {
-							this.issues.push(issue);
-						}
-					});
-			} else {
-				this.isLoading = false;
-			}
-		});
+		this.route.paramMap
+			.pipe(
+				map((data) => {
+					return {
+						params: { _id: data.get('id') },
+						state: window.history.state
+					}
+				})
+			)
+			.subscribe(routeData => {
+				const { params, state } = routeData;
+				if (state._id) {
+					return this.solutionForm.patchValue(state);
+				}
+
+				const ID = params._id;
+				if (ID) {
+					this.issueService.view({ id: ID, orgs: [] })
+						.pipe(finalize(() => { this.isLoading = false; }))
+						.subscribe(issue => {
+							if (issue) {
+								this.issues.push(issue);
+							}
+						});
+				} else {
+					this.isLoading = false;
+				}
+			});
 
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -112,6 +126,7 @@ export class SolutionCreateComponent implements OnInit {
 			.subscribe(issues => this.allIssues = issues);
 
 		this.organizationService.get().subscribe(org => this.organization = org);
+
 	}
 
 	onFileChange(event: any) {
@@ -135,7 +150,6 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution = <ISolution>this.solutionForm.value;
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
-		console.log(this.solution);
 
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');

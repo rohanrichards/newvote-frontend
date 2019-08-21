@@ -1,11 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { IIssue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
@@ -48,6 +48,7 @@ export class IssueCreateComponent implements OnInit {
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private router: Router,
+		private route: ActivatedRoute,
 		private meta: MetaService
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
@@ -95,6 +96,20 @@ export class IssueCreateComponent implements OnInit {
 			{
 				title: 'Create Issue',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
+			});
+
+		this.route.paramMap
+			.pipe(
+				map(() => window.history.state),
+				delay(0)
+			)
+			.subscribe((suggestion) => {
+				if (suggestion._id) {
+					this.issueForm.patchValue({
+						name: suggestion.title,
+						description: suggestion.description
+					})
+				} 
 			});
 	}
 

@@ -98,7 +98,7 @@ export class ProposalListComponent implements OnInit {
 				this.suggestions = suggestions;
 			},
 			(err) => {
-				console.log(err);
+				return err
 			});
 	}
 

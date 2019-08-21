@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { IProposal } from '@app/core/models/proposal.model';
 import { ISolution } from '@app/core/models/solution.model';
@@ -64,21 +64,36 @@ export class ProposalCreateComponent implements OnInit {
 				title: 'Create Action',
 				description: 'Creating a new action on the NewVote platform.'
 			});
-
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			if (ID) {
-				this.solutionService.view({ id: ID, orgs: [] })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(solution => {
-						if (solution) {
-							this.solutions.push(solution);
-						}
-					});
-			} else {
-				this.isLoading = false;
-			}
-		});
+		
+		this.route.paramMap
+			.pipe(
+				map((data) => {
+					return {
+						params: { _id: data.get('id') },
+						state: window.history.state
+					}
+				})
+			)
+			.subscribe(routeData => {
+				const { params, state } = routeData;
+				
+				if (state._id) {
+					return this.proposalForm.patchValue(state);
+				}
+				
+				const ID = params._id;
+				if (ID) {
+					this.solutionService.view({ id: ID, orgs: [] })
+						.pipe(finalize(() => { this.isLoading = false; }))
+						.subscribe(solution => {
+							if (solution) {
+								this.solutions.push(solution);
+							}
+						});
+				} else {
+					this.isLoading = false;
+				}
+			});
 
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,

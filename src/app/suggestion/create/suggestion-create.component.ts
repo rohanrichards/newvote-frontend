@@ -1,11 +1,11 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { switchMap, startWith, finalize, debounceTime, filter, map } from 'rxjs/operators';
+import { Observable, of} from 'rxjs';
+import { switchMap, startWith, finalize, debounceTime, filter, map, delay } from 'rxjs/operators';
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { SearchService } from '@app/core/http/search/search.service';
@@ -21,7 +21,7 @@ import { InternalFormsSharedModule } from '@angular/forms/src/directives';
 	templateUrl: './suggestion-create.component.html',
 	styleUrls: ['./suggestion-create.component.scss']
 })
-export class SuggestionCreateComponent implements OnInit {
+export class SuggestionCreateComponent implements OnInit, AfterViewInit {
 
 	suggestion: Suggestion;
 	organization: Organization;
@@ -101,7 +101,8 @@ export class SuggestionCreateComponent implements OnInit {
 
 		this.route.paramMap
 			.pipe(
-				map(() => window.history.state)
+				map(() => window.history.state),
+				delay(0)
 			)
 			.subscribe((res) => {
 				if (res._id || res.parentTitle || res.type) {
@@ -118,12 +119,16 @@ export class SuggestionCreateComponent implements OnInit {
 			});
 	}
 
+	ngAfterViewInit() {
+		
+	}
+
 	onSave() {
 		this.isLoading = true;
 		this.suggestion = <Suggestion>this.suggestionForm.value;
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
-		this.suggestion.parent = this.selectedObject;
+		// this.suggestion.parent = this.selectedObject;
 
 		this.suggestionService.create({ entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
