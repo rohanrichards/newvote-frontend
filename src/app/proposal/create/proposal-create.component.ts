@@ -14,6 +14,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -42,8 +43,10 @@ export class ProposalCreateComponent implements OnInit {
 
 	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	suggestion: any;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private proposalService: ProposalService,
 		private solutionService: SolutionService,
 		private organizationService: OrganizationService,
@@ -75,10 +78,11 @@ export class ProposalCreateComponent implements OnInit {
 				})
 			)
 			.subscribe(routeData => {
-				const { params, state } = routeData;
+				const { params, state: suggestion } = routeData;
 				
-				if (state._id) {
-					return this.proposalForm.patchValue(state);
+				if (suggestion._id) {
+					this.suggestion = suggestion;
+					return this.proposalForm.patchValue(suggestion);
 				}
 				
 				const ID = params._id;
@@ -223,6 +227,19 @@ export class ProposalCreateComponent implements OnInit {
 
 	add(event: any) {
 		console.log(event);
+	}
+
+	patchSuggestion(suggestionId: string) {
+		const updatedSuggestion = {
+			...this.suggestion,
+			softDeleted: true
+		};
+
+		this.suggestionService.update({ id: suggestionId, entity: updatedSuggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((res) => {
+				console.log(res, 'this is res');
+			});
 	}
 
 	private _filter(value: any): ISolution[] {

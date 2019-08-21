@@ -14,6 +14,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-issue',
@@ -39,10 +40,13 @@ export class IssueCreateComponent implements OnInit {
 		imageUrl: new FormControl('', [])
 	});
 
+	suggestion: any;
+
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private issueService: IssueService,
 		private topicService: TopicService,
 		private organizationService: OrganizationService,
@@ -104,6 +108,7 @@ export class IssueCreateComponent implements OnInit {
 				delay(0)
 			)
 			.subscribe((suggestion) => {
+				this.suggestion = suggestion;
 				if (suggestion._id) {
 					this.issueForm.patchValue({
 						name: suggestion.title,
@@ -143,14 +148,15 @@ export class IssueCreateComponent implements OnInit {
 			// this.imageUrl = 'assets/issue-default.png';
 			return this.issueService.create({ entity: this.issue })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(t => {
-					if (t.error) {
-						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-					} else {
+				.subscribe(
+					(t) => {
 						this.openSnackBar('Succesfully created', 'OK');
 						this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+					},
+					(err) => {
+						this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK');
 					}
-				});
+					);
 		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
@@ -206,6 +212,19 @@ export class IssueCreateComponent implements OnInit {
 
 	add(event: any) {
 		console.log(event);
+	}
+
+	patchSuggestion(suggestionId: string) {
+		const updatedSuggestion = {
+			...this.suggestion,
+			softDeleted: true
+		};
+
+		this.suggestionService.update({ id: suggestionId, entity: updatedSuggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe((res) => {
+				console.log(res, 'this is res');
+			});
 	}
 
 	private _filter(value: any): ITopic[] {

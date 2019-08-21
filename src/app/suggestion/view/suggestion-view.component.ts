@@ -201,22 +201,15 @@ export class SuggestionViewComponent implements OnInit {
 	}
 
 	convertSuggestion() {
-		const { _id, title, description } = this.suggestion;
 		let suggestionType = this.suggestion.type || this.suggestion.parentType;
 		if (suggestionType === 'action') {
 			suggestionType = 'proposal';
 		}
 		const url = `/${suggestionType}s/create`;
 
-		const suggestionInfo = {
-			_id,
-			title,
-			description
-		}
-
 		this.router.navigateByUrl(url, { 
 			state: {
-				...suggestionInfo
+				...this.suggestion
 			}
 		})
 	}
