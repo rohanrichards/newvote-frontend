@@ -11,6 +11,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ShareModule } from '@ngx-share/core';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
+import { QuillModule } from 'ngx-quill';
+import { MinimalQuillSettings } from '@app/shared/quill/quill.settings';
+
 import { LoaderComponent } from './loader/loader.component';
 import { ShareButtonsComponent } from './share-buttons/share-buttons.component';
 import { GridListComponent } from './grid-list/grid-list.component';
@@ -36,6 +39,7 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
 import { ErrorCardComponent } from './error/error-card/error-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
 
 @NgModule({
 	imports: [
@@ -51,6 +55,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 		MatBadgeModule,
 		ClipboardModule,
 		RouterModule,
+		QuillModule.forRoot(MinimalQuillSettings),
 		LazyLoadImageModule.forRoot({
 			preset: intersectionObserverPreset
 		})
@@ -78,7 +83,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 		SkeletonCardComponent,
 		SkeletonPanelComponent,
 		ErrorCardComponent,
-		NavbarComponent
+		NavbarComponent,
+		MakeSuggestionComponent
 	],
 	exports: [
 		LoaderComponent,
@@ -103,7 +109,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 		SkeletonCardComponent,
 		SkeletonPanelComponent,
 		ErrorCardComponent,
-		NavbarComponent
+		NavbarComponent,
+		MakeSuggestionComponent
 	]
 })
 export class SharedModule { }
