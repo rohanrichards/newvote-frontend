@@ -18,6 +18,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
 	selector: 'app-solution',
@@ -208,5 +209,9 @@ export class SolutionListComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	handleSuggestionSubmit(data: any) {
+		console.log(data, 'this is data submission');
 	}
 }

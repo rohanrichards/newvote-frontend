@@ -1,39 +1,45 @@
 <mat-card>
-	<div fxLayout="column" fxFlex fxLayoutGap="1rem">
-		<h4 class="mat-subheading-1">Do you have a suggestion that's not shown above?</h4>
-		<h4 class="mat-subheading-2">Make a suggestion.</h4>
-		<div class="form" 
-			fxLayout="row"
-			fxLayout.lt-md="row wrap"
-			fxLayoutGap="10px"
-			>
-			<mat-form-field appearance="outline" fxFlex
+	<form
+		[formGroup]="suggestionForm"
+		(ngSubmit)="sendForm()"
+		>
+		<div
+			fxLayout="column" fxFlex fxLayoutGap="1rem">
+			<h4 class="mat-subheading-1">Do you have a suggestion that's not shown above?</h4>
+			<h4 class="mat-subheading-2">Make a suggestion.</h4>
+			<div  
+				fxLayout="row"
+				fxLayout.lt-md="row wrap"
+				fxLayoutGap="10px"
 				>
-				<mat-label>Enter a name</mat-label>
-				<input matInput placeholder="Enter a title for your suggestion">
-				<mat-hint>Hint</mat-hint>
-			</mat-form-field>
+				<mat-form-field appearance="outline" fxFlex
+					>
+					<mat-label>Enter a name</mat-label>
+					<input matInput formControlName="title" placeholder="Enter a title for your suggestion">
+					<!-- <mat-hint>Hint</mat-hint> -->
+				</mat-form-field>
 
-			<mat-form-field appearance="outline" 
-				fxFlex>
-				<mat-label>Suggestion type</mat-label>
-				<mat-select value="solution" disabled>
-					<mat-option value="solution">Solution</mat-option>
-					<mat-option>Action</mat-option>
-					<mat-option>Issue</mat-option>
-				</mat-select>
-			</mat-form-field>						
-		</div>
-		<div fxFlex>
-			<div class="quill-container">
-				<mat-label>Give us more detail (optional)</mat-label>
-				<quill-editor [styles]="{height: '150px'}"></quill-editor>
+				<mat-form-field appearance="outline" 
+					fxFlex>
+					<mat-label>Suggestion type</mat-label>
+					<mat-select  [value]="parent" disabled>
+						<mat-option value="solution">Solution</mat-option>
+						<mat-option value="action">Action</mat-option>
+						<mat-option value="issue">Issue</mat-option>
+					</mat-select>
+				</mat-form-field>						
 			</div>
-		</div>
+			<div fxFlex>
+				<div class="quill-container">
+					<mat-label>Give us more detail (optional)</mat-label>
+					<quill-editor formControlName="description" [styles]="{height: '150px'}"></quill-editor>
+				</div>
+			</div>
 
-		<button mat-raised-button color="primary">
-			Submit Suggestion
-		</button>
-	</div>
+			<button [disabled]="!suggestionForm.valid" type="submit" mat-raised-button color="primary">
+				Submit Suggestion
+			</button>
+		</div>
+	</form>
 </mat-card>
 
