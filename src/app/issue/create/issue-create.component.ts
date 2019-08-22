@@ -155,7 +155,7 @@ export class IssueCreateComponent implements OnInit {
 				.subscribe(
 					(t) => {
 						if (this.suggestion) {
-							this.patchSuggestion();
+							this.hideSuggestion();
 						}
 
 						this.openSnackBar('Succesfully created', 'OK');
@@ -222,7 +222,7 @@ export class IssueCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion() {
+	hideSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
@@ -230,9 +230,14 @@ export class IssueCreateComponent implements OnInit {
 
 		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((res) => {
-				console.log(res, 'this is res');
-			});
+			.subscribe(
+				(res) => {
+					return res;
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): ITopic[] {

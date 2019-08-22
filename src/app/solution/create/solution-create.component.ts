@@ -172,7 +172,7 @@ export class SolutionCreateComponent implements OnInit {
 				.subscribe(t => {
 
 					if (this.suggestion) {
-						this.patchSuggestion();
+						this.hideSuggestion();
 					}
 					
 					if (t.error) {
@@ -237,7 +237,7 @@ export class SolutionCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion() {
+	hideSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
@@ -245,9 +245,14 @@ export class SolutionCreateComponent implements OnInit {
 
 		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((res) => {
-				console.log(res, 'this is res');
-			});
+			.subscribe(
+				(res) => {
+					return res;
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): IIssue[] {

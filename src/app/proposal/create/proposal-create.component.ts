@@ -190,7 +190,7 @@ export class ProposalCreateComponent implements OnInit {
 					.subscribe(t => {
 
 						if (this.suggestion) {
-							this.patchSuggestion();
+							this.hideSuggestion();
 						}
 
 						if (t.error) {
@@ -238,7 +238,7 @@ export class ProposalCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion() {
+	hideSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
@@ -248,7 +248,7 @@ export class ProposalCreateComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(res) => {
-					console.log(res, 'this is res');
+					return res;
 				},
 				(err) => {
 					console.log(err, 'this is err');
