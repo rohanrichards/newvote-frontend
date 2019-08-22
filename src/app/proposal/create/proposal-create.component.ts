@@ -156,6 +156,10 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal.solutions = this.solutions;
 		this.proposal.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.proposal.suggestion = this.suggestion;
+		}
+
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
@@ -184,6 +188,11 @@ export class ProposalCreateComponent implements OnInit {
 				this.proposalService.create({ entity: this.proposal })
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
+
+						if (this.suggestion) {
+							this.patchSuggestion();
+						}
+
 						if (t.error) {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
@@ -229,17 +238,22 @@ export class ProposalCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion(suggestionId: string) {
+	patchSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: suggestionId, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((res) => {
-				console.log(res, 'this is res');
-			});
+			.subscribe(
+				(res) => {
+					console.log(res, 'this is res');
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): ISolution[] {

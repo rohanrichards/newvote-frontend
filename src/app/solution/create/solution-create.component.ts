@@ -155,6 +155,11 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.solution.suggestion = this.suggestion;
+		}
+
+		console.log(this.solution, 'this is solution on save');
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
@@ -165,6 +170,11 @@ export class SolutionCreateComponent implements OnInit {
 			return this.solutionService.create({ entity: this.solution })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(t => {
+
+					if (this.suggestion) {
+						this.patchSuggestion();
+					}
+					
 					if (t.error) {
 						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 					} else {
@@ -227,13 +237,13 @@ export class SolutionCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion(suggestionId: string) {
+	patchSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: suggestionId, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((res) => {
 				console.log(res, 'this is res');

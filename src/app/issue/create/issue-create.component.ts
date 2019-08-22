@@ -108,8 +108,8 @@ export class IssueCreateComponent implements OnInit {
 				delay(0)
 			)
 			.subscribe((suggestion) => {
-				this.suggestion = suggestion;
 				if (suggestion._id) {
+					this.suggestion = suggestion
 					this.issueForm.patchValue({
 						name: suggestion.title,
 						description: suggestion.description
@@ -139,6 +139,10 @@ export class IssueCreateComponent implements OnInit {
 		this.issue.topics = this.topics;
 		this.issue.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.issue.suggestion = this.suggestion;
+		}
+
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
@@ -150,13 +154,17 @@ export class IssueCreateComponent implements OnInit {
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(
 					(t) => {
+						if (this.suggestion) {
+							this.patchSuggestion();
+						}
+
 						this.openSnackBar('Succesfully created', 'OK');
 						this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 					},
 					(err) => {
 						this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK');
 					}
-					);
+				);
 		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
@@ -214,13 +222,13 @@ export class IssueCreateComponent implements OnInit {
 		console.log(event);
 	}
 
-	patchSuggestion(suggestionId: string) {
+	patchSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: suggestionId, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((res) => {
 				console.log(res, 'this is res');
