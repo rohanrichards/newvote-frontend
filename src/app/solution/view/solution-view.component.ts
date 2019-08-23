@@ -239,6 +239,10 @@ export class SolutionViewComponent implements OnInit {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
 		
+		suggestion.parent = this.solution._id;
+		suggestion.parentType = 'Solution';
+		suggestion.parentTitle = this.solution.title;
+		
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
