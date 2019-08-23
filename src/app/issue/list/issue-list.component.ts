@@ -24,6 +24,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { Suggestion } from '@app/core/models/suggestion.model';
 
 @Component({
 	selector: 'app-issue',
@@ -81,6 +82,7 @@ export class IssueListComponent implements OnInit {
 	suggestions: any[];
 
 	constructor(
+		public snackBar: MatSnackBar,
 		private suggestionService: SuggestionService,
 		public stateService: StateService,
 		private issueService: IssueService,
@@ -97,6 +99,11 @@ export class IssueListComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => {
+				this.organization = org;
+			});
+
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -239,7 +246,23 @@ export class IssueListComponent implements OnInit {
 	}
 
 	handleSuggestionSubmit(formData: any) {
-		console.log(formData, 'this is formData');
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 4000,
+			horizontalPosition: 'right'
+		});
 	}
 
 	private _filter(value: any): Topic[] {

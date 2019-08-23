@@ -1,5 +1,5 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
@@ -21,7 +21,7 @@ import { InternalFormsSharedModule } from '@angular/forms/src/directives';
 	templateUrl: './suggestion-create.component.html',
 	styleUrls: ['./suggestion-create.component.scss']
 })
-export class SuggestionCreateComponent implements OnInit, AfterViewInit {
+export class SuggestionCreateComponent implements OnInit {
 
 	suggestion: Suggestion;
 	organization: Organization;
@@ -117,10 +117,6 @@ export class SuggestionCreateComponent implements OnInit, AfterViewInit {
 					this.suggestionForm.controls['parentType'].disable();
 				}
 			});
-	}
-
-	ngAfterViewInit() {
-		
 	}
 
 	onSave() {

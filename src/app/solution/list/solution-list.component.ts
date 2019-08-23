@@ -19,6 +19,8 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { FormGroup } from '@angular/forms';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { OrganizationService } from '@app/core';
 
 @Component({
 	selector: 'app-solution',
@@ -49,8 +51,10 @@ export class SolutionListComponent implements OnInit {
 		params: { type: 'solution' }
 	}];
 	suggestions: Array<any>;
+	organization: any;
 
 	constructor(
+		private organizationService: OrganizationService,
 		private stateService: StateService,
 		private solutionService: SolutionService,
 		private suggestionService: SuggestionService,
@@ -63,6 +67,9 @@ export class SolutionListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => this.organization = org);
+
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -204,6 +211,8 @@ export class SolutionListComponent implements OnInit {
 			);
 	}
 
+	
+
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,
@@ -211,7 +220,17 @@ export class SolutionListComponent implements OnInit {
 		});
 	}
 
-	handleSuggestionSubmit(data: any) {
-		console.log(data, 'this is data submission');
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+		
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
 	}
+
 }

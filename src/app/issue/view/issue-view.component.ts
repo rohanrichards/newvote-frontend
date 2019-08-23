@@ -27,6 +27,8 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { ShellComponent } from '@app/shell/shell.component';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-issue',
@@ -46,8 +48,10 @@ export class IssueViewComponent implements OnInit {
 	headingEdit = false;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
+	organization: any;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private topicService: TopicService,
 		private issueService: IssueService,
@@ -298,8 +302,17 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
-	handleSuggestionSubmit(data: any) {
-		console.log(data, 'this is data');
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+		
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
 	}
 
 	populateSuggestion() {
