@@ -238,6 +238,10 @@ export class IssueListComponent implements OnInit {
 		return this.loadingState = state;
 	}
 
+	handleSuggestionSubmit(formData: any) {
+		console.log(formData, 'this is formData');
+	}
+
 	private _filter(value: any): Topic[] {
 		const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase();
 

@@ -25,7 +25,7 @@ export class MakeSuggestionComponent implements OnInit {
 			type: new FormControl(this.parent, [Validators.required]),
 			description: new FormControl('',[Validators.required])
 		})
-	}
+	} 
 
 	sendForm() {
 		this.submitForm.emit(this.suggestionForm.value);

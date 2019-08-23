@@ -108,19 +108,12 @@
 						(vote)=onVote($event)>
 					</app-vote-buttons>
 				</div>
+				<div [style.margin-bottom]="'1rem'">
+					<h4 class="mat-headline">Convert Suggestion to Type</h4>
+					<p class="mat-body">You will be redirected to a create page, with the suggestion data prefilled.</p>
+					<button mat-raised-button (click)="convertSuggestion()">Convert Suggestion</button>
+				</div>
 			</div>
-		</div>
-		<div class="button-container" *ngIf="auth.isAdmin() && suggestion.status === 1"
-			fxLayout="row wrap"
-			fxLayoutAlign="center center"
-			>
-			<div fxFlex.gt-sm="690px"
-				fxFlex.gt-md="800px">
-				<h4 class="mat-headline">Convert Suggestion to Type</h4>
-				<p class="mat-body">You will be redirected to a create page, with the suggestion data prefilled.</p>
-				<button mat-raised-button (click)="convertSuggestion()">Convert Suggestion</button>
-			</div>
-			
 		</div>
 	</mat-toolbar>
 </ng-container> 

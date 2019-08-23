@@ -298,6 +298,10 @@ export class IssueViewComponent implements OnInit {
 			});
 	}
 
+	handleSuggestionSubmit(data: any) {
+		console.log(data, 'this is data');
+	}
+
 	populateSuggestion() {
 		const {_id, name: title } = this.issue;
 		const suggestionParentInfo = {
