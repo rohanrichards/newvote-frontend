@@ -29,6 +29,7 @@ import { AppState } from '@app/core/models/state.model';
 import { ShellComponent } from '@app/shell/shell.component';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { OrganizationService } from '@app/core';
 
 @Component({
 	selector: 'app-issue',
@@ -51,6 +52,7 @@ export class IssueViewComponent implements OnInit {
 	organization: any;
 
 	constructor(
+		private organizationService: OrganizationService,
 		private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private topicService: TopicService,
@@ -68,6 +70,11 @@ export class IssueViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe(
+				(org) => this.organization = org,
+				(err) => err);
+		
 		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
 
 		this.stateService.setLoadingState(AppState.loading);
@@ -305,6 +312,8 @@ export class IssueViewComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
+		
+		delete suggestion.type;
 		
 		suggestion.parent = this.issue._id;
 		suggestion.parentType = 'Issue';
