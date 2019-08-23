@@ -1,7 +1,8 @@
 <div 
+	fxLayoutGap="5px"
 	fxLayout.xs="row wrap"
 	fxLayout.sm="row-reverse"
-	fxLayout.md="row"
+	fxLayout.gt-sm="row"
 	class="container parent-wrap"
 	>
 	<div 
@@ -12,6 +13,7 @@
 		<div 
 			fxLayout="row" 
 			fxFlex="1 1 100%"
+			fxLayoutGap="5px"
 			>
 			<button mat-raised-button
 				fxFlex="1 1 100%"
@@ -33,14 +35,16 @@
 		fxFlex.xs="1 1 100%"
 		fxFlex.gt-xs="1 1 100%"
 		>
-		<span class="mat-body-2">RESULTS</span>
+		<span class="mat-body-2">RESULTS {{item.votes.up + item.votes.down}} votes</span>
 		<div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock" class="chart-container">
 			<div class="chart-score"
 				fxLayout="row"
-				fxFlex>
-				<span>{{item.votes.up}} Votes</span>
-				<span fxFlex></span>
-				<span>{{item.votes.down}} Votes</span>
+				>
+				<div class="vote-overlay" fxLayout="row" fxLayoutAlign="space-between center">
+					<p>{{votesWidthFor()}}%</p>
+					<p>{{votesWidthAgainst()}}%</p>
+				</div>
+				<div class="votes-for" [style.width.%]="votesWidthFor()"></div>
 			</div>
 		</div>
 		<ng-template #elseBlock>
