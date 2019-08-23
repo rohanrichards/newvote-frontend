@@ -113,4 +113,23 @@ export class VoteButtonsComponent implements OnInit {
 		console.log(percentageOfDownVotes, 'this is downvotes');
 		return percentageOfDownVotes;
 	}
+
+	totalVotes() {
+		const { up, down} = this.item.votes;
+		const totalVotes = up + down; 
+
+		if (!(this.item.votes.currentUser && this.item.votes.currentUser.voteValue)) {
+			return '';
+		}
+
+		if (totalVotes === 0) {
+			return '';
+		}
+
+		if (totalVotes === 1) {
+			return `${totalVotes} vote`;
+		}
+
+		return `${totalVotes} votes`;
+	}
 }

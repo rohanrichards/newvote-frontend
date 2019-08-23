@@ -35,7 +35,7 @@
 		fxFlex.xs="1 1 100%"
 		fxFlex.gt-xs="1 1 100%"
 		>
-		<span class="mat-body-2">RESULTS {{item.votes.up + item.votes.down}} votes</span>
+		<span class="mat-body-2">RESULTS {{totalVotes()}}</span>
 		<div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock" class="chart-container">
 			<div class="chart-score"
 				fxLayout="row"
