@@ -194,7 +194,7 @@
 				<app-more-less [displayText]="issue.description"
 					maxHeight="200">
 				</app-more-less>
-				<div>
+				<div *ngIf="auth.isVerified()">
 					<h4 class="mat-subheading-1">Do you have a suggestion that's now shown below? Click here to create one.</h4>
 					<button  mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
 				</div>
@@ -264,12 +264,14 @@
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
-			<h2 class="mat-headline center-text">Create your own Suggestion</h2>
-			<app-make-suggestion
-				parent="issue"
-				(submitForm)="handleSuggestionSubmit($event)"
-				>
-			</app-make-suggestion>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="issue"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</div>
 	</div>
 

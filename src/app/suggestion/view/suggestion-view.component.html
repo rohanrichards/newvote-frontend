@@ -108,7 +108,7 @@
 						(vote)=onVote($event)>
 					</app-vote-buttons>
 				</div>
-				<div [style.margin-bottom]="'1rem'">
+				<div *ngIf="auth.isOwner()" [style.margin-bottom]="'1rem'">
 					<h4 class="mat-headline">Convert Suggestion to Type</h4>
 					<p class="mat-body">You will be redirected to a create page, with the suggestion data prefilled.</p>
 					<button mat-raised-button (click)="convertSuggestion()">Convert Suggestion</button>
