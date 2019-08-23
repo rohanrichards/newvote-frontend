@@ -169,7 +169,9 @@
 			*ngIf="solution"
 			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<span class="mat-headline center-span" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
+			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+				<span class="mat-headline center-span" [style.margin-bottom]="'0'" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
+			</mat-toolbar>
 			<app-card-list path="/proposals"
 				[items]="solution.proposals"
 				model="Action"

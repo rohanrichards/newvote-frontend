@@ -19,11 +19,14 @@
 		fxFlex.gt-md="800px"
 		*ngIf="media && !headingEdit"
 		>
-		<h3 class="mat-headline" 
-			[ngStyle]="{ 'margin-bottom': '0px'}"
-			>
-			{{ this.issue.mediaHeading || "Third Party Media"}}
-		</h3>
+		<mat-toolbar color="primary" fxLayoutAlign="center center">
+			<h3 class="mat-headline" 
+				[ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center'}"
+				>
+				{{ this.issue.mediaHeading || "Third Party Media"}}
+			</h3>
+		</mat-toolbar>
+
 		<button 
 			mat-icon-button
 			matTooltip="Edit no Issue"
@@ -242,7 +245,9 @@
 		fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<span class="mat-headline center-span" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+				<span class="mat-headline center-span" [style.margin-bottom]="'0'" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			</mat-toolbar>
 			<app-card-list path="/solutions"
 				[items]=solutions
 				model="Solution"
