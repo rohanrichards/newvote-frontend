@@ -46,6 +46,7 @@ export class IssueViewComponent implements OnInit {
 	headingEdit = false;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
+	isOpen = false;
 
 	constructor(
 		private stateService: StateService,
@@ -296,6 +297,10 @@ export class IssueViewComponent implements OnInit {
 			.subscribe((t) => {
 				this.issue = t;
 			});
+	}
+
+	toggleContent() {
+		this.isOpen = this.isOpen ? false : true;
 	}
 
 }

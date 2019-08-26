@@ -18,16 +18,7 @@
 		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
 		*ngIf="media && !headingEdit"
-		[style.width]="'100%'"
 		>
-		<mat-toolbar color="primary" fxLayoutAlign="center center">
-			<h3 class="mat-headline" 
-				[ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center'}"
-				>
-				{{ this.issue.mediaHeading || "Third Party Media"}}
-			</h3>
-		</mat-toolbar>
-
 		<button 
 			mat-icon-button
 			matTooltip="Edit no Issue"
@@ -83,17 +74,44 @@
 </ng-template>
 
 <ng-template #mainMedia>
-	<app-swiper-wrapper 
+	<div 
 		[@fadeIn]=true
-		path="/media"
-		[items]="media"
-		model="Media"
-		parent="Issue"
-		[organization]="issue.organizations.name"
-		(restore)="onMediaRestore($event)"
-		(softDelete)="onMediaSoftDelete($event)"
-		(delete)="onMediaDelete($event)"
-		(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
+		class="container"
+		*ngIf="media"
+		fxLayout="row wrap"
+		fxLayoutAlign="center center"
+		>
+		<div
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px"
+			*ngIf="media && !headingEdit"
+			[style.width]="'100%'"
+			>
+			<mat-accordion>
+				<mat-expansion-panel class="accordion header">
+					<mat-expansion-panel-header>
+						<h3 class="mat-headline" 
+							[ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}"
+							>
+							{{ this.issue.mediaHeading || "Third Party Media"}}
+						</h3>
+					</mat-expansion-panel-header>
+						<app-swiper-wrapper 
+							[@fadeIn]=true
+							path="/media"
+							[items]="media"
+							model="Media"
+							parent="Issue"
+							[organization]="issue.organizations.name"
+							(restore)="onMediaRestore($event)"
+							(softDelete)="onMediaSoftDelete($event)"
+							(delete)="onMediaDelete($event)"
+							(vote)="onVote($event, 'Media')">
+						</app-swiper-wrapper>
+		</mat-expansion-panel>
+	</mat-accordion>
+</div>
+</div>
 </ng-template>
 
 
