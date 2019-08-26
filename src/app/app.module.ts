@@ -31,7 +31,6 @@ import { SharedModule } from '@app/shared';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { ShareModule } from '@ngx-share/core';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { ChartsModule } from 'ng2-charts';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
@@ -60,7 +59,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 		HomeModule,
 		ShareModule,
 		AngularFontAwesomeModule,
-		ChartsModule,
 		HttpClientXsrfModule.withOptions({
 			cookieName: 'XSRF-TOKEN',
 			headerName: 'X-XSRF-TOKEN',
