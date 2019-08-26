@@ -42,7 +42,6 @@ const routes = {
 	},
 	forgot: () => `/auth/forgot`,
 	reset: () => `/auth/reset`,
-	randomGet: () => `/topics`,
 	sms: () => `/users/sms`,
 	verify: () => `/users/verify`,
 	sso: () => '/auth/jwt',
@@ -97,17 +96,6 @@ export class AuthenticationService {
 				}
 			)
 
-	}
-
-	randomGet() {
-		return this.httpClient
-			.get(routes.randomGet())
-			.pipe(
-				map((res) => {
-					// this.setCredentials(res, context.remember);
-					return res;
-				})
-			);
 	}
 
 	/**
