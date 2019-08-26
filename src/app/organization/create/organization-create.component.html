@@ -58,10 +58,10 @@
 				<mat-label>Authentication Type</mat-label>
 				<mat-select formControlName="authType"
 				 required>
-					<mat-option value="0">
+					<mat-option [value]="0">
 						Local (email/password)
 					</mat-option>
-					<mat-option value="1">
+					<mat-option [value]="1">
 						UQ AAF
 					</mat-option>
 				</mat-select>

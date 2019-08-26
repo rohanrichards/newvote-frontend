@@ -8,7 +8,7 @@ import { MatSidenav } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
-	selector: 'div[sticky-component]',
+	selector: 'app-navbar',
 	templateUrl: './navbar.component.html',
 	styleUrls: ['./navbar.component.scss']
 })
@@ -66,6 +66,10 @@ export class NavbarComponent implements OnInit {
 		} else {
 			return false;
 		}
+	}
+
+	get isCommunityVerified(): boolean {
+		return this.auth.isCommunityVerified();
 	}
 
 	get isMobile(): boolean {
