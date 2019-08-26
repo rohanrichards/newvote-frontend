@@ -193,8 +193,10 @@
 				<mat-divider vertical="true"></mat-divider>
 				<div fxFlex></div>
 				<div fxLayout="column">
-					<span class="mat-h1"
-					 *ngIf="issues"><p  class="counter-click" routerLink="/issues">{{issues.length}}</p></span>
+					<span
+					[style.text-decoration]="'underline'"
+					routerLink="/issues" class="mat-h1"
+					 *ngIf="issues">{{issues.length}}</span>
 					<span class="mat-h1"
 					 *ngIf="!issues">0</span>
 					<span class="mat-h3">Issues</span>
@@ -203,8 +205,11 @@
 				<mat-divider vertical="true"></mat-divider>
 				<div fxFlex></div>
 				<div fxLayout="column">
-					<span class="mat-h1"
-					 *ngIf="proposals && solutions"><p class="counter-click" routerLink="/solutions">{{proposals.length + solutions.length}}</p></span>
+					<span
+					[style.text-decoration]="'underline'"
+					class="mat-h1"
+					routerLink="/solutions"
+					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
 					<span class="mat-h1"
 					 *ngIf="!proposals || !solutions">0</span>
 					<span class="mat-h3">Solutions</span>
@@ -212,14 +217,14 @@
 				<div fxFlex></div>
 			</div>
 			<div *ngIf="!auth.isAuthenticated()">
-				<button *ngIf="!org || !org.authType || org.authType===0"
+				<button *ngIf="!org.authType || org.authType===0"
 				 mat-button
 				 mat-raised-button
 				 routerLink="/auth/signup"
 				 color="warn"
 				 class="mat-display-1">
 					CREATE ACCOUNT</button>
-				<button *ngIf="org && org.authType===1"
+				<button *ngIf="org && org.authType && org.authType===1"
 				 mat-button
 				 mat-raised-button
 				 routerLink="/auth/login"
@@ -383,14 +388,14 @@
 	 routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
-			<button *ngIf="!org || !org.authType || org.authType===0"
+			<button *ngIf="!org.authType || org.authType===0"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/signup"
 			 color="warn"
 			 class="mat-display-1">
 				CREATE ACCOUNT</button>
-			<button *ngIf="org && org.authType===1"
+			<button *ngIf="org && org.authType && org.authType===1"
 			 mat-button
 			 mat-raised-button
 			 routerLink="/auth/login"

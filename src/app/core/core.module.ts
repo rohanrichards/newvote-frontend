@@ -42,7 +42,7 @@ export function tokenGetter() {
 		JwtModule.forRoot({
 			config: {
 				tokenGetter: tokenGetter,
-				whitelistedDomains: ['api.newvote.org']
+				whitelistedDomains: ['api.newvote.org', 'newvote-staging.herokuapp.com']
 			}
 		}),
 		RouterModule
