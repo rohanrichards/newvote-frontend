@@ -8,13 +8,17 @@
 		fxFlex
 		fxLayout="row wrap"
 		fxLayoutAlign="end center"
+		fxLayoutGap.sm="8px"
+		fxLayoutGap.gt-sm="8px"
 		>
 		<button
+			fxFlex.lt-sm="80px"
 			(click)="onDone($event)"
 			mat-flat-button>
 			Dismiss
 		</button>
 		<button	
+			fxFlex.lt-sm="80px"
 			(click)="startTour($event)"
 			mat-flat-button color="warn">
 			Start Tour
