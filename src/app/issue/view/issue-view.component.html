@@ -10,14 +10,15 @@
 <div 
 	[@fadeIn]=true
 	class="container"
-	fxLayoutAlign="center center"
 	*ngIf="media"
+	fxLayout="row wrap"
+	fxLayoutAlign="center center"
 	>
 	<div
-		fxLayoutAlign="center center"
 		fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px"
 		*ngIf="media && !headingEdit"
+		[style.width]="'100%'"
 		>
 		<mat-toolbar color="primary" fxLayoutAlign="center center">
 			<h3 class="mat-headline" 
@@ -94,7 +95,6 @@
 		(delete)="onMediaDelete($event)"
 		(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
 </ng-template>
-
 
 
 <ng-container *ngIf="loadingState === 'loading';
