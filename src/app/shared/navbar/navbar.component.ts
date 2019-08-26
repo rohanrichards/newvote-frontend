@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from '@app/core/meta.service';
 import { MatSidenav } from '@angular/material';
-import { MediaObserver } from '@angular/flex-layout';
+import { ObservableMedia } from '@angular/flex-layout';
 
 @Component({
-	selector: 'div[sticky-component]',
+	selector: 'app-navbar',
 	templateUrl: './navbar.component.html',
 	styleUrls: ['./navbar.component.scss']
 })
@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
 		private titleService: Title,
 		public auth: AuthenticationService,
 		private router: Router,
-		private media: MediaObserver,
+		private media: ObservableMedia,
 	) { }
 
 	ngOnInit() {
