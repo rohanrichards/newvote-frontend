@@ -7,54 +7,6 @@
 	else mainIssueHeader">
 </ng-container>
 
-<div 
-	[@fadeIn]=true
-	class="container"
-	*ngIf="media"
-	fxLayout="row wrap"
-	fxLayoutAlign="center center"
-	>
-	<div
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="800px"
-		*ngIf="media && !headingEdit"
-		>
-		<button 
-			mat-icon-button
-			matTooltip="Edit no Issue"
-			color="accent"
-			(click)="toggleHeader()"
-			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
-			>
-				<mat-icon aria-label="Edit the issue">edit</mat-icon>
-		</button>
-	</div>		
-	<div 
-		fxLayoutAlign="center center"
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="690px"
-		*ngIf="auth.isModerator() && headingEdit"
-		>
-		<mat-form-field class="example-full-width">
-			<input 
-				#newHeading 
-				matInput 
-				placeholder="Heading Name"
-				(keyup.enter)="handleSubmit(newHeading.value)"
-				(blur)="handleSubmit()"
-				>
-			<button 
-				mat-icon-button
-				matSuffix
-				color="accent"
-				(click)="handleSubmit(newHeading.value)"
-				>
-				<mat-icon >send</mat-icon>
-			</button>	
-		</mat-form-field>
-	</div>
-</div>
-
 <ng-container *ngIf="loadingState === 'loading';
 	then skeletonMedia;
 	else mainMedia">
