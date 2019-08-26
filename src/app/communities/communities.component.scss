@@ -73,8 +73,10 @@
         align-items:center;
 
         .organization-icon {
-            width: 150px;
-            height: auto;
+            width: auto;
+            height: 150px;
+            max-height: 200px;
+            max-width: 200px;
             object-position: cover;
         }
 
