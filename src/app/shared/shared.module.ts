@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { ChartsModule } from 'ng2-charts';
 import { SwiperModule } from 'ngx-swiper-wrapper';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -47,6 +48,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 		CommonModule,
 		ShareModule,
 		AngularFontAwesomeModule,
+		ChartsModule,
 		SwiperModule,
 		MatBadgeModule,
 		ClipboardModule,
