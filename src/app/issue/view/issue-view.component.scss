@@ -101,7 +101,16 @@ q {
 	text-align: center;
 }
 
+
+
 ::ng-deep {
+	.mat-expansion-panel-header:hover {
+		background-color: #0277bd;
+	}
+
+	.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+		background-color: #0277bd;
+	}
 	.mat-expansion-panel-body {
 		background: white;
 	}
@@ -110,6 +119,8 @@ q {
 		background: white;
 	}
 }
+
+
 
 @media only screen and (max-width: 400px) {
 	.skeleton-media-card-wrap {
