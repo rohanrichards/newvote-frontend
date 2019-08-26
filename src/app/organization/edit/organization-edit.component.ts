@@ -110,7 +110,6 @@ export class OrganizationEditComponent implements OnInit {
 			this.organizationService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe((organization: Organization) => {
-					console.log(organization);
 					this.organization = organization;
 					this.backgroundImage.src = organization.imageUrl;
 					this.iconImage.src = organization.iconUrl;
@@ -281,7 +280,6 @@ export class OrganizationEditComponent implements OnInit {
 	}
 
 	moderatorSelected(event: any) {
-		console.log('moderator selected: ', event);
 		const selectedItem = event.value;
 		if (selectedItem && selectedItem != null) {
 			const moderators = this.organizationForm.value.moderators;

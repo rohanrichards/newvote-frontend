@@ -138,7 +138,6 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -207,7 +206,6 @@ export class ProposalCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	private _filter(value: any): ISolution[] {

@@ -66,10 +66,8 @@ export class AppComponent implements OnInit {
 			});
 
 		this.organizationService.get().subscribe((org: Organization) => {
-			console.log('app org: ', org);
 			if (!org) {
 				// debugger;
-				console.log('no org');
 				this.router.navigate(['/landing']);
 			}
 		});

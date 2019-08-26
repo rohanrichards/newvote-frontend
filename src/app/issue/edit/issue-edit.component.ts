@@ -150,7 +150,6 @@ export class IssueEditComponent implements OnInit {
 		this.issue.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -214,7 +213,6 @@ export class IssueEditComponent implements OnInit {
 	}
 
 	add(event: any) {
-		// console.log(event);
 	}
 
 	private _filter(value: any): ITopic[] {

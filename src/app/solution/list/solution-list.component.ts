@@ -100,9 +100,7 @@ export class SolutionListComponent implements OnInit {
 			params: isOwner ? { 'showDeleted': true } :  {} })
 			.subscribe(
 				solutions => {
-					console.log(solutions, 'this is solutions');
 					const diff = differenceWith(solutions, this.solutions, isEqual);
-					console.log(diff, 'this is diff');
 					if (diff.length > 0) {
 						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 						this.solutions[index] = diff[0];
@@ -139,7 +137,6 @@ export class SolutionListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.solutionService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}

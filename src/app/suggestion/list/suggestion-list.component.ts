@@ -88,7 +88,6 @@ export class SuggestionListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
@@ -96,7 +95,6 @@ export class SuggestionListComponent implements OnInit {
 	onSoftDelete(event: any) {
 		event.softDeleted = true;
 		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
@@ -104,7 +102,6 @@ export class SuggestionListComponent implements OnInit {
 	onRestore(event: any) {
 		event.softDeleted = false;
 		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}

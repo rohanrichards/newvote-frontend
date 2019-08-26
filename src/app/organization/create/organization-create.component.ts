@@ -172,8 +172,6 @@ export class OrganizationCreateComponent implements OnInit {
 		}
 
 		this.uploader.onCompleteAll = () => {
-			// console.log('completed all');
-			// console.log('saving: ', this.organization);
 			this.organizationService.create({ entity: this.organization })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(t => {
@@ -224,7 +222,6 @@ export class OrganizationCreateComponent implements OnInit {
 	}
 
 	moderatorSelected(event: any) {
-		console.log('moderator selected: ', event);
 		const selectedItem = event.value;
 		if (selectedItem && selectedItem != null) {
 			const moderators = this.organizationForm.value.moderators;

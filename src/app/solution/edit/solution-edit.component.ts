@@ -150,7 +150,6 @@ export class SolutionEditComponent implements OnInit {
 		this.solution.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -173,7 +172,6 @@ export class SolutionEditComponent implements OnInit {
 
 	updateWithApi() {
 		this.solution.issues = this.issues;
-		console.log('would update with: ', this.solution);
 		this.solutionService.update({ id: this.solution._id, entity: this.solution })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
@@ -215,7 +213,6 @@ export class SolutionEditComponent implements OnInit {
 	}
 
 	add(event: any) {
-		// console.log(event);
 	}
 
 	private _filter(value: any): IIssue[] {

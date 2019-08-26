@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => {
-					console.log(err, 'this is err');
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);
@@ -124,7 +123,6 @@ export class HomeComponent implements OnInit {
 
 	onDelete(issue: any) {
 		this.issueService.delete({ id: issue._id }).subscribe(() => {
-			console.log('deleted');
 			this.fetchData(true);
 		});
 	}

@@ -101,7 +101,6 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfUpVotes = (up / totalVotes) * 100;
-		console.log(percentageOfUpVotes, 'this is upvotes');
 		return percentageOfUpVotes;
 	}
 
@@ -110,7 +109,6 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
-		console.log(percentageOfDownVotes, 'this is downvotes');
 		return percentageOfDownVotes;
 	}
 

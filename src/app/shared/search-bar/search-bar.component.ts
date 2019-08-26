@@ -46,8 +46,6 @@ export class SearchBarComponent implements OnInit {
 	}
 
 	searchSelected(event: any) {
-		console.log('search selected: ', event);
-
 		const item = event.option.value;
 		const model = item.schema;
 		const url = `/${model.toLowerCase()}s/${item._id}`;
@@ -57,7 +55,6 @@ export class SearchBarComponent implements OnInit {
 		this.isVisibleChange.emit(false);
 		this.closeSearch.emit();
 		this.router.navigate([url]);
-		console.log(this);
 	}
 
 	onSearchClose(event: any) {

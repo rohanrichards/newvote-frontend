@@ -149,7 +149,6 @@ export class ProposalEditComponent implements OnInit {
 		this.proposal.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -172,7 +171,6 @@ export class ProposalEditComponent implements OnInit {
 
 	updateWithApi() {
 		this.proposal.solutions = this.solutions;
-		console.log('would update with: ', this.proposal);
 		this.proposalService.update({ id: this.proposal._id, entity: this.proposal })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
@@ -214,7 +212,6 @@ export class ProposalEditComponent implements OnInit {
 	}
 
 	add(event: any) {
-		// console.log(event);
 	}
 
 	private _filter(value: any): ISolution[] {

@@ -135,10 +135,8 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution = <ISolution>this.solutionForm.value;
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
-		console.log(this.solution);
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -206,7 +204,6 @@ export class SolutionCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	private _filter(value: any): IIssue[] {

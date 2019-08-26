@@ -78,7 +78,6 @@ export class ProposalListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.proposalService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
