@@ -4,8 +4,6 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { merge, Subscription } from 'rxjs';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { environment } from '@env/environment';
@@ -26,8 +24,6 @@ export class AppComponent implements OnInit {
 		private titleService: Title,
 		private translateService: TranslateService,
 		private zone: NgZone,
-		private statusBar: StatusBar,
-		private splashScreen: SplashScreen,
 		// do not remove the analytics injection, even if the call in ngOnInit() is removed
 		// this injection initializes page tracking through the router
 		private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
@@ -68,10 +64,6 @@ export class AppComponent implements OnInit {
 					this.titleService.setTitle(this.translateService.instant(title));
 				}
 			});
-		// Cordova platform and plugins initialization
-		document.addEventListener('deviceready', () => {
-			this.zone.run(() => this.onCordovaReady());
-		}, false);
 
 		this.organizationService.get().subscribe((org: Organization) => {
 			console.log('app org: ', org);
@@ -81,14 +73,6 @@ export class AppComponent implements OnInit {
 				this.router.navigate(['/landing']);
 			}
 		});
-	}
-
-	private onCordovaReady() {
-		if (window['cordova']) {
-			window['Keyboard'].hideFormAccessoryBar(true);
-			this.statusBar.styleDefault();
-			this.splashScreen.hide();
-		}
 	}
 
 }
