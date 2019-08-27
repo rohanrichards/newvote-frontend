@@ -176,15 +176,14 @@
 						<h2 class="mat-headline center-text">Suggestions for Issues</h2>
 					</mat-toolbar>
 					<app-card-list 
-						*ngSwitchCase="'complete'"
 						path="/suggestions"
 						[@fadeIn]=true
 						[items]=suggestions
 						model="Suggestion"
-						(restore)="onRestore($event)"
-						(softDelete)="onSoftDelete($event)"
-						(delete)="onDelete($event)"
-						(vote)="onVote($event, 'Suggestion')"
+						(restore)="onSuggestionRestore($event)"
+						(softDelete)="onSuggestionSoftDelete($event)"
+						(delete)="onSuggestionDelete($event)"
+						(vote)="onSuggestionVote($event, 'Suggestion')"
 						>
 					</app-card-list>
 					<div *ngIf="auth.isVerified()">
