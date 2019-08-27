@@ -1,17 +1,35 @@
-<app-header-bar [title]="headerTitle"
-    [text]="headerText"
-    [buttons]="headerButtons">
+<app-header-bar 
+	[headerText]="headerText"
+	[buttons]="headerButtons">
 </app-header-bar>
 
 <app-loader [isLoading]="loadingState === 'loading' || isLoading"
-    size="1.5">
+	size="1.5">
 </app-loader>
 
-<div class="container"
-    fxLayout="row wrap"
-    fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
+<ng-template #customContent1>	
+	<div style="height: 120px; width: 250px">
+		<p class="mat-subheading-2">{{stepsArray[5].description}}</p>
+	</div>
+</ng-template>
+
+<!-- <ng-template #customContent2>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[6].description}}</p>
+	</div>
+</ng-template> -->
+
+<div 
+	joyrideStep="suggestion1"
+	stepPosition="center"
+	[title]="stepsArray[5].title"
+	[stepContent]="customContent1"
+	class="container"
+	fxLayout="row wrap"
+	fxLayoutAlign="center start">
+	<div 
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px">
 		<ng-container [ngSwitch]="loadingState">
 			<div 
 				*ngSwitchCase="'loading'"
@@ -52,7 +70,6 @@
 		</ng-container>
 	</div>
 </div>
-
 
 
 

@@ -20,6 +20,7 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { SharedModule } from '@app/shared';
+import { JoyrideModule } from 'ngx-joyride';
 
 @NgModule({
 	imports: [
@@ -31,6 +32,7 @@ import { SharedModule } from '@app/shared';
 		ReactiveFormsModule,
 		MaterialModule,
 		MaterialFileInputModule,
+		JoyrideModule.forChild(),
 		QuillModule.forRoot(QuillSettings),
 		FileUploadModule,
 		SuggestionRoutingModule

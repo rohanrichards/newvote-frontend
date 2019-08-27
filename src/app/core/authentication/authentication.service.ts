@@ -297,6 +297,16 @@ export class AuthenticationService {
 		}
 	}
 
+	tourComplete(): boolean {
+		if (this._credentials) {
+			return this._credentials.user.completedTour;
+		}
+	}
+
+	saveTourToLocalStorage() {
+		this.setCredentials(this._credentials, true);
+	}
+	
 	isCommunityVerified(): boolean {
 		return this.communityVerified;
 	}

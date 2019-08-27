@@ -67,7 +67,7 @@
 				</mat-select>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
 				<input matInput
 				 type="url"
 				 placeholder="The redirect URL to use for AAF authentication"
@@ -75,7 +75,7 @@
 				 required>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
 				<input matInput
 				 type="text"
 				 placeholder="Enter the Entity ID for AAF authentication"

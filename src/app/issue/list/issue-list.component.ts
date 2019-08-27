@@ -1,4 +1,4 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+seedDataimport { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -23,6 +23,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { Suggestion } from '@app/core/models/suggestion.model';
 
@@ -31,7 +32,7 @@ import { Suggestion } from '@app/core/models/suggestion.model';
 	templateUrl: './issue-list.component.html',
 	styleUrls: ['./issue-list.component.scss'],
 	animations: [
-		trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class IssueListComponent implements OnInit {
@@ -71,9 +72,9 @@ export class IssueListComponent implements OnInit {
 		routerLink: '/suggestions/create',
 		role: 'user',
 		params: { type: 'issue' }
-	}
-	];
+	}];
 
+	stepsArray = [...JoyRideSteps];
 
 	topicFilter = new FormControl('');
 	topicParam: string; // filtered topics can be preselected via url param
@@ -139,10 +140,10 @@ export class IssueListComponent implements OnInit {
 		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
 		const suggestionObs: Observable<any[]> = this.suggestionService.list({
 			forceUpdate: true,
-			params: { 
+			params: {
 				'showDeleted': isOwner ? true : false,
 				'type': 'solution',
-			} 
+			}
 		})
 
 		forkJoin({
