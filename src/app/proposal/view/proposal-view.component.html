@@ -120,12 +120,13 @@
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
 	    fxFlex.gt-md="800px">
-		<!-- <span class="mat-headline">Vote on Actions</span>
-		<app-card-list path="/proposals"
-		    [items]="proposal.proposals"
-		    model="Proposal"
-		    [showChildren]="false"
-		    (delete)="onDeleteProposal()"
-		    (vote)="onVote($event)"></app-card-list> -->
+		<div *ngIf="auth.isVerified()">
+			<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+			<app-make-suggestion
+				parent="action"
+				(submitForm)="handleSuggestionSubmit($event)"
+				>
+			</app-make-suggestion>
+		</div>
 	</div>
 </div>

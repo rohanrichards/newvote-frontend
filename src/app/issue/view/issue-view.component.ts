@@ -51,6 +51,7 @@ export class IssueViewComponent implements OnInit {
 	handleImageUrl = optimizeImage;
 	isOpen = false;
 	organization: any;
+	suggestions: any;
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -83,7 +84,26 @@ export class IssueViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getIssue(ID);
+			this.getSuggestions(ID);
 		});
+	}
+	
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			params: {
+				'showDeleted': isOwner ? true : false,
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				console.log(suggestions, 'this is suggestions');
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	getIssue(id: string) {
