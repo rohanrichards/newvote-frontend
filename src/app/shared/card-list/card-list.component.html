@@ -28,7 +28,7 @@
 						(click)="onSoftDelete(item, $event)">
 						<mat-icon aria-label="Remove content">delete</mat-icon>
 					</button>
-					<button color="warn" mat-icon-button (click)="onDelete(item, $event)">
+					<button *ngIf="auth.isAdmin()" color="warn" mat-icon-button (click)="onDelete(item, $event)">
 						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
 					</button>
 				</div>
