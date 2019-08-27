@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { includes } from 'lodash';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { Organization } from '@app/core/models/organization.model';
+import { handleError } from '../http/errors';
 
 export interface Credentials {
 	// Customize received credentials here
@@ -41,10 +42,10 @@ const routes = {
 	},
 	forgot: () => `/auth/forgot`,
 	reset: () => `/auth/reset`,
-	randomGet: () => `/topics`,
 	sms: () => `/users/sms`,
 	verify: () => `/users/verify`,
-	sso: () => '/auth/jwt'
+	sso: () => '/auth/jwt',
+	checkAuth: () => '/auth/check-status'
 };
 
 const credentialsKey = 'credentials';
@@ -58,6 +59,9 @@ export class AuthenticationService {
 
 	private _credentials: Credentials | null;
 	private _org: Organization;
+
+	// Only use if a user has a verified account and is visiting a new community
+	private communityVerified = true;
 
 	constructor(
 		private httpClient: HttpClient,
@@ -77,17 +81,21 @@ export class AuthenticationService {
 		}
 
 		this.organizationService.get().subscribe(org => this._org = org);
-	}
 
-	randomGet() {
-		return this.httpClient
-			.get(routes.randomGet())
-			.pipe(
-				map((res) => {
-					// this.setCredentials(res, context.remember);
-					return res;
-				})
-			);
+
+		this.checkStatus()
+			.subscribe(
+				(res) => {
+					this.checkIfCommunityVerified(res.user);
+					return this.setCredentials(res, true);
+				},
+				(err) => {
+					if (err.status === 400) {
+						this.setCredentials();
+					}
+				}
+			)
+
 	}
 
 	/**
@@ -100,9 +108,21 @@ export class AuthenticationService {
 			.post<Credentials>(routes.signin(), context)
 			.pipe(
 				map((res) => {
+					this.checkIfCommunityVerified(res.user);
 					this.setCredentials(res, context.remember);
 					return res;
 				})
+			);
+	}
+
+	checkStatus(): Observable<Credentials> {
+		return this.httpClient
+			.get<Credentials>(routes.checkAuth())
+			.pipe(
+				map((res) => {
+					return res;
+				}),
+				catchError(handleError)
 			);
 	}
 
@@ -130,6 +150,9 @@ export class AuthenticationService {
 	logout(): Observable<boolean> {
 		// Customize credentials invalidation here
 		this.setCredentials();
+		// reset community verified once no user is there (only shows if logged in)
+		this.communityVerified = true;
+		this.cookieService.delete('credentials');
 		return of(true);
 	}
 
@@ -282,6 +305,30 @@ export class AuthenticationService {
 
 	saveTourToLocalStorage() {
 		this.setCredentials(this._credentials, true);
+	}
+	
+	isCommunityVerified(): boolean {
+		return this.communityVerified;
+	}
+
+	checkIfCommunityVerified(user?: any) {
+
+		const { organizations } = user
+		const isUserPartOfOrg = organizations.find((id: string) => {
+			return this._org._id === id;
+		});
+
+		// community verification only for verified users
+		if (!user.verified) {
+			return false;
+		}
+
+		if (!isUserPartOfOrg) {
+			console.log('User is part of org');
+			return this.communityVerified = false;
+		}
+
+		return this.communityVerified = true;
 	}
 
 	setVerified(credentials: Credentials) {

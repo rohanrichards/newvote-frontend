@@ -18,6 +18,9 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { OrganizationService } from '@app/core';
 
 @Component({
 	selector: 'app-solution',
@@ -33,8 +36,11 @@ export class SolutionViewComponent implements OnInit {
 	isLoading: boolean;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
+	organization: any;
 
 	constructor(
+		private organizationService: OrganizationService,
+		private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private solutionService: SolutionService,
 		private voteService: VoteService,
@@ -48,6 +54,8 @@ export class SolutionViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => this.organization = org);
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -212,4 +220,37 @@ export class SolutionViewComponent implements OnInit {
 		});
 	}
 
+	populateSuggestion() {
+		const {_id, title } = this.solution;
+		const suggestionParentInfo = {
+			_id,
+			parentTitle: title,
+			parentType: 'solution',
+		}
+
+		this.router.navigateByUrl('/suggestions/create', { 
+			state: {
+				...suggestionParentInfo
+			}
+		})
+	}
+
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+
+		delete suggestion.type;
+		
+		suggestion.parent = this.solution._id;
+		suggestion.parentType = 'Solution';
+		suggestion.parentTitle = this.solution.title;
+
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
 }

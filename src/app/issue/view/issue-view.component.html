@@ -7,59 +7,6 @@
 	else mainIssueHeader">
 </ng-container>
 
-<div 
-	[@fadeIn]=true
-	class="container"
-	fxLayoutAlign="center center"
-	*ngIf="media"
-	>
-	<div
-		fxLayoutAlign="center center"
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="800px"
-		*ngIf="media && !headingEdit"
-		>
-		<h3 class="mat-headline" 
-			[ngStyle]="{ 'margin-bottom': '0px'}"
-			>
-			{{ this.issue.mediaHeading || "Third Party Media"}}
-		</h3>
-		<button 
-			mat-icon-button
-			matTooltip="Edit no Issue"
-			color="accent"
-			(click)="toggleHeader()"
-			*ngIf="(media && media.length > 0 ) && auth.isModerator()"
-			>
-				<mat-icon aria-label="Edit the issue">edit</mat-icon>
-		</button>
-	</div>		
-	<div 
-		fxLayoutAlign="center center"
-		fxFlex.gt-sm="690px"
-		fxFlex.gt-md="690px"
-		*ngIf="auth.isModerator() && headingEdit"
-		>
-		<mat-form-field class="example-full-width">
-			<input 
-				#newHeading 
-				matInput 
-				placeholder="Heading Name"
-				(keyup.enter)="handleSubmit(newHeading.value)"
-				(blur)="handleSubmit()"
-				>
-			<button 
-				mat-icon-button
-				matSuffix
-				color="accent"
-				(click)="handleSubmit(newHeading.value)"
-				>
-				<mat-icon >send</mat-icon>
-			</button>	
-		</mat-form-field>
-	</div>
-</div>
-
 <ng-container *ngIf="loadingState === 'loading';
 	then skeletonMedia;
 	else mainMedia">
@@ -79,19 +26,45 @@
 </ng-template>
 
 <ng-template #mainMedia>
-	<app-swiper-wrapper 
+	<div 
 		[@fadeIn]=true
-		path="/media"
-		[items]="media"
-		model="Media"
-		parent="Issue"
-		[organization]="issue.organizations.name"
-		(restore)="onMediaRestore($event)"
-		(softDelete)="onMediaSoftDelete($event)"
-		(delete)="onMediaDelete($event)"
-		(vote)="onVote($event, 'Media')"></app-swiper-wrapper>
+		class="container"
+		*ngIf="media"
+		fxLayout="row wrap"
+		fxLayoutAlign="center center"
+		>
+		<div
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px"
+			*ngIf="media && !headingEdit"
+			[style.width]="'100%'"
+			>
+			<mat-accordion>
+				<mat-expansion-panel class="accordion-header">
+					<mat-expansion-panel-header>
+						<h3 class="mat-headline" 
+							[ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}"
+							>
+							{{ this.issue.mediaHeading || "Third Party Media"}}
+						</h3>
+					</mat-expansion-panel-header>
+						<app-swiper-wrapper 
+							[@fadeIn]=true
+							path="/media"
+							[items]="media"
+							model="Media"
+							parent="Issue"
+							[organization]="issue.organizations.name"
+							(restore)="onMediaRestore($event)"
+							(softDelete)="onMediaSoftDelete($event)"
+							(delete)="onMediaDelete($event)"
+							(vote)="onVote($event, 'Media')">
+						</app-swiper-wrapper>
+		</mat-expansion-panel>
+	</mat-accordion>
+</div>
+</div>
 </ng-template>
-
 
 
 <ng-container *ngIf="loadingState === 'loading';
@@ -153,21 +126,21 @@
 						matTooltip="Restore this issue"
 						color="accent"
 						(click)="onRestore()">
-							<mat-icon aria-label="Remove this issue">restore</mat-icon>
-						</button>
+						<mat-icon aria-label="Remove this issue">restore</mat-icon>
+					</button>
 					<button mat-icon-button
 						*ngIf="!issue.softDeleted"
 						matTooltip="Remove this Issue"
 						color="accent"
 						(click)="onSoftDelete()">
-							<mat-icon aria-label="Remove this issue">delete</mat-icon>
-						</button>
+						<mat-icon aria-label="Remove this issue">delete</mat-icon>
+					</button>
 					<button mat-icon-button
 						matTooltip="Delete this Issue"
 						color="warn"
 						(click)="onDelete()">
-							<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
-						</button>
+						<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
+					</button>
 				</div>
 			</div>
 			<div fxLayout="row"
@@ -194,7 +167,13 @@
 				<app-more-less [displayText]="issue.description"
 					maxHeight="200">
 				</app-more-less>
+				<div *ngIf="auth.isVerified()">
+					<h4 class="mat-subheading-1">Do you have a suggestion that's now shown below? Click here to create one.</h4>
+					<button  mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
+				</div>
 			</div>
+			
+			
 		</div>
 	</mat-toolbar>
 </ng-template>
@@ -242,7 +221,9 @@
 		fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
-			<span class="mat-headline center-span" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+				<span class="mat-headline center-span" [style.margin-bottom]="'0'" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+			</mat-toolbar>
 			<app-card-list path="/solutions"
 				[items]=solutions
 				model="Solution"
@@ -256,7 +237,17 @@
 				(delete)="onDeleteSolution($event)"
 				(softDelete)="onSoftDeleteSolution($event)"
 				(vote)="onVote($event, 'Solution')"
-				(childVote)="onVote($event, 'Proposal')"></app-card-list>
+				(childVote)="onVote($event, 'Proposal')">
+			</app-card-list>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="issue"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</div>
 	</div>
+
 </ng-template>

@@ -15,7 +15,9 @@
 					<button mat-raised-button
 					 	*ngIf="auth.isModerator() || auth.hasRole(button.role)"
 					    [color]="button.color"
-					    [routerLink]="button.routerLink">{{button.text}}</button>
+						[routerLink]="button.routerLink"
+						[queryParams]="button.params"
+						>{{button.text}}</button>
 				</span>
 			</div>
 		</div>

@@ -6,6 +6,7 @@ export interface IButtonTemplate {
 	text: string;
 	color: string;
 	routerLink: string;
+	params: any;
 }
 
 @Component({

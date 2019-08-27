@@ -13,7 +13,7 @@ export class AuthenticationGuard implements CanActivate {
 		private authenticationService: AuthenticationService) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-		if (this.authenticationService.isAuthenticated()) {
+		if (this.authenticationService.isAuthenticated() && this.authenticationService.isCommunityVerified()) {
 			return true;
 		}
 

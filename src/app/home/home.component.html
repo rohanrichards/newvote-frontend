@@ -220,23 +220,7 @@
 				</div>
 				<div fxFlex></div>
 			</div>
-			<div *ngIf="!auth.isAuthenticated()">
-				<button *ngIf="!org.authType || org.authType===0"
-				 mat-button
-				 mat-raised-button
-				 routerLink="/auth/signup"
-				 color="warn"
-				 class="mat-display-1">
-					CREATE ACCOUNT</button>
-				<button *ngIf="org && org.authType && org.authType===1"
-				 mat-button
-				 mat-raised-button
-				 routerLink="/auth/login"
-				 color="warn"
-				 class="mat-display-1">
-					CREATE ACCOUNT</button>
-			</div>
-			<div *ngIf="org">
+			<div *ngIf="org" [style.margin-top]="'1rem'">
 				<div *ngIf="!org.owner">
 					<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
 					<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
@@ -249,6 +233,9 @@
 				</div>
 				<div *ngIf="org.owner">
 					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
+				</div>
+				<div>
+					<button routerLink="/issues" mat-raised-button color="primary">Your Issues</button>
 				</div>
 			</div>
 		</div>

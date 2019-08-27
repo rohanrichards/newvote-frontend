@@ -12,6 +12,7 @@ import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -20,6 +21,7 @@ import { AppState } from '@app/core/models/state.model';
 })
 export class ProposalListComponent implements OnInit {
 
+	suggestions: Array<any>;
 	proposals: Array<any>;
 	isLoading: boolean;
 	loadingState: string;
@@ -31,6 +33,13 @@ export class ProposalListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/proposals/create',
 		role: 'admin'
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'action' }
 	}];
 
 	constructor(
@@ -38,6 +47,7 @@ export class ProposalListComponent implements OnInit {
 		private proposalService: ProposalService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
+		private suggestionService: SuggestionService,
 		private route: ActivatedRoute,
 		private router: Router,
 		public snackBar: MatSnackBar,
@@ -63,6 +73,7 @@ export class ProposalListComponent implements OnInit {
 	}
 
 	fetchData(force?: boolean) {
+		const isOwner = this.auth.isOwner();
 		this.isLoading = true;
 
 		this.proposalService.list({ orgs: [], forceUpdate: force })
@@ -74,6 +85,21 @@ export class ProposalListComponent implements OnInit {
 				},
 				error => this.stateService.setLoadingState(AppState.serverError)
 			);
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => {
+				return err
+			});
 	}
 
 	onDelete(event: any) {
