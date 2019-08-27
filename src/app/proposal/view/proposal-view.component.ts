@@ -76,7 +76,7 @@ export class ProposalViewComponent implements OnInit {
 
 		this.suggestionService.list({
 			params: {
-				'showDeleted': isOwner ? true : false,
+				'showDeleted': isOwner ? true : '',
 				'parent': id
 			}
 		})

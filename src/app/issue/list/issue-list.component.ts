@@ -141,7 +141,7 @@ export class IssueListComponent implements OnInit {
 		const suggestionObs: Observable<any[]> = this.suggestionService.list({
 			forceUpdate: true,
 			params: {
-				'showDeleted': isOwner ? true : false,
+				'showDeleted': isOwner ? true : '',
 				'type': 'solution',
 			}
 		})

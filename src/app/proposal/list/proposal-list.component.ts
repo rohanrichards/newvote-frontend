@@ -89,7 +89,7 @@ export class ProposalListComponent implements OnInit {
 		this.suggestionService.list({
 			forceUpdate: true,
 			params: { 
-				'showDeleted': isOwner ? true : false,
+				'showDeleted': isOwner ? true : '',
 				'type': 'solution',
 			} 
 		})

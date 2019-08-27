@@ -121,7 +121,9 @@
 	<div fxFlex.gt-sm="690px"
 		fxFlex.gt-md="800px">
 		<div>
-			<h2 class="mat-headline center-text">Community Suggestions</h2>
+			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+				<h2 class="mat-headline center-text">Community Suggestions</h2>
+			</mat-toolbar>
 			<app-card-list 
 				path="/suggestions"
 				[@fadeIn]=true
@@ -135,7 +137,9 @@
 			</app-card-list>
 		</div>
 		<div *ngIf="auth.isVerified()">
-			<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+			</mat-toolbar>
 			<app-make-suggestion
 				parent="action"
 				(submitForm)="handleSuggestionSubmit($event)"
