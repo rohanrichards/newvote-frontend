@@ -49,6 +49,7 @@
 					</a>
 
 					<a mat-list-item
+					 *ngIf="auth.isVerified()"
 					 routerLink="/suggestions"
 					 routerLinkActive="active"
 					 (click)="isMobile && sidenav.close()">

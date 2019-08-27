@@ -12,7 +12,7 @@ import { asyncScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
 import { ScrollService } from '@app/core/scroll/scroll.service';
-import { I18nService } from '@app/core';
+import { I18nService, AuthenticationService } from '@app/core';
 
 
 interface ScrollPositionRestore {
@@ -41,6 +41,7 @@ export class ShellComponent implements OnInit {
 	scrollingSubscription: any;
 
 	constructor(
+		public auth: AuthenticationService,
 		private scrollService: ScrollService,
 		public scroll: ScrollDispatcher,
 		private router: Router,

@@ -129,7 +129,11 @@ export class SolutionListComponent implements OnInit {
 		this.solutionService.list({
 			orgs: [],
 			forceUpdate: true,
-			params: isOwner ? { 'showDeleted': true } :  {} })
+			params: {
+				'showDeleted': isOwner ? true : '',
+				'type': 'solution',
+			}
+		})
 			.subscribe(
 				solutions => {
 					const diff = differenceWith(solutions, this.solutions, isEqual);
@@ -137,7 +141,7 @@ export class SolutionListComponent implements OnInit {
 						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 						this.solutions[index] = diff[0];
 					}
-					return 	this.stateService.setLoadingState(AppState.complete);
+					return this.stateService.setLoadingState(AppState.complete);
 				},
 				error => {
 					return this.stateService.setLoadingState(AppState.serverError);
