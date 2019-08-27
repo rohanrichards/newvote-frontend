@@ -66,9 +66,28 @@
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
+
+			<h2 class="mat-headline center-text">Suggestions for Solutions</h2>
+			<app-card-list 
+				*ngSwitchCase="'complete'"
+				path="/suggestions"
+				[@fadeIn]=true
+				[items]=suggestions
+				model="Suggestion"
+				(restore)="onRestore($event)"
+				(softDelete)="onSoftDelete($event)"
+				(delete)="onDelete($event)"
+				(vote)="onVote($event, 'Suggestion')"
+				>
+			</app-card-list>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="solution"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</ng-container>
 	</div>
 </div>
-
-
-

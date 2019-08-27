@@ -77,18 +77,18 @@ export class HomeComponent implements OnInit {
 			proposals: getProposals,
 			count: getUsers
 		})
-			.subscribe(
-				(results) => {
-					const { solutions, proposals, count } = results;
+		.subscribe(
+			(results) => {
+				const { solutions, proposals, count } = results;
 
-					this.solutions = solutions;
-					this.proposals = proposals;
-					this.userCount = count;
-				},
-				(err) => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
-			);
+				this.solutions = solutions;
+				this.proposals = proposals;
+				this.userCount = count;
+			},
+			(err) => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	fetchData(force?: boolean) {
@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => {
-					console.log(err, 'this is err');
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);

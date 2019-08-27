@@ -11,6 +11,7 @@ export interface ISolution {
 	created?: Date;
 	organizations: any;
 	softDeleted: boolean;
+	suggestion?: string;
 }
 
 export class Solution implements ISolution {
@@ -23,6 +24,7 @@ export class Solution implements ISolution {
 		public likert: boolean = false,
 		public organizations: any = {},
 		public votes: any = {},
-		public softDeleted: boolean = false
+		public softDeleted: boolean = false,
+		public suggestionId: string = ''
 	) { }
 }

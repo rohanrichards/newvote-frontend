@@ -41,3 +41,16 @@ export const QuillSettings = {
 		]
 	}
 } as any;
+
+export const MinimalQuillSettings = {
+	modules: {
+		toolbar: [
+			['bold', 'italic', 'underline', 'strike'],
+			['blockquote'],
+			[{ 'header': 1 }, { 'header': 2 }],
+			[{ 'list': 'ordered' }, { 'list': 'bullet' }],
+			[{ 'direction': 'rtl' }],
+			['clean'],
+		]
+	}
+} as any;

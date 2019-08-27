@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { IProposal } from '@app/core/models/proposal.model';
 import { ISolution } from '@app/core/models/solution.model';
@@ -14,6 +14,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -42,8 +43,10 @@ export class ProposalCreateComponent implements OnInit {
 
 	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	suggestion: any;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private proposalService: ProposalService,
 		private solutionService: SolutionService,
 		private organizationService: OrganizationService,
@@ -64,21 +67,37 @@ export class ProposalCreateComponent implements OnInit {
 				title: 'Create Action',
 				description: 'Creating a new action on the NewVote platform.'
 			});
-
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			if (ID) {
-				this.solutionService.view({ id: ID, orgs: [] })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(solution => {
-						if (solution) {
-							this.solutions.push(solution);
-						}
-					});
-			} else {
-				this.isLoading = false;
-			}
-		});
+		
+		this.route.paramMap
+			.pipe(
+				map((data) => {
+					return {
+						params: { _id: data.get('id') },
+						state: window.history.state
+					}
+				})
+			)
+			.subscribe(routeData => {
+				const { params, state: suggestion } = routeData;
+				
+				if (suggestion._id) {
+					this.suggestion = suggestion;
+					return this.proposalForm.patchValue(suggestion);
+				}
+				
+				const ID = params._id;
+				if (ID) {
+					this.solutionService.view({ id: ID, orgs: [] })
+						.pipe(finalize(() => { this.isLoading = false; }))
+						.subscribe(solution => {
+							if (solution) {
+								this.solutions.push(solution);
+							}
+						});
+				} else {
+					this.isLoading = false;
+				}
+			});
 
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -137,6 +156,10 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal.solutions = this.solutions;
 		this.proposal.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.proposal.suggestion = this.suggestion;
+		}
+
 		this.uploader.onCompleteAll = () => {
 			console.log('completed all');
 			this.isLoading = false;
@@ -165,6 +188,11 @@ export class ProposalCreateComponent implements OnInit {
 				this.proposalService.create({ entity: this.proposal })
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
+
+						if (this.suggestion) {
+							this.hideSuggestion();
+						}
+
 						if (t.error) {
 							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 						} else {
@@ -208,6 +236,24 @@ export class ProposalCreateComponent implements OnInit {
 
 	add(event: any) {
 		console.log(event);
+	}
+
+	hideSuggestion() {
+		const updatedSuggestion = {
+			...this.suggestion,
+			softDeleted: true
+		};
+
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				(res) => {
+					return res;
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): ISolution[] {

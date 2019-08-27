@@ -62,7 +62,20 @@
 				(softDelete)="onSoftDelete($event)"
 				(restore)="onRestore($event)"
 				(vote)="onVote($event)"
-					></app-card-list>
+				></app-card-list>
+			<h2 class="mat-headline center-text">Suggestions for Actions</h2>
+			<app-card-list 
+				*ngSwitchCase="'complete'"
+				path="/suggestions"
+				[@fadeIn]=true
+				[items]=suggestions
+				model="Suggestion"
+				(restore)="onRestore($event)"
+				(softDelete)="onSoftDelete($event)"
+				(delete)="onDelete($event)"
+				(vote)="onVote($event, 'Suggestion')"
+				>
+			</app-card-list>
 			</ng-container>
 		</div>
 </div>
