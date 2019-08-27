@@ -1,3 +1,9 @@
+:host {
+	position: sticky;
+	top: 0px;
+	z-index: 200;
+}
+
 .sticky {
     position: sticky;
     top: 0px;
