@@ -99,7 +99,6 @@ export class IssueViewComponent implements OnInit {
 		})
 		.subscribe(
 			(suggestions) => {
-				console.log(suggestions, 'this is suggestions');
 				this.suggestions = suggestions;
 			},
 			(err) => err

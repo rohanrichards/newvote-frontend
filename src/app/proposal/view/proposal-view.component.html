@@ -119,7 +119,21 @@
     fxLayout="row wrap"
     fxLayoutAlign="center start">
 	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
+		fxFlex.gt-md="800px">
+		<div>
+			<h2 class="mat-headline center-text">Community Suggestions</h2>
+			<app-card-list 
+				path="/suggestions"
+				[@fadeIn]=true
+				[items]=suggestions
+				model="Suggestion"
+				(restore)="onRestoreSuggestion($event)"
+				(softDelete)="onSoftDeleteSuggestion($event)"
+				(delete)="onDeleteSuggestion($event)"
+				(vote)="onVoteSuggestion($event, 'Suggestion')"
+				>
+			</app-card-list>
+		</div>
 		<div *ngIf="auth.isVerified()">
 			<h2 class="mat-headline center-text">Create your own Suggestion</h2>
 			<app-make-suggestion

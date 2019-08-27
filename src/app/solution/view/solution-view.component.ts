@@ -37,6 +37,7 @@ export class SolutionViewComponent implements OnInit {
 	loadingState: string;
 	handleImageUrl = optimizeImage;
 	organization: any;
+	suggestions: any[];
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -65,6 +66,7 @@ export class SolutionViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSolution(ID);
+			this.getSuggestions(ID);
 		});
 	}
 
@@ -94,6 +96,23 @@ export class SolutionViewComponent implements OnInit {
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		);
+	}
+
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			params: {
+				'showDeleted': isOwner ? true : false,
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	onVote(voteData: any, model: string) {

@@ -38,6 +38,7 @@ export class ProposalViewComponent implements OnInit {
 	loadingState: string;
 	handleImageUrl = optimizeImage;
 	organization: any;
+	suggestions: any[];
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -66,7 +67,25 @@ export class ProposalViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getProposal(ID);
+			this.getSuggestions(ID);
 		});
+	}
+
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			params: {
+				'showDeleted': isOwner ? true : false,
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	getProposal(id: string, forceUpdate?: boolean) {
