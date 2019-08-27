@@ -76,11 +76,13 @@ export class SuggestionListComponent implements OnInit {
 		const isOwner = this.auth.isOwner();
 		const isVerified = this.auth.isVerified();
 
+		const { _id: id } = this.auth.credentials.user;
+
 		this.suggestionService.list({
 			forceUpdate: force,
 			params:{
 				'showDeleted': isOwner ? true : '',
-				'user': isVerified ? this.auth.credentials.user._id : ''
+				'user': isVerified ? id : ''
 			}
 		})
 		.subscribe(
