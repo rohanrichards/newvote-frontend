@@ -258,8 +258,6 @@ export class SolutionViewComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
-
-		delete suggestion.type;
 		
 		suggestion.parent = this.solution._id;
 		suggestion.parentType = 'Solution';

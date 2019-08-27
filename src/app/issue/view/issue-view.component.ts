@@ -336,8 +336,6 @@ export class IssueViewComponent implements OnInit {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
 
-		delete suggestion.type;
-
 		suggestion.parent = this.issue._id;
 		suggestion.parentType = 'Issue';
 		suggestion.parentTitle = this.issue.name;
