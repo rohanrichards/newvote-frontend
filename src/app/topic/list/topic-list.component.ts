@@ -75,7 +75,7 @@ export class TopicListComponent implements OnInit {
 		this.topicService.update({ id: topic._id, entity: topic })
 			.subscribe(
 				(t) => {	this.fetchData(true); },
-				(err) => { console.log(err); }
+				(err) => err
 			);
 	}
 
@@ -86,15 +86,15 @@ export class TopicListComponent implements OnInit {
 		this.topicService.update({ id: topic._id, entity: topic })
 			.subscribe(
 				(t) => {	this.fetchData(true); },
-				(err) => { console.log(err); }
+				(err) => err
 			);
 	}
 
 	onDelete(event: any) {
 		this.topicService.delete({ id: event._id })
 			.subscribe(
-				(t) => {	this.fetchData(true); },
-				(err) => { console.log(err); }
+				(t) => { this.fetchData(true); },
+				(err) => err
 			);
 	}
 }

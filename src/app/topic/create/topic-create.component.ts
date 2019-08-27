@@ -96,7 +96,6 @@ export class TopicCreateComponent implements OnInit {
 		this.topic.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 

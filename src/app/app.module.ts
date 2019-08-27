@@ -35,9 +35,10 @@ import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
+import { RECAPTCHA_SETTINGS, RecaptchaSettings, RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { CookieService } from 'ngx-cookie-service';
+import { JoyrideModule } from 'ngx-joyride';
 import { LandingModule } from './landing/landing.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
@@ -67,7 +68,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
 		SwiperModule,
 		LazyLoadImageModule,
+		JoyrideModule.forRoot(),
 		LandingModule,
+		RecaptchaModule,
+		RecaptchaFormsModule,
 		AppRoutingModule  // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [

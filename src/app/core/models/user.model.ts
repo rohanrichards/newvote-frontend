@@ -12,6 +12,7 @@ export interface IUser {
 	verified: boolean;
 	profileImageURL: string;
 	roles: string[];
+	completedTour?: boolean;
 }
 
 export class User implements IUser {
@@ -27,5 +28,6 @@ export class User implements IUser {
 		public verified: boolean = false,
 		public profileImageURL: string = '',
 		public roles: string[] = ['guest'],
+		public completedTour: boolean = false,
 	) { }
 }

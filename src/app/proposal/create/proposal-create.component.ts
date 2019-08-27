@@ -161,7 +161,6 @@ export class ProposalCreateComponent implements OnInit {
 		}
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -235,7 +234,6 @@ export class ProposalCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	hideSuggestion() {

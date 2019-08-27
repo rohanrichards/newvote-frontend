@@ -18,7 +18,12 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { forkJoin } from 'rxjs';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyrideService } from 'ngx-joyride';
+import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 
 @Component({
 	selector: 'app-home',
@@ -38,10 +43,12 @@ export class HomeComponent implements OnInit {
 	userCount: number;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
-
+	loadTour = true;
 	ISSUE_LIMIT = 6;
+	stepsArray = [...JoyRideSteps];
 
 	constructor(
+		private readonly joyrideService: JoyrideService,
 		public stateService: StateService,
 		public auth: AuthenticationService,
 		private organizationService: OrganizationService,
@@ -50,10 +57,13 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
+		private cookieService: CookieService,
+		public snackBar: MatSnackBar,
 		private router: Router
 	) { }
 
 	ngOnInit() {
+		console.log(this.stepsArray, 'this is steps');
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -123,7 +133,6 @@ export class HomeComponent implements OnInit {
 
 	onDelete(issue: any) {
 		this.issueService.delete({ id: issue._id }).subscribe(() => {
-			console.log('deleted');
 			this.fetchData(true);
 		});
 	}
@@ -142,5 +151,44 @@ export class HomeComponent implements OnInit {
 		}
 
 		return `${Math.floor(count / 1000)}K+`;
+	}
+
+	onDone() {
+		return this.completeTour();
+	}
+
+	startTour(event: any) {
+		event.stopPropagation();
+		this.joyrideService.startTour(
+			{
+				steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
+					'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
+				showPrevButton: true,
+				stepDefaultPosition: 'center',
+				waitingTime: 1150,
+			}
+		);
+	}
+
+	completeTour() {
+		const user = this.auth.credentials.user;
+		user.completedTour = true;
+		this.userService.patch({ id: user._id, entity: user })
+			.subscribe(
+				(res) => {
+					this.auth.saveTourToLocalStorage();
+					this.openSnackBar('Tour Complete', 'OK');
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			)
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 4000,
+			horizontalPosition: 'right'
+		});
 	}
 }

@@ -16,7 +16,6 @@ export class VoteButtonsComponent implements OnInit {
 	// Radar
 	public chartLabels: any = [];
 	public data: any = [[(10 / 12) * 100], [(2 / 12) * 100]];
-	public chartType = 'horizontalBar';
 	public chartColors = [
 		{
 			backgroundColor: '#0277bd',
@@ -30,32 +29,7 @@ export class VoteButtonsComponent implements OnInit {
 			borderColor: '#212121'
 		}
 	];
-	public chartOptions = {
-		responsive: true,
-		maintainAspectRatio: false,
-		legend: {
-			display: false
-		},
-		title: {
-			display: false
-		},
-		tooltips: {
-			enabled: false
-		},
-		// elements: { rectangle: { borderWidth: '1', borderSkipped: 'right' } },
-		scales: {
-			xAxes: [{
-				display: false,
-				stacked: true,
-				gridLines: { display: false }
-			}],
-			yAxes: [{
-				display: false,
-				stacked: true,
-				gridLines: { display: false }
-			}]
-		}
-	};
+
 	public dataSetOverride: any;
 
 
@@ -120,5 +94,40 @@ export class VoteButtonsComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+	votesWidthFor() {
+		const { up, down} = this.item.votes;
+		const totalVotes = up + down;
+
+		const percentageOfUpVotes = (up / totalVotes) * 100;
+		return percentageOfUpVotes;
+	}
+
+	votesWidthAgainst() {
+		const { up, down} = this.item.votes;
+		const totalVotes = up + down;
+
+		const percentageOfDownVotes = (down / totalVotes) * 100;
+		return percentageOfDownVotes;
+	}
+
+	totalVotes() {
+		const { up, down} = this.item.votes;
+		const totalVotes = up + down; 
+
+		if (!(this.item.votes.currentUser && this.item.votes.currentUser.voteValue)) {
+			return '';
+		}
+
+		if (totalVotes === 0) {
+			return '';
+		}
+
+		if (totalVotes === 1) {
+			return `${totalVotes} vote`;
+		}
+
+		return `${totalVotes} votes`;
 	}
 }

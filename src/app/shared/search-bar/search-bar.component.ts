@@ -46,7 +46,6 @@ export class SearchBarComponent implements OnInit {
 	}
 
 	searchSelected(event: any) {
-
 		const item = event.option.value;
 		const model = item.schema;
 		const url = `/${model.toLowerCase()}s/${item._id}`;

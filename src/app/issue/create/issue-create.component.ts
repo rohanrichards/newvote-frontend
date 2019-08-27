@@ -144,7 +144,6 @@ export class IssueCreateComponent implements OnInit {
 		}
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -219,7 +218,6 @@ export class IssueCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	hideSuggestion() {

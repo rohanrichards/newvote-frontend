@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { differenceWith as _differenceWith } from 'lodash';
-import { isEqual as _isEqual } from 'lodash';
+import { differenceWith } from 'lodash';
+import { isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
@@ -17,6 +17,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { FormGroup } from '@angular/forms';
 import { Suggestion } from '@app/core/models/suggestion.model';
@@ -27,7 +28,7 @@ import { OrganizationService } from '@app/core';
 	templateUrl: './solution-list.component.html',
 	styleUrls: ['./solution-list.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+    	trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SolutionListComponent implements OnInit {
@@ -50,6 +51,8 @@ export class SolutionListComponent implements OnInit {
 		role: 'user',
 		params: { type: 'solution' }
 	}];
+	stepsArray = [...JoyRideSteps];
+
 	suggestions: Array<any>;
 	organization: any;
 
@@ -85,7 +88,7 @@ export class SolutionListComponent implements OnInit {
 				const force: boolean = !!params.get('forceUpdate');
 				this.fetchData(force);
 			});
-		
+
 	}
 
 	fetchData(force?: boolean) {
@@ -108,10 +111,10 @@ export class SolutionListComponent implements OnInit {
 
 		this.suggestionService.list({
 			forceUpdate: true,
-			params: { 
+			params: {
 				'showDeleted': isOwner ? true : false,
 				'type': 'solution',
-			} 
+			}
 		})
 		.subscribe((suggestions) => {
 			this.suggestions = suggestions;
@@ -129,7 +132,7 @@ export class SolutionListComponent implements OnInit {
 			params: isOwner ? { 'showDeleted': true } :  {} })
 			.subscribe(
 				solutions => {
-					const diff = _differenceWith(solutions, this.solutions, _isEqual);
+					const diff = differenceWith(solutions, this.solutions, isEqual);
 					if (diff.length > 0) {
 						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 						this.solutions[index] = diff[0];
@@ -143,10 +146,10 @@ export class SolutionListComponent implements OnInit {
 
 		this.suggestionService.list({
 			forceUpdate: true,
-			params: { 
+			params: {
 				'showDeleted': isOwner ? true : false,
 				'type': 'solution',
-			} 
+			}
 		})
 		.subscribe((suggestions) => {
 			this.suggestions = suggestions;
@@ -177,7 +180,6 @@ export class SolutionListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.solutionService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
@@ -211,7 +213,7 @@ export class SolutionListComponent implements OnInit {
 			);
 	}
 
-	
+
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
@@ -223,7 +225,7 @@ export class SolutionListComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
-		
+
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');

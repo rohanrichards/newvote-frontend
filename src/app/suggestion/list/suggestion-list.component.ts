@@ -15,6 +15,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 
 @Component({
 	selector: 'app-suggestion',
@@ -39,6 +40,8 @@ export class SuggestionListComponent implements OnInit {
 		routerLink: '/suggestions/create',
 		role: 'user'
 	}];
+
+	stepsArray = [...JoyRideSteps];
 
 	constructor(private suggestionService: SuggestionService,
 		private stateService: StateService,
@@ -88,7 +91,6 @@ export class SuggestionListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
@@ -96,7 +98,6 @@ export class SuggestionListComponent implements OnInit {
 	onSoftDelete(event: any) {
 		event.softDeleted = true;
 		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}
@@ -104,7 +105,6 @@ export class SuggestionListComponent implements OnInit {
 	onRestore(event: any) {
 		event.softDeleted = false;
 		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}

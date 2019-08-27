@@ -47,8 +47,8 @@ export class OrganizationEditComponent implements OnInit {
 		moderators: new FormControl([]),
 		moderatorsControl: new FormControl([], [Validators.email]),
 		authType: new FormControl(0, [Validators.required]),
-		authUrl: new FormControl('', [Validators.required]),
-		authEntityId: new FormControl('', [Validators.required]),
+		authUrl: new FormControl(''),
+		authEntityId: new FormControl(''),
 		privateOrg: new FormControl(false, [Validators.required])
 	});
 
@@ -280,7 +280,6 @@ export class OrganizationEditComponent implements OnInit {
 	}
 
 	moderatorSelected(event: any) {
-		console.log('moderator selected: ', event);
 		const selectedItem = event.value;
 		if (selectedItem && selectedItem != null) {
 			const moderators = this.organizationForm.value.moderators;

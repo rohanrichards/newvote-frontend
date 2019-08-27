@@ -61,9 +61,7 @@ export class MediaCreateComponent implements OnInit {
 		this.mediaForm.get('url').valueChanges.pipe(debounceTime(500)).subscribe(url => {
 			this.isLoading = true;
 			const uri = encodeURIComponent(url).replace(/'/g, '%27').replace(/"/g, '%22');
-			console.log('encoded url: ', uri);
 			this.mediaService.meta({ uri: uri }).subscribe((metadata: any) => {
-				console.log('got meta for url: ', metadata);
 				this.isLoading = false;
 				this.imageUrl = metadata.image;
 				this.usingMetaImage = true;
@@ -72,7 +70,6 @@ export class MediaCreateComponent implements OnInit {
 					'description': metadata.description
 				});
 
-				console.log(this.mediaForm.value);
 			});
 		});
 	}
@@ -154,7 +151,6 @@ export class MediaCreateComponent implements OnInit {
 		this.media = <IMedia>this.mediaForm.value;
 		this.media.issues = this.issues;
 		this.media.organizations = this.organization;
-		console.log(this.media);
 
 		if (!this.usingMetaImage) {
 			this.saveWithImageUpload();
@@ -176,7 +172,6 @@ export class MediaCreateComponent implements OnInit {
 
 	saveWithImageUpload() {
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -230,7 +225,6 @@ export class MediaCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	private _filter(value: any): IIssue[] {

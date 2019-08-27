@@ -161,7 +161,6 @@ export class SolutionCreateComponent implements OnInit {
 
 		console.log(this.solution, 'this is solution on save');
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -234,7 +233,6 @@ export class SolutionCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
-		console.log(event);
 	}
 
 	hideSuggestion() {
