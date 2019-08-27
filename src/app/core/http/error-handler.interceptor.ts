@@ -43,6 +43,10 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
 					log.error('User has guest role, verification required');
 					this.router.navigate(['/auth/verify'], { queryParams: { 'redirect': this.router.url } });
 				}
+
+				if (error.error.notCommunityVerified) {
+					this.router.navigate(['/auth/login'], { queryParams: { 'redirect': this.router.url } });
+				}
 			}
 		}
 

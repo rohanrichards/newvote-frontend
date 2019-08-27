@@ -1,5 +1,5 @@
-<app-header-bar [title]="headerTitle"
-    [text]="headerText"
+<app-header-bar [headerTitle]="headerTitle"
+    [headerText]="headerText"
     [buttons]="headerButtons">
 </app-header-bar>
 
@@ -7,12 +7,23 @@
     size="1.5">
 </app-loader>
 
+<ng-template #customContent>	
+	<div style="width: 300px">
+		<p class="mat-subheading-2">{{stepsArray[4].description}}</p>
+	</div>
+</ng-template>
 
-<div class="container"
+<div 
+	joyrideStep="solution1"
+	[title]="stepsArray[4].title"
+	[stepContent]="customContent"
+	class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
+	<div 
+		fxFlex.gt-sm="690px"
+		fxFlex.gt-md="800px"
+		>
 		<ng-container [ngSwitch]="loadingState">
 				<div 
 					*ngSwitchCase="'loading'"
@@ -66,9 +77,28 @@
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
+
+			<h2 class="mat-headline center-text">Suggestions for Solutions</h2>
+			<app-card-list 
+				*ngSwitchCase="'complete'"
+				path="/suggestions"
+				[@fadeIn]=true
+				[items]=suggestions
+				model="Suggestion"
+				(restore)="onRestore($event)"
+				(softDelete)="onSoftDelete($event)"
+				(delete)="onDelete($event)"
+				(vote)="onVote($event, 'Suggestion')"
+				>
+			</app-card-list>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="solution"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</ng-container>
 	</div>
 </div>
-
-
-

@@ -129,3 +129,14 @@ mat-card-actions {
 .soft-deleted {
 	border: 2px solid red;
 }
+
+
+.suggestion-image-container {
+	padding: 0;
+}
+
+.suggestion-image {
+	max-width: 75px;
+	height: auto;
+	object-fit: contain;
+}

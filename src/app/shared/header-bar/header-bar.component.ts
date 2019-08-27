@@ -6,6 +6,7 @@ export interface IButtonTemplate {
 	text: string;
 	color: string;
 	routerLink: string;
+	params: any;
 }
 
 @Component({
@@ -15,8 +16,8 @@ export interface IButtonTemplate {
 })
 export class HeaderBarComponent implements OnInit {
 
-	@Input() title: string;
-	@Input() text: string;
+	@Input() headerTitle: string;
+	@Input() headerText: string;
 	@Input() buttons: Array<IButtonTemplate>;
 	@Input() object: any;
 

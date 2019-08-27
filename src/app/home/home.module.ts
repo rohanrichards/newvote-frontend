@@ -15,6 +15,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { UserService } from '@app/core/http/user/user.service';
 
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { JoyrideModule } from 'ngx-joyride';
 
 @NgModule({
 	imports: [
@@ -26,6 +27,7 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 		MaterialModule,
 		Angulartics2Module,
 		HomeRoutingModule,
+		JoyrideModule.forChild(),
 		LazyLoadImageModule.forRoot({
 			preset: intersectionObserverPreset
 		})

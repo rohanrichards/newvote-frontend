@@ -1,3 +1,74 @@
+<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" >
+	<div [style.padding-top]="'1rem'" fxLayoutAlign="start center">
+		<h4 joyrideStep="step1"
+			class="mat-title">New to NewVote? Let us help you get started.</h4>
+	</div>
+	<div 
+		[style.margin-left]="'0.5rem'"
+		fxFlex
+		fxLayout="row wrap"
+		fxLayoutAlign="end center"
+		fxLayoutGap.sm="8px"
+		fxLayoutGap.gt-sm="8px"
+		>
+		<button
+			fxFlex.lt-sm="80px"
+			(click)="onDone($event)"
+			mat-flat-button>
+			Dismiss
+		</button>
+		<button	
+			fxFlex.lt-sm="80px"
+			(click)="startTour($event)"
+			mat-flat-button color="warn">
+			Start Tour
+		</button>
+	</div>
+</div>
+
+<joyrideStep
+	[title]="stepsArray[0].title"
+	joyrideStep="step1"
+	stepPosition="center"
+	[stepContent]="myCustomContent"
+	(done)="onDone()"
+	>
+	<ng-template #myCustomContent>
+		<div style="width: 250px">
+			<h4 class="mat-subheading-2">{{stepsArray[0].description}}</h4>
+		</div>
+	</ng-template>
+</joyrideStep>
+
+<joyrideStep
+	[title]="stepsArray[1].title"
+	joyrideStep="step2"
+	stepPosition="center"
+	[stepContent]="myCustomContent2"
+	(done)="onDone()"
+	>
+	<ng-template #myCustomContent2>
+		<div style="width: 250px">
+			<p class="mat-subheading-2">{{stepsArray[1].description}}</p>
+		</div>
+	</ng-template>
+</joyrideStep>
+
+<joyrideStep
+	[title]="stepsArray[7].title"
+	joyrideStep="finish"
+	stepPosition="center"
+	[stepContent]="myCustomContent3"
+	(done)="onDone()"
+	>
+	<ng-template #myCustomContent3>
+		<div style="width: 300px">
+			<p class="mat-subheading-2">{{stepsArray[7].description}}</p>
+		</div>
+	</ng-template>
+</joyrideStep>
+
+
 <ng-container *ngIf="loadingState === 'complete'; then mainContainer; else skeletonHeader">
 </ng-container>
 
@@ -7,7 +78,8 @@
 </ng-template>
 
 <ng-template #mainContainer>
-	<div fxLayout="column"
+	<div
+	fxLayout="column"
 	 [@fadeIn]="!isLoading"
 	 fxLayoutAlign="center center"
 	 class="hero-image-container">
@@ -22,6 +94,7 @@
 		</div>
 	</div>
 </ng-template>
+
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
 	 class="community-container container">
@@ -96,11 +169,14 @@
 			</div>
 		</div>
 	</div>
-	<div *ngSwitchCase="'complete'"
+	<div
+
+	*ngSwitchCase="'complete'"
 	 [@fadeIn]=true
 	 class="community-container container"
 	 fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
+		<div
+			fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px"
 		 fxLayout="column">
 			<div class="mat-display-1 no-margin">
@@ -220,14 +296,28 @@
 		</div>
 	</div>
 
+	<ng-template #customContent>	
+		<div style="width: 200px">
+			<p class="mat-subheading-2">{{stepsArray[2].description}}</p>
+		</div>
+	</ng-template>
+
 	<div *ngSwitchCase="'complete'"
-	 [@fadeIn]=true
-	 class="hot-issues-container container text-center"
-	 fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px">
+		joyrideStep="step3"
+		[title]="stepsArray[2].title"
+		[stepContent]="customContent"
+		stepPosition="center"
+		(done)="onDone()"
+		[@fadeIn]=true
+		class="hot-issues-container container text-center"
+		fxLayoutAlign="center center">
+		<div
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px"
+		 	>
 			<h2 class="mat-h2">What's Hot?</h2>
-			<ng-container *ngIf="issues.length < 1; then noIssues; else issuesExist">
+			<ng-container 
+			*ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>
 		</div>
 	</div>
@@ -244,7 +334,8 @@
 		</div>
 	</ng-template>
 	<ng-template #issuesExist>
-		<app-grid-list *ngIf="issues"
+		<app-grid-list 
+		*ngIf="issues"
 		 path="/issues"
 		 model="Issue"
 		 [itemLimit]="ISSUE_LIMIT"
@@ -305,6 +396,7 @@
 			<span class="mat-body-2">&nbsp; to begin!</span>
 			<br/>
 			<span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
+			<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
 		</div>
 	</div>
 </ng-template>

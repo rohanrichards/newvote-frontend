@@ -1,4 +1,4 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+seedDataimport { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -23,13 +23,16 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 
 import { AppState } from '@app/core/models/state.model';
 import { StateService } from '@app/core/http/state/state.service';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { Suggestion } from '@app/core/models/suggestion.model';
 
 @Component({
 	selector: 'app-issue',
 	templateUrl: './issue-list.component.html',
 	styleUrls: ['./issue-list.component.scss'],
 	animations: [
-		trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class IssueListComponent implements OnInit {
@@ -62,15 +65,26 @@ export class IssueListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/topics',
 		role: 'admin'
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'issue' }
 	}];
 
+	stepsArray = [...JoyRideSteps];
 
 	topicFilter = new FormControl('');
 	topicParam: string; // filtered topics can be preselected via url param
 
 	loadingState: string;
+	suggestions: any[];
 
 	constructor(
+		public snackBar: MatSnackBar,
+		private suggestionService: SuggestionService,
 		public stateService: StateService,
 		private issueService: IssueService,
 		private topicService: TopicService,
@@ -86,6 +100,11 @@ export class IssueListComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => {
+				this.organization = org;
+			});
+
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -119,17 +138,26 @@ export class IssueListComponent implements OnInit {
 
 		const issueObs: Observable<any[]> = this.issueService.list(options);
 		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
+		const suggestionObs: Observable<any[]> = this.suggestionService.list({
+			forceUpdate: true,
+			params: {
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			}
+		})
 
 		forkJoin({
 			issues: issueObs,
-			topics: topicObs
+			topics: topicObs,
+			suggestions: suggestionObs
 		})
 		.subscribe(
 			results => {
-				const { issues, topics } = results;
+				const { issues, topics, suggestions } = results;
 
 				this.issues = issues;
 				this.allTopics = topics;
+				this.suggestions = suggestions;
 
 				if (this.topicParam) {
 					const topic = this._filter(this.topicParam);
@@ -216,6 +244,26 @@ export class IssueListComponent implements OnInit {
 
 	setAppState(state: AppState) {
 		return this.loadingState = state;
+	}
+
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
+
+	openSnackBar(message: string, action: string) {
+		this.snackBar.open(message, action, {
+			duration: 4000,
+			horizontalPosition: 'right'
+		});
 	}
 
 	private _filter(value: any): Topic[] {

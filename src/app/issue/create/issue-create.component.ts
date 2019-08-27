@@ -1,11 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { IIssue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
@@ -14,6 +14,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-issue',
@@ -39,15 +40,19 @@ export class IssueCreateComponent implements OnInit {
 		imageUrl: new FormControl('', [])
 	});
 
+	suggestion: any;
+
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private issueService: IssueService,
 		private topicService: TopicService,
 		private organizationService: OrganizationService,
 		public snackBar: MatSnackBar,
 		private router: Router,
+		private route: ActivatedRoute,
 		private meta: MetaService
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
@@ -96,6 +101,21 @@ export class IssueCreateComponent implements OnInit {
 				title: 'Create Issue',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
+
+		this.route.paramMap
+			.pipe(
+				map(() => window.history.state),
+				delay(0)
+			)
+			.subscribe((suggestion) => {
+				if (suggestion._id) {
+					this.suggestion = suggestion
+					this.issueForm.patchValue({
+						name: suggestion.title,
+						description: suggestion.description
+					})
+				} 
+			});
 	}
 
 	onFileChange(event: any) {
@@ -119,6 +139,10 @@ export class IssueCreateComponent implements OnInit {
 		this.issue.topics = this.topics;
 		this.issue.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.issue.suggestion = this.suggestion;
+		}
+
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
 		};
@@ -127,14 +151,19 @@ export class IssueCreateComponent implements OnInit {
 			// this.imageUrl = 'assets/issue-default.png';
 			return this.issueService.create({ entity: this.issue })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(t => {
-					if (t.error) {
-						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-					} else {
+				.subscribe(
+					(t) => {
+						if (this.suggestion) {
+							this.hideSuggestion();
+						}
+
 						this.openSnackBar('Succesfully created', 'OK');
 						this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+					},
+					(err) => {
+						this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK');
 					}
-				});
+				);
 		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
@@ -189,6 +218,24 @@ export class IssueCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
+	}
+
+	hideSuggestion() {
+		const updatedSuggestion = {
+			...this.suggestion,
+			softDeleted: true
+		};
+
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				(res) => {
+					return res;
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): ITopic[] {

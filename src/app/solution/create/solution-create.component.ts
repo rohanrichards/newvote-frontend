@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';
@@ -14,6 +14,7 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-solution',
@@ -41,8 +42,10 @@ export class SolutionCreateComponent implements OnInit {
 
 	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	suggestion: any;
 
 	constructor(
+		private suggestionService: SuggestionService,
 		private solutionService: SolutionService,
 		private issueService: IssueService,
 		private organizationService: OrganizationService,
@@ -63,20 +66,35 @@ export class SolutionCreateComponent implements OnInit {
 				title: 'Create Solution',
 				description: 'Solutions are the decisions that you think your community should make.'
 			});
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			if (ID) {
-				this.issueService.view({ id: ID, orgs: [] })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(issue => {
-						if (issue) {
-							this.issues.push(issue);
-						}
-					});
-			} else {
-				this.isLoading = false;
-			}
-		});
+		this.route.paramMap
+			.pipe(
+				map((data) => {
+					return {
+						params: { _id: data.get('id') },
+						state: window.history.state
+					}
+				})
+			)
+			.subscribe(routeData => {
+				const { params, state: suggestion } = routeData;
+				if (suggestion._id) {
+					this.suggestion = suggestion
+					return this.solutionForm.patchValue(suggestion);
+				}
+
+				const ID = params._id;
+				if (ID) {
+					this.issueService.view({ id: ID, orgs: [] })
+						.pipe(finalize(() => { this.isLoading = false; }))
+						.subscribe(issue => {
+							if (issue) {
+								this.issues.push(issue);
+							}
+						});
+				} else {
+					this.isLoading = false;
+				}
+			});
 
 		const uploaderOptions: FileUploaderOptions = {
 			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -112,6 +130,7 @@ export class SolutionCreateComponent implements OnInit {
 			.subscribe(issues => this.allIssues = issues);
 
 		this.organizationService.get().subscribe(org => this.organization = org);
+
 	}
 
 	onFileChange(event: any) {
@@ -136,6 +155,11 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
 
+		if (this.suggestion) {
+			this.solution.suggestion = this.suggestion;
+		}
+
+		console.log(this.solution, 'this is solution on save');
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
 		};
@@ -145,6 +169,11 @@ export class SolutionCreateComponent implements OnInit {
 			return this.solutionService.create({ entity: this.solution })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(t => {
+
+					if (this.suggestion) {
+						this.hideSuggestion();
+					}
+					
 					if (t.error) {
 						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 					} else {
@@ -204,6 +233,24 @@ export class SolutionCreateComponent implements OnInit {
 	}
 
 	add(event: any) {
+	}
+
+	hideSuggestion() {
+		const updatedSuggestion = {
+			...this.suggestion,
+			softDeleted: true
+		};
+
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				(res) => {
+					return res;
+				},
+				(err) => {
+					console.log(err, 'this is err');
+				}
+			);
 	}
 
 	private _filter(value: any): IIssue[] {
