@@ -101,7 +101,7 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfUpVotes = (up / totalVotes) * 100;
-		return percentageOfUpVotes;
+		return Math.round(percentageOfUpVotes);
 	}
 
 	votesWidthAgainst() {
@@ -109,7 +109,7 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
-		return percentageOfDownVotes;
+		return Math.round(percentageOfDownVotes);
 	}
 
 	totalVotes() {
