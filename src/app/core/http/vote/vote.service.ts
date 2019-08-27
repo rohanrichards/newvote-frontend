@@ -5,6 +5,9 @@ import { map, catchError } from 'rxjs/operators';
 
 import { Vote } from '@app/core/models/vote.model';
 import { handleError } from '@app/core/http/errors';
+import { OrganizationListComponent } from '@app/organization/list/organization-list.component';
+import { Organization } from '@app/core/models/organization.model';
+import { OrganizationService } from '../organization/organization.service';
 
 const routes = {
 	list: (c: VoteContext) => `/votes`,
@@ -26,7 +29,14 @@ export interface VoteContext {
 @Injectable()
 export class VoteService {
 
-	constructor(private httpClient: HttpClient) { }
+	private _org: Organization;
+
+	constructor(
+		private httpClient: HttpClient,
+		private orgService: OrganizationService
+	) {
+		this.orgService.get().subscribe(org => this._org = org);
+	}
 
 	list(context: VoteContext): Observable<any[]> {
 		// create blank params object
@@ -59,6 +69,7 @@ export class VoteService {
 	}
 
 	create(context: VoteContext): Observable<any> {
+		context.entity.organizationId = this._org._id;
 		return this.httpClient
 			.post(routes.create(context), context.entity)
 			.pipe(
@@ -68,6 +79,7 @@ export class VoteService {
 	}
 
 	update(context: VoteContext): Observable<any> {
+		context.entity.organizationId = this._org._id;
 		return this.httpClient
 			.put(routes.update(context), context.entity)
 			.pipe(

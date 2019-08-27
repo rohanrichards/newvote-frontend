@@ -68,6 +68,10 @@ export class NavbarComponent implements OnInit {
 		}
 	}
 
+	get isCommunityVerified(): boolean {
+		return this.auth.isCommunityVerified();
+	}
+
 	get isMobile(): boolean {
 		return this.media.isActive('xs') || this.media.isActive('sm');
 	}

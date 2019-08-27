@@ -107,6 +107,10 @@
 						[item]="solution">
 					</app-vote-buttons>
 				</div>
+				<div *ngIf="auth.isVerified()">
+					<h4 class="mat-subheading-1">Do you have a suggestion that's now shown below? Click here to create one.</h4>
+					<button  mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
+				</div>
 			</div>
 		</div>
 	</mat-toolbar>
@@ -182,9 +186,19 @@
 				(restore)="onRestoreProposal($event)"
 				(softDelete)="onSoftDeleteProposal($event)"
 				(delete)="onDeleteProposal($event)"
-				(vote)="onVote($event, 'Proposal')"></app-card-list>
+				(vote)="onVote($event, 'Proposal')">
+			</app-card-list>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="solution"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</div>
 	</div>
+
 </ng-container>
 
 

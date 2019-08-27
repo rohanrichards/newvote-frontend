@@ -126,21 +126,21 @@
 						matTooltip="Restore this issue"
 						color="accent"
 						(click)="onRestore()">
-							<mat-icon aria-label="Remove this issue">restore</mat-icon>
-						</button>
+						<mat-icon aria-label="Remove this issue">restore</mat-icon>
+					</button>
 					<button mat-icon-button
 						*ngIf="!issue.softDeleted"
 						matTooltip="Remove this Issue"
 						color="accent"
 						(click)="onSoftDelete()">
-							<mat-icon aria-label="Remove this issue">delete</mat-icon>
-						</button>
+						<mat-icon aria-label="Remove this issue">delete</mat-icon>
+					</button>
 					<button mat-icon-button
 						matTooltip="Delete this Issue"
 						color="warn"
 						(click)="onDelete()">
-							<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
-						</button>
+						<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
+					</button>
 				</div>
 			</div>
 			<div fxLayout="row"
@@ -167,7 +167,13 @@
 				<app-more-less [displayText]="issue.description"
 					maxHeight="200">
 				</app-more-less>
+				<div *ngIf="auth.isVerified()">
+					<h4 class="mat-subheading-1">Do you have a suggestion that's now shown below? Click here to create one.</h4>
+					<button  mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
+				</div>
 			</div>
+			
+			
 		</div>
 	</mat-toolbar>
 </ng-template>
@@ -231,7 +237,17 @@
 				(delete)="onDeleteSolution($event)"
 				(softDelete)="onSoftDeleteSolution($event)"
 				(vote)="onVote($event, 'Solution')"
-				(childVote)="onVote($event, 'Proposal')"></app-card-list>
+				(childVote)="onVote($event, 'Proposal')">
+			</app-card-list>
+			<div *ngIf="auth.isVerified()">
+				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<app-make-suggestion
+					parent="issue"
+					(submitForm)="handleSuggestionSubmit($event)"
+					>
+				</app-make-suggestion>
+			</div>
 		</div>
 	</div>
+
 </ng-template>

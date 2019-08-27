@@ -27,6 +27,9 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { ShellComponent } from '@app/shell/shell.component';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { OrganizationService } from '@app/core';
 
 @Component({
 	selector: 'app-issue',
@@ -47,8 +50,11 @@ export class IssueViewComponent implements OnInit {
 	loadingState: string;
 	handleImageUrl = optimizeImage;
 	isOpen = false;
+	organization: any;
 
 	constructor(
+		private organizationService: OrganizationService,
+		private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private topicService: TopicService,
 		private issueService: IssueService,
@@ -65,6 +71,11 @@ export class IssueViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe(
+				(org) => this.organization = org,
+				(err) => err);
+
 		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
 
 		this.stateService.setLoadingState(AppState.loading);
@@ -301,6 +312,40 @@ export class IssueViewComponent implements OnInit {
 
 	toggleContent() {
 		this.isOpen = this.isOpen ? false : true;
+	}
+	
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+
+		delete suggestion.type;
+
+		suggestion.parent = this.issue._id;
+		suggestion.parentType = 'Issue';
+		suggestion.parentTitle = this.issue.name;
+
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
+
+	populateSuggestion() {
+		const {_id, name: title } = this.issue;
+		const suggestionParentInfo = {
+			_id,
+			parentTitle: title,
+			parentType: 'issue',
+		}
+
+		this.router.navigateByUrl('/suggestions/create', {
+			state: {
+				...suggestionParentInfo
+			}
+		})
 	}
 
 }

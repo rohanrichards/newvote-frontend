@@ -17,6 +17,10 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { FormGroup } from '@angular/forms';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { OrganizationService } from '@app/core';
 
 @Component({
 	selector: 'app-solution',
@@ -38,11 +42,22 @@ export class SolutionListComponent implements OnInit {
 		color: 'warn',
 		routerLink: '/solutions/create',
 		role: 'admin'
+	},
+	{
+		text: 'Make Suggestion',
+		color: 'warn',
+		routerLink: '/suggestions/create',
+		role: 'user',
+		params: { type: 'solution' }
 	}];
+	suggestions: Array<any>;
+	organization: any;
 
 	constructor(
+		private organizationService: OrganizationService,
 		private stateService: StateService,
 		private solutionService: SolutionService,
+		private suggestionService: SuggestionService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
@@ -52,6 +67,9 @@ export class SolutionListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => this.organization = org);
+
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -67,7 +85,7 @@ export class SolutionListComponent implements OnInit {
 				const force: boolean = !!params.get('forceUpdate');
 				this.fetchData(force);
 			});
-
+		
 	}
 
 	fetchData(force?: boolean) {
@@ -78,15 +96,26 @@ export class SolutionListComponent implements OnInit {
 			forceUpdate: force,
 			params: isOwner ? { 'showDeleted': true } :  {}
 		})
-			.subscribe(
-				solutions => {
-					this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-					return 	this.stateService.setLoadingState(AppState.complete);
-				},
-				err => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
-			);
+		.subscribe(
+			solutions => {
+				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
+				return 	this.stateService.setLoadingState(AppState.complete);
+			},
+			err => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
+		.subscribe((suggestions) => {
+			this.suggestions = suggestions;
+		});
 	}
 
 	// find the different solution and only update it, not entire list
@@ -111,6 +140,17 @@ export class SolutionListComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: { 
+				'showDeleted': isOwner ? true : false,
+				'type': 'solution',
+			} 
+		})
+		.subscribe((suggestions) => {
+			this.suggestions = suggestions;
+		});
 	}
 
 	onRestore(event: any) {
@@ -171,10 +211,26 @@ export class SolutionListComponent implements OnInit {
 			);
 	}
 
+	
+
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
 	}
+
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+		
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
+
 }

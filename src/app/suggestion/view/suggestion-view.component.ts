@@ -200,4 +200,18 @@ export class SuggestionViewComponent implements OnInit {
 		});
 	}
 
+	convertSuggestion() {
+		let suggestionType = this.suggestion.type || this.suggestion.parentType;
+		if (suggestionType === 'action') {
+			suggestionType = 'proposal';
+		}
+		const url = `/${suggestionType}s/create`;
+
+		this.router.navigateByUrl(url, { 
+			state: {
+				...this.suggestion
+			}
+		})
+	}
+
 }
