@@ -121,10 +121,16 @@ export class SuggestionCreateComponent implements OnInit {
 
 	onSave() {
 		this.isLoading = true;
+		
+
 		this.suggestion = <Suggestion>this.suggestionForm.value;
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
 		// this.suggestion.parent = this.selectedObject;
+
+		if (this.suggestionForm.value.parentType === 'Action') {
+			this.suggestion.parentType = 'Proposal';
+		}
 
 		this.suggestionService.create({ entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))

@@ -207,7 +207,7 @@ export class ProposalViewComponent implements OnInit {
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
-			parentType: 'proposal',
+			parentType: 'Action',
 		}
 
 		this.router.navigateByUrl('/suggestions/create', { 

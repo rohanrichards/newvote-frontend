@@ -62,6 +62,11 @@ export class SuggestionEditComponent implements OnInit {
 			this.suggestionService.view({ id: ID })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(suggestion => {
+
+					if (suggestion.parentType === 'Proposal') {
+						suggestion.parentType = 'Action'
+					}
+
 					this.suggestion = suggestion;
 					this.mediaList = suggestion.media;
 
@@ -91,6 +96,10 @@ export class SuggestionEditComponent implements OnInit {
 		merge(this.suggestion, <Suggestion>this.suggestionForm.value);
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
+
+		if (this.suggestion.parentType === 'Action') {
+			this.suggestion.parentType = 'Proposal';
+		}
 
 		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
