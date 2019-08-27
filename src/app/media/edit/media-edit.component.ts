@@ -64,9 +64,7 @@ export class MediaEditComponent implements OnInit {
 		this.mediaForm.get('url').valueChanges.pipe(debounceTime(500)).subscribe((url: string) => {
 			this.isLoading = true;
 			const uri = encodeURIComponent(url).replace(/'/g, '%27').replace(/"/g, '%22');
-			console.log('encoded url: ', uri);
 			this.mediaService.meta({ uri: uri }).subscribe((metadata: any) => {
-				console.log('got meta for url: ', metadata);
 				this.isLoading = false;
 				this.imageUrl = metadata.image;
 				this.usingMetaImage = true;
@@ -75,7 +73,6 @@ export class MediaEditComponent implements OnInit {
 					'description': metadata.description
 				});
 
-				console.log(this.mediaForm.value);
 			});
 		});
 	}
@@ -167,7 +164,6 @@ export class MediaEditComponent implements OnInit {
 		this.media.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
-			console.log('completed all');
 			this.isLoading = false;
 		};
 
@@ -190,7 +186,6 @@ export class MediaEditComponent implements OnInit {
 
 	updateWithApi() {
 		this.media.issues = this.issues;
-		console.log('would update with: ', this.media);
 		this.mediaService.update({ id: this.media._id, entity: this.media })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
@@ -232,7 +227,6 @@ export class MediaEditComponent implements OnInit {
 	}
 
 	add(event: any) {
-		// console.log(event);
 	}
 
 	private _filter(value: any): IIssue[] {

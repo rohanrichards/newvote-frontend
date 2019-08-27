@@ -280,7 +280,6 @@ export class OrganizationEditComponent implements OnInit {
 	}
 
 	moderatorSelected(event: any) {
-		console.log('moderator selected: ', event);
 		const selectedItem = event.value;
 		if (selectedItem && selectedItem != null) {
 			const moderators = this.organizationForm.value.moderators;

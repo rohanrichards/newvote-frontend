@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { differenceWith as _differenceWith } from 'lodash';
-import { isEqual as _isEqual } from 'lodash';
+import { differenceWith } from 'lodash';
+import { isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
@@ -132,7 +132,7 @@ export class SolutionListComponent implements OnInit {
 			params: isOwner ? { 'showDeleted': true } :  {} })
 			.subscribe(
 				solutions => {
-					const diff = _differenceWith(solutions, this.solutions, _isEqual);
+					const diff = differenceWith(solutions, this.solutions, isEqual);
 					if (diff.length > 0) {
 						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 						this.solutions[index] = diff[0];
@@ -180,7 +180,6 @@ export class SolutionListComponent implements OnInit {
 
 	onDelete(event: any) {
 		this.solutionService.delete({ id: event._id }).subscribe(() => {
-			console.log('done');
 			this.fetchData(true);
 		});
 	}

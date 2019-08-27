@@ -4,8 +4,8 @@ import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
-import { differenceWith as _differenceWith } from 'lodash';
-import { isEqual as _isEqual } from 'lodash';
+import { differenceWith } from 'lodash';
+import { isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
@@ -116,7 +116,6 @@ export class IssueViewComponent implements OnInit {
 		})
 			.subscribe((solutions: Array<Solution>) => {
 				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-				// console.log('got solutions: ', solutions);
 				this.getMedia(id);
 			});
 	}
@@ -133,7 +132,6 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((mediaList: Array<Media>) => {
 				this.media = mediaList;
-				// console.log('got media: ', mediaList);
 			});
 	}
 
@@ -142,7 +140,7 @@ export class IssueViewComponent implements OnInit {
 		this.solutionService.list({ params: { issueId }, forceUpdate: true })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(solutions => {
-				const diff = _differenceWith(solutions, this.solutions, _isEqual);
+				const diff = differenceWith(solutions, this.solutions, isEqual);
 				if (diff.length > 0) {
 					const index = this.solutions.findIndex(s => s._id === diff[0]._id);
 					this.solutions[index] = diff[0];
