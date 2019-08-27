@@ -6,9 +6,9 @@
 	padding-top: 2em;
 }
 
-.container:last-of-type {
-	padding-bottom: 2em;
-}
+// .container:last-of-type {
+// 	padding-bottom: 2em;
+// }
 
 .text-center {
 	text-align: center;
@@ -208,6 +208,15 @@
 	margin: 0;
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+.final-container {
+	padding-bottom: 0;
+}
+
+.powered-footer {
+	background-color: #FFFFFF;
+	padding-bottom: 2rem;
 }
 
 @media only screen and (max-width: 750px) {
