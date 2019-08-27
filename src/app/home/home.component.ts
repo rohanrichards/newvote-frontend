@@ -63,7 +63,6 @@ export class HomeComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		console.log(this.stepsArray, 'this is steps');
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -179,9 +178,7 @@ export class HomeComponent implements OnInit {
 					this.auth.saveTourToLocalStorage();
 					this.openSnackBar('Tour Complete', 'OK');
 				},
-				(err) => {
-					console.log(err, 'this is err');
-				}
+				(err) => err
 			)
 	}
 

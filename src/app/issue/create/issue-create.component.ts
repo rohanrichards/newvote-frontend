@@ -232,9 +232,7 @@ export class IssueCreateComponent implements OnInit {
 				(res) => {
 					return res;
 				},
-				(err) => {
-					console.log(err, 'this is err');
-				}
+				(err) => err
 			);
 	}
 
