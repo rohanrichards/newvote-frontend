@@ -108,7 +108,12 @@ export class SolutionListComponent implements OnInit {
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		);
+		
+		this.getSuggestions();
+	}
 
+	getSuggestions() {
+		const isOwner = this.auth.isOwner();
 		this.suggestionService.list({
 			forceUpdate: true,
 			params: {
@@ -239,4 +244,51 @@ export class SolutionListComponent implements OnInit {
 			})
 	}
 
+
+	onSuggestionDelete(event: any) {
+		this.suggestionService.delete({ id: event._id }).subscribe(() => {
+			this.getSuggestions();
+		});
+	}
+	
+	onSuggestionSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions();
+		});
+	}
+	
+	onSuggestionRestore(event: any) {
+		event.softDeleted = false;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions();
+		});
+	}
+	
+	
+	onSuggestionVote(voteData: any) {
+		this.isLoading = true;
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, 'Suggestion', voteValue);
+		const existingVote = item.votes.currentUser;
+
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe((res) => {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getSuggestions();
+			},
+			(error) => {
+				if (error.status === 401) {
+					this.openSnackBar('You must be logged in to vote', 'OK');
+				} else {
+					this.openSnackBar('There was an error recording your vote', 'OK');
+				}
+			}
+		);
+	}
 }

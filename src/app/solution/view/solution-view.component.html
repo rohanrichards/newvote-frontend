@@ -197,10 +197,10 @@
 					[@fadeIn]=true
 					[items]=suggestions
 					model="Suggestion"
-					(restore)="onRestoreSuggestion($event)"
-					(softDelete)="onSoftDeleteSuggestion($event)"
-					(delete)="onDeleteSuggestion($event)"
-					(vote)="onVoteSuggestion($event, 'Suggestion')"
+					(restore)="onSuggestionRestore($event)"
+					(softDelete)="onSuggestionSoftDelete($event)"
+					(delete)="onSuggestionDelete($event)"
+					(vote)="onSuggestionVote($event, 'Suggestion')"
 					>
 				</app-card-list>
 			</div>
