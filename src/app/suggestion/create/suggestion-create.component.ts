@@ -126,10 +126,26 @@ export class SuggestionCreateComponent implements OnInit {
 		this.suggestion = <Suggestion>this.suggestionForm.value;
 		this.suggestion.organizations = this.organization;
 		this.suggestion.media = this.mediaList;
-		// this.suggestion.parent = this.selectedObject;
+
+		// If there is a parentType, type needs to be assigned manually since it's removed from the dom
+		if (this.suggestion.parentType) {
+			const { parentType } = this.suggestion;
+
+			if (parentType === 'Issue') {
+				this.suggestion.type = 'solution';
+			}
+
+			if (parentType === 'Solution') {
+				this.suggestion.type = 'action';
+			}
+
+			if (parentType === 'Action') {
+				this.suggestion.type = 'action';
+			}
+		}
 
 		if (this.suggestionForm.value.parentType === 'Action') {
-			this.suggestion.parentType = 'Proposal';
+			this.suggestion.parentType = 'Action';
 		}
 
 		this.suggestionService.create({ entity: this.suggestion })
