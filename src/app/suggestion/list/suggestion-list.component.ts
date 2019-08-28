@@ -76,8 +76,12 @@ export class SuggestionListComponent implements OnInit {
 		const isOwner = this.auth.isOwner();
 		const isVerified = this.auth.isVerified();
 
-		const { _id: id } = this.auth.credentials.user;
+		let id;
 
+		if (this.auth.credentials && this.auth.credentials.user) {
+			id = this.auth.credentials.user;
+		}
+		
 		this.suggestionService.list({
 			forceUpdate: force,
 			params:{
