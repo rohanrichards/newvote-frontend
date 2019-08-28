@@ -79,20 +79,12 @@ export class SolutionCreateComponent implements OnInit {
 				const { params, state: suggestion } = routeData;
 				if (suggestion._id) {
 					this.suggestionTemplate = suggestion
+					this.populateIssue(suggestion.parent);
 					return this.solutionForm.patchValue(suggestion);
 				}
 
-				const ID = params._id;
-				if (ID) {
-					this.issueService.view({ id: ID, orgs: [] })
-						.pipe(finalize(() => { this.isLoading = false; }))
-						.subscribe(issue => {
-							if (issue) {
-								this.issues.push(issue);
-							}
-						});
-				} else {
-					this.isLoading = false;
+				if (params._id) {
+					this.populateIssue(params._id);
 				}
 			});
 
@@ -131,6 +123,19 @@ export class SolutionCreateComponent implements OnInit {
 
 		this.organizationService.get().subscribe(org => this.organization = org);
 
+	}
+
+	populateIssue(ID: string) {
+		this.issueService.view({ id: ID, orgs: [] })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				issue => {
+					if (issue) {
+						this.issues.push(issue);
+					}
+				},
+				(err) => err
+			);
 	}
 
 	onFileChange(event: any) {

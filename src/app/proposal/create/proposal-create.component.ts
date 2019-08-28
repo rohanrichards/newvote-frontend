@@ -82,20 +82,13 @@ export class ProposalCreateComponent implements OnInit {
 				
 				if (suggestion._id) {
 					this.suggestionTemplate = suggestion;
+					this.populateSolution(suggestion.parent);
 					return this.proposalForm.patchValue(suggestion);
 				}
 				
 				const ID = params._id;
-				if (ID) {
-					this.solutionService.view({ id: ID, orgs: [] })
-						.pipe(finalize(() => { this.isLoading = false; }))
-						.subscribe(solution => {
-							if (solution) {
-								this.solutions.push(solution);
-							}
-						});
-				} else {
-					this.isLoading = false;
+				if (params._id) {
+					this.populateSolution(params._id);
 				}
 			});
 
@@ -135,6 +128,18 @@ export class ProposalCreateComponent implements OnInit {
 		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
+	populateSolution (ID: string) {
+		this.solutionService.view({ id: ID, orgs: [] })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				solution => {
+					if (solution) {
+						this.solutions.push(solution);
+					}
+				},
+				(err) => err
+			);
+	}
 	onFileChange(event: any) {
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
