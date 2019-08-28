@@ -43,7 +43,7 @@ export class ProposalCreateComponent implements OnInit {
 
 	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
-	suggestion: any;
+	suggestionTemplate: any;
 
 	constructor(
 		private suggestionService: SuggestionService,
@@ -81,7 +81,7 @@ export class ProposalCreateComponent implements OnInit {
 				const { params, state: suggestion } = routeData;
 				
 				if (suggestion._id) {
-					this.suggestion = suggestion;
+					this.suggestionTemplate = suggestion;
 					return this.proposalForm.patchValue(suggestion);
 				}
 				
@@ -156,8 +156,8 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal.solutions = this.solutions;
 		this.proposal.organizations = this.organization;
 
-		if (this.suggestion) {
-			this.proposal.suggestion = this.suggestion;
+		if (this.suggestionTemplate) {
+			this.proposal.suggestionTemplate = this.suggestionTemplate;
 		}
 
 		this.uploader.onCompleteAll = () => {
@@ -170,7 +170,7 @@ export class ProposalCreateComponent implements OnInit {
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(
 					t => {
-						if (this.suggestion) {
+						if (this.suggestionTemplate) {
 							this.hideSuggestion();
 						}
 
@@ -191,7 +191,7 @@ export class ProposalCreateComponent implements OnInit {
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
 
-						if (this.suggestion) {
+						if (this.suggestionTemplate) {
 							this.hideSuggestion();
 						}
 
@@ -238,7 +238,7 @@ export class ProposalCreateComponent implements OnInit {
 
 	private hideSuggestion() {
 		const updatedSuggestion = {
-			...this.suggestion,
+			...this.suggestionTemplate,
 			softDeleted: true
 		};
 

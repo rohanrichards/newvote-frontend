@@ -42,7 +42,7 @@ export class SolutionCreateComponent implements OnInit {
 
 	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
-	suggestion: any;
+	suggestionTemplate: any;
 
 	constructor(
 		private suggestionService: SuggestionService,
@@ -78,7 +78,7 @@ export class SolutionCreateComponent implements OnInit {
 			.subscribe(routeData => {
 				const { params, state: suggestion } = routeData;
 				if (suggestion._id) {
-					this.suggestion = suggestion
+					this.suggestionTemplate = suggestion
 					return this.solutionForm.patchValue(suggestion);
 				}
 
@@ -155,8 +155,8 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
 
-		if (this.suggestion) {
-			this.solution.suggestion = this.suggestion;
+		if (this.suggestionTemplate) {
+			this.solution.suggestionTemplate = this.suggestionTemplate;
 		}
 
 		this.uploader.onCompleteAll = () => {
@@ -169,7 +169,7 @@ export class SolutionCreateComponent implements OnInit {
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(t => {
 
-					if (this.suggestion) {
+					if (this.suggestionTemplate) {
 						this.hideSuggestion();
 					}
 					
@@ -233,7 +233,7 @@ export class SolutionCreateComponent implements OnInit {
 
 	private hideSuggestion() {
 		const updatedSuggestion = {
-			...this.suggestion,
+			...this.suggestionTemplate,
 			softDeleted: true
 		};
 

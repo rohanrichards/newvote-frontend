@@ -40,7 +40,7 @@ export class IssueCreateComponent implements OnInit {
 		imageUrl: new FormControl('', [])
 	});
 
-	suggestion: any;
+	suggestionTemplate: any;
 
 	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -109,7 +109,7 @@ export class IssueCreateComponent implements OnInit {
 			)
 			.subscribe((suggestion) => {
 				if (suggestion._id) {
-					this.suggestion = suggestion
+					this.suggestionTemplate = suggestion
 					this.issueForm.patchValue({
 						name: suggestion.title,
 						description: suggestion.description
@@ -139,8 +139,8 @@ export class IssueCreateComponent implements OnInit {
 		this.issue.topics = this.topics;
 		this.issue.organizations = this.organization;
 
-		if (this.suggestion) {
-			this.issue.suggestion = this.suggestion;
+		if (this.suggestionTemplate) {
+			this.issue.suggestionTemplate = this.suggestionTemplate;
 		}
 
 		this.uploader.onCompleteAll = () => {
@@ -153,7 +153,7 @@ export class IssueCreateComponent implements OnInit {
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(
 					(t) => {
-						if (this.suggestion) {
+						if (this.suggestionTemplate) {
 							this.hideSuggestion();
 						}
 
@@ -219,7 +219,7 @@ export class IssueCreateComponent implements OnInit {
 
 	private hideSuggestion() {
 		const updatedSuggestion = {
-			...this.suggestion,
+			...this.suggestionTemplate,
 			softDeleted: true
 		};
 
