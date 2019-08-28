@@ -245,7 +245,8 @@ export class SolutionViewComponent implements OnInit {
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
-			parentType: 'solution',
+			parentType: 'Solution',
+			type: 'action'
 		}
 
 		this.router.navigateByUrl('/suggestions/create', { 
