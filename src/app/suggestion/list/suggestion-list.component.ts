@@ -79,9 +79,9 @@ export class SuggestionListComponent implements OnInit {
 		let id;
 
 		if (this.auth.credentials && this.auth.credentials.user) {
-			id = this.auth.credentials.user;
+			id = this.auth.credentials.user._id;
 		}
-		
+
 		this.suggestionService.list({
 			forceUpdate: force,
 			params:{
