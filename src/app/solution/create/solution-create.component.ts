@@ -231,21 +231,16 @@ export class SolutionCreateComponent implements OnInit {
 		}
 	}
 
-	add(event: any) {
-	}
-
-	hideSuggestion() {
+	private hideSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				(res) => {
-					return res;
-				},
+				(res) => res,
 				(err) => err
 			);
 	}

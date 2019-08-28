@@ -168,14 +168,17 @@ export class ProposalCreateComponent implements OnInit {
 			// this.imageUrl = 'assets/action-default.png';
 			return this.proposalService.create({ entity: this.proposal })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(t => {
-					if (t.error) {
-						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-					} else {
+				.subscribe(
+					t => {
+						if (this.suggestion) {
+							this.hideSuggestion();
+						}
+
 						this.openSnackBar('Succesfully created', 'OK');
 						this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
-					}
-				}
+					},
+					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+
 			);
 		}
 
@@ -233,21 +236,16 @@ export class ProposalCreateComponent implements OnInit {
 		}
 	}
 
-	add(event: any) {
-	}
-
-	hideSuggestion() {
+	private hideSuggestion() {
 		const updatedSuggestion = {
 			...this.suggestion,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				(res) => {
-					return res;
-				},
+				(res) => res,
 				(err) => err
 			);
 	}
