@@ -97,9 +97,31 @@ export class VoteService {
 			);
 	}
 
-	populateStore(serverData: any) {
-		let votes = [];
+	populateStore(serverData: any, parent: string) {
+		let items;
 
+		// Reduce starts with an empty array [], and iterates through each
+		// item in serverData array and returning an array of voteMetaData objects
+
+		// If there are proposal object as children, we concat those objects to the main array
+		// creating an array of voteMetaData Objects from all different entity types
+
+		// reduce serverData to transform array of Soltion objects to an array of
+		// solution voteMetaData Objects + solution proposal voteMetaData Objects
+		items = serverData.reduce((prev: any, curr:any) => {
+			// either start with or reuse accumulated data
+			let items = prev || [];
+		  
+			if (curr.proposals) {
+				const proposals = curr.proposals.reduce((prev:any, curr:any) => {
+					let pItems = prev || [];
+					curr.votes._id = curr._id;
+					return pItems.concat(curr.votes);
+				}, []);
+			}
+			
+		  	curr.votes._id = curr._id;
+			return items.concat(curr.votes);
+		}, [])
 	}
-
 }

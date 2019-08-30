@@ -43,7 +43,6 @@ export class SolutionService {
 		}
 
 		return this.httpClient
-			
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
@@ -101,7 +100,7 @@ export class SolutionService {
 	}
 
 	passDataToVoteService(serverData: any) {
-		this.voteService.populateStore(serverData);
+		this.voteService.populateStore(serverData, 'Solution');
 	} 
 
 }
