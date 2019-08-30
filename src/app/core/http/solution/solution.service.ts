@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { ISolution } from '@app/core/models/solution.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
 
 const routes = {
 	list: (c: SolutionContext) => `/solutions`,
@@ -26,7 +27,9 @@ export interface SolutionContext {
 @Injectable()
 export class SolutionService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(private httpClient: HttpClient,
+				private voteService: VoteService
+		) { }
 
 	list(context: SolutionContext): Observable<any[]> {
 		// create blank params object
@@ -40,9 +43,11 @@ export class SolutionService {
 		}
 
 		return this.httpClient
+			
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((res) => console.log(res)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -94,5 +99,9 @@ export class SolutionService {
 				catchError(handleError)
 			);
 	}
+
+	passDataToVoteService(serverData: any) {
+		this.voteService.populateStore(serverData);
+	} 
 
 }

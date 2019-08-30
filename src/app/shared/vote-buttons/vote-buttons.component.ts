@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MatSnackBar } from '@angular/material';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-vote-buttons',
@@ -9,6 +10,8 @@ import { MatSnackBar } from '@angular/material';
 	styleUrls: ['./vote-buttons.component.scss']
 })
 export class VoteButtonsComponent implements OnInit {
+
+	voteMetaData$: any;
 
 	@Input() item: any;
 	@Output() vote = new EventEmitter();
@@ -36,6 +39,7 @@ export class VoteButtonsComponent implements OnInit {
 	constructor(
 		private auth: AuthenticationService,
 		public snackBar: MatSnackBar,
+		private votesQuery: VotesQuery
 		) { }
 
 	ngOnInit() {
@@ -51,6 +55,13 @@ export class VoteButtonsComponent implements OnInit {
 				data: [this.downVotesAsPercent()]
 			}
 		];
+
+		// Get the total votes from the akita store
+		this.getVoteMetaData();
+	}
+
+	getVoteMetaData() {
+		this.voteMetaData$ = this.votesQuery.selectEntity((entity: any) => entity._id === this.item._id);
 	}
 
 	upVotesAsPercent() {

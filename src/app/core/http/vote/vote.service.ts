@@ -97,4 +97,9 @@ export class VoteService {
 			);
 	}
 
+	populateStore(serverData: any) {
+		let votes = [];
+
+	}
+
 }
