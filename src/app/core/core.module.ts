@@ -23,6 +23,9 @@ import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { OganizationHeaderInterceptor } from './http/organization-header.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
+import { VoteStore } from './http/vote/vote.store';
+import { VotesQuery } from './http/vote/vote.query';
+import { VoteService } from './http/vote/vote.service';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -65,6 +68,9 @@ export function tokenGetter() {
 		ErrorHandlerInterceptor,
 		CacheInterceptor,
 		OganizationHeaderInterceptor,
+		VoteStore,
+		VotesQuery,
+		VoteService,
 		{
 			provide: HttpClient,
 			useClass: HttpService
