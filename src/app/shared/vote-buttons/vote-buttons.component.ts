@@ -69,9 +69,7 @@ export class VoteButtonsComponent implements OnInit {
 			filterBy: (entity) => {
 				return entity._id === this.item._id;
 			}
-		}).pipe(
-			flatMap(res => res)
-		)
+		})
 	}
 
 	upVotesAsPercent() {

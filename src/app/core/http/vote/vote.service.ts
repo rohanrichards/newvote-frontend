@@ -144,7 +144,8 @@ export class VoteService {
 	}
 
 	updateStoreVote(voteMetaData: any) {
-		this.voteStore.update((vote: any) => vote._id === voteMetaData._id, {
+		this.voteStore.update((vote: any) => vote._id === voteMetaData._id,
+		{
 			total: voteMetaData.total,
 			up: voteMetaData.up,
 			down: voteMetaData.down
