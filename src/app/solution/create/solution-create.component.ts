@@ -42,7 +42,7 @@ export class SolutionCreateComponent implements OnInit {
 
 	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
-	suggestion: any;
+	suggestionTemplate: any;
 
 	constructor(
 		private suggestionService: SuggestionService,
@@ -78,21 +78,13 @@ export class SolutionCreateComponent implements OnInit {
 			.subscribe(routeData => {
 				const { params, state: suggestion } = routeData;
 				if (suggestion._id) {
-					this.suggestion = suggestion
+					this.suggestionTemplate = suggestion
+					this.populateIssue(suggestion.parent);
 					return this.solutionForm.patchValue(suggestion);
 				}
 
-				const ID = params._id;
-				if (ID) {
-					this.issueService.view({ id: ID, orgs: [] })
-						.pipe(finalize(() => { this.isLoading = false; }))
-						.subscribe(issue => {
-							if (issue) {
-								this.issues.push(issue);
-							}
-						});
-				} else {
-					this.isLoading = false;
+				if (params._id) {
+					this.populateIssue(params._id);
 				}
 			});
 
@@ -133,6 +125,19 @@ export class SolutionCreateComponent implements OnInit {
 
 	}
 
+	populateIssue(ID: string) {
+		this.issueService.view({ id: ID, orgs: [] })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				issue => {
+					if (issue) {
+						this.issues.push(issue);
+					}
+				},
+				(err) => err
+			);
+	}
+
 	onFileChange(event: any) {
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
@@ -155,11 +160,10 @@ export class SolutionCreateComponent implements OnInit {
 		this.solution.issues = this.issues;
 		this.solution.organizations = this.organization;
 
-		if (this.suggestion) {
-			this.solution.suggestion = this.suggestion;
+		if (this.suggestionTemplate) {
+			this.solution.suggestionTemplate = this.suggestionTemplate;
 		}
 
-		console.log(this.solution, 'this is solution on save');
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
 		};
@@ -170,7 +174,7 @@ export class SolutionCreateComponent implements OnInit {
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(t => {
 
-					if (this.suggestion) {
+					if (this.suggestionTemplate) {
 						this.hideSuggestion();
 					}
 					
@@ -232,24 +236,17 @@ export class SolutionCreateComponent implements OnInit {
 		}
 	}
 
-	add(event: any) {
-	}
-
-	hideSuggestion() {
+	private hideSuggestion() {
 		const updatedSuggestion = {
-			...this.suggestion,
+			...this.suggestionTemplate,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				(res) => {
-					return res;
-				},
-				(err) => {
-					console.log(err, 'this is err');
-				}
+				(res) => res,
+				(err) => err
 			);
 	}
 

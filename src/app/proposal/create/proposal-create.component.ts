@@ -43,7 +43,7 @@ export class ProposalCreateComponent implements OnInit {
 
 	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
-	suggestion: any;
+	suggestionTemplate: any;
 
 	constructor(
 		private suggestionService: SuggestionService,
@@ -81,21 +81,14 @@ export class ProposalCreateComponent implements OnInit {
 				const { params, state: suggestion } = routeData;
 				
 				if (suggestion._id) {
-					this.suggestion = suggestion;
+					this.suggestionTemplate = suggestion;
+					this.populateSolution(suggestion.parent);
 					return this.proposalForm.patchValue(suggestion);
 				}
 				
 				const ID = params._id;
-				if (ID) {
-					this.solutionService.view({ id: ID, orgs: [] })
-						.pipe(finalize(() => { this.isLoading = false; }))
-						.subscribe(solution => {
-							if (solution) {
-								this.solutions.push(solution);
-							}
-						});
-				} else {
-					this.isLoading = false;
+				if (params._id) {
+					this.populateSolution(params._id);
 				}
 			});
 
@@ -135,6 +128,18 @@ export class ProposalCreateComponent implements OnInit {
 		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
+	populateSolution (ID: string) {
+		this.solutionService.view({ id: ID, orgs: [] })
+			.pipe(finalize(() => { this.isLoading = false; }))
+			.subscribe(
+				solution => {
+					if (solution) {
+						this.solutions.push(solution);
+					}
+				},
+				(err) => err
+			);
+	}
 	onFileChange(event: any) {
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
@@ -156,8 +161,8 @@ export class ProposalCreateComponent implements OnInit {
 		this.proposal.solutions = this.solutions;
 		this.proposal.organizations = this.organization;
 
-		if (this.suggestion) {
-			this.proposal.suggestion = this.suggestion;
+		if (this.suggestionTemplate) {
+			this.proposal.suggestionTemplate = this.suggestionTemplate;
 		}
 
 		this.uploader.onCompleteAll = () => {
@@ -168,14 +173,17 @@ export class ProposalCreateComponent implements OnInit {
 			// this.imageUrl = 'assets/action-default.png';
 			return this.proposalService.create({ entity: this.proposal })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(t => {
-					if (t.error) {
-						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-					} else {
+				.subscribe(
+					t => {
+						if (this.suggestionTemplate) {
+							this.hideSuggestion();
+						}
+
 						this.openSnackBar('Succesfully created', 'OK');
 						this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
-					}
-				}
+					},
+					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+
 			);
 		}
 
@@ -188,7 +196,7 @@ export class ProposalCreateComponent implements OnInit {
 					.pipe(finalize(() => { this.isLoading = false; }))
 					.subscribe(t => {
 
-						if (this.suggestion) {
+						if (this.suggestionTemplate) {
 							this.hideSuggestion();
 						}
 
@@ -233,24 +241,17 @@ export class ProposalCreateComponent implements OnInit {
 		}
 	}
 
-	add(event: any) {
-	}
-
-	hideSuggestion() {
+	private hideSuggestion() {
 		const updatedSuggestion = {
-			...this.suggestion,
+			...this.suggestionTemplate,
 			softDeleted: true
 		};
 
-		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				(res) => {
-					return res;
-				},
-				(err) => {
-					console.log(err, 'this is err');
-				}
+				(res) => res,
+				(err) => err
 			);
 	}
 

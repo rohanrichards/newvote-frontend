@@ -72,11 +72,10 @@
         align-items:center;
 
         .organization-icon {
-            width: auto;
-            height: 150px;
-            max-height: 200px;
+            min-width: 100px;
+            height: auto;
             max-width: 200px;
-            object-position: cover;
+            object-fit: contain;
         }
 
         .circle-icon {
