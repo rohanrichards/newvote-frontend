@@ -44,8 +44,8 @@ export class VoteService {
 		this.orgService.get().subscribe(org => this._org = org);
 		
 		this.socket.fromEvent('vote')
-			.subscribe((res) => {
-				// Handle vote events here
+			.subscribe((vote) => {
+				this.updateStoreVote(vote)
 			})
 	}
 
@@ -141,5 +141,13 @@ export class VoteService {
 		// Populate redux store
 		this.voteStore.set(votes);
 		return data;
+	}
+
+	updateStoreVote(voteMetaData: any) {
+		this.voteStore.update((vote: any) => vote._id === voteMetaData._id, {
+			total: voteMetaData.total,
+			up: voteMetaData.up,
+			down: voteMetaData.down
+		})
 	}
 }
