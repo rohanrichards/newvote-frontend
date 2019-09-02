@@ -235,7 +235,7 @@
 					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
 				</div>
 				<div>
-					<button routerLink="/issues" mat-raised-button color="primary">Your Issues</button>
+					<button routerLink="/issues" mat-raised-button color="primary"><span class="mat-subheading-2 issues-button">Your Issues</span></button>
 				</div>
 			</div>
 		</div>
@@ -373,10 +373,10 @@
 
 <ng-template #mainFooter>
 	<div [@fadeIn]="isLoading"
-	 *ngIf="!auth.isAuthenticated()"
-	 class="final-container container text-center"
-	 fxLayoutAlign="center center"
-	 routerLink="/auth/signup">
+		*ngIf="!auth.isAuthenticated()"
+		class="final-container container text-center"
+		fxLayoutAlign="center center"
+		routerLink="/auth/signup">
 		<div fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px">
 			<button *ngIf="!org.authType || org.authType===0"
@@ -396,7 +396,10 @@
 			<span class="mat-body-2">&nbsp; to begin!</span>
 			<br/>
 			<span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
-			<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
 		</div>
 	</div>
 </ng-template>
+
+<div *ngIf="loadingState === 'complete'" class="powered-footer" fxLayoutAlign="center center">
+	<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
+</div>

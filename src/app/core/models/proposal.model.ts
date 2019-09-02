@@ -10,7 +10,7 @@ export interface IProposal {
 	created?: Date;
 	organizations: any;
 	softDeleted: boolean;
-	suggestion?: string;
+	suggestionTemplate?: string;
 }
 
 export class Proposal implements IProposal {

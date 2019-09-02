@@ -216,13 +216,13 @@
 
 <ng-template #mainCards>
 	<div class="container"
-		[@fadeIn]="!isLoading"
+		[@fadeIn]=true
 		fxLayout="row wrap"
 		fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
 			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-				<span class="mat-headline center-span" [style.margin-bottom]="'0'" *ngIf="solutions && solutions.length > 0">Vote on Solutions</span>
+				<span class="mat-headline center-span" [style.margin-bottom]="'0'">Vote on Solutions</span>
 			</mat-toolbar>
 			<app-card-list path="/solutions"
 				[items]=solutions
@@ -239,10 +239,28 @@
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
+			<div>
+				<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+					<h2 class="mat-headline center-text">Community Suggestions</h2>
+				</mat-toolbar>
+				<app-card-list 
+					path="/suggestions"
+					[@fadeIn]=true
+					[items]=suggestions
+					model="Suggestion"
+					(restore)="onSuggestionRestore($event)"
+					(softDelete)="onSuggestionSoftDelete($event)"
+					(delete)="onSuggestionDelete($event)"
+					(vote)="onSuggestionVote($event, 'Suggestion')"
+					>
+				</app-card-list>
+			</div>
 			<div *ngIf="auth.isVerified()">
-				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
+					<h2 class="mat-headline center-text">Create your own Suggestion</h2>
+				</mat-toolbar>
 				<app-make-suggestion
-					parent="issue"
+					parent="solution"
 					(submitForm)="handleSuggestionSubmit($event)"
 					>
 				</app-make-suggestion>

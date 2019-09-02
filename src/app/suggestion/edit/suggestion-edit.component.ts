@@ -62,6 +62,7 @@ export class SuggestionEditComponent implements OnInit {
 			this.suggestionService.view({ id: ID })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(suggestion => {
+
 					this.suggestion = suggestion;
 					this.mediaList = suggestion.media;
 

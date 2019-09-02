@@ -30,13 +30,13 @@
 						<mat-icon matChipRemove>cancel</mat-icon>
 					</mat-chip>
 					<input placeholder="Select a topic..."
-					 #topicInput
-					 formControlName="topics"
-					 [matAutocomplete]="auto"
-					 [matChipInputFor]="chipList"
-					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					 [matChipInputAddOnBlur]="true"
-					 (matChipInputTokenEnd)="add($event)">
+						#topicInput
+						formControlName="topics"
+						[matAutocomplete]="auto"
+						[matChipInputFor]="chipList"
+						[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+						[matChipInputAddOnBlur]="true"
+					 	>
 				</mat-chip-list>
 				<mat-autocomplete #auto="matAutocomplete"
 				 (optionSelected)="topicSelected($event)">

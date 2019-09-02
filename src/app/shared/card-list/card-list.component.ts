@@ -31,9 +31,6 @@ export class CardListComponent implements OnInit {
 	handleImageUrl = optimizeImage;
 	organizationName: string;
 
-	suggestionIcons = ['assets/solution-icon.png', 'assets/issue-icon.png', 'assets/action-icon.png'];
-	iconType = ['solution', 'issue', 'action'];
-
 	constructor(
 		public dialog: MatDialog,
 		private auth: AuthenticationService,
@@ -107,9 +104,17 @@ export class CardListComponent implements OnInit {
 		});
 	}
 
-	getSuggestionIcon(suggestionType: string) {
-		const iconIndex = this.iconType.findIndex((item) => item === suggestionType);
-		return this.suggestionIcons[iconIndex];
+	getSuggestionIcon(suggestionType: string, min?: boolean) {
+		const suggestionIcons = ['assets/solution-icon', 'assets/issue-icon', 'assets/action-icon'];
+		const iconType = ['solution', 'issue', 'action'];
+
+		if (min) {
+			const iconIndex = iconType.findIndex((item) => item === suggestionType);
+			return `${suggestionIcons[iconIndex]}-min.png`;
+		}
+
+		const iconIndex = iconType.findIndex((item) => item === suggestionType);
+		return `${suggestionIcons[iconIndex]}.png`;
 	}
 
 }

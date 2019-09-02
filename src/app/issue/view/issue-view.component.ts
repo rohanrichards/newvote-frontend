@@ -51,6 +51,7 @@ export class IssueViewComponent implements OnInit {
 	handleImageUrl = optimizeImage;
 	isOpen = false;
 	organization: any;
+	suggestions: any;
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -83,7 +84,26 @@ export class IssueViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getIssue(ID);
+			this.getSuggestions(ID);
 		});
+	}
+	
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: {
+				'showDeleted': isOwner ? true : '',
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	getIssue(id: string) {
@@ -316,8 +336,6 @@ export class IssueViewComponent implements OnInit {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
 
-		delete suggestion.type;
-
 		suggestion.parent = this.issue._id;
 		suggestion.parentType = 'Issue';
 		suggestion.parentTitle = this.issue.name;
@@ -336,7 +354,8 @@ export class IssueViewComponent implements OnInit {
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
-			parentType: 'issue',
+			parentType: 'Issue',
+			type: 'solution'
 		}
 
 		this.router.navigateByUrl('/suggestions/create', {
@@ -344,6 +363,53 @@ export class IssueViewComponent implements OnInit {
 				...suggestionParentInfo
 			}
 		})
+	}
+
+	onSuggestionDelete(event: any) {
+		this.suggestionService.delete({ id: event._id }).subscribe(() => {
+			this.getSuggestions(this.issue._id)
+		});
+	}
+	
+	onSuggestionSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.issue._id)
+		});
+	}
+	
+	onSuggestionRestore(event: any) {
+		event.softDeleted = false;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.issue._id)
+		});
+	}
+	
+	
+	onSuggestionVote(voteData: any) {
+		this.isLoading = true;
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, 'Suggestion', voteValue);
+		const existingVote = item.votes.currentUser;
+
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe((res) => {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getSuggestions(this.issue._id);
+			},
+			(error) => {
+				if (error.status === 401) {
+					this.openSnackBar('You must be logged in to vote', 'OK');
+				} else {
+					this.openSnackBar('There was an error recording your vote', 'OK');
+				}
+			}
+		);
 	}
 
 }

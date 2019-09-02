@@ -37,6 +37,7 @@ export class SolutionViewComponent implements OnInit {
 	loadingState: string;
 	handleImageUrl = optimizeImage;
 	organization: any;
+	suggestions: any[];
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -65,6 +66,7 @@ export class SolutionViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSolution(ID);
+			this.getSuggestions(ID);
 		});
 	}
 
@@ -94,6 +96,24 @@ export class SolutionViewComponent implements OnInit {
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		);
+	}
+
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: {
+				'showDeleted': isOwner ? true : '',
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	onVote(voteData: any, model: string) {
@@ -225,7 +245,8 @@ export class SolutionViewComponent implements OnInit {
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
-			parentType: 'solution',
+			parentType: 'Solution',
+			type: 'action'
 		}
 
 		this.router.navigateByUrl('/suggestions/create', { 
@@ -238,8 +259,6 @@ export class SolutionViewComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
-
-		delete suggestion.type;
 		
 		suggestion.parent = this.solution._id;
 		suggestion.parentType = 'Solution';
@@ -253,4 +272,53 @@ export class SolutionViewComponent implements OnInit {
 				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
 			})
 	}
+
+	onSuggestionDelete(event: any) {
+		this.suggestionService.delete({ id: event._id }).subscribe(() => {
+			this.getSuggestions(this.solution._id)
+		});
+	}
+	
+	onSuggestionSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.solution._id)
+		});
+	}
+	
+	onSuggestionRestore(event: any) {
+		event.softDeleted = false;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.solution._id)
+		});
+	}
+	
+	
+	onSuggestionVote(voteData: any) {
+		this.isLoading = true;
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, 'Suggestion', voteValue);
+		const existingVote = item.votes.currentUser;
+
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe((res) => {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getSuggestions(this.solution._id);
+			},
+			(error) => {
+				if (error.status === 401) {
+					this.openSnackBar('You must be logged in to vote', 'OK');
+				} else {
+					this.openSnackBar('There was an error recording your vote', 'OK');
+				}
+			}
+		);
+	}
+	
 }
+

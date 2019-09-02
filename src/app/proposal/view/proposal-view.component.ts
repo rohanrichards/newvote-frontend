@@ -18,6 +18,9 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { OrganizationService } from '@app/core';
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -34,8 +37,12 @@ export class ProposalViewComponent implements OnInit {
 	isLoading: boolean;
 	loadingState: string;
 	handleImageUrl = optimizeImage;
+	organization: any;
+	suggestions: any[];
 
 	constructor(
+		private organizationService: OrganizationService,
+		private suggestionService: SuggestionService,
 		private stateService: StateService,
 		private proposalService: ProposalService,
 		private voteService: VoteService,
@@ -48,6 +55,9 @@ export class ProposalViewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		this.organizationService.get()
+			.subscribe((org) => this.organization = org);
+
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
@@ -57,7 +67,26 @@ export class ProposalViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getProposal(ID);
+			this.getSuggestions(ID);
 		});
+	}
+
+	getSuggestions(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionService.list({
+			forceUpdate: true,
+			params: {
+				'showDeleted': isOwner ? true : '',
+				'parent': id
+			}
+		})
+		.subscribe(
+			(suggestions) => {
+				this.suggestions = suggestions;
+			},
+			(err) => err
+		)
 	}
 
 	getProposal(id: string, forceUpdate?: boolean) {
@@ -178,7 +207,8 @@ export class ProposalViewComponent implements OnInit {
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
-			parentType: 'proposal',
+			parentType: 'Action',
+			type: 'action'
 		}
 
 		this.router.navigateByUrl('/suggestions/create', { 
@@ -186,6 +216,70 @@ export class ProposalViewComponent implements OnInit {
 				...suggestionParentInfo
 			}
 		})
+	}
+
+	handleSuggestionSubmit(formData: any) {
+		const suggestion = <Suggestion>formData;
+		suggestion.organizations = this.organization;
+		
+		suggestion.parent = this.proposal._id;
+		suggestion.parentType = 'Action';
+		suggestion.parentTitle = this.proposal.title;
+
+		this.suggestionService.create({ entity: suggestion })
+			.subscribe(t => {
+				this.openSnackBar('Succesfully created', 'OK');
+			},
+			(error) => {
+				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+			})
+	}
+
+	onSuggestionDelete(event: any) {
+		this.suggestionService.delete({ id: event._id }).subscribe(() => {
+			this.getSuggestions(this.proposal._id)
+		});
+	}
+	
+	onSuggestionSoftDelete(event: any) {
+		event.softDeleted = true;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.proposal._id)
+		});
+	}
+	
+	onSuggestionRestore(event: any) {
+		event.softDeleted = false;
+		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+			this.getSuggestions(this.proposal._id)
+		});
+	}
+	
+	
+	onSuggestionVote(voteData: any) {
+		this.isLoading = true;
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, 'Suggestion', voteValue);
+		const existingVote = item.votes.currentUser;
+
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false ))
+			.subscribe((res) => {
+				this.openSnackBar('Your vote was recorded', 'OK');
+				this.getSuggestions(this.proposal._id);
+			},
+			(error) => {
+				if (error.status === 401) {
+					this.openSnackBar('You must be logged in to vote', 'OK');
+				} else {
+					this.openSnackBar('There was an error recording your vote', 'OK');
+				}
+			}
+		);
 	}
 
 }

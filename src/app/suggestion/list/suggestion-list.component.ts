@@ -64,6 +64,7 @@ export class SuggestionListComponent implements OnInit {
 			const force: boolean = !!params.get('forceUpdate');
 			this.fetchData(force);
 		});
+
 		this.meta.updateTags(
 			{
 				title: 'All Suggestions',
@@ -73,10 +74,20 @@ export class SuggestionListComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		const isOwner = this.auth.isOwner();
+		const isVerified = this.auth.isVerified();
+
+		let id;
+
+		if (this.auth.credentials && this.auth.credentials.user) {
+			id = this.auth.credentials.user._id;
+		}
 
 		this.suggestionService.list({
 			forceUpdate: force,
-			params: isOwner ? { 'showDeleted': true } :  {}
+			params:{
+				'showDeleted': isOwner ? true : '',
+				'user': isVerified ? id : ''
+			}
 		})
 		.subscribe(
 			suggestions => {

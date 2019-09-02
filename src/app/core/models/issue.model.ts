@@ -10,7 +10,7 @@ export interface IIssue {
 	organizations: any;
 	softDeleted: boolean;
 	mediaHeading?: string;
-	suggestion?: string;
+	suggestionTemplate?: string;
 }
 
 export class Issue implements IIssue {
