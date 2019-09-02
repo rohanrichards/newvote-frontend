@@ -8,6 +8,10 @@ import { handleError } from '@app/core/http/errors';
 import { OrganizationListComponent } from '@app/organization/list/organization-list.component';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '../organization/organization.service';
+import { VoteStore } from './vote.store';
+import { cloneDeep } from 'lodash';
+import { WebsocketService } from '../websocket.service';
+import { Socket } from 'ngx-socket-io';
 
 const routes = {
 	list: (c: VoteContext) => `/votes`,
@@ -32,10 +36,17 @@ export class VoteService {
 	private _org: Organization;
 
 	constructor(
+		private socket: Socket,
 		private httpClient: HttpClient,
-		private orgService: OrganizationService
+		private orgService: OrganizationService,
+		private voteStore: VoteStore,
 	) {
 		this.orgService.get().subscribe(org => this._org = org);
+		
+		this.socket.fromEvent('vote')
+			.subscribe((res) => {
+				// Handle vote events here
+			})
 	}
 
 	list(context: VoteContext): Observable<any[]> {
@@ -97,31 +108,38 @@ export class VoteService {
 			);
 	}
 
-	populateStore(serverData: any, parent: string) {
-		let items;
+	populateStore(data: any) {
+		// Need to copy server object otherwise tap will mutate it and break caching
+		const serverData = cloneDeep(data);
+		let votes;
 
 		// Reduce starts with an empty array [], and iterates through each
 		// item in serverData array and returning an array of voteMetaData objects
 
-		// If there are proposal object as children, we concat those objects to the main array
+		// If there are proposal object, we concat those objects to the main array
 		// creating an array of voteMetaData Objects from all different entity types
-
-		// reduce serverData to transform array of Soltion objects to an array of
-		// solution voteMetaData Objects + solution proposal voteMetaData Objects
-		items = serverData.reduce((prev: any, curr:any) => {
+		votes = serverData.reduce((previous: any, current:any) => {
 			// either start with or reuse accumulated data
-			let items = prev || [];
+			let items = previous || [];
 		  
-			if (curr.proposals) {
-				const proposals = curr.proposals.reduce((prev:any, curr:any) => {
+			if (current.proposals) {
+				const proposals = current.proposals.slice().reduce((prev:any, curr:any) => {
 					let pItems = prev || [];
 					curr.votes._id = curr._id;
 					return pItems.concat(curr.votes);
 				}, []);
+
+				items = items.concat(proposals);
 			}
 			
-		  	curr.votes._id = curr._id;
-			return items.concat(curr.votes);
-		}, [])
+			// Entity types can have no vote meta data if newly created so apply here
+		  	current.votes._id = current._id;
+			items = items.concat(current.votes);
+			return items;
+		}, []);
+
+		// Populate redux store
+		this.voteStore.set(votes);
+		return data;
 	}
 }
