@@ -15,11 +15,6 @@
     "translations:extract": "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
     "docs": "hads ./docs -o",
     "env": "ngx-scripts env npm_package_version recaptcha_sitekey",
-    "cordova:prepare": "ngx-scripts cordova prepare",
-    "cordova:run": "ngx-scripts cordova run",
-    "cordova:build": "ngx-scripts cordova build --device --release --copy dist",
-    "cordova:clean": "ngx-scripts clean",
-    "cordova": "cordova",
     "generate": "ng generate"
   },
   "dependencies": {
@@ -47,15 +42,6 @@
     "angulartics2": "^6.3.1",
     "chart.js": "^2.7.3",
     "cloudinary-core": "^2.5.0",
-    "cordova-android": "^7.0.0",
-    "cordova-custom-config": "^5.0.2",
-    "cordova-ios": "^4.5.4",
-    "cordova-plugin-device": "^2.0.3",
-    "cordova-plugin-ionic-keyboard": "^2.1.3",
-    "cordova-plugin-ionic-webview": "^2.0.0",
-    "cordova-plugin-splashscreen": "^5.0.3",
-    "cordova-plugin-statusbar": "^2.4.3",
-    "cordova-plugin-whitelist": "^1.3.4",
     "core-js": "^3.2.0",
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
@@ -85,8 +71,12 @@
     "@types/jasminewd2": "^2.0.2",
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.6.9",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
     "codelyzer": "^4.4.4",
-    "cordova": "^8.0.0",
+    "eslint": "^6.3.0",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "hads": "^1.7.0",
     "htmlhint": "^0.10.0",
     "https-proxy-agent": "^2.0.0",
@@ -105,22 +95,6 @@
     "stylelint-config-standard": "~18.2.0",
     "stylelint-scss": "~3.3.0",
     "ts-node": "~8.3.0",
-    "tslint": "~5.18.0",
-    "typescript": "^3.2.4"
-  },
-  "cordova": {
-    "platforms": [
-      "android",
-      "ios"
-    ],
-    "plugins": {
-      "cordova-custom-config": {},
-      "cordova-plugin-device": {},
-      "cordova-plugin-splashscreen": {},
-      "cordova-plugin-statusbar": {},
-      "cordova-plugin-whitelist": {},
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
-    }
+    "typescript": "3.2.4"
   }
 }
