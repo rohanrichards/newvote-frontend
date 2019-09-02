@@ -7,6 +7,7 @@ import { ISolution } from '@app/core/models/solution.model';
 import { handleError } from '@app/core/http/errors';
 import { VoteService } from '../vote/vote.service';
 
+
 const routes = {
 	list: (c: SolutionContext) => `/solutions`,
 	view: (c: SolutionContext) => `/solutions/${c.id}`,
@@ -46,7 +47,7 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
-				tap((res) => console.log(res)),
+				tap((data) => this.voteService.populateStore(data)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -98,9 +99,5 @@ export class SolutionService {
 				catchError(handleError)
 			);
 	}
-
-	passDataToVoteService(serverData: any) {
-		this.voteService.populateStore(serverData, 'Solution');
-	} 
 
 }

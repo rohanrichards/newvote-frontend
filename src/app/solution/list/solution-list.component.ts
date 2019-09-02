@@ -105,6 +105,7 @@ export class SolutionListComponent implements OnInit {
 				return 	this.stateService.setLoadingState(AppState.complete);
 			},
 			err => {
+				console.log(err, 'this is err');
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		);
@@ -149,6 +150,7 @@ export class SolutionListComponent implements OnInit {
 					return this.stateService.setLoadingState(AppState.complete);
 				},
 				error => {
+					console.log(error, 'this is err on refresh data')
 					return this.stateService.setLoadingState(AppState.serverError);
 				}
 			);

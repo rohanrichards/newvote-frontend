@@ -35,16 +35,16 @@
 		fxFlex.xs="1 1 100%"
 		fxFlex.gt-xs="1 1 100%"
 		>
-		<span class="mat-body-2">RESULTS {{totalVotes()}}</span>
+		<span class="mat-body-2">RESULTS {{voteMetaData$.total | async}}</span>
 		<div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock" class="chart-container">
 			<div class="chart-score"
 				fxLayout="row"
 				>
 				<div class="vote-overlay" fxLayout="row" fxLayoutAlign="space-between center">
-					<p>{{votesWidthFor()}}%</p>
-					<p>{{votesWidthAgainst()}}%</p>
+					<p>{{voteMetaData$.up | async }}%</p>
+					<p>{{voteMetaData$.down | async }}%</p>
 				</div>
-				<div class="votes-for" [style.width.%]="votesWidthFor()"></div>
+				<div class="votes-for" [style.width.%]="votesWidthFor((voteMetaData$.up | async))"></div>
 			</div>
 		</div>
 		<ng-template #elseBlock>

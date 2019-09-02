@@ -3,6 +3,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MatSnackBar } from '@angular/material';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { EntityStateHistoryPlugin } from '@datorama/akita';
+import { Observable } from 'rxjs';
+import { VoteMetaData } from '@app/core/http/vote/vote.store';
+import { map, flatMap, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-vote-buttons',
@@ -57,11 +61,17 @@ export class VoteButtonsComponent implements OnInit {
 		];
 
 		// Get the total votes from the akita store
-		this.getVoteMetaData();
+		this.voteMetaData$ = this.getVoteMetaData();
 	}
 
 	getVoteMetaData() {
-		this.voteMetaData$ = this.votesQuery.selectEntity((entity: any) => entity._id === this.item._id);
+		return this.votesQuery.selectAll({
+			filterBy: (entity) => {
+				return entity._id === this.item._id;
+			}
+		}).pipe(
+			flatMap(res => res)
+		)
 	}
 
 	upVotesAsPercent() {

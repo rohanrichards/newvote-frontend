@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
 
 const routes = {
 	list: (c: SuggestionContext) => `/suggestions`,
@@ -24,7 +25,9 @@ export interface SuggestionContext {
 @Injectable()
 export class SuggestionService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private voteService: VoteService,
+		private httpClient: HttpClient) { }
 
 	list(context: SuggestionContext): Observable<any[]> {
 		// create blank params object
@@ -85,5 +88,9 @@ export class SuggestionService {
 				catchError(handleError)
 			);
 	}
+
+	populateStoreMetaData(serverData: any) {
+		this.voteService.populateStore(serverData);
+	} 
 
 }
