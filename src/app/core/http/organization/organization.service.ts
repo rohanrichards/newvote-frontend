@@ -2,10 +2,11 @@ import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
-import { map, finalize, catchError } from 'rxjs/operators';
+import { map, finalize, catchError, tap } from 'rxjs/operators';
 
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
+import { Socket } from 'ngx-socket-io';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -27,12 +28,14 @@ export interface OrganizationContext {
 
 @Injectable()
 export class OrganizationService {
+	
 	private _host: string;
 	private _subdomain: string;
 	private _org: Organization;
 	private $org: BehaviorSubject<any>;
 
 	constructor(
+		private socket: Socket,
 		private httpClient: HttpClient,
 	) {
 		this._host = document.location.host;
@@ -48,6 +51,7 @@ export class OrganizationService {
 			this.httpClient
 				.get('/organizations/' + this._subdomain)
 				.pipe(
+					tap((org: Organization) => this.joinWebSocketRoom(org.url)),
 					catchError(handleError)
 				).subscribe(
 					(org: Organization) => {
@@ -142,5 +146,9 @@ export class OrganizationService {
 
 	get subdomain() {
 		return this._subdomain;
+	}
+
+	joinWebSocketRoom(room: string) {
+		this.socket.emit('join org', room)
 	}
 }
