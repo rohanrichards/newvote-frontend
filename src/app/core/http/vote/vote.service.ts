@@ -107,6 +107,28 @@ export class VoteService {
 			);
 	}
 
+	addEntityVote(data: any) {
+		const entity = cloneDeep(data);
+		
+		let votes = <any>[];
+		let vote = entity.votes;
+		vote._id = entity._id;
+
+		if (entity.proposals) {
+			const proposals = entity.proposals.slice().reduce((prev:any, curr:any) => {
+				let pItems = prev || [];
+				curr.votes._id = curr._id;
+				return pItems.concat(curr.votes);
+			}, []);
+
+			votes = votes.concat(proposals);
+		}
+		
+		votes = votes.concat(vote);
+		this.voteStore.add(votes);
+		return entity;
+	}
+
 	populateStore(data: any) {
 		// Need to copy server object otherwise tap will mutate it and break caching
 		const serverData = cloneDeep(data);

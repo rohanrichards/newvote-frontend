@@ -65,6 +65,7 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context), { params })
 			.pipe(
+				tap((res) => this.voteService.addEntityVote(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);

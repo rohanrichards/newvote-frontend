@@ -57,6 +57,7 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((res) => this.voteService.addEntityVote(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
