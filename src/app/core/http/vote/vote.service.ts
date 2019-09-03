@@ -10,7 +10,6 @@ import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '../organization/organization.service';
 import { VoteStore } from './vote.store';
 import { cloneDeep } from 'lodash';
-import { WebsocketService } from '../websocket.service';
 import { Socket } from 'ngx-socket-io';
 
 const routes = {
@@ -44,7 +43,7 @@ export class VoteService {
 		this.orgService.get().subscribe(org => this._org = org);
 		
 		this.socket.fromEvent('vote')
-			.subscribe((vote) => {
+			.subscribe((vote: any) => {
 				this.updateStoreVote(vote)
 			})
 	}
@@ -144,11 +143,6 @@ export class VoteService {
 	}
 
 	updateStoreVote(voteMetaData: any) {
-		this.voteStore.update((vote: any) => vote._id === voteMetaData._id,
-		{
-			total: voteMetaData.total,
-			up: voteMetaData.up,
-			down: voteMetaData.down
-		})
+		this.voteStore.upsert(voteMetaData._id, voteMetaData)
 	}
 }

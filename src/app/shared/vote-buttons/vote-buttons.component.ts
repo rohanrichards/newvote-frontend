@@ -4,9 +4,10 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 import { MatSnackBar } from '@angular/material';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { EntityStateHistoryPlugin } from '@datorama/akita';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { VoteMetaData } from '@app/core/http/vote/vote.store';
 import { map, flatMap, tap } from 'rxjs/operators';
+import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY } from '@angular/cdk/overlay/typings/overlay-directives';
 
 @Component({
 	selector: 'app-vote-buttons',
@@ -15,7 +16,8 @@ import { map, flatMap, tap } from 'rxjs/operators';
 })
 export class VoteButtonsComponent implements OnInit {
 
-	voteMetaData$: any;
+	voteMetaData$: Observable<VoteMetaData>;
+	storeVote: any;
 
 	@Input() item: any;
 	@Output() vote = new EventEmitter();
@@ -61,14 +63,16 @@ export class VoteButtonsComponent implements OnInit {
 		];
 
 		// Get the total votes from the akita store
-		this.voteMetaData$ = this.getVoteMetaData();
+		 this.getVoteMetaData()
+		 	.subscribe((vote) => {
+				 console.log('received new vote');
+				 this.storeVote = vote;
+			 })
 	}
 
 	getVoteMetaData() {
-		return this.votesQuery.selectAll({
-			filterBy: (entity) => {
-				return entity._id === this.item._id;
-			}
+		return this.votesQuery.selectEntity((entity: any) => {
+			return entity._id === this.item._id;
 		})
 	}
 
@@ -115,16 +119,16 @@ export class VoteButtonsComponent implements OnInit {
 		});
 	}
 
-	votesWidthFor() {
-		const { up, down} = this.item.votes;
+	votesWidthFor(vote: any) {
+		const { up, down} = vote;
 		const totalVotes = up + down;
 
 		const percentageOfUpVotes = (up / totalVotes) * 100;
 		return Math.round(percentageOfUpVotes);
 	}
 
-	votesWidthAgainst() {
-		const { up, down} = this.item.votes;
+	votesWidthAgainst(vote: any) {
+		const { up, down} = vote;
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
