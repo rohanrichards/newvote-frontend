@@ -138,7 +138,7 @@ export class VoteService {
 		}, []);
 
 		// Populate redux store
-		this.voteStore.set(votes);
+		this.voteStore.add(votes);
 		return data;
 	}
 

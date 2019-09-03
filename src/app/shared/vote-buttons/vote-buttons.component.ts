@@ -65,7 +65,6 @@ export class VoteButtonsComponent implements OnInit {
 		// Get the total votes from the akita store
 		 this.getVoteMetaData()
 		 	.subscribe((vote) => {
-				 console.log('received new vote');
 				 this.storeVote = vote;
 			 })
 	}
@@ -124,7 +123,7 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfUpVotes = (up / totalVotes) * 100;
-		return Math.round(percentageOfUpVotes);
+		return Math.round(percentageOfUpVotes) || 0;
 	}
 
 	votesWidthAgainst(vote: any) {
@@ -132,7 +131,7 @@ export class VoteButtonsComponent implements OnInit {
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
-		return Math.round(percentageOfDownVotes);
+		return Math.round(percentageOfDownVotes) || 0;
 	}
 
 	totalVotes() {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { handleError } from '@app/core/http/errors';
@@ -44,6 +44,7 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((data) => this.voteService.populateStore(data)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);

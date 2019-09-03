@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { IProposal } from '@app/core/models/proposal.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
 
 const routes = {
 	list: (c: ProposalContext) => `/proposals`,
@@ -26,7 +27,9 @@ export interface ProposalContext {
 @Injectable()
 export class ProposalService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private voteService: VoteService,
+		private httpClient: HttpClient) { }
 
 	list(context: ProposalContext): Observable<any[]> {
 		// create blank params object
@@ -43,6 +46,7 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((data) => this.voteService.populateStore(data)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
