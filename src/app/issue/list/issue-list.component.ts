@@ -278,6 +278,7 @@ export class IssueListComponent implements OnInit {
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
+				this.router.navigate([`/suggestions/${t._id}`], { replaceUrl: true });
 			},
 			(error) => {
 				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
