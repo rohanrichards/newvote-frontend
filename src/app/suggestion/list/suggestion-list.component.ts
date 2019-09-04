@@ -77,8 +77,8 @@ export class SuggestionListComponent implements OnInit {
 			});
 
 		this.suggestionQuery.selectAll()
-			.subscribe((res) => {
-				console.log(res, 'on suggestion Query');
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
 			})
 	}
 
@@ -101,7 +101,6 @@ export class SuggestionListComponent implements OnInit {
 		})
 		.subscribe(
 			suggestions => {
-				this.suggestions = suggestions;
 				this.stateService.setLoadingState(AppState.complete);
 			},
 			err => {
