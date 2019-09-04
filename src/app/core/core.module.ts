@@ -26,6 +26,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { VoteStore } from './http/vote/vote.store';
 import { VotesQuery } from './http/vote/vote.query';
 import { VoteService } from './http/vote/vote.service';
+import { SuggestionStore } from './http/suggestion/suggestion.store';
+import { SuggestionQuery } from './http/suggestion/suggestion.query';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -52,7 +54,6 @@ export function tokenGetter() {
 	],
 	providers: [
 		AuthenticationService,
-		SuggestionService,
 		AuthenticationGuard,
 		AdminGuard,
 		OwnerGuard,
@@ -71,6 +72,9 @@ export function tokenGetter() {
 		VoteStore,
 		VotesQuery,
 		VoteService,
+		SuggestionStore,
+		SuggestionQuery,
+		SuggestionService,
 		{
 			provide: HttpClient,
 			useClass: HttpService

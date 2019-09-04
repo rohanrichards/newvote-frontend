@@ -16,6 +16,8 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-suggestion',
@@ -42,8 +44,11 @@ export class SuggestionListComponent implements OnInit {
 	}];
 
 	stepsArray = [...JoyRideSteps];
+	suggestions$: Observable<Suggestion[]>;
 
-	constructor(private suggestionService: SuggestionService,
+	constructor(
+		private suggestionService: SuggestionService,
+		private suggestionQuery: SuggestionQuery,
 		private stateService: StateService,
 		private voteService: VoteService,
 		public auth: AuthenticationService,
@@ -70,6 +75,11 @@ export class SuggestionListComponent implements OnInit {
 				title: 'All Suggestions',
 				description: 'Showing all suggestions.'
 			});
+
+		this.suggestionQuery.selectAll()
+			.subscribe((res) => {
+				console.log(res, 'on suggestion Query');
+			})
 	}
 
 	fetchData(force?: boolean) {
