@@ -100,7 +100,7 @@ export class SuggestionEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
+					this.router.navigate([`/suggestions/${t._id}`], { queryParams: { forceUpdate: true } });
 				}
 			});
 	}

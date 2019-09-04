@@ -180,7 +180,7 @@ export class ProposalCreateComponent implements OnInit {
 						}
 
 						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
+						this.router.navigate([`/proposals/${t._id}`], { queryParams: { forceUpdate: true } });
 					},
 					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 

@@ -179,7 +179,7 @@ export class SolutionEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/solutions']);
+					this.router.navigate([`/solutions/${t._id}`], { queryParams: { forceUpdate: true } });
 				}
 			});
 	}
