@@ -21,7 +21,7 @@ import { AppState } from '@app/core/models/state.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
-import { assign } from 'lodash';
+import { assign, cloneDeep } from 'lodash';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 @Component({
