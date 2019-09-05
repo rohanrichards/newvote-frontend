@@ -80,6 +80,12 @@ export class SuggestionListComponent implements OnInit {
 		);
 	}
 
+	getSuggestions() {
+		this.query.selectAll({
+			filterBy: (entity: any) => entity.user === this.auth.credentials.user._id}
+		)
+	}
+
 	fetchData() {
 		const isOwner = this.auth.isOwner();
 		const isVerified = this.auth.isVerified();
