@@ -91,7 +91,7 @@ export class IssueViewComponent implements OnInit {
 
 		this.getSuggestions();
 	}
-	
+
 	subscribeToSuggestionStore(id: string) {
 		const isOwner = this.auth.isOwner();
 
