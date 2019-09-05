@@ -30,7 +30,7 @@ import { forkJoin, Observable } from 'rxjs';
 	templateUrl: './solution-list.component.html',
 	styleUrls: ['./solution-list.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter'))
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SolutionListComponent implements OnInit {
@@ -87,10 +87,10 @@ export class SolutionListComponent implements OnInit {
 				title: 'All Solutions',
 				description: 'Solutions are the decisions that you think your community should make.'
 			});
-			this.route.queryParamMap.subscribe(params => {
-				const force: boolean = !!params.get('forceUpdate');
-				this.fetchData(force);
-			});
+		this.route.queryParamMap.subscribe(params => {
+			const force: boolean = !!params.get('forceUpdate');
+			this.fetchData(force);
+		});
 
 		this.subscribeToSuggestionStore();
 	}
@@ -98,29 +98,29 @@ export class SolutionListComponent implements OnInit {
 	fetchData(force?: boolean) {
 		const isOwner = this.auth.isOwner();
 		const options = { 'showDeleted': isOwner ? true : '' }
-		
+
 		const solutionObs: Observable<Solution[]> = this.solutionService.list({
 			orgs: [],
 			forceUpdate: force,
 			params: options
 		});
-		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options})
+		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
 
 		forkJoin([
 			solutionObs,
 			suggestionObs
 		])
-		.subscribe(
-			response => {
-				const [solutions, suggestions] = response;
-				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-				return 	this.stateService.setLoadingState(AppState.complete);
-			},
-			err => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
-		
+			.subscribe(
+				response => {
+					const [solutions, suggestions] = response;
+					this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				err => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
+
 	}
 
 	subscribeToSuggestionStore() {
@@ -129,9 +129,9 @@ export class SolutionListComponent implements OnInit {
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'solution'
 		})
-		.subscribe((suggestions: Suggestion[]) => {
-			this.suggestions = suggestions;
-		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
 	}
 
 	// find the different solution and only update it, not entire list
@@ -201,7 +201,7 @@ export class SolutionListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
 					this.openSnackBar('Your vote was recorded', 'OK');
@@ -236,9 +236,9 @@ export class SolutionListComponent implements OnInit {
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
 			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+				})
 	}
 
 
@@ -249,7 +249,7 @@ export class SolutionListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
+
 	onSuggestionSoftDelete(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
 		this.suggestionService.update({ id: event._id, entity })
@@ -258,7 +258,7 @@ export class SolutionListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
+
 	onSuggestionRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: false });
 		this.suggestionService.update({ id: event._id, entity })
@@ -267,8 +267,8 @@ export class SolutionListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
-	
+
+
 	onSuggestionVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -280,9 +280,9 @@ export class SolutionListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
-				const updatedSuggestionWithNewVoteData  = assign({}, item, {
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
 					votes: {
 						...item.votes,
 						currentUser: {
@@ -295,13 +295,13 @@ export class SolutionListComponent implements OnInit {
 				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
 }
