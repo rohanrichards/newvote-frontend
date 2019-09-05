@@ -105,4 +105,7 @@ export class SuggestionService {
 		this.voteService.populateStore(serverData);
 	} 
 
+	updateSuggestionVote(suggestion: any) {
+		this.suggestionStore.update(suggestion._id, suggestion);
+	}
 }

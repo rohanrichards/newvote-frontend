@@ -144,6 +144,17 @@ export class SuggestionListComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe((res) => {
+				const updatedSuggestionWithNewVoteData  = assign({}, item, {
+					votes: {
+						...item.votes,
+						currentUser: {
+							...item.votes.currentUser,
+							voteValue: res.voteValue
+						}
+					}
+				});
+
+				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
 			(error) => {

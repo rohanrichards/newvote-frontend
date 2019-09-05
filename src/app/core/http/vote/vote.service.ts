@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { Vote } from '@app/core/models/vote.model';
 import { handleError } from '@app/core/http/errors';
@@ -11,6 +11,7 @@ import { OrganizationService } from '../organization/organization.service';
 import { VoteStore } from './vote.store';
 import { cloneDeep } from 'lodash';
 import { Socket } from 'ngx-socket-io';
+import { SuggestionService } from '../suggestion/suggestion.service';
 
 const routes = {
 	list: (c: VoteContext) => `/votes`,
@@ -130,15 +131,15 @@ export class VoteService {
 	}
 
 	populateStore(data: any) {
-		// Need to copy server object otherwise tap will mutate it and break caching
+		// copy server object to remove references
 		const serverData = cloneDeep(data);
 		let votes;
 
 		// Reduce starts with an empty array [], and iterates through each
-		// item in serverData array and returning an array of voteMetaData objects
+		// item in the serverData array and appending voteMetaData Objects
 
-		// If there are proposal object, we concat those objects to the main array
-		// creating an array of voteMetaData Objects from all different entity types
+		// If there is a proposal object, we concat those objects to the main array
+		// resulting in an array of voteMetaData Objects composed from all different entity types
 		votes = serverData.reduce((previous: any, current:any) => {
 			// either start with or reuse accumulated data
 			let items = previous || [];
@@ -167,4 +168,5 @@ export class VoteService {
 	updateStoreVote(voteMetaData: any) {
 		this.voteStore.upsert(voteMetaData._id, voteMetaData)
 	}
+
 }
