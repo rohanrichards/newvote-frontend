@@ -31,7 +31,7 @@ export class SuggestionService {
 		private voteService: VoteService,
 		private httpClient: HttpClient) { }
 
-	list(context: SuggestionContext): Observable<any[]> {
+	list(context: SuggestionContext): Observable<Suggestion[]> {
 		// create blank params object
 		let params = new HttpParams();
 
@@ -48,9 +48,8 @@ export class SuggestionService {
 			.pipe(
 				tap((data: Suggestion[]) => {
 					this.voteService.populateStore(data);
-					this.suggestionStore.set(data);
+					this.suggestionStore.add(data);
 				}),
-				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
 	}
@@ -96,6 +95,7 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((res: any) => this.suggestionStore.remove(res._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
