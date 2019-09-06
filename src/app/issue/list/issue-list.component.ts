@@ -29,6 +29,7 @@ import { VoteService } from '@app/core/http/vote/vote.service';
 import { Vote } from '@app/core/models/vote.model';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { assign } from 'lodash';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 
 @Component({
@@ -88,6 +89,7 @@ export class IssueListComponent implements OnInit {
 
 	constructor(
 		private suggestionQuery: SuggestionQuery,
+		private issueQuery: IssueQuery,
 		private voteService: VoteService,
 		public snackBar: MatSnackBar,
 		private suggestionService: SuggestionService,
@@ -116,12 +118,11 @@ export class IssueListComponent implements OnInit {
 		});
 
 		this.stateService.setLoadingState(AppState.loading);
+
+		this.fetchData(true);
+
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
-		});
-		this.route.queryParamMap.subscribe(queryParams => {
-			const force: boolean = !!queryParams.get('forceUpdate');
-			this.fetchData(force);
 		});
 
 		this.meta.updateTags(
@@ -130,6 +131,7 @@ export class IssueListComponent implements OnInit {
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
 		
+		this.subscribeToIssueStore();
 		this.subscribeToSuggestionStore();
 	}
 
@@ -160,7 +162,6 @@ export class IssueListComponent implements OnInit {
 			results => {
 				const { issues, topics, suggestions } = results;
 
-				this.issues = issues;
 				this.allTopics = topics;
 
 				if (this.topicParam) {
@@ -178,8 +179,6 @@ export class IssueListComponent implements OnInit {
 	}
 	
 	subscribeToSuggestionStore() {
-		const isOwner = this.auth.isOwner();
-
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'issue'
 		})
@@ -188,7 +187,12 @@ export class IssueListComponent implements OnInit {
 		})
 	}
 
-
+	subscribeToIssueStore() {
+		this.issueQuery.selectAll()
+			.subscribe((issues: Issue[]) => {
+				this.issues = issues;
+			})
+	}
 
 	// filter the issue list for matching topicId's
 	getIssues(topicId: string) {
@@ -202,23 +206,29 @@ export class IssueListComponent implements OnInit {
 	}
 
 	onDelete(event: any) {
-		this.issueService.delete({ id: event._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.issueService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.fetchData(true);
-		});
+		const entity = assign({}, event, { softDeleted: true });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onRestore(event: any) {
-		event.softDeleted = false;
-		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.fetchData(true);
-		});
+		const entity = assign({}, event, { softDeleted: false });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onDeleteTopic(topic: any) {

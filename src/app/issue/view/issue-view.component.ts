@@ -15,7 +15,7 @@ import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { IIssue } from '@app/core/models/issue.model';
+import { IIssue, Issue } from '@app/core/models/issue.model';
 import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
@@ -31,6 +31,7 @@ import { Suggestion } from '@app/core/models/suggestion.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { OrganizationService } from '@app/core';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 @Component({
 	selector: 'app-issue',
@@ -70,7 +71,7 @@ export class IssueViewComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
 		private suggestionQuery: SuggestionQuery,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
+		private issueQuery: IssueQuery,
 	) { }
 
 	ngOnInit() {
@@ -80,26 +81,32 @@ export class IssueViewComponent implements OnInit {
 				(err) => err);
 
 		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
-
 		this.stateService.setLoadingState(AppState.loading);
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.getIssue(ID);
+			this.subscribeToIssueStore(ID);
 			this.subscribeToSuggestionStore(ID);
+			this.getIssue(ID);
 		});
 
 		this.getSuggestions();
 	}
 
 	subscribeToSuggestionStore(id: string) {
-		const isOwner = this.auth.isOwner();
-
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.parent === id
 		})
 			.subscribe((suggestions: Suggestion[]) => {
 				this.suggestions = suggestions;
+			})
+	}
+
+
+	subscribeToIssueStore(id: string) {
+		this.issueQuery.selectEntity(id)
+			.subscribe((issue: Issue) => {
+				this.issue = issue;
 			})
 	}
 
@@ -122,15 +129,16 @@ export class IssueViewComponent implements OnInit {
 		this.issueService.view({ id: id, orgs: [] })
 			.subscribe(
 				(issue: IIssue) => {
-					this.issue = issue;
 					this.getSolutions(issue._id);
+
 					this.meta.updateTags(
 						{
-							title: this.issue.name,
+							title: issue.name || '',
 							appBarTitle: 'View Issue',
-							description: this.issue.description,
-							image: this.issue.imageUrl
+							description: issue.description || '',
+							image: issue.imageUrl || ''
 						});
+
 					this.stateService.setLoadingState(AppState.complete);
 				},
 				(error) => this.stateService.setLoadingState(AppState.serverError)
