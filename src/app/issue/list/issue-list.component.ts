@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -32,6 +32,7 @@ import { assign } from 'lodash';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 
+import { cloneDeep } from 'lodash';
 
 @Component({
 	selector: 'app-issue',
@@ -102,14 +103,21 @@ export class IssueListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private meta: MetaService,
-		private topicQuery: TopicQuery
+		private topicQuery: TopicQuery,
+		private cdR: ChangeDetectorRef
 		) {
-		this.filteredTopics = this.topicFilter.valueChanges.pipe(
-			startWith(''),
-			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+
+			this.subscribeToIssueStore();
+			this.subscribeToSuggestionStore();
+			this.subscribeToTopicStore();
+
+			this.filteredTopics = this.topicFilter.valueChanges.pipe(
+				startWith(''),
+				map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
 	}
 
 	ngOnInit() {
+
 		this.organizationService.get()
 			.subscribe((org) => {
 				this.organization = org;
@@ -132,10 +140,6 @@ export class IssueListComponent implements OnInit {
 				title: 'All Issues',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
-		
-		this.subscribeToIssueStore();
-		this.subscribeToSuggestionStore();
-		this.subscribeToTopicStore();
 	}
 
 	
@@ -177,6 +181,7 @@ export class IssueListComponent implements OnInit {
 	}
 	
 	subscribeToSuggestionStore() {
+
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'issue'
 		})
@@ -187,7 +192,9 @@ export class IssueListComponent implements OnInit {
 
 	subscribeToTopicStore() {
 		this.topicQuery.selectAll()
-			.subscribe((topics: Topic[]) => this.allTopics = topics);
+			.subscribe((topics: Topic[]) => {
+				this.allTopics = topics
+			});
 	}
 
 	subscribeToIssueStore() {
@@ -198,14 +205,22 @@ export class IssueListComponent implements OnInit {
 	}
 
 	// filter the issue list for matching topicId's
-	getIssues(topicId: string) {
-		if (!topicId) {
-			return false;
-		}
-		const issues = this.issues.filter(issue => {
-			return issue.topics.some(topic => topic._id === topicId);
+	filterIssues(topic: Topic, issues: Issue[]) {
+		const issuesCopy = issues.slice();
+
+		return issuesCopy.filter((issue) => {
+			const topicExists = issue.topics.some((ele) => {
+				// If a new issue is created the topics array will be populated
+				// with objectId's / strings instead of objects with an ._id key
+				if (typeof ele === 'string') {
+					return ele === topic._id;
+				}
+
+				return ele._id  === topic._id;
+			})
+
+			return topicExists;
 		});
-		return issues;
 	}
 
 	onDelete(event: any) {
@@ -235,20 +250,21 @@ export class IssueListComponent implements OnInit {
 	}
 
 	onDeleteTopic(topic: any) {
-		this.topicService.delete({ id: topic._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.topicService.delete({ id: topic._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onSoftDeleteTopic(topic: any) {
-		this.isLoading = true;
-		topic.softDeleted = true;
-
+		const entity = assign({}, event, { softDeleted: true });
 		this.topicService.update({ id: topic._id, entity: topic })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	topicSelected(event: any) {
@@ -364,4 +380,7 @@ export class IssueListComponent implements OnInit {
 		return filterVal;
 	}
 
+	trackByFn(index, item) {
+		return index; // or item.id
+	}
 }
