@@ -21,13 +21,15 @@ import { AppState } from '@app/core/models/state.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
+import { assign, cloneDeep } from 'lodash';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-view.component.html',
 	styleUrls: ['./solution-view.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SolutionViewComponent implements OnInit {
@@ -52,6 +54,7 @@ export class SolutionViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
+		private suggestionQuery: SuggestionQuery
 	) { }
 
 	ngOnInit() {
@@ -66,8 +69,10 @@ export class SolutionViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSolution(ID);
-			this.getSuggestions(ID);
+			this.subscribeToSuggestionStore(ID);
 		});
+
+		this.getSuggestions();
 	}
 
 	getSolution(id: string, forceUpdate?: boolean) {
@@ -77,43 +82,51 @@ export class SolutionViewComponent implements OnInit {
 			id: id,
 			orgs: [],
 			forceUpdate,
-			params: isOwner ? { 'showDeleted': true } :  {}
+			params: isOwner ? { 'showDeleted': true } : {}
 		})
-		.subscribe(
-			(solution: Solution) => {
-				this.solution = solution;
-				this.meta.updateTags(
-					{
-						title: solution.title,
-						appBarTitle: 'View Solution',
-						description: solution.description,
-						image: solution.imageUrl
-					});
+			.subscribe(
+				(solution: Solution) => {
+					this.solution = solution;
+					this.meta.updateTags(
+						{
+							title: solution.title,
+							appBarTitle: 'View Solution',
+							description: solution.description,
+							image: solution.imageUrl
+						});
 
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			(err) => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				(err) => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
 
-	getSuggestions(id: string) {
+	subscribeToSuggestionStore(id: string) {
+		const isOwner = this.auth.isOwner();
+
+		this.suggestionQuery.selectAll({
+			filterBy: entity => entity.parent === id
+		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
+	}
+
+	getSuggestions() {
 		const isOwner = this.auth.isOwner();
 
 		this.suggestionService.list({
 			forceUpdate: true,
 			params: {
-				'showDeleted': isOwner ? true : '',
-				'parent': id
+				'showDeleted': isOwner ? true : ''
 			}
 		})
-		.subscribe(
-			(suggestions) => {
-				this.suggestions = suggestions;
-			},
-			(err) => err
-		)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 
 	onVote(voteData: any, model: string) {
@@ -127,7 +140,7 @@ export class SolutionViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
 					this.openSnackBar('Your vote was recorded', 'OK');
@@ -156,7 +169,7 @@ export class SolutionViewComponent implements OnInit {
 			if (confirm) {
 				this.solutionService.delete({ id: this.solution._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -176,7 +189,7 @@ export class SolutionViewComponent implements OnInit {
 				this.solution.softDeleted = true;
 				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -196,7 +209,7 @@ export class SolutionViewComponent implements OnInit {
 				this.solution.softDeleted = false;
 				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -210,7 +223,7 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
 				this.openSnackBar('Succesfully Restored', 'OK');
-				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 			});
 	}
 
@@ -222,14 +235,14 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe((t) => {
 				this.openSnackBar('Succesfully removed', 'OK');
-				this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+				this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 			});
 	}
 
 	onDeleteProposal(event: any) {
 		this.proposalService.delete({ id: event._id }).subscribe(() => {
 			this.openSnackBar('Succesfully deleted', 'OK');
-			this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+			this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 		});
 	}
 
@@ -241,7 +254,7 @@ export class SolutionViewComponent implements OnInit {
 	}
 
 	populateSuggestion() {
-		const {_id, title } = this.solution;
+		const { _id, title } = this.solution;
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
@@ -249,7 +262,7 @@ export class SolutionViewComponent implements OnInit {
 			type: 'action'
 		}
 
-		this.router.navigateByUrl('/suggestions/create', { 
+		this.router.navigateByUrl('/suggestions/create', {
 			state: {
 				...suggestionParentInfo
 			}
@@ -259,7 +272,7 @@ export class SolutionViewComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
-		
+
 		suggestion.parent = this.solution._id;
 		suggestion.parentType = 'Solution';
 		suggestion.parentTitle = this.solution.title;
@@ -268,32 +281,38 @@ export class SolutionViewComponent implements OnInit {
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
 			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+				})
 	}
 
 	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			this.getSuggestions(this.solution._id)
-		});
+		this.suggestionService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions(this.solution._id)
-		});
+		const entity = assign({}, event, { softDeleted: true });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionRestore(event: any) {
-		event.softDeleted = false;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions(this.solution._id)
-		});
+		const entity = assign({}, event, { softDeleted: false });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
-	
+
+
 	onSuggestionVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -305,20 +324,30 @@ export class SolutionViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
+					votes: {
+						...item.votes,
+						currentUser: {
+							...item.votes.currentUser,
+							voteValue: res.voteValue
+						}
+					}
+				});
+
+				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestions(this.solution._id);
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
-	
+
 }
 
