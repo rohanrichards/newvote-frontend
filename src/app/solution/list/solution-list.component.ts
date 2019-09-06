@@ -109,7 +109,7 @@ export class SolutionListComponent implements OnInit {
 		])
 			.subscribe(
 				response => this.stateService.setLoadingState(AppState.complete),
-				err => 	this.stateService.setLoadingState(AppState.serverError)
+				err => this.stateService.setLoadingState(AppState.serverError)
 			);
 
 	}
@@ -170,7 +170,7 @@ export class SolutionListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
-					const updatedSolutionWithNewVoteData  = assign({}, item, {
+					const updatedSolutionWithNewVoteData = assign({}, item, {
 						votes: {
 							...item.votes,
 							currentUser: {

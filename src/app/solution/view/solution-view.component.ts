@@ -23,6 +23,7 @@ import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
 import { assign, cloneDeep } from 'lodash';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
 
 @Component({
 	selector: 'app-solution',
@@ -54,7 +55,8 @@ export class SolutionViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		private suggestionQuery: SuggestionQuery
+		private suggestionQuery: SuggestionQuery,
+		private solutionQuery: SolutionQuery
 	) { }
 
 	ngOnInit() {
@@ -70,23 +72,22 @@ export class SolutionViewComponent implements OnInit {
 			const ID = params.get('id');
 			this.getSolution(ID);
 			this.subscribeToSuggestionStore(ID);
+			this.subscribeToSolutionStore(ID);
 		});
 
 		this.getSuggestions();
 	}
 
-	getSolution(id: string, forceUpdate?: boolean) {
+	getSolution(id: string) {
 		const isOwner = this.auth.isOwner();
+		const options = { 'showDeleted': isOwner ? true : '' };
 
 		this.solutionService.view({
 			id: id,
-			orgs: [],
-			forceUpdate,
-			params: isOwner ? { 'showDeleted': true } : {}
+			params: options
 		})
 			.subscribe(
 				(solution: Solution) => {
-					this.solution = solution;
 					this.meta.updateTags(
 						{
 							title: solution.title,
@@ -97,15 +98,16 @@ export class SolutionViewComponent implements OnInit {
 
 					return this.stateService.setLoadingState(AppState.complete);
 				},
-				(err) => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
+				(err) => this.stateService.setLoadingState(AppState.serverError)
 			);
 	}
 
-	subscribeToSuggestionStore(id: string) {
-		const isOwner = this.auth.isOwner();
+	subscribeToSolutionStore(id: string) {
+		this.solutionQuery.selectEntity(id)
+			.subscribe((solution: Solution) => this.solution = solution)
+	}
 
+	subscribeToSuggestionStore(id: string) {
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.parent === id
 		})
@@ -144,7 +146,7 @@ export class SolutionViewComponent implements OnInit {
 			.subscribe(
 				(res) => {
 					this.openSnackBar('Your vote was recorded', 'OK');
-					this.getSolution(this.solution._id, true);
+					this.getSolution(this.solution._id);
 				},
 				(error) => {
 					if (error.status === 401) {
@@ -186,8 +188,8 @@ export class SolutionViewComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.solution.softDeleted = true;
-				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+				const entity = assign({}, this.solution, { softDeleted: true });
+				this.solutionService.update({ id: this.solution._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
 					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
@@ -206,8 +208,8 @@ export class SolutionViewComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.solution.softDeleted = false;
-				this.solutionService.update({ id: this.solution._id, entity: this.solution }).subscribe(() => {
+				const entity = assign({}, this.solution, { softDeleted: false });
+				this.solutionService.update({ id: this.solution._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
 					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
