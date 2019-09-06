@@ -137,21 +137,15 @@ export class IssueListComponent implements OnInit {
 
 	
 
-	fetchData(force?: boolean) {
+	fetchData() {
 		const isOwner = this.auth.isOwner();
 		const options = {
-			orgs: [],
-			forceUpdate: force,
-			params: isOwner ? { 'showDeleted': true } :  {}
-		} as IssueContext;
+			params: { 'showDeleted': isOwner ? true : '' }
+		}
 
 		const issueObs: Observable<any[]> = this.issueService.list(options);
-		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
-		const suggestionObs: Observable<any[]> = this.suggestionService.list({
-			params: {
-				'showDeleted': isOwner ? true : ''
-			}
-		})
+		const topicObs: Observable<any[]> = this.topicService.list(options);
+		const suggestionObs: Observable<any[]> = this.suggestionService.list(options)
 
 		forkJoin({
 			issues: issueObs,

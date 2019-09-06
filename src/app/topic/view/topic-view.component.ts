@@ -9,8 +9,11 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { ITopic } from '@app/core/models/topic.model';
+import { ITopic, Topic } from '@app/core/models/topic.model';
 import { optimizeImage } from '@app/shared/helpers/cloudinary';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { Issue } from '@app/core/models/issue.model';
 
 @Component({
 	selector: 'app-topic',
@@ -32,7 +35,9 @@ export class TopicViewComponent implements OnInit {
 		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		private topicQuery: TopicQuery,
+		private issueQuery: IssueQuery
 	) { }
 
 	ngOnInit() {
@@ -42,25 +47,54 @@ export class TopicViewComponent implements OnInit {
 				description: 'Viewing a single topipc'
 			});
 
-		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToTopicStore(ID);
+			this.subscribeToIssueStore(ID)
 			this.getTopic(ID);
+			this.getIssues();
+
 		});
+	}
+
+	subscribeToTopicStore(id: string) {
+		this.topicQuery.selectEntity(id)
+			.subscribe((topic: Topic) => this.topic = topic)
+	}
+
+	subscribeToIssueStore(id: string) {
+		this.issueQuery.selectAll({
+			filterBy: (entity) =>  {
+				return entity.topics.some((topic) => {
+					return topic._id === id;
+				})
+			}
+		})
+			.subscribe(
+				(issues: Issue[]) => this.issues = issues,
+				(err) => err
+			)
 	}
 
 	getTopic(id: string) {
 		this.topicService.view({ id: id, orgs: [] })
-			.subscribe((topic: ITopic) => {
-				this.topic = topic;
-				this.getIssues(topic._id);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
+		
 	}
 
-	getIssues(id: string) {
-		this.issueService.list({ params: { topicId: id } })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((issues: Array<any>) => { this.issues = issues; });
+	getIssues() {
+		const isOwner = this.auth.isOwner();
+		const options = { 
+			params: {'showDeleted': isOwner ? true : '' }
+		}
+		this.issueService.list(options)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onDelete() {

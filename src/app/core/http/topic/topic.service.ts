@@ -54,6 +54,7 @@ export class TopicService {
 	}
 
 	view(context: TopicContext): Observable<any> {
+
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
