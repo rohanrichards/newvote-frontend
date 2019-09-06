@@ -6,6 +6,9 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { MetaService } from '@app/core/meta.service';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { assign } from 'lodash';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
+import { Topic } from '@app/core/models/topic.model';
 
 @Component({
 	selector: 'app-topic',
@@ -34,6 +37,7 @@ export class TopicListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private meta: MetaService,
+		private topicQuery: TopicQuery
 	) { }
 
 	ngOnInit() {
@@ -41,51 +45,50 @@ export class TopicListComponent implements OnInit {
 			this.loadingState = state;
 		});
 
+		this.subscribeToTopicStore();
 		this.stateService.setLoadingState(AppState.loading);
-
-		this.route.queryParamMap.subscribe(params => {
-			const force: boolean = !!params.get('forceUpdate');
-			this.fetchData(force);
-		});
 		this.meta.updateTags(
 			{
 				title: 'All Topics',
 				description: 'List all topics.'
 			});
+
+		this.fetchData();
 	}
 
-	fetchData(force?: boolean) {
+	fetchData() {
+		const isOwner = this.auth.isOwner();
+		const params = {
+			'showDeleted': isOwner ? true : ''
+		}
+
 		this.stateService.setLoadingState(AppState.loading);
-		this.topicService.list({ orgs: [], forceUpdate: force, params: { 'showDeleted': true } })
+		this.topicService.list({ orgs: [], params })
 			.subscribe(
-			topics => {
-				this.topics = topics;
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			err => {
-				this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+				topics => this.stateService.setLoadingState(AppState.complete),
+				err => this.stateService.setLoadingState(AppState.serverError)
+			);
+	}
+
+	subscribeToTopicStore() {
+		this.topicQuery.selectAll()
+			.subscribe((topics: Topic[]) => this.topics = topics)
 	}
 
 	onRestore(topic: any) {
-		this.isLoading = true;
-		topic.softDeleted = false;
-
-		this.topicService.update({ id: topic._id, entity: topic })
+		const entity = assign({}, topic, { softDeleted: false });
+		this.topicService.update({ id: topic._id, entity })
 			.subscribe(
-				(t) => {	this.fetchData(true); },
+				(res) => res,
 				(err) => err
 			);
 	}
 
 	onSoftDelete(topic: any) {
-		this.isLoading = true;
-		topic.softDeleted = true;
-
-		this.topicService.update({ id: topic._id, entity: topic })
+		const entity = assign({}, topic, { softDeleted: true });
+		this.topicService.update({ id: topic._id, entity })
 			.subscribe(
-				(t) => {	this.fetchData(true); },
+				(res) => res,
 				(err) => err
 			);
 	}
@@ -93,7 +96,7 @@ export class TopicListComponent implements OnInit {
 	onDelete(event: any) {
 		this.topicService.delete({ id: event._id })
 			.subscribe(
-				(t) => { this.fetchData(true); },
+				(res) => res,
 				(err) => err
 			);
 	}
