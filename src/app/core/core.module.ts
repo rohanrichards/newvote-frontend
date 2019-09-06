@@ -31,6 +31,9 @@ import { SuggestionQuery } from './http/suggestion/suggestion.query';
 import { IssueService } from './http/issue/issue.service';
 import { IssueQuery } from './http/issue/issue.query';
 import { IssueStore } from './http/issue/issue.store';
+import { TopicQuery } from './http/topic/topic.query';
+import { TopicStore } from './http/topic/topic.store';
+import { TopicService } from './http/topic/topic.service';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -81,6 +84,9 @@ export function tokenGetter() {
 		IssueService,
 		IssueQuery,
 		IssueStore,
+		TopicQuery,
+		TopicStore,
+		TopicService
 		{
 			provide: HttpClient,
 			useClass: HttpService
