@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
-import { ITopic } from '@app/core/models/topic.model';
+import { ITopic, Topic } from '@app/core/models/topic.model';
 import { handleError } from '@app/core/http/errors';
+import { TopicStore } from './topic.store';
 
 const routes = {
 	list: (c: TopicContext) => `/topics`,
@@ -26,7 +27,10 @@ export interface TopicContext {
 @Injectable()
 export class TopicService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private httpClient: HttpClient,
+		private topicStore: TopicStore,
+	) { }
 
 	list(context: TopicContext): Observable<any[]> {
 		// create blank params object
@@ -43,6 +47,7 @@ export class TopicService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((topics: Topic[]) => this.topicStore.add(topics)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -53,6 +58,7 @@ export class TopicService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((topic: Topic) => this.topicStore.add(topic)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -63,6 +69,7 @@ export class TopicService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((topic: Topic) => this.topicStore.add(topic)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -73,6 +80,7 @@ export class TopicService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -83,6 +91,7 @@ export class TopicService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((topic: Topic) => this.topicStore.remove(topic._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
