@@ -98,8 +98,7 @@ export class SuggestionListComponent implements OnInit {
 
 		const options = {
 			params:{
-				'showDeleted': isOwner ? true : '',
-				'user': isVerified ? id : ''
+				'showDeleted': isOwner ? true : ''
 			}
 		};
 
