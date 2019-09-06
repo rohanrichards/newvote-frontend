@@ -30,6 +30,7 @@ import { Vote } from '@app/core/models/vote.model';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { assign } from 'lodash';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
 
 
 @Component({
@@ -100,7 +101,8 @@ export class IssueListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private topicQuery: TopicQuery
 		) {
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),
@@ -119,7 +121,7 @@ export class IssueListComponent implements OnInit {
 
 		this.stateService.setLoadingState(AppState.loading);
 
-		this.fetchData(true);
+		this.fetchData();
 
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
@@ -133,6 +135,7 @@ export class IssueListComponent implements OnInit {
 		
 		this.subscribeToIssueStore();
 		this.subscribeToSuggestionStore();
+		this.subscribeToTopicStore();
 	}
 
 	
@@ -156,7 +159,7 @@ export class IssueListComponent implements OnInit {
 			results => {
 				const { issues, topics, suggestions } = results;
 
-				this.allTopics = topics;
+					// this.allTopics = topics;
 
 				if (this.topicParam) {
 					const topic = this._filter(this.topicParam);
@@ -164,6 +167,7 @@ export class IssueListComponent implements OnInit {
 						this.selectedTopics.push(topic[0]);
 					}
 				}
+
 				return this.stateService.setLoadingState(AppState.complete);
 			},
 			err => {
@@ -179,6 +183,11 @@ export class IssueListComponent implements OnInit {
 		.subscribe((suggestions: Suggestion[]) => {
 			this.suggestions = suggestions;
 		})
+	}
+
+	subscribeToTopicStore() {
+		this.topicQuery.selectAll()
+			.subscribe((topics: Topic[]) => this.allTopics = topics);
 	}
 
 	subscribeToIssueStore() {
