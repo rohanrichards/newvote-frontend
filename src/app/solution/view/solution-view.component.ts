@@ -102,20 +102,6 @@ export class SolutionViewComponent implements OnInit {
 			);
 	}
 
-	subscribeToSolutionStore(id: string) {
-		this.solutionQuery.selectEntity(id)
-			.subscribe((solution: Solution) => this.solution = solution)
-	}
-
-	subscribeToSuggestionStore(id: string) {
-		this.suggestionQuery.selectAll({
-			filterBy: entity => entity.parent === id
-		})
-			.subscribe((suggestions: Suggestion[]) => {
-				this.suggestions = suggestions;
-			})
-	}
-
 	getSuggestions() {
 		const isOwner = this.auth.isOwner();
 
@@ -129,6 +115,20 @@ export class SolutionViewComponent implements OnInit {
 				(res) => res,
 				(err) => err
 			)
+	}
+
+	subscribeToSolutionStore(id: string) {
+		this.solutionQuery.selectEntity(id)
+			.subscribe((solution: Solution) => this.solution = solution)
+	}
+
+	subscribeToSuggestionStore(id: string) {
+		this.suggestionQuery.selectAll({
+			filterBy: entity => entity.parent === id
+		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
 	}
 
 	onVote(voteData: any, model: string) {

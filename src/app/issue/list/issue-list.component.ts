@@ -105,15 +105,15 @@ export class IssueListComponent implements OnInit {
 		private meta: MetaService,
 		private topicQuery: TopicQuery,
 		private cdR: ChangeDetectorRef
-		) {
+	) {
 
-			this.subscribeToIssueStore();
-			this.subscribeToSuggestionStore();
-			this.subscribeToTopicStore();
+		this.subscribeToIssueStore();
+		this.subscribeToSuggestionStore();
+		this.subscribeToTopicStore();
 
-			this.filteredTopics = this.topicFilter.valueChanges.pipe(
-				startWith(''),
-				map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
+		this.filteredTopics = this.topicFilter.valueChanges.pipe(
+			startWith(''),
+			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
 	}
 
 	ngOnInit() {
@@ -142,7 +142,7 @@ export class IssueListComponent implements OnInit {
 			});
 	}
 
-	
+
 
 	fetchData() {
 		const isOwner = this.auth.isOwner();
@@ -159,35 +159,35 @@ export class IssueListComponent implements OnInit {
 			topics: topicObs,
 			suggestions: suggestionObs
 		})
-		.subscribe(
-			results => {
-				const { issues, topics, suggestions } = results;
+			.subscribe(
+				results => {
+					const { issues, topics, suggestions } = results;
 
 					// this.allTopics = topics;
 
-				if (this.topicParam) {
-					const topic = this._filter(this.topicParam);
-					if (topic.length) {
-						this.selectedTopics.push(topic[0]);
+					if (this.topicParam) {
+						const topic = this._filter(this.topicParam);
+						if (topic.length) {
+							this.selectedTopics.push(topic[0]);
+						}
 					}
-				}
 
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			err => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				err => {
+					return this.stateService.setLoadingState(AppState.serverError);
+				}
+			);
 	}
-	
+
 	subscribeToSuggestionStore() {
 
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'issue'
 		})
-		.subscribe((suggestions: Suggestion[]) => {
-			this.suggestions = suggestions;
-		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
 	}
 
 	subscribeToTopicStore() {
@@ -216,7 +216,7 @@ export class IssueListComponent implements OnInit {
 					return ele === topic._id;
 				}
 
-				return ele._id  === topic._id;
+				return ele._id === topic._id;
 			})
 
 			return topicExists;
@@ -295,7 +295,7 @@ export class IssueListComponent implements OnInit {
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(
 				t => this.openSnackBar('Succesfully created', 'OK'),
-				(error) => 	this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 			)
 	}
 
@@ -313,7 +313,7 @@ export class IssueListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
+
 	onSuggestionSoftDelete(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
 		this.suggestionService.update({ id: event._id, entity })
@@ -322,7 +322,7 @@ export class IssueListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
+
 	onSuggestionRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: false });
 		this.suggestionService.update({ id: event._id, entity })
@@ -331,8 +331,8 @@ export class IssueListComponent implements OnInit {
 				(err) => err
 			);
 	}
-	
-	
+
+
 	onSuggestionVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -344,9 +344,9 @@ export class IssueListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
-				const updatedSuggestionWithNewVoteData  = assign({}, item, {
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
 					votes: {
 						...item.votes,
 						currentUser: {
@@ -359,14 +359,14 @@ export class IssueListComponent implements OnInit {
 				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
 
 	private _filter(value: any): Topic[] {
