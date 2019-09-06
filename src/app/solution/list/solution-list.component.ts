@@ -10,7 +10,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { ISolution, Solution } from '@app/core/models/solution.model';
+import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 
 import { trigger } from '@angular/animations';
@@ -19,11 +19,11 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { FormGroup } from '@angular/forms';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { forkJoin, Observable } from 'rxjs';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
 
 @Component({
 	selector: 'app-solution',
@@ -66,13 +66,16 @@ export class SolutionListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		private suggestionQuery: SuggestionQuery
+		private suggestionQuery: SuggestionQuery,
+		private solutionQuery: SolutionQuery
 	) { }
 
 	ngOnInit() {
+		this.subscribeToSuggestionStore();
+		this.subscribeToSolutionStore();
+
 		this.organizationService.get()
 			.subscribe((org) => this.organization = org);
 
@@ -87,21 +90,15 @@ export class SolutionListComponent implements OnInit {
 				title: 'All Solutions',
 				description: 'Solutions are the decisions that you think your community should make.'
 			});
-		this.route.queryParamMap.subscribe(params => {
-			const force: boolean = !!params.get('forceUpdate');
-			this.fetchData(force);
-		});
 
-		this.subscribeToSuggestionStore();
+		this.fetchData();
 	}
 
-	fetchData(force?: boolean) {
+	fetchData() {
 		const isOwner = this.auth.isOwner();
 		const options = { 'showDeleted': isOwner ? true : '' }
 
 		const solutionObs: Observable<Solution[]> = this.solutionService.list({
-			orgs: [],
-			forceUpdate: force,
 			params: options
 		});
 		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
@@ -111,21 +108,20 @@ export class SolutionListComponent implements OnInit {
 			suggestionObs
 		])
 			.subscribe(
-				response => {
-					const [solutions, suggestions] = response;
-					this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-					return this.stateService.setLoadingState(AppState.complete);
-				},
-				err => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
+				response => this.stateService.setLoadingState(AppState.complete),
+				err => 	this.stateService.setLoadingState(AppState.serverError)
 			);
 
 	}
 
-	subscribeToSuggestionStore() {
-		const isOwner = this.auth.isOwner();
+	subscribeToSolutionStore() {
+		this.solutionQuery.selectAll()
+			.subscribe((solutions: Solution[]) => {
+				this.solutions = solutions;
+			})
+	}
 
+	subscribeToSuggestionStore() {
 		this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'solution'
 		})
@@ -134,60 +130,30 @@ export class SolutionListComponent implements OnInit {
 			})
 	}
 
-	// find the different solution and only update it, not entire list
-	// this stops content flashing and unwanted scrolling
-	refreshData() {
-		const isOwner = this.auth.isOwner();
-
-		this.solutionService.list({
-			orgs: [],
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'solution',
-			}
-		})
+	onRestore(event: any) {
+		const entity = assign({}, event, { softDeleted: false });
+		this.solutionService.update({ id: event._id, entity: event })
 			.subscribe(
-				solutions => {
-					const diff = differenceWith(solutions, this.solutions, isEqual);
-					if (diff.length > 0) {
-						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
-						this.solutions[index] = diff[0];
-					}
-					return this.stateService.setLoadingState(AppState.complete);
-				},
-				error => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
+				(res) => res,
+				(err) => err
 			);
 	}
 
-	onRestore(event: any) {
-		this.isLoading = true;
-		event.softDeleted = false;
-
-		this.solutionService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
-	}
-
 	onSoftDelete(event: any) {
-		this.isLoading = true;
-		event.softDeleted = true;
-
+		const entity = assign({}, event, { softDeleted: true });
 		this.solutionService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onDelete(event: any) {
-		this.solutionService.delete({ id: event._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.solutionService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onVote(voteData: any, model: string) {
@@ -204,8 +170,18 @@ export class SolutionListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
+					const updatedSolutionWithNewVoteData  = assign({}, item, {
+						votes: {
+							...item.votes,
+							currentUser: {
+								...item.votes.currentUser,
+								voteValue: res.voteValue
+							}
+						}
+					});
+
+					this.solutionService.updateSolutionVote(updatedSolutionWithNewVoteData);
 					this.openSnackBar('Your vote was recorded', 'OK');
-					this.refreshData();
 				},
 				(error) => {
 					if (error) {

@@ -112,4 +112,7 @@ export class SolutionService {
 			);
 	}
 
+	updateSolutionVote(solution: any) {
+		this.solutionStore.update(solution._id, solution);
+	}
 }
