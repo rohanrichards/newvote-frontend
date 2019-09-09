@@ -21,6 +21,10 @@ import { AppState } from '@app/core/models/state.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+
+import { assign } from 'lodash';
 
 @Component({
 	selector: 'app-proposal',
@@ -52,6 +56,8 @@ export class ProposalViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
+		private proposalQuery: ProposalQuery,
+		private suggestionQuery: SuggestionQuery
 	) { }
 
 	ngOnInit() {
@@ -66,9 +72,27 @@ export class ProposalViewComponent implements OnInit {
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToProposalStore(ID);
+			this.subscribeToSuggestionStore(ID);
 			this.getProposal(ID);
 			this.getSuggestions(ID);
 		});
+	}
+
+	subscribeToSuggestionStore(id: string) {
+		this.suggestionQuery.selectAll({
+			filterBy: (suggestion) => suggestion.parent === id
+		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
+	}
+
+	subscribeToProposalStore(id: string) {
+		this.proposalQuery.selectEntity(id)
+			.subscribe((proposal: Proposal) => {
+				this.proposal = proposal;
+			})
 	}
 
 	getSuggestions(id: string) {
@@ -77,29 +101,25 @@ export class ProposalViewComponent implements OnInit {
 		this.suggestionService.list({
 			forceUpdate: true,
 			params: {
-				'showDeleted': isOwner ? true : '',
-				'parent': id
+				'showDeleted': isOwner ? true : ''
 			}
 		})
 		.subscribe(
-			(suggestions) => {
-				this.suggestions = suggestions;
-			},
+			(res) => res,
 			(err) => err
 		)
 	}
 
 	getProposal(id: string, forceUpdate?: boolean) {
-		this.proposalService.view({ id: id, orgs: [], forceUpdate })
+		this.proposalService.view({ id: id, orgs: [] })
 			.subscribe(
 				(proposal: Proposal) => {
-					this.proposal = proposal;
 					this.meta.updateTags(
 						{
-							title: `${this.proposal.title}`,
+							title: `${proposal.title}`,
 							appBarTitle: 'View Action',
-							description: this.proposal.description,
-							image: this.proposal.imageUrl
+							description: proposal.description,
+							image: proposal.imageUrl
 						});
 					return this.stateService.setLoadingState(AppState.complete);
 				},
@@ -166,8 +186,8 @@ export class ProposalViewComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.proposal.softDeleted = true;
-				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
+				const entity = assign({}, this.proposal, { softDeleted: true });
+				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully removed', 'OK');
 					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
@@ -186,8 +206,8 @@ export class ProposalViewComponent implements OnInit {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.proposal.softDeleted = false;
-				this.proposalService.update({ id: this.proposal._id, entity: this.proposal }).subscribe(() => {
+				const entity = assign({}, this.proposal, { softDeleted: false });
+				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
 					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
 				});
@@ -242,15 +262,15 @@ export class ProposalViewComponent implements OnInit {
 	}
 	
 	onSuggestionSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+		const entity = assign({}, event, { softDeleted: true });
+		this.suggestionService.update({ id: event._id, entity }).subscribe(() => {
 			this.getSuggestions(this.proposal._id)
 		});
 	}
 	
 	onSuggestionRestore(event: any) {
-		event.softDeleted = false;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
+		const entity = assign({}, event, { softDeleted: true });
+		this.suggestionService.update({ id: event._id, entity }).subscribe(() => {
 			this.getSuggestions(this.proposal._id)
 		});
 	}
