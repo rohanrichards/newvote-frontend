@@ -24,6 +24,9 @@ import { OrganizationService } from '@app/core';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { forkJoin, Observable } from 'rxjs';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { Proposal } from '@app/core/models/proposal.model';
 
 @Component({
 	selector: 'app-solution',
@@ -69,7 +72,9 @@ export class SolutionListComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
 		private suggestionQuery: SuggestionQuery,
-		private solutionQuery: SolutionQuery
+		private solutionQuery: SolutionQuery,
+		private proposalService: ProposalService,
+		private proposalQuery: ProposalQuery
 	) { }
 
 	ngOnInit() {
@@ -130,6 +135,16 @@ export class SolutionListComponent implements OnInit {
 			})
 	}
 
+	getProposal(solutionId: string) {
+		return this.proposalQuery.selectAll({
+			filterBy: (proposal: Proposal) => proposal.solutions[0] === solutionId
+		})
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
+	}
+
 	onRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: false });
 		this.solutionService.update({ id: event._id, entity: event })
@@ -170,7 +185,7 @@ export class SolutionListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
-					const updatedSolutionWithNewVoteData = assign({}, item, {
+					const updatedObjectWithNewVoteData = assign({}, item, {
 						votes: {
 							...item.votes,
 							currentUser: {
@@ -180,7 +195,14 @@ export class SolutionListComponent implements OnInit {
 						}
 					});
 
-					this.solutionService.updateSolutionVote(updatedSolutionWithNewVoteData);
+					if (model === 'Solution') {
+						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
+					} 
+
+					if (model === 'Proposal') {
+						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
+					}
+					
 					this.openSnackBar('Your vote was recorded', 'OK');
 				},
 				(error) => {
@@ -209,9 +231,10 @@ export class SolutionListComponent implements OnInit {
 		suggestion.organizations = this.organization;
 
 		this.suggestionService.create({ entity: suggestion })
-			.subscribe(t => {
-				this.openSnackBar('Succesfully created', 'OK');
-			},
+			.subscribe(
+				t => {
+					this.openSnackBar('Succesfully created', 'OK');
+				},
 				(error) => {
 					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
 				})

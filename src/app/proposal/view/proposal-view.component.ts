@@ -143,8 +143,18 @@ export class ProposalViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
+					const updatedProposalWithNewVoteData = assign({}, item, {
+						votes: {
+							...item.votes,
+							currentUser: {
+								...item.votes.currentUser,
+								voteValue: res.voteValue
+							}
+						}
+					});
+
+					this.proposalService.updateProposalVote(updatedProposalWithNewVoteData);
 					this.openSnackBar('Your vote was recorded', 'OK');
-					this.getProposal(this.proposal._id, true);
 				},
 				(error) => {
 					if (error.status === 401) {
@@ -256,23 +266,29 @@ export class ProposalViewComponent implements OnInit {
 	}
 
 	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			this.getSuggestions(this.proposal._id)
-		});
+		this.suggestionService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 	
 	onSuggestionSoftDelete(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity }).subscribe(() => {
-			this.getSuggestions(this.proposal._id)
-		});
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 	
 	onSuggestionRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity }).subscribe(() => {
-			this.getSuggestions(this.proposal._id)
-		});
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 	
 	
@@ -289,8 +305,19 @@ export class ProposalViewComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe((res) => {
+
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
+					votes: {
+						...item.votes,
+						currentUser: {
+							...item.votes.currentUser,
+							voteValue: res.voteValue
+						}
+					}
+				});
+
+				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestions(this.proposal._id);
 			},
 			(error) => {
 				if (error.status === 401) {

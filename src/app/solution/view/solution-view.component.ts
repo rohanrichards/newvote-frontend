@@ -145,8 +145,25 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
+					const updatedObjectWithNewVoteData = assign({}, item, {
+						votes: {
+							...item.votes,
+							currentUser: {
+								...item.votes.currentUser,
+								voteValue: res.voteValue
+							}
+						}
+					});
+
+					if (model === 'Solution') {
+						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
+					} 
+
+					if (model === 'Proposal') {
+						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
+					}
+
 					this.openSnackBar('Your vote was recorded', 'OK');
-					this.getSolution(this.solution._id);
 				},
 				(error) => {
 					if (error.status === 401) {

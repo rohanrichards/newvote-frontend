@@ -135,7 +135,20 @@ export class ProposalListComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
-				(res) => this.openSnackBar('Your vote was recorded', 'OK'),
+				(res) => {
+					const updatedProposalWithNewVoteData = assign({}, item, {
+						votes: {
+							...item.votes,
+							currentUser: {
+								...item.votes.currentUser,
+								voteValue: res.voteValue
+							}
+						}
+					});
+
+					this.proposalService.updateProposalVote(updatedProposalWithNewVoteData);
+					this.openSnackBar('Your vote was recorded', 'OK')
+				},
 				(error) => {
 					if (error.status === 401) {
 						this.openSnackBar('You must be logged in to vote', 'OK');
