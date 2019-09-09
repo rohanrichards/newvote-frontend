@@ -33,6 +33,7 @@ import { OrganizationService } from '@app/core';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
 
 @Component({
 	selector: 'app-issue',
@@ -73,7 +74,8 @@ export class IssueViewComponent implements OnInit {
 		private meta: MetaService,
 		private suggestionQuery: SuggestionQuery,
 		private issueQuery: IssueQuery,
-		private solutionQuery: SolutionQuery
+		private solutionQuery: SolutionQuery,
+		private proposalService: ProposalService
 	) { }
 
 	ngOnInit() {
@@ -117,7 +119,7 @@ export class IssueViewComponent implements OnInit {
 
 	subscribeToSolutionStore(id: string) {
 		this.solutionQuery.selectAll({
-			filterBy: (solution: Solution) => solution.issues[0] === id
+			filterBy: (solution: Solution) => solution.issues[0]._id === id
 		})
 			.subscribe(
 				(solutions) => this.solutions = solutions,
@@ -199,6 +201,24 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
+					const updatedObjectWithNewVoteData = assign({}, item, {
+						votes: {
+							...item.votes,
+							currentUser: {
+								...item.votes.currentUser,
+								voteValue: res.voteValue
+							}
+						}
+					});
+
+					if (model === 'Solution') {
+						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
+					} 
+
+					if (model === 'Proposal') {
+						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
+					}
+
 					this.getMedia(this.issue._id, true);
 					this.openSnackBar('Your vote was recorded', 'OK');
 				},
