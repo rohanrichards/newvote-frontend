@@ -7,7 +7,7 @@ export interface ProposalState extends EntityState<Proposal> { };
 
 
 Injectable()
-StoreConfig({ name: 'proposal', idKey: '_id' })
+@StoreConfig({ name: 'proposals', idKey: '_id' })
 export class ProposalStore extends EntityStore<ProposalState, Proposal> { 
     constructor() {
         super();
