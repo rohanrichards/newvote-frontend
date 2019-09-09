@@ -348,9 +348,7 @@ export class IssueListComponent implements OnInit {
 			.subscribe((res) => {
 				const updatedSuggestionWithNewVoteData = assign({}, item, {
 					votes: {
-						...item.votes,
 						currentUser: {
-							...item.votes.currentUser,
 							voteValue: res.voteValue
 						}
 					}
