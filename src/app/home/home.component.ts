@@ -1,5 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { finalize } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 
 import { OrganizationService } from '@app/core';
 import { IssueService } from '@app/core/http/issue/issue.service';
@@ -20,10 +19,11 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyrideService } from 'ngx-joyride';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+
+import { assign } from 'lodash';
 
 @Component({
 	selector: 'app-home',
@@ -57,15 +57,16 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService,
 		public snackBar: MatSnackBar,
-		private router: Router
+		private issueQuery: IssueQuery
 	) { }
 
 	ngOnInit() {
 		this.stateService.loadingState$.subscribe((state: string) => {
 			this.loadingState = state;
 		});
+
+		this.subscribeToIssueStore();
 
 		this.organizationService.get().subscribe((org) => {
 			this.org = org;
@@ -102,6 +103,7 @@ export class HomeComponent implements OnInit {
 
 	fetchData(force?: boolean) {
 		const isOwner = this.auth.isOwner();
+		const params = { showDeleted: isOwner ? true : ' '}
 
 		this.isLoading = true;
 		this.stateService.setLoadingState(AppState.loading);
@@ -109,11 +111,10 @@ export class HomeComponent implements OnInit {
 		this.issueService.list({
 			orgs: [],
 			forceUpdate: force,
-			// params: isOwner ? { 'showDeleted': true } :  {}
+			params
 		})
 			.subscribe(
 				(issues) => {
-					this.issues = issues;
 					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => {
@@ -122,18 +123,37 @@ export class HomeComponent implements OnInit {
 			);
 	}
 
-	onSoftDelete(issue: any) {
-		this.isLoading = true;
-		issue.softDeleted = true;
-		this.issueService.update({ id: issue._id, entity: issue })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => { this.fetchData(true); });
+	subscribeToIssueStore() {
+		this.issueQuery.selectAll()
+			.subscribe((issues: Issue[]) => {
+				this.issues = issues;
+			})
 	}
 
-	onDelete(issue: any) {
-		this.issueService.delete({ id: issue._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+	onDelete(event: any) {
+		this.issueService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
+	}
+
+	onSoftDelete(event: any) {
+		const entity = assign({}, event, { softDeleted: true });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
+	}
+
+	onRestore(event: any) {
+		const entity = assign({}, event, { softDeleted: false });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	handleUserCount(count: number) {

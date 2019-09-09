@@ -26,15 +26,16 @@ export class GridListComponent implements OnInit {
 
 	constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
-	public get getItems() {
+	getItems() {
+		let newItems = this.items.slice();
 
 		if (this.itemLimit) {
-			return this.items
+			newItems = newItems
 				.filter((item: any, index: Number) => index < this.itemLimit)
 				.sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore);
 		}
 
-		return this.items;
+		return newItems;
 	}
 
 	ngOnInit() { }

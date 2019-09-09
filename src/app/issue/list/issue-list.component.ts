@@ -1,12 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 
-import { finalize, startWith, map, catchError } from 'rxjs/operators';
-// import { zip } from 'rxjs/observable/zip';
+import { finalize, startWith, map } from 'rxjs/operators';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { IssueService, IssueContext } from '@app/core/http/issue/issue.service';
@@ -28,6 +27,12 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { Vote } from '@app/core/models/vote.model';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { assign } from 'lodash';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
+
+import { cloneDeep } from 'lodash';
 
 @Component({
 	selector: 'app-issue',
@@ -85,6 +90,8 @@ export class IssueListComponent implements OnInit {
 	suggestions: any[];
 
 	constructor(
+		private suggestionQuery: SuggestionQuery,
+		private issueQuery: IssueQuery,
 		private voteService: VoteService,
 		public snackBar: MatSnackBar,
 		private suggestionService: SuggestionService,
@@ -95,14 +102,22 @@ export class IssueListComponent implements OnInit {
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
-		) {
+		private meta: MetaService,
+		private topicQuery: TopicQuery,
+		private cdR: ChangeDetectorRef
+	) {
+
+		this.subscribeToIssueStore();
+		this.subscribeToSuggestionStore();
+		this.subscribeToTopicStore();
+
 		this.filteredTopics = this.topicFilter.valueChanges.pipe(
 			startWith(''),
 			map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()));
 	}
 
 	ngOnInit() {
+
 		this.organizationService.get()
 			.subscribe((org) => {
 				this.organization = org;
@@ -113,12 +128,11 @@ export class IssueListComponent implements OnInit {
 		});
 
 		this.stateService.setLoadingState(AppState.loading);
+
+		this.fetchData();
+
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
-		});
-		this.route.queryParamMap.subscribe(queryParams => {
-			const force: boolean = !!queryParams.get('forceUpdate');
-			this.fetchData(force);
 		});
 
 		this.meta.updateTags(
@@ -126,124 +140,131 @@ export class IssueListComponent implements OnInit {
 				title: 'All Issues',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
-
 	}
 
-	
 
-	fetchData(force?: boolean) {
-		this.setAppState(AppState.loading);
+
+	fetchData() {
 		const isOwner = this.auth.isOwner();
-
 		const options = {
-			orgs: [],
-			forceUpdate: force,
-			params: isOwner ? { 'showDeleted': true } :  {}
-		} as IssueContext;
+			params: { 'showDeleted': isOwner ? true : '' }
+		}
 
 		const issueObs: Observable<any[]> = this.issueService.list(options);
-		const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force });
-		const suggestionObs: Observable<any[]> = this.suggestionService.list({
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'issue',
-			}
-		})
+		const topicObs: Observable<any[]> = this.topicService.list(options);
+		const suggestionObs: Observable<any[]> = this.suggestionService.list(options)
 
 		forkJoin({
 			issues: issueObs,
 			topics: topicObs,
 			suggestions: suggestionObs
 		})
-		.subscribe(
-			results => {
-				const { issues, topics, suggestions } = results;
+			.subscribe(
+				results => {
+					const { issues, topics, suggestions } = results;
 
-				this.issues = issues;
-				this.allTopics = topics;
-				this.suggestions = suggestions;
+					// this.allTopics = topics;
 
-				if (this.topicParam) {
-					const topic = this._filter(this.topicParam);
-					if (topic.length) {
-						this.selectedTopics.push(topic[0]);
+					if (this.topicParam) {
+						const topic = this._filter(this.topicParam);
+						if (topic.length) {
+							this.selectedTopics.push(topic[0]);
+						}
 					}
+
+					return this.stateService.setLoadingState(AppState.complete);
+				},
+				err => {
+					return this.stateService.setLoadingState(AppState.serverError);
 				}
-				return this.stateService.setLoadingState(AppState.complete);
-			},
-			err => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
+			);
 	}
-	
-	getSuggestions() {
-		const isOwner = this.auth.isOwner();
 
-		this.suggestionService.list({
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'issue',
-			}
+	subscribeToSuggestionStore() {
+
+		this.suggestionQuery.selectAll({
+			filterBy: entity => entity.type === 'issue'
 		})
-		.subscribe(
-			(suggestions) => {
+			.subscribe((suggestions: Suggestion[]) => {
 				this.suggestions = suggestions;
-			},
-			(err) => err
-		)
+			})
 	}
 
+	subscribeToTopicStore() {
+		this.topicQuery.selectAll()
+			.subscribe((topics: Topic[]) => {
+				this.allTopics = topics
+			});
+	}
 
+	subscribeToIssueStore() {
+		this.issueQuery.selectAll()
+			.subscribe((issues: Issue[]) => {
+				this.issues = issues;
+			})
+	}
 
 	// filter the issue list for matching topicId's
-	getIssues(topicId: string) {
-		if (!topicId) {
-			return false;
-		}
-		const issues = this.issues.filter(issue => {
-			return issue.topics.some(topic => topic._id === topicId);
+	filterIssues(topic: Topic, issues: Issue[]) {
+		const issuesCopy = issues.slice();
+
+		return issuesCopy.filter((issue) => {
+			const topicExists = issue.topics.some((ele) => {
+				// If a new issue is created the topics array will be populated
+				// with objectId's / strings instead of objects with an ._id key
+				if (typeof ele === 'string') {
+					return ele === topic._id;
+				}
+
+				return ele._id === topic._id;
+			})
+
+			return topicExists;
 		});
-		return issues;
 	}
 
 	onDelete(event: any) {
-		this.issueService.delete({ id: event._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.issueService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.fetchData(true);
-		});
+		const entity = assign({}, event, { softDeleted: true });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onRestore(event: any) {
-		event.softDeleted = false;
-		this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.fetchData(true);
-		});
+		const entity = assign({}, event, { softDeleted: false });
+		this.issueService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onDeleteTopic(topic: any) {
-		this.topicService.delete({ id: topic._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.topicService.delete({ id: topic._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onSoftDeleteTopic(topic: any) {
-		this.isLoading = true;
-		topic.softDeleted = true;
-
+		const entity = assign({}, event, { softDeleted: true });
 		this.topicService.update({ id: topic._id, entity: topic })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	topicSelected(event: any) {
@@ -267,21 +288,15 @@ export class IssueListComponent implements OnInit {
 		}
 	}
 
-	setAppState(state: AppState) {
-		return this.loadingState = state;
-	}
-
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
 
 		this.suggestionService.create({ entity: suggestion })
-			.subscribe(t => {
-				this.openSnackBar('Succesfully created', 'OK');
-			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
+			.subscribe(
+				t => this.openSnackBar('Succesfully created', 'OK'),
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			)
 	}
 
 	openSnackBar(message: string, action: string) {
@@ -292,26 +307,32 @@ export class IssueListComponent implements OnInit {
 	}
 
 	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			this.getSuggestions()
-		});
+		this.suggestionService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions()
-		});
+		const entity = assign({}, event, { softDeleted: true });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionRestore(event: any) {
-		event.softDeleted = false;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions()
-		});
+		const entity = assign({}, event, { softDeleted: false });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
-	
+
+
 	onSuggestionVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -323,19 +344,27 @@ export class IssueListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
+					votes: {
+						currentUser: {
+							voteValue: res.voteValue
+						}
+					}
+				});
+
+				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestions();
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
 
 	private _filter(value: any): Topic[] {
@@ -349,4 +378,7 @@ export class IssueListComponent implements OnInit {
 		return filterVal;
 	}
 
+	trackByFn(index, item) {
+		return index; // or item.id
+	}
 }

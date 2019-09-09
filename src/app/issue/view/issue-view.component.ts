@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
-import { differenceWith } from 'lodash';
+import { differenceWith, assign } from 'lodash';
 import { isEqual } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -15,7 +15,7 @@ import { MediaService } from '@app/core/http/media/media.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { IIssue } from '@app/core/models/issue.model';
+import { IIssue, Issue } from '@app/core/models/issue.model';
 import { Solution } from '@app/core/models/solution.model';
 import { Media } from '@app/core/models/media.model';
 import { Vote } from '@app/core/models/vote.model';
@@ -30,6 +30,8 @@ import { ShellComponent } from '@app/shell/shell.component';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { OrganizationService } from '@app/core';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 @Component({
 	selector: 'app-issue',
@@ -68,7 +70,8 @@ export class IssueViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		@Inject(forwardRef(() => ShellComponent)) private shellComponent: ShellComponent
+		private suggestionQuery: SuggestionQuery,
+		private issueQuery: IssueQuery,
 	) { }
 
 	ngOnInit() {
@@ -78,47 +81,64 @@ export class IssueViewComponent implements OnInit {
 				(err) => err);
 
 		this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
-
 		this.stateService.setLoadingState(AppState.loading);
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToIssueStore(ID);
+			this.subscribeToSuggestionStore(ID);
 			this.getIssue(ID);
-			this.getSuggestions(ID);
 		});
+
+		this.getSuggestions();
 	}
-	
-	getSuggestions(id: string) {
+
+	subscribeToSuggestionStore(id: string) {
+		this.suggestionQuery.selectAll({
+			filterBy: entity => entity.parent === id
+		})
+			.subscribe((suggestions: Suggestion[]) => {
+				this.suggestions = suggestions;
+			})
+	}
+
+
+	subscribeToIssueStore(id: string) {
+		this.issueQuery.selectEntity(id)
+			.subscribe((issue: Issue) => {
+				this.issue = issue;
+			})
+	}
+
+	getSuggestions() {
 		const isOwner = this.auth.isOwner();
 
 		this.suggestionService.list({
 			forceUpdate: true,
 			params: {
-				'showDeleted': isOwner ? true : '',
-				'parent': id
+				'showDeleted': isOwner ? true : ''
 			}
 		})
-		.subscribe(
-			(suggestions) => {
-				this.suggestions = suggestions;
-			},
-			(err) => err
-		)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 
 	getIssue(id: string) {
 		this.issueService.view({ id: id, orgs: [] })
 			.subscribe(
 				(issue: IIssue) => {
-					this.issue = issue;
 					this.getSolutions(issue._id);
+
 					this.meta.updateTags(
 						{
-							title: this.issue.name,
+							title: issue.name || '',
 							appBarTitle: 'View Issue',
-							description: this.issue.description,
-							image: this.issue.imageUrl
+							description: issue.description || '',
+							image: issue.imageUrl || ''
 						});
+
 					this.stateService.setLoadingState(AppState.complete);
 				},
 				(error) => this.stateService.setLoadingState(AppState.serverError)
@@ -331,7 +351,7 @@ export class IssueViewComponent implements OnInit {
 	toggleContent() {
 		this.isOpen = this.isOpen ? false : true;
 	}
-	
+
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
@@ -344,13 +364,15 @@ export class IssueViewComponent implements OnInit {
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
 			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+				})
 	}
 
+	// Making a suggestion from issue - prepopulates the data so suggestion can be linked 
+	// to parent
 	populateSuggestion() {
-		const {_id, name: title } = this.issue;
+		const { _id, name: title } = this.issue;
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
@@ -366,26 +388,32 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			this.getSuggestions(this.issue._id)
-		});
+		this.suggestionService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions(this.issue._id)
-		});
+		const entity = assign({}, event, { softDeleted: true });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
+
 	onSuggestionRestore(event: any) {
-		event.softDeleted = false;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions(this.issue._id)
-		});
+		const entity = assign({}, event, { softDeleted: false });
+		this.suggestionService.update({ id: event._id, entity })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
-	
-	
+
+
 	onSuggestionVote(voteData: any) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
@@ -397,19 +425,29 @@ export class IssueViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
+				const updatedSuggestionWithNewVoteData = assign({}, item, {
+					votes: {
+						...item.votes,
+						currentUser: {
+							...item.votes.currentUser,
+							voteValue: res.voteValue
+						}
+					}
+				});
+
+				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
 				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestions(this.issue._id);
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
 
 }

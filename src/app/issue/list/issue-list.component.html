@@ -137,7 +137,7 @@
 						</mat-card>
 					</ng-container>		
 					<div [@fadeIn]=true 
-						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics)">
+						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
 						<div class="topic-header">
 							<h2 class="mat-h1 no-margin">
 								{{topic.name}}
@@ -163,14 +163,15 @@
 							</div>
 							<mat-divider></mat-divider>
 						</div>
-						<app-grid-list path="/issues"
-							[items]="getIssues(topic._id)"
+						<app-grid-list 
+							path="/issues"
+							[items]="filterIssues(topic, issues)"
 							model="Issue"
 							[titleCard]=true
 							(restore)="onRestore($event)"
 							(softDelete)="onSoftDelete($event)"
 							(delete)="onDelete($event)">
-							</app-grid-list>
+						</app-grid-list>
 					</div>
 					<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 						<h2 class="mat-headline center-text">Suggestions for Issues</h2>
