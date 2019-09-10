@@ -85,6 +85,9 @@ export class OrganizationEditComponent implements OnInit {
 		]
 	};
 
+	ICON_PREFIX: string = 'icon';
+	BACKGROUND_PREFIX: string = 'back'
+
 	@ViewChild('ownerInput') ownerInput: ElementRef<HTMLInputElement>;
 	@ViewChild('ownerAuto') ownerAutocomplete: MatAutocomplete;
 	@ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
@@ -189,8 +192,12 @@ export class OrganizationEditComponent implements OnInit {
 	}
 
 	onFileChange(field: string, event: any) {
+
+		const prefix = field.substring(0, 4);
 		if (event.target.files && event.target.files.length) {
 			const [file] = event.target.files;
+			file.field = prefix;
+
 			const reader = new FileReader();
 
 			// this.imageFile = file;
@@ -198,10 +205,11 @@ export class OrganizationEditComponent implements OnInit {
 			reader.onload = (pe: ProgressEvent) => {
 				const old = this[field].src;
 				this[field] = {
-					name: file.name,
+					name: prefix + "-" + file.name,
 					src: (<FileReader>pe.target).result,
 					new: true,
-					old: old
+					old: old,
+					field
 				};
 			};
 
@@ -222,15 +230,17 @@ export class OrganizationEditComponent implements OnInit {
 		};
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
+			
 			if (status === 200 && item.isSuccess) {
 				const res = JSON.parse(response);
+				const prefix = item.file.rawFile.field
 
 				// when the upload is complete compare the files name
 				// to the one we stored earlier so we know which file it is
-				if (item.file.name && item.file.name === this.backgroundImage.name) {
+				if (prefix === this.BACKGROUND_PREFIX) {
 					// this was the background image file
 					this.backgroundImage.src = res.secure_url;
-				} else if (item.file.name && item.file.name === this.iconImage.name) {
+				} else if (prefix === this.ICON_PREFIX) {
 					// this was the icon image file
 					this.iconImage.src = res.secure_url;
 				}
