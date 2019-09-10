@@ -48,6 +48,7 @@ export class SuggestionCreateComponent implements OnInit {
 	@ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
 	@ViewChild('mediaInput') mediaInput: ElementRef<HTMLInputElement>;
 	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	
 
 	constructor(
 		private suggestionService: SuggestionService,
@@ -99,18 +100,25 @@ export class SuggestionCreateComponent implements OnInit {
 			this.suggestionForm.patchValue({type: this.suggestionType});
 		}
 
+		// If a user is making a suggestion from an entity - populate the form with parentData
 		this.route.paramMap
 			.pipe(
-				map(() => window.history.state),
+				map((data) => {
+					return {
+						params: data,
+						state: window.history.state
+					}
+				}),
 				delay(0)
 			)
-			.subscribe((res) => {
-				if (res._id || res.parentTitle || res.type) {
-					if (res._id) {
-						this.suggestionForm.patchValue({parent: res._id});
+			.subscribe((routeData) => {
+				const { params, state } = routeData;
+				if (state._id || state.parentTitle || state.type) {
+					if (state._id) {
+						this.suggestionForm.patchValue({parent: state._id});
 					}
 
-					this.suggestionForm.patchValue(res);
+					this.suggestionForm.patchValue(state);
 					this.suggestionForm.controls['type'].disable();
 				} else {
 					this.suggestionForm.controls['parentTitle'].disable();
@@ -150,9 +158,9 @@ export class SuggestionCreateComponent implements OnInit {
 
 		this.suggestionService.create({ entity: this.suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(t => {
+			.subscribe((suggestion: Suggestion) => {
 				this.openSnackBar('Succesfully created', 'OK');
-				this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
+				this.router.navigate([`/suggestions/${suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } });
 			},
 			(error => {
 				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');

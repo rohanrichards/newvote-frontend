@@ -179,7 +179,7 @@ export class IssueEditComponent implements OnInit {
 					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
 				} else {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+					this.router.navigate([`/issues/${t._id}`], { queryParams: { forceUpdate: true } });
 				}
 			});
 	}
