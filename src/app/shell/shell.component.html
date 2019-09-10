@@ -40,13 +40,14 @@
 					 (click)="isMobile && sidenav.close()">
 						<span translate>Issues</span>
 					</a>
-					<a mat-list-item
-						stepPosition="right"
+
+					
+					<!-- <a mat-list-item
 					 	routerLink="/solutions"
 					 	routerLinkActive="active"
 					 	(click)="isMobile && sidenav.close()">
 						<span translate>Solutions</span>
-					</a>
+					</a> -->
 
 					<a mat-list-item
 					 *ngIf="auth.isVerified()"
