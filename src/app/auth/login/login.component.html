@@ -17,9 +17,9 @@
 			<div *ngIf="org  && org.authType && org.authType!==0"
 				fxFlex="1 0 100%"
 				fxLayout="column">
-				<ul class="mat-body">
+				<ul class="mat-body larger-spacing">
 					<li>
-						{{org.name}} <span *ngIf='org && org.organizationName'>by {{org.organizationName}}</span>requires verification of your account through Single Sign-on.
+						{{org.name}} <span *ngIf='org && org.organizationName'>by {{org.organizationName}}</span> requires verification of your account through Single Sign-on.
 						(don't worry, your votes and suggestions will only be anonymously available to your community leader)
 					</li>
 					<li>
@@ -83,7 +83,7 @@
 					 color="primary"
 					 type="submit"
 					 [disabled]="loginForm.invalid || isLoading">
-						
+
 						 <span *ngIf="isCommunityVerified" translate>Login</span>
 						 <span *ngIf="!isCommunityVerified" translate>Verify with Community</span>
 					</button>
