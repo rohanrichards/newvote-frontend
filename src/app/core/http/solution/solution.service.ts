@@ -48,13 +48,14 @@ export class SolutionService {
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
-			.pipe(
-				tap((data: any) => {
-					this.voteService.populateStore(data);
-					this.solutionStore.add(data);
-				}),
+			.pipe(	
 				map((res: Array<any>) => res),
-				catchError(handleError)
+				catchError(handleError),
+				tap((data: any) => {					
+					this.solutionStore.add(data);
+					this.voteService.populateStore(data);
+					return data;
+				}),
 			);
 	}
 
@@ -112,7 +113,7 @@ export class SolutionService {
 			);
 	}
 
-	updateSolutionVote(solution: any) {
-		this.solutionStore.update(solution._id, solution);
+	updateSolutionVote(id: string, solution: any) {
+		this.solutionStore.update(id, solution);
 	}
 }

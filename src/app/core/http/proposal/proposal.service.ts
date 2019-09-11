@@ -105,8 +105,8 @@ export class ProposalService {
 			);
 	}
 
-	updateProposalVote(proposal: any) {
-		this.proposalStore.update(proposal._id, proposal);
+	updateProposalVote(id: string, proposal: any) {
+		this.proposalStore.update(id, proposal);
 	}
 
 }

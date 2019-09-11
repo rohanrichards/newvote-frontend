@@ -97,7 +97,7 @@ export class IssueViewComponent implements OnInit {
 			this.subscribeToSuggestionStore(ID);
 			this.subscribeToSolutionStore(ID);
 			this.fetchData(ID);
-			this.getMedia(ID);
+			// this.getMedia(ID);
 		});
 
 		this.getSuggestions();
@@ -132,7 +132,7 @@ export class IssueViewComponent implements OnInit {
 		this.getIssue(id);
 		this.getProposals();
 		this.getSolutions();
-		this.getSuggestions();
+		// this.getSuggestions();
 	}
 
 	getSuggestions() {
@@ -165,13 +165,14 @@ export class IssueViewComponent implements OnInit {
 	getSolutions() {
 		const isOwner = this.auth.isOwner();
 		const params = { 'showDeleted': isOwner ? true : '' };
-		return this.solutionService.list({
+		
+		this.solutionService.list({
 			params
 		})
-		.subscribe(
-			(res) => res,
-			(err) => err
-		)
+			.subscribe(
+				(res) => { console.log(res, 'this is res' )},
+				(err) => err
+			)
 	}
 
 	getProposals() {
@@ -479,15 +480,15 @@ export class IssueViewComponent implements OnInit {
 					};
 
 					if (model === "Solution") {
-						return this.solutionService.updateSolutionVote(updatedEntity);
+						return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
 					}
 
 					if (model === "Proposal") {
-						return this.proposalService.updateProposalVote(updatedEntity);
+						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
 					}
 
 					if (model === "Suggestion") {
-						return this.suggestionService.updateSuggestionVote(updatedEntity);
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
 					}	
 				},
 				(err) => err
