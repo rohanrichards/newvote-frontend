@@ -34,6 +34,8 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { forkJoin, combineLatest, Observable, of } from 'rxjs';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-issue',
@@ -56,6 +58,7 @@ export class IssueViewComponent implements OnInit {
 	isOpen = false;
 	organization: any;
 	suggestions: any;
+	solutions$: Observable<Solution[]>;
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -75,7 +78,8 @@ export class IssueViewComponent implements OnInit {
 		private suggestionQuery: SuggestionQuery,
 		private issueQuery: IssueQuery,
 		private solutionQuery: SolutionQuery,
-		private proposalService: ProposalService
+		private proposalService: ProposalService,
+		private voteQuery: VotesQuery
 	) { }
 
 	ngOnInit() {
@@ -92,8 +96,7 @@ export class IssueViewComponent implements OnInit {
 			this.subscribeToIssueStore(ID);
 			this.subscribeToSuggestionStore(ID);
 			this.subscribeToSolutionStore(ID);
-			this.getIssue(ID);
-			this.getSolutions(ID);
+			this.fetchData(ID);
 			this.getMedia(ID);
 		});
 
@@ -106,25 +109,30 @@ export class IssueViewComponent implements OnInit {
 		})
 			.subscribe((suggestions: Suggestion[]) => {
 				this.suggestions = suggestions;
-			})
+			},
+			(err) => console.log(err)
+			)
 	}
 
 
 	subscribeToIssueStore(id: string) {
 		this.issueQuery.selectEntity(id)
-			.subscribe((issue: Issue) => {
-				this.issue = issue;
-			})
+			.subscribe(
+				(issue: Issue) => {
+					this.issue = issue;
+				},
+				(err) => console.log(err))
 	}
 
 	subscribeToSolutionStore(id: string) {
-		this.solutionQuery.selectAll({
-			filterBy: (solution: Solution) => solution.issues[0]._id === id
-		})
-			.subscribe(
-				(solutions) => this.solutions = solutions,
-				(err) => err
-			);
+		this.solutions$ = this.solutionQuery.selectSolutions()
+	}
+
+	fetchData(id: string) {		
+		this.getIssue(id);
+		this.getProposals();
+		this.getSolutions();
+		this.getSuggestions();
 	}
 
 	getSuggestions() {
@@ -136,16 +144,12 @@ export class IssueViewComponent implements OnInit {
 				'showDeleted': isOwner ? true : ''
 			}
 		})
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
 	}
 
 	getIssue(id: string) {
-		this.issueService.view({ id: id, orgs: [] })
+		return this.issueService.view({ id: id, orgs: [] })
 			.subscribe(
-				(issue: IIssue) => {
+				(issue) => {
 					this.meta.updateTags(
 						{
 							title: issue.name || '',
@@ -153,23 +157,33 @@ export class IssueViewComponent implements OnInit {
 							description: issue.description || '',
 							image: issue.imageUrl || ''
 						});
-
 					this.stateService.setLoadingState(AppState.complete);
-				},
-				(error) => this.stateService.setLoadingState(AppState.serverError)
-			);
+				}
+			)
 	}
 
-	getSolutions(id: string) {
+	getSolutions() {
 		const isOwner = this.auth.isOwner();
 		const params = { 'showDeleted': isOwner ? true : '' };
-		this.solutionService.list({
+		return this.solutionService.list({
 			params
 		})
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
+		.subscribe(
+			(res) => res,
+			(err) => err
+		)
+	}
+
+	getProposals() {
+		const isOwner = this.auth.isOwner();
+		const params = { 'showDeleted': isOwner ? true : '' };
+		return this.proposalService.list({
+			params
+		})
+		.subscribe(
+			(res) => res,
+			(err) => err
+		)
 	}
 
 	getMedia(id: string, forceUpdate?: boolean) {
@@ -201,25 +215,7 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
-					const updatedObjectWithNewVoteData = assign({}, item, {
-						votes: {
-							...item.votes,
-							currentUser: {
-								...item.votes.currentUser,
-								voteValue: res.voteValue
-							}
-						}
-					});
-
-					if (model === 'Solution') {
-						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
-					} 
-
-					if (model === 'Proposal') {
-						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
-					}
-
-					this.getMedia(this.issue._id, true);
+					this.updateEntityVoteData(item, model, res.voteValue);
 					this.openSnackBar('Your vote was recorded', 'OK');
 				},
 				(error) => {
@@ -443,6 +439,7 @@ export class IssueViewComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
+
 				const updatedSuggestionWithNewVoteData = assign({}, item, {
 					votes: {
 						...item.votes,
@@ -464,6 +461,38 @@ export class IssueViewComponent implements OnInit {
 					}
 				}
 			);
+	}
+
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
+
+					if (model === "Solution") {
+						return this.solutionService.updateSolutionVote(updatedEntity);
+					}
+
+					if (model === "Proposal") {
+						return this.proposalService.updateProposalVote(updatedEntity);
+					}
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 
 }

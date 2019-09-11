@@ -226,6 +226,7 @@
 			</mat-toolbar>
 			<app-card-list path="/solutions"
 				[items]=solutions
+				[items$]=solutions$
 				model="Solution"
 				[showChildren]="true"
 				childPath="proposals"
