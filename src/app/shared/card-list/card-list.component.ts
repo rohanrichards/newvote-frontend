@@ -5,6 +5,7 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { optimizeImage } from '@app/shared/helpers/cloudinary';
 import { MetaService } from '@app/core/meta.service';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-card-list',
@@ -16,6 +17,7 @@ export class CardListComponent implements OnInit {
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;
+	@Input() items$: Observable<any>;
 	@Input() showChildren = false;
 	@Input() childPath: string;
 	@Input() childName: string;

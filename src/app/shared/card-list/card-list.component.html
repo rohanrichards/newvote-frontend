@@ -1,5 +1,6 @@
-<div fxLayout="column" fxLayoutGap="32px" *ngIf="items">
-	<ng-container *ngIf="items.length === 0">
+
+<div fxLayout="column" fxLayoutGap="32px" *ngIf="items$">
+	<ng-container *ngIf="items$.length === 0">
 		<div class="item-card-row" fxFlex="100%">
 			<mat-card class="empty-card-wrap">
 				<div class="empty-card-blank">
@@ -12,7 +13,7 @@
 			</mat-card>
 		</div>
 	</ng-container>
-	<div class="item-card-row" fxFlex="100%" *ngFor="let item of items">
+	<div class="item-card-row" fxFlex="100%" *ngFor="let item of items$ | async">
 		<mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}" routerLink="{{path}}/{{item._id}}">
 			<div mat-card-image class="image-container" [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
 				[defaultImage]="handleImageUrl(item.imageUrl, true)" [lazyLoad]="handleImageUrl(item.imageUrl)">
