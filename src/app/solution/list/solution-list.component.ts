@@ -27,6 +27,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { Proposal } from '@app/core/models/proposal.model';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-solution',
@@ -74,7 +75,8 @@ export class SolutionListComponent implements OnInit {
 		private suggestionQuery: SuggestionQuery,
 		private solutionQuery: SolutionQuery,
 		private proposalService: ProposalService,
-		private proposalQuery: ProposalQuery
+		private proposalQuery: ProposalQuery,
+		private voteQuery: VotesQuery
 	) { }
 
 	ngOnInit() {
@@ -135,15 +137,6 @@ export class SolutionListComponent implements OnInit {
 			})
 	}
 
-	getProposal(solutionId: string) {
-		return this.proposalQuery.selectAll({
-			filterBy: (proposal: Proposal) => proposal.solutions[0] === solutionId
-		})
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
-	}
 
 	onRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: false });
@@ -172,6 +165,7 @@ export class SolutionListComponent implements OnInit {
 	}
 
 	onVote(voteData: any, model: string) {
+
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
@@ -185,6 +179,7 @@ export class SolutionListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
+
 					const updatedObjectWithNewVoteData = assign({}, item, {
 						votes: {
 							...item.votes,
@@ -195,23 +190,28 @@ export class SolutionListComponent implements OnInit {
 						}
 					});
 
+
 					if (model === 'Solution') {
-						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
-					} 
+						this.voteQuery.selectEntity(item._id)
+							.subscribe((
+								(data) => {
+								}
+							))
+					
+					}
 
 					if (model === 'Proposal') {
 						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
 					}
-					
+
 					this.openSnackBar('Your vote was recorded', 'OK');
 				},
 				(error) => {
-					if (error) {
-						if (error.status === 401) {
-							this.openSnackBar('You must be logged in to vote', 'OK');
-						} else {
-							this.openSnackBar('There was an error recording your vote', 'OK');
-						}
+
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
 					}
 				}
 			);

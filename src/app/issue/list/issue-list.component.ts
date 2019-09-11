@@ -378,7 +378,7 @@ export class IssueListComponent implements OnInit {
 		return filterVal;
 	}
 
-	trackByFn(index, item) {
+	trackByFn(index: any, item: any) {
 		return index; // or item.id
 	}
 }
