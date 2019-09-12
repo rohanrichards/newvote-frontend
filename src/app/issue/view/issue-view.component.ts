@@ -97,7 +97,7 @@ export class IssueViewComponent implements OnInit {
 			this.subscribeToSuggestionStore(ID);
 			this.subscribeToSolutionStore(ID);
 			this.fetchData(ID);
-			// this.getMedia(ID);
+			this.getMedia(ID);
 		});
 
 		this.getSuggestions();
@@ -132,7 +132,7 @@ export class IssueViewComponent implements OnInit {
 		this.getIssue(id);
 		this.getProposals();
 		this.getSolutions();
-		// this.getSuggestions();
+		this.getSuggestions();
 	}
 
 	getSuggestions() {
@@ -166,11 +166,11 @@ export class IssueViewComponent implements OnInit {
 		const isOwner = this.auth.isOwner();
 		const params = { 'showDeleted': isOwner ? true : '' };
 		
-		this.solutionService.list({
+		return this.solutionService.list({
 			params
 		})
 			.subscribe(
-				(res) => { console.log(res, 'this is res' )},
+				(res: any) => res,
 				(err) => err
 			)
 	}
