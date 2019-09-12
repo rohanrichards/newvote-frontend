@@ -29,10 +29,11 @@ export interface SolutionContext {
 @Injectable()
 export class SolutionService {
 
-	constructor(private httpClient: HttpClient,
-				private voteService: VoteService,
-				private solutionStore: SolutionStore
-		) { }
+	constructor(
+		private httpClient: HttpClient,
+		private voteService: VoteService,
+		private solutionStore: SolutionStore
+	) { }
 
 	list(context: SolutionContext): Observable<any[]> {
 		// create blank params object
@@ -49,13 +50,11 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(	
+				tap((data: any) => {
+					this.solutionStore.add(data);					
+				}),
 				map((res: Array<any>) => res),
 				catchError(handleError),
-				tap((data: any) => {					
-					this.solutionStore.add(data);
-					this.voteService.populateStore(data);
-					return data;
-				}),
 			);
 	}
 
@@ -72,7 +71,6 @@ export class SolutionService {
 			.get(routes.view(context), { params })
 			.pipe(
 				tap((res: any) => {
-					this.voteService.addEntityVote(res)
 					this.solutionStore.add(res);
 				}),
 				map((res: any) => res),

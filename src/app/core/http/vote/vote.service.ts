@@ -134,7 +134,6 @@ export class VoteService {
 		// copy server object to remove references
 		const serverData = cloneDeep(data);
 		let votes;
-
 		// Reduce starts with an empty array [], and iterates through each
 		// item in the serverData array and appending voteMetaData Objects
 
