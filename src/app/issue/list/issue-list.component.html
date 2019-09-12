@@ -184,7 +184,7 @@
 						(restore)="onSuggestionRestore($event)"
 						(softDelete)="onSuggestionSoftDelete($event)"
 						(delete)="onSuggestionDelete($event)"
-						(vote)="onSuggestionVote($event, 'Suggestion')"
+						(vote)="onVote($event, 'Suggestion')"
 						>
 					</app-card-list>
 					<div *ngIf="auth.isVerified()">

@@ -19,6 +19,7 @@ import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { Observable, combineLatest} from 'rxjs';
 import { assign } from 'lodash';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-suggestion',
@@ -54,6 +55,7 @@ export class SuggestionListComponent implements OnInit {
 		public auth: AuthenticationService,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
+		private voteQuery: VotesQuery
 	) { }
 
 	ngOnInit() {
@@ -149,17 +151,7 @@ export class SuggestionListComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe((res) => {
-				const updatedSuggestionWithNewVoteData  = assign({}, item, {
-					votes: {
-						...item.votes,
-						currentUser: {
-							...item.votes.currentUser,
-							voteValue: res.voteValue
-						}
-					}
-				});
-
-				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
+				
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
 			(error) => {
@@ -177,6 +169,31 @@ export class SuggestionListComponent implements OnInit {
 			duration: 4000,
 			horizontalPosition: 'right'
 		});
+	}
+
+
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 
 }

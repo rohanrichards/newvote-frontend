@@ -33,6 +33,7 @@ import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 
 import { cloneDeep } from 'lodash';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-issue',
@@ -104,7 +105,8 @@ export class IssueListComponent implements OnInit {
 		private router: Router,
 		private meta: MetaService,
 		private topicQuery: TopicQuery,
-		private cdR: ChangeDetectorRef
+		private cdR: ChangeDetectorRef,
+		private voteQuery: VotesQuery
 	) {
 
 		this.subscribeToIssueStore();
@@ -332,39 +334,28 @@ export class IssueListComponent implements OnInit {
 			);
 	}
 
-
-	onSuggestionVote(voteData: any) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Suggestion', voteValue);
-		const existingVote = item.votes.currentUser;
-
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
-
-		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false))
-			.subscribe((res) => {
-				const updatedSuggestionWithNewVoteData = assign({}, item, {
-					votes: {
-						currentUser: {
-							voteValue: res.voteValue
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
 						}
-					}
-				});
+					};
 
-				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
-				this.openSnackBar('Your vote was recorded', 'OK');
-			},
-				(error) => {
-					if (error.status === 401) {
-						this.openSnackBar('You must be logged in to vote', 'OK');
-					} else {
-						this.openSnackBar('There was an error recording your vote', 'OK');
-					}
-				}
-			);
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 
 	private _filter(value: any): Topic[] {

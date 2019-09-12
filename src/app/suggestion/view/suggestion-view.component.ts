@@ -15,6 +15,7 @@ import { trigger } from '@angular/animations';
 import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-suggestion',
@@ -41,6 +42,7 @@ export class SuggestionViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
+		private voteQuery: VotesQuery
 	) { }
 
 	ngOnInit() {
@@ -105,7 +107,7 @@ export class SuggestionViewComponent implements OnInit {
 		);
 	}
 
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, 'Suggestion', voteValue);
@@ -119,8 +121,8 @@ export class SuggestionViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
+						this.updateEntityVoteData(item, model, res.voteValue);
 						this.openSnackBar('Your vote was recorded', 'OK');
-						this.getSuggestion(this.suggestion._id, true);
 				},
 				(error) => {
 					if (error.status === 401) {
@@ -212,6 +214,30 @@ export class SuggestionViewComponent implements OnInit {
 				...this.suggestion
 			}
 		})
+	}
+
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 
 }

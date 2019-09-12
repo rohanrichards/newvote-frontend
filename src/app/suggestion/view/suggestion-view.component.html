@@ -105,7 +105,7 @@
 				<p></p>
 				<div class="buttons">
 					<app-vote-buttons [item]="suggestion"
-						(vote)=onVote($event)>
+						(vote)="onVote($event, 'Suggestion')">
 					</app-vote-buttons>
 				</div>
 				<div *ngIf="auth.isOwner() && suggestion.status === 1" [style.margin-bottom]="'1rem'">

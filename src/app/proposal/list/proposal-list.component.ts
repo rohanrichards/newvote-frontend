@@ -15,6 +15,7 @@ import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 import { assign } from 'lodash';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-proposal',
@@ -53,7 +54,8 @@ export class ProposalListComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
 		private proposalQuery: ProposalQuery,
-		private suggestionQuery: SuggestionQuery
+		private suggestionQuery: SuggestionQuery,
+		private voteQuery: VotesQuery
 		) { }
 
 	ngOnInit() {
@@ -122,7 +124,7 @@ export class ProposalListComponent implements OnInit {
 			);
 	}
 
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, 'Proposal', voteValue);
@@ -136,17 +138,8 @@ export class ProposalListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
-					const updatedProposalWithNewVoteData = assign({}, item, {
-						votes: {
-							...item.votes,
-							currentUser: {
-								...item.votes.currentUser,
-								voteValue: res.voteValue
-							}
-						}
-					});
 
-					this.proposalService.updateProposalVote(updatedProposalWithNewVoteData);
+					this.updateEntityVoteData(item, model, res.voteValue);
 					this.openSnackBar('Your vote was recorded', 'OK')
 				},
 				(error) => {
@@ -186,4 +179,31 @@ export class ProposalListComponent implements OnInit {
 			);
 	}
 
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
+
+					if (model === "Proposal") {
+						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+					}
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
+	}
 }

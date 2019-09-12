@@ -24,6 +24,7 @@ import { OrganizationService } from '@app/core';
 import { assign, cloneDeep } from 'lodash';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-solution',
@@ -56,7 +57,8 @@ export class SolutionViewComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
 		private suggestionQuery: SuggestionQuery,
-		private solutionQuery: SolutionQuery
+		private solutionQuery: SolutionQuery,
+		private voteQuery: VotesQuery
 	) { }
 
 	ngOnInit() {
@@ -145,24 +147,7 @@ export class SolutionViewComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
-					const updatedObjectWithNewVoteData = assign({}, item, {
-						votes: {
-							...item.votes,
-							currentUser: {
-								...item.votes.currentUser,
-								voteValue: res.voteValue
-							}
-						}
-					});
-
-					if (model === 'Solution') {
-						this.solutionService.updateSolutionVote(updatedObjectWithNewVoteData);
-					} 
-
-					if (model === 'Proposal') {
-						this.proposalService.updateProposalVote(updatedObjectWithNewVoteData);
-					}
-
+					this.updateEntityVoteData(item, model, res.voteValue);
 					this.openSnackBar('Your vote was recorded', 'OK');
 				},
 				(error) => {
@@ -331,41 +316,36 @@ export class SolutionViewComponent implements OnInit {
 			);
 	}
 
-
-	onSuggestionVote(voteData: any) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Suggestion', voteValue);
-		const existingVote = item.votes.currentUser;
-
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
-
-		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false))
-			.subscribe((res) => {
-				const updatedSuggestionWithNewVoteData = assign({}, item, {
-					votes: {
-						...item.votes,
-						currentUser: {
-							...item.votes.currentUser,
-							voteValue: res.voteValue
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
 						}
-					}
-				});
+					};
 
-				this.suggestionService.updateSuggestionVote(updatedSuggestionWithNewVoteData);
-				this.openSnackBar('Your vote was recorded', 'OK');
-			},
-				(error) => {
-					if (error.status === 401) {
-						this.openSnackBar('You must be logged in to vote', 'OK');
-					} else {
-						this.openSnackBar('There was an error recording your vote', 'OK');
+					if (model === "Solution") {
+						return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
 					}
-				}
-			);
+
+					if (model === "Proposal") {
+						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+					}
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 
 }
