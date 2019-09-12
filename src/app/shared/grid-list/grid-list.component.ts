@@ -42,56 +42,17 @@ export class GridListComponent implements OnInit {
 
 	onDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete ${this.model} Forever`,
-				message: `Are you sure you want to delete ${item.name}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.delete.emit(item);
-			}
-		});
+		this.delete.emit(item);
 	}
 
 	onSoftDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete ${this.model}`,
-				message: `Are you sure you want to delete ${item.name}? This will only hide the item from the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.softDelete.emit(item);
-			}
-		});
+		this.softDelete.emit(item);
 	}
 
 	onRestore(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Restore ${this.model}`,
-				message: `Are you sure you want to restore ${item.name}? This will make the item visible to the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.restore.emit(item);
-			}
-		});
+		this.restore.emit(item);
 	}
 
 	handleUrl(item: any) {
