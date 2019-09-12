@@ -15,18 +15,19 @@ import { Organization } from '@app/core/models/organization.model';
 import { Solution } from '@app/core/models/solution.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { Proposal } from '@app/core/models/proposal.model';
+import { TopicService } from '../topic/topic.service';
 
 
 
 type EntityTypes = Issue | Organization | Solution | Media | Suggestion | Proposal;
-type ServiceType = IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
+type ServiceType = TopicService | IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AdminService {
 
-	entities: Array<string> = ['Issue', 'Solution', 'Proposal', 'Suggestion', 'Media', 'Organization'];
+	entities: Array<string> = ['Topic', 'Issue', 'Solution', 'Proposal', 'Suggestion', 'Media', 'Organization'];
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -35,12 +36,13 @@ export class AdminService {
 		private suggestionService: SuggestionService,
 		private proposalService: ProposalService,
 		private mediaService: MediaService,
+		private topicService: TopicService,
 		private dialog: MatDialog,
 		private snackBar: MatSnackBar
 	) { }
 	
 	getService(model: string) {
-		const services: ServiceType[] = [this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
+		const services: ServiceType[] = [this.topicService, this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
 		return <ServiceType>services[entityIndex];
 	}
