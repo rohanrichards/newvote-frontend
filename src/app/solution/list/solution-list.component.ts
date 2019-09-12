@@ -28,6 +28,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { Proposal } from '@app/core/models/proposal.model';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-solution',
@@ -39,6 +40,8 @@ import { VotesQuery } from '@app/core/http/vote/vote.query';
 })
 export class SolutionListComponent implements OnInit {
 
+	solutions$: Observable<any>;
+	suggestions$: Observable<any>;
 	loadingState: string;
 	solutions: Array<any>;
 	isLoading: boolean;
@@ -75,8 +78,8 @@ export class SolutionListComponent implements OnInit {
 		private suggestionQuery: SuggestionQuery,
 		private solutionQuery: SolutionQuery,
 		private proposalService: ProposalService,
-		private proposalQuery: ProposalQuery,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		public admin: AdminService
 	) { }
 
 	ngOnInit() {
@@ -105,63 +108,29 @@ export class SolutionListComponent implements OnInit {
 		const isOwner = this.auth.isOwner();
 		const options = { 'showDeleted': isOwner ? true : '' }
 
-		const solutionObs: Observable<Solution[]> = this.solutionService.list({
-			params: options
-		});
-		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
+		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options });
+		const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options });
+		const solutionObs: Observable<Solution[]> = this.solutionService.list({ params: options });
 
 		forkJoin([
-			solutionObs,
-			suggestionObs
+			suggestionObs,
+			proposalObs,
+			solutionObs
 		])
 			.subscribe(
 				response => this.stateService.setLoadingState(AppState.complete),
 				err => this.stateService.setLoadingState(AppState.serverError)
 			);
-
 	}
 
 	subscribeToSolutionStore() {
-		this.solutionQuery.selectAll()
-			.subscribe((solutions: Solution[]) => {
-				this.solutions = solutions;
-			})
+		this.solutions$ = this.solutionQuery.selectSolutions()
 	}
 
 	subscribeToSuggestionStore() {
-		this.suggestionQuery.selectAll({
+		this.suggestions$ = this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'solution'
 		})
-			.subscribe((suggestions: Suggestion[]) => {
-				this.suggestions = suggestions;
-			})
-	}
-
-
-	onRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.solutionService.update({ id: event._id, entity: event })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.solutionService.update({ id: event._id, entity: event })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onDelete(event: any) {
-		this.solutionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
 	}
 
 	onVote(voteData: any, model: string) {
@@ -193,8 +162,6 @@ export class SolutionListComponent implements OnInit {
 			);
 	}
 
-
-
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,
@@ -214,33 +181,6 @@ export class SolutionListComponent implements OnInit {
 				(error) => {
 					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
 				})
-	}
-
-
-	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSuggestionSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSuggestionRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
 	}
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
