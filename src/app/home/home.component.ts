@@ -29,6 +29,7 @@ import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
 import { Proposal } from '@app/core/models/proposal.model';
 import { Solution } from '@app/core/models/solution.model';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
 	selector: 'app-home',
@@ -67,6 +68,7 @@ export class HomeComponent implements OnInit {
 		private proposalQuery: ProposalQuery,
 		private solutionQuery: SolutionQuery,
 		private issueQuery: IssueQuery,
+		private organizationQuery: OrganizationQuery
 	) { }
 
 	ngOnInit() {
@@ -74,16 +76,12 @@ export class HomeComponent implements OnInit {
 			this.loadingState = state;
 		});
 
+		this.meta.updateTags(
+			{
+				title: 'Home'
+			});
+
 		this.subscribeToIssueStore();
-
-		this.organizationService.get().subscribe((org) => {
-			this.org = org;
-			this.meta.updateTags(
-				{
-					title: 'Home'
-				});
-		});
-
 		this.fetchData();
 	}
 
@@ -109,14 +107,21 @@ export class HomeComponent implements OnInit {
 			(results) => {
 				const { solutions, proposals, count, issues } = results;
 				this.userCount = count;
-
-
 				this.stateService.setLoadingState(AppState.complete);
 			},
 			(err) => {
 				return this.stateService.setLoadingState(AppState.serverError);
 			}
 		);
+	}
+
+	subscribeToOrgStore() {
+		const host = document.location.host;
+		const subdomain = host.split('.')[0]
+		this.organizationQuery.selectEntity((org: Organization) => org.url === subdomain)
+			.subscribe((organization) => {
+				this.org = organization;
+			})
 	}
 
 	subscribeToIssueStore() {
