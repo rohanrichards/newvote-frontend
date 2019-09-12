@@ -59,20 +59,20 @@
 					<button color="accent"
 						*ngIf="suggestion.softDeleted"
 						mat-icon-button
-						(click)="onRestore()">
+						(click)="admin.onRestore(suggestion, 'Suggestion')">
 						<mat-icon aria-label="Restore suggestion">restore</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Remove solution"
 						*ngIf="!suggestion.softDeleted"
 						color="accent"
-						(click)="onSoftDelete()">
+						(click)="admin.onSoftDelete(suggestion, 'Suggestion')">
 						<mat-icon aria-label="Remove suggestion">delete</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Delete this Suggestion"
 						color="warn"
-						(click)="onDelete()">
+						(click)="admin.onDelete(suggestion, 'Suggestion')">
 						<mat-icon aria-label="Delete the suggestion forever">delete_forever</mat-icon>
 					</button>
 				</div>

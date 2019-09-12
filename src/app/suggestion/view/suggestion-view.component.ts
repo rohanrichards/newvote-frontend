@@ -16,6 +16,8 @@ import { fadeIn } from '@app/shared/animations/fade-animations';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 @Component({
 	selector: 'app-suggestion',
@@ -42,7 +44,9 @@ export class SuggestionViewComponent implements OnInit {
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		private admin: AdminService,
+		private suggestionQuery: SuggestionQuery
 	) { }
 
 	ngOnInit() {
@@ -54,20 +58,27 @@ export class SuggestionViewComponent implements OnInit {
 
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
-			this.getSuggestion(ID);
+			this.subscribeToSuggestionStore(ID);
+			this.fetchData(ID);
 		});
 	}
 
-	getSuggestion(id: string, forceUpdate?: boolean) {
+	subscribeToSuggestionStore(id: string) {
+		this.suggestionQuery.selectEntity(id)
+			.subscribe((suggestion: Suggestion) => {
+				this.suggestion = suggestion;
+			})
+	}
+
+	fetchData(id: string, forceUpdate?: boolean) {
 		this.suggestionService.view({ id: id, forceUpdate })
 			.subscribe(
 				(suggestion: Suggestion) => {
-					this.suggestion = suggestion;
 					this.meta.updateTags(
 						{
-							title: `${this.suggestion.title}`,
+							title: `${suggestion.title}`,
 							appBarTitle: 'View Suggestion',
-							description: this.suggestion.description
+							description: suggestion.description
 						});
 					return this.stateService.setLoadingState(AppState.complete);
 				},
@@ -134,66 +145,69 @@ export class SuggestionViewComponent implements OnInit {
 			);
 	}
 
-	onDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete Suggestion?`,
-				message: `Are you sure you want to delete ${this.suggestion.title}? This action cannot be undone.`
-			}
-		});
 
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.suggestionService.delete({ id: this.suggestion._id }).subscribe(() => {
-					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
 
-	onSoftDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Remove Suggestion?`,
-				message: `Are you sure you want to remove ${this.suggestion.title}? This will only hide the item from the public.`
-			}
-		});
 
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.suggestion.softDeleted = true;
-				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
-					.subscribe(() => {
-						this.openSnackBar('Succesfully removed', 'OK');
-						this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-					});
-			}
-		});
-	}
+	// onDelete() {
+	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+	// 		width: '250px',
+	// 		data: {
+	// 			title: `Delete Suggestion?`,
+	// 			message: `Are you sure you want to delete ${this.suggestion.title}? This action cannot be undone.`
+	// 		}
+	// 	});
 
-	onRestore() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Restore Suggestion?`,
-				message: `Are you sure you want to restore ${this.suggestion.title}? This will make the item visible to the public.`
-			}
-		});
+	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
+	// 		if (confirm) {
+	// 			this.suggestionService.delete({ id: this.suggestion._id }).subscribe(() => {
+	// 				this.openSnackBar('Succesfully deleted', 'OK');
+	// 				this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+	// 			});
+	// 		}
+	// 	});
+	// }
 
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.suggestion.softDeleted = false;
-				this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
-					.subscribe(() => {
-						this.openSnackBar('Succesfully restored', 'OK');
-						this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-					});
-			}
-		});
-	}
+	// onSoftDelete() {
+	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+	// 		width: '250px',
+	// 		data: {
+	// 			title: `Remove Suggestion?`,
+	// 			message: `Are you sure you want to remove ${this.suggestion.title}? This will only hide the item from the public.`
+	// 		}
+	// 	});
+
+	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
+	// 		if (confirm) {
+	// 			this.suggestion.softDeleted = true;
+	// 			this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+	// 				.subscribe(() => {
+	// 					this.openSnackBar('Succesfully removed', 'OK');
+	// 					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+	// 				});
+	// 		}
+	// 	});
+	// }
+
+	// onRestore() {
+	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+	// 		width: '250px',
+	// 		data: {
+	// 			title: `Restore Suggestion?`,
+	// 			message: `Are you sure you want to restore ${this.suggestion.title}? This will make the item visible to the public.`
+	// 		}
+	// 	});
+
+	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
+	// 		if (confirm) {
+	// 			this.suggestion.softDeleted = false;
+	// 			this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+	// 				.subscribe(() => {
+	// 					this.openSnackBar('Succesfully restored', 'OK');
+	// 					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
+	// 				});
+	// 		}
+	// 	});
+	// }
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
