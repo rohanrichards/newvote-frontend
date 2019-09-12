@@ -8,13 +8,16 @@ import { OrganizationService } from '../organization/organization.service';
 import { assign } from 'lodash';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { Observable } from 'rxjs';
+import { Issue } from '@app/core/models/issue.model';
+import { Media } from '@app/core/models/media.model';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AdminService {
 
-	entities: ['Issue', 'Solution', 'Proposal', 'Suggestion', 'Media', 'Organization'];
+	entities: Array<string> = ['Issue', 'Solution', 'Proposal', 'Suggestion', 'Media', 'Organization'];
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -28,12 +31,13 @@ export class AdminService {
 	) { }
 	
 	getService(model: string) {
-		const services = [this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
+		const services: Array<IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService > = [this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
 		return services[entityIndex];
 	}
 
 	onDelete(object: any, model: string) {
+		console.log(object, 'this is object');
 		const title = object.name || object.title;
 		const service = this.getService(model);
 
@@ -48,7 +52,7 @@ export class AdminService {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				service.delete({ id: object._id })
-					.subscribe(() => {
+					.subscribe((res: any) => {
 						this.openSnackBar('Succesfully deleted', 'OK');
 						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 					});
@@ -58,6 +62,7 @@ export class AdminService {
 	}
 
 	onSoftDelete(object: any, model: string) {
+		console.log(object, 'this is object');
 		const title = object.name || object.title;
 		const service = this.getService(model);
 		const entity = assign({}, object, { softDeleted: false });
@@ -72,8 +77,8 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				return service.update({ id: entity._id, entity })
-					.subscribe(() => {
+				service.update({ id: entity._id, entity })
+					.subscribe((res: any) => {
 						this.openSnackBar('Succesfully removed', 'OK');
 					});
 			}
@@ -82,6 +87,7 @@ export class AdminService {
 	}
 
 	onRestore(object: any, model: string) {
+		console.log(object, 'this is object');
 		const title = object.name || object.title;
 		const service = this.getService(model);
 		const entity = assign({}, object, { softDeleted: false });
@@ -96,8 +102,8 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {	
-				return service.update({ id: entity._id, entity })
-					.subscribe(() => {
+				service.update({ id: entity._id, entity })
+					.subscribe((res: any) => {
 						this.openSnackBar('Succesfully restored', 'OK');
 						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 					});

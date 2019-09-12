@@ -39,6 +39,8 @@ import { SolutionQuery } from './http/solution/solution.query';
 import { SolutionStore } from './http/solution/solution.state';
 import { ProposalQuery } from './http/proposal/proposal.query';
 import { ProposalStore } from './http/proposal/proposal.store';
+import { MediaService } from './http/media/media.service';
+import { AdminService } from './http/admin/admin.service';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -96,6 +98,8 @@ export function tokenGetter() {
 		SolutionStore,
 		ProposalQuery,
 		ProposalStore,
+		MediaService,
+		AdminService,
 		{
 			provide: HttpClient,
 			useClass: HttpService
