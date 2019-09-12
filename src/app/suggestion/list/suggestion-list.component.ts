@@ -20,6 +20,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { Observable, combineLatest} from 'rxjs';
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-suggestion',
@@ -33,6 +34,7 @@ export class SuggestionListComponent implements OnInit {
 
 	loadingState: string;
 	suggestions: Array<Suggestion>;
+	suggestions$: Observable<any>;
 	isLoading: boolean;
 	headerTitle = 'Make a new contribution';
 	headerText = 'Suggestions are a way for you to contribute to the discussion. \
@@ -55,11 +57,13 @@ export class SuggestionListComponent implements OnInit {
 		public auth: AuthenticationService,
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		public admin: AdminService
 	) { }
 
 	ngOnInit() {
 		this.stateService.setLoadingState(AppState.loading);
+		this.getSuggestions();
 		this.fetchData();
 
 		this.meta.updateTags(
@@ -68,22 +72,17 @@ export class SuggestionListComponent implements OnInit {
 				description: 'Showing all suggestions.'
 			});
 
-		combineLatest([
-			this.stateService.loadingState$,
-			this.query.selectAll()
-		])
-		.subscribe(
-			(res: any) => {
-				const [appState, suggestionsStore] = res;
-				this.loadingState = appState;
-				this.suggestions = suggestionsStore;
-			},
-			err => err
-		);
+			this.stateService.loadingState$
+				.subscribe(
+					(res: any) => {
+						this.loadingState = res;
+					},
+					err => err
+				);
 	}
 
 	getSuggestions() {
-		this.query.selectAll({
+		this.suggestions$ = this.query.selectAll({
 			filterBy: (entity: any) => entity.user === this.auth.credentials.user._id}
 		)
 	}
@@ -111,34 +110,7 @@ export class SuggestionListComponent implements OnInit {
 			);
 	}
 
-	onDelete(event: any) {
-		this.suggestionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string = 'Suggestion') {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, 'Suggestion', voteValue);
@@ -151,7 +123,7 @@ export class SuggestionListComponent implements OnInit {
 		this.voteService.create({ entity: vote })
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe((res) => {
-				
+				this.updateEntityVoteData(item, model, res.voteValue);
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
 			(error) => {
