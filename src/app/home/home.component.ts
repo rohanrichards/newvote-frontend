@@ -24,6 +24,11 @@ import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 import { assign } from 'lodash';
+import { AdminService } from '@app/core/http/admin/admin.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { Proposal } from '@app/core/models/proposal.model';
+import { Solution } from '@app/core/models/solution.model';
 
 @Component({
 	selector: 'app-home',
@@ -58,7 +63,10 @@ export class HomeComponent implements OnInit {
 		private userService: UserService,
 		private meta: MetaService,
 		public snackBar: MatSnackBar,
-		private issueQuery: IssueQuery
+		public admin: AdminService,
+		private proposalQuery: ProposalQuery,
+		private solutionQuery: SolutionQuery,
+		private issueQuery: IssueQuery,
 	) { }
 
 	ngOnInit() {
@@ -77,50 +85,38 @@ export class HomeComponent implements OnInit {
 		});
 
 		this.fetchData();
-
-		const getSolutions = this.solutionService.list({ forceUpdate: false });
-		const getProposals = this.proposalService.list({ forceUpdate: false });
-		const getUsers = this.userService.count({ forceUpdate: false });
-
-		forkJoin({
-			solutions: getSolutions,
-			proposals: getProposals,
-			count: getUsers
-		})
-		.subscribe(
-			(results) => {
-				const { solutions, proposals, count } = results;
-
-				this.solutions = solutions;
-				this.proposals = proposals;
-				this.userCount = count;
-			},
-			(err) => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
 	}
 
-	fetchData(force?: boolean) {
+	fetchData() {
 		const isOwner = this.auth.isOwner();
 		const params = { showDeleted: isOwner ? true : ' '}
 
 		this.isLoading = true;
 		this.stateService.setLoadingState(AppState.loading);
 
-		this.issueService.list({
-			orgs: [],
-			forceUpdate: force,
-			params
+		const getSolutions = this.solutionService.list({ params });
+		const getProposals = this.proposalService.list({ params });
+		const getIssues = this.issueService.list({ params });
+		const getUsers = this.userService.count({});
+
+		forkJoin({
+			solutions: getSolutions,
+			proposals: getProposals,
+			count: getUsers,
+			issues: getIssues
 		})
-			.subscribe(
-				(issues) => {
-					return this.stateService.setLoadingState(AppState.complete);
-				},
-				(err) => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
-			);
+		.subscribe(
+			(results) => {
+				const { solutions, proposals, count, issues } = results;
+				this.userCount = count;
+
+
+				this.stateService.setLoadingState(AppState.complete);
+			},
+			(err) => {
+				return this.stateService.setLoadingState(AppState.serverError);
+			}
+		);
 	}
 
 	subscribeToIssueStore() {
@@ -130,30 +126,18 @@ export class HomeComponent implements OnInit {
 			})
 	}
 
-	onDelete(event: any) {
-		this.issueService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
+	subscribeToProposalStore() {
+		this.proposalQuery.selectAll()
+			.subscribe((proposals: Proposal[]) => {
+				this.proposals = proposals;
+			})
 	}
 
-	onSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.issueService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.issueService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
+	subscribeToSolutionStore() {
+		this.solutionQuery.selectAll()
+			.subscribe((solutions: Solution[]) => {
+				this.solutions = solutions;
+			})
 	}
 
 	handleUserCount(count: number) {

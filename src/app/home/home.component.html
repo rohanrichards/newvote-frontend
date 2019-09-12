@@ -341,9 +341,9 @@
 		 [itemLimit]="ISSUE_LIMIT"
 		 [titleCard]=true
 		 [items]=issues
-		 (restore)="onRestore($event)"
-		 (delete)="onDelete($event)"
-		 (softDelete)="onSoftDelete($event)"></app-grid-list>
+		 (restore)="admin.onRestore($event, 'Issue')"
+		 (delete)="admin.onDelete($event, 'Issue')"
+		 (softDelete)="admin.onSoftDelete($event, 'Issue')"></app-grid-list>
 		<div>
 			<button mat-button
 			 routerLink="/issues">
