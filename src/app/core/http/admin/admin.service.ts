@@ -11,6 +11,15 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 import { Observable } from 'rxjs';
 import { Issue } from '@app/core/models/issue.model';
 import { Media } from '@app/core/models/media.model';
+import { Organization } from '@app/core/models/organization.model';
+import { Solution } from '@app/core/models/solution.model';
+import { Suggestion } from '@app/core/models/suggestion.model';
+import { Proposal } from '@app/core/models/proposal.model';
+
+
+
+type EntityTypes = Issue | Organization | Solution | Media | Suggestion | Proposal;
+type ServiceType = IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
 
 @Injectable({
 	providedIn: 'root'
@@ -31,15 +40,14 @@ export class AdminService {
 	) { }
 	
 	getService(model: string) {
-		const services: Array<IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService > = [this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
+		const services: ServiceType[] = [this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
-		return services[entityIndex];
+		return <ServiceType>services[entityIndex];
 	}
 
-	onDelete(object: any, model: string) {
-		console.log(object, 'this is object');
-		const title = object.name || object.title;
-		const service = this.getService(model);
+	onDelete(object: EntityTypes, model: string) {
+		const title: String = object.name || object.title;
+		const service: ServiceType = this.getService(model);
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -52,7 +60,7 @@ export class AdminService {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				service.delete({ id: object._id })
-					.subscribe((res: any) => {
+					.subscribe(() => {
 						this.openSnackBar('Succesfully deleted', 'OK');
 						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 					});
@@ -61,11 +69,12 @@ export class AdminService {
 
 	}
 
-	onSoftDelete(object: any, model: string) {
-		console.log(object, 'this is object');
-		const title = object.name || object.title;
-		const service = this.getService(model);
-		const entity = assign({}, object, { softDeleted: false });
+	onSoftDelete(object: EntityTypes, model: string) {
+		const title: String = object.name || object.title;
+		const service: ServiceType = this.getService(model);
+		const entity: EntityTypes = assign({}, object, { softDeleted: true });
+
+		console.log(entity, 'on SoftDelete');
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -78,7 +87,7 @@ export class AdminService {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				service.update({ id: entity._id, entity })
-					.subscribe((res: any) => {
+					.subscribe(() => {
 						this.openSnackBar('Succesfully removed', 'OK');
 					});
 			}
@@ -86,11 +95,11 @@ export class AdminService {
 		
 	}
 
-	onRestore(object: any, model: string) {
-		console.log(object, 'this is object');
-		const title = object.name || object.title;
-		const service = this.getService(model);
-		const entity = assign({}, object, { softDeleted: false });
+	onRestore(object: EntityTypes, model: string) {
+		const title: String = object.name || object.title;
+		const service: ServiceType = this.getService(model);
+
+		const entity: EntityTypes = assign({}, object, { softDeleted: false });
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -103,7 +112,7 @@ export class AdminService {
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {	
 				service.update({ id: entity._id, entity })
-					.subscribe((res: any) => {
+					.subscribe(() => {
 						this.openSnackBar('Succesfully restored', 'OK');
 						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
 					});
