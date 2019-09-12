@@ -34,6 +34,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query';
 
 import { cloneDeep } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-issue',
@@ -89,6 +90,7 @@ export class IssueListComponent implements OnInit {
 
 	loadingState: string;
 	suggestions: any[];
+	suggestions$: Observable<Suggestion[]>;
 
 	constructor(
 		private suggestionQuery: SuggestionQuery,
@@ -106,7 +108,8 @@ export class IssueListComponent implements OnInit {
 		private meta: MetaService,
 		private topicQuery: TopicQuery,
 		private cdR: ChangeDetectorRef,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		private admin: AdminService
 	) {
 
 		this.subscribeToIssueStore();
@@ -131,8 +134,6 @@ export class IssueListComponent implements OnInit {
 
 		this.stateService.setLoadingState(AppState.loading);
 
-		this.fetchData();
-
 		this.route.paramMap.subscribe(params => {
 			this.topicParam = params.get('topic');
 		});
@@ -142,6 +143,8 @@ export class IssueListComponent implements OnInit {
 				title: 'All Issues',
 				description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
 			});
+		
+		this.fetchData();
 	}
 
 
@@ -183,13 +186,9 @@ export class IssueListComponent implements OnInit {
 	}
 
 	subscribeToSuggestionStore() {
-
-		this.suggestionQuery.selectAll({
+		this.suggestions$ = this.suggestionQuery.selectAll({
 			filterBy: entity => entity.type === 'issue'
 		})
-			.subscribe((suggestions: Suggestion[]) => {
-				this.suggestions = suggestions;
-			})
 	}
 
 	subscribeToTopicStore() {
@@ -223,50 +222,6 @@ export class IssueListComponent implements OnInit {
 
 			return topicExists;
 		});
-	}
-
-	onDelete(event: any) {
-		this.issueService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.issueService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.issueService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onDeleteTopic(topic: any) {
-		this.topicService.delete({ id: topic._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSoftDeleteTopic(topic: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.topicService.update({ id: topic._id, entity: topic })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
 	}
 
 	topicSelected(event: any) {
@@ -308,29 +263,31 @@ export class IssueListComponent implements OnInit {
 		});
 	}
 
-	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
+	onVote(voteData: any, model: string) {
 
-	onSuggestionSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
+		this.isLoading = true;
+		const { item, voteValue } = voteData;
+		const vote = new Vote(item._id, model, voteValue);
+		const existingVote = item.votes.currentUser;
 
-	onSuggestionRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.suggestionService.update({ id: event._id, entity })
+		if (existingVote) {
+			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+		}
+
+		this.voteService.create({ entity: vote })
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
-				(res) => res,
-				(err) => err
+				(res) => {
+					this.updateEntityVoteData(item, model, res.voteValue);
+					this.openSnackBar('Your vote was recorded', 'OK');
+				},
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
+				}
 			);
 	}
 

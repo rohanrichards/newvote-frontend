@@ -151,13 +151,13 @@
 								</button>
 								<button color="accent"
 									mat-icon-button
-									(click)="onSoftDeleteTopic(topic, $event)">
+									(click)="admin.onSoftDelete($event, 'Topic')">
 											<mat-icon aria-label="Remove the content">delete</mat-icon>
 								</button>
 								<button color="warn"
 									mat-icon-button
 									*ngIf="auth.isAdmin(topic)"
-									(click)="onDeleteTopic(topic, $event)">
+									(click)="admin.onDelete($event, 'Topic')">
 											<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
 								</button>
 							</div>
@@ -168,9 +168,9 @@
 							[items]="filterIssues(topic, issues)"
 							model="Issue"
 							[titleCard]=true
-							(restore)="onRestore($event)"
-							(softDelete)="onSoftDelete($event)"
-							(delete)="onDelete($event)">
+							(restore)="admin.onRestore($event, 'Issue')"
+							(softDelete)="admin.onSoftDelete($event, 'Issue')"
+							(delete)="admin.onDelete($event, 'Issue')">
 						</app-grid-list>
 					</div>
 					<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
@@ -179,11 +179,11 @@
 					<app-card-list 
 						path="/suggestions"
 						[@fadeIn]=true
-						[items]=suggestions
+						[items$]=suggestions$
 						model="Suggestion"
-						(restore)="onSuggestionRestore($event)"
-						(softDelete)="onSuggestionSoftDelete($event)"
-						(delete)="onSuggestionDelete($event)"
+						(restore)="admin.onRestore($event, 'Suggestion')"
+						(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+						(delete)="admin.onDelete($event, 'Suggestion')"
 						(vote)="onVote($event, 'Suggestion')"
 						>
 					</app-card-list>
