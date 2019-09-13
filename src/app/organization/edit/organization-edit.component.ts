@@ -15,6 +15,9 @@ import { UserService } from '@app/core/http/user/user.service';
 import { Organization } from '@app/core/models/organization.model';
 import { User } from '@app/core/models/user.model';
 import { MetaService } from '@app/core/meta.service';
+import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query';
+
+import { cloneDeep } from 'lodash';
 
 @Component({
 	selector: 'app-organization',
@@ -96,7 +99,9 @@ export class OrganizationEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private location: Location,
-		private meta: MetaService
+		private meta: MetaService,
+		private organizationQuery: OrganizationQuery,
+		private communityQuery: CommunityQuery
 	) {
 		this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
 			startWith(''),
@@ -107,40 +112,13 @@ export class OrganizationEditComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToOrganizationStore(ID);
 			this.organizationService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe((organization: Organization) => {
-					this.organization = organization;
-					this.backgroundImage.src = organization.imageUrl;
-					this.iconImage.src = organization.iconUrl;
-					this.owner = organization.owner;
-					this.futureOwner = organization.futureOwner;
-
-					organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m);
-
-					this.organizationForm.patchValue({
-						'name': organization.name,
-						'organizationName': organization.organizationName,
-						'description': organization.description,
-						'longDescription': organization.longDescription,
-						'url': organization.url,
-						'moderators': organization.moderators,
-						'organizationUrl': organization.organizationUrl,
-						'futureOwner': organization.futureOwner,
-						'newLeaderEmail': '',
-						'authType': organization.authType,
-						'authUrl': organization.authUrl,
-						'authEntityId': organization.authEntityId,
-						'privateOrg': organization.privateOrg || false
-					});
-
-					this.meta.updateTags(
-						{
-							title: `Edit ${organization.name} Community`,
-							appBarTitle: 'Edit Community',
-							description: `Edit the ${organization.name} community on the NewVote platform.`
-						});
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err	
+				);		
 		});
 
 		this.uploader = new FileUploader(this.uploaderOptions);
@@ -151,6 +129,52 @@ export class OrganizationEditComponent implements OnInit {
 		}
 
 		this.setAuthtypeValidators();
+		
+	}
+
+	subscribeToOrganizationStore(id: string) {
+		this.communityQuery.selectEntity(id)
+			.subscribe(
+				(organization: Organization) => {
+					this.organization = organization;
+					this.updateForm(organization);
+					this.updateTags(organization);
+				},
+				(err) => err
+			)
+	}
+
+	updateForm(organization: Organization) {
+			this.backgroundImage.src = organization.imageUrl;
+			this.iconImage.src = organization.iconUrl;
+			this.owner = organization.owner;
+			this.futureOwner = organization.futureOwner;
+			const mods = organization.moderators.slice().map((m: any) => m.email ? m.email : m);
+
+			this.organizationForm.patchValue({
+				'name': organization.name,
+				'organizationName': organization.organizationName,
+				'description': organization.description,
+				'longDescription': organization.longDescription,
+				'url': organization.url,
+				'moderators': mods,
+				'organizationUrl': organization.organizationUrl,
+				'futureOwner': organization.futureOwner,
+				'newLeaderEmail': '',
+				'authType': organization.authType,
+				'authUrl': organization.authUrl,
+				'authEntityId': organization.authEntityId,
+				'privateOrg': organization.privateOrg || false
+			});
+	}
+
+	updateTags(organization: Organization) {
+		this.meta.updateTags(
+			{
+				title: `Edit ${organization.name} Community`,
+				appBarTitle: 'Edit Community',
+				description: `Edit the ${organization.name} community on the NewVote platform.`
+			});
 	}
 
 	setAuthtypeValidators() {
@@ -247,22 +271,23 @@ export class OrganizationEditComponent implements OnInit {
 
 	updateWithApi() {
 		// update this.org with form data and the owner manually
-		merge(this.organization, <Organization>this.organizationForm.value);
-		this.organization.owner = this.owner;
-		this.organization.futureOwner = this.futureOwner;
-		this.organization.imageUrl = this.backgroundImage.src;
-		this.organization.iconUrl = this.iconImage.src;
+		let organization = cloneDeep(this.organization);
+		merge(organization, <Organization>this.organizationForm.value);
 
-		this.organizationService.update({ id: this.organization._id, entity: this.organization })
+		organization.owner = this.owner;
+		organization.futureOwner = this.futureOwner;
+		organization.imageUrl = this.backgroundImage.src;
+		organization.iconUrl = this.iconImage.src;
+
+		this.organizationService.update({ id: this.organization._id, entity: organization })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.location.back();
-				}
-			});
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
