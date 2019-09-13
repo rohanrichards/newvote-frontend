@@ -8,13 +8,18 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
 import { merge } from 'lodash';
 
-import { ISolution } from '@app/core/models/solution.model';
-import { IIssue } from '@app/core/models/issue.model';
+import { ISolution, Solution } from '@app/core/models/solution.model';
+import { IIssue, Issue } from '@app/core/models/issue.model';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
+
+import { cloneDeep, assign } from 'lodash';
 
 @Component({
 	selector: 'app-solution',
@@ -51,7 +56,10 @@ export class SolutionEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private issueQuery: IssueQuery,
+		private solutionQuery: SolutionQuery,
+		private organizationQuery: OrganizationQuery
 	) {
 		this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
 			startWith(''),
@@ -60,31 +68,17 @@ export class SolutionEditComponent implements OnInit {
 
 	ngOnInit() {
 		this.isLoading = true;
+		this.subscribeToIssuesStore();
+		this.subscribeToOrganizationStore();
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToSolutionStore(ID);
 			this.solutionService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(solution => {
-					this.imageUrl = solution.imageUrl;
-					this.solution = solution;
-					for (let i = 0; i < solution.issues.length; i++) {
-						const issue = solution.issues[i];
-						this.issues.push(issue);
-					}
-					this.solutionForm.setValue({
-						'title': solution.title,
-						'description': solution.description,
-						'imageUrl': solution.imageUrl,
-						'issues': ''
-					});
-					this.meta.updateTags(
-						{
-							title: `Edit ${solution.title}`,
-							appBarTitle: 'Edit Solution',
-							description: solution.description,
-							image: solution.imageUrl
-						});
-				});
+				.subscribe(
+					res => res,
+					err => err
+				);
 		});
 
 		// set up the file uploader
@@ -119,9 +113,62 @@ export class SolutionEditComponent implements OnInit {
 		};
 
 		this.issueService.list({})
-			.subscribe(issues => this.allIssues = issues);
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
+	}
 
-		this.organizationService.get().subscribe(org => this.organization = org);
+	updateForm(solution: Solution) {
+		this.imageUrl = solution.imageUrl;
+		this.solution = solution;
+		for (let i = 0; i < solution.issues.length; i++) {
+			const issue = solution.issues[i];
+			this.issues.push(issue);
+		}
+		this.solutionForm.setValue({
+			'title': solution.title,
+			'description': solution.description,
+			'imageUrl': solution.imageUrl,
+			'issues': ''
+		});
+	}
+
+	updateTags(solution: Solution) {
+		this.meta.updateTags(
+			{
+				title: `Edit ${solution.title}`,
+				appBarTitle: 'Edit Solution',
+				description: solution.description,
+				image: solution.imageUrl
+			});
+	}
+
+	subscribeToSolutionStore(id: string) {
+		this.solutionQuery.selectEntity(id)
+			.subscribe(
+				(solution: Solution) => {
+					this.solution = solution;
+					this.updateForm(solution);
+					this.updateTags(solution);
+				}
+			)
+	}
+
+	subscribeToIssuesStore() {
+		this.issueQuery.selectAll()
+			.subscribe(
+				(issues: Issue[]) => this.allIssues = issues,
+				(err) => err
+			)
+	}
+
+	subscribeToOrganizationStore() {
+		this.organizationQuery.select()
+			.subscribe(
+				(org) => this.organization = org,
+				(err) => err
+			)
 	}
 
 	onFileChange(event: any) {
@@ -146,42 +193,42 @@ export class SolutionEditComponent implements OnInit {
 	}
 
 	onSave() {
-		this.isLoading = true;
-		this.solution.organizations = this.organization;
+		let solution = cloneDeep(this.solution);
+		merge(solution, <ISolution>this.solutionForm.value);
 
+		this.isLoading = true;
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
 		};
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.solution, <ISolution>this.solutionForm.value);
 				const res = JSON.parse(response);
-				this.solution.imageUrl = res.secure_url;
-				this.updateWithApi();
+				solution.imageUrl = res.secure_url
+				this.updateWithApi(solution);
 			}
-		};
+		}
 
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.solution, <ISolution>this.solutionForm.value);
-			this.updateWithApi();
+			this.updateWithApi(solution);
 		}
 	}
 
-	updateWithApi() {
-		this.solution.issues = this.issues;
-		this.solutionService.update({ id: this.solution._id, entity: this.solution })
+	updateWithApi(solution: any) {
+		solution.organizations = this.organization;
+		solution.issues = this.issues;
+
+		this.solutionService.update({ id: solution._id, entity: solution })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.router.navigate(['/solutions']);
-				}
-			});
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
