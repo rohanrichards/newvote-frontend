@@ -1,18 +1,5 @@
 
-<div fxLayout="column" fxLayoutGap="32px" *ngIf="items$">
-	<ng-container *ngIf="items$.length === 0">
-		<div class="item-card-row" fxFlex="100%">
-			<mat-card class="empty-card-wrap">
-				<div class="empty-card-blank">
-				</div>
-				<div class="empty-title-container">
-					<h2 class="mat-h2">{{ model }}s</h2>
-					<h4 class="mat-h4">There are no {{ model + 's' | lowercase }} added by
-						{{ organizationName || 'this community'}} yet.</h4>
-				</div>
-			</mat-card>
-		</div>
-	</ng-container>
+<div fxLayout="column" fxLayoutGap="32px" *ngIf="(items$ | async)?.length > 0; else empty">
 	<div class="item-card-row" fxFlex="100%" *ngFor="let item of items$ | async">
 		<mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}" routerLink="{{path}}/{{item._id}}">
 			<div mat-card-image class="image-container" [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
@@ -89,3 +76,18 @@
 		</mat-card>
 	</div>
 </div>
+<ng-template #empty>
+	<div fxLayout="column" fxLayoutGap="32px">
+		<div class="item-card-row" fxFlex="100%">
+			<mat-card class="empty-card-wrap">
+				<div class="empty-card-blank">
+				</div>
+				<div class="empty-title-container">
+					<h2 class="mat-h2">{{ model }}s</h2>
+					<h4 class="mat-h4">There are no {{ model + 's' | lowercase }} added by
+						{{ organizationName || 'this community'}} yet.</h4>
+				</div>
+			</mat-card>
+		</div>
+	</div>
+</ng-template>
