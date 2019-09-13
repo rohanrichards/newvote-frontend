@@ -7,7 +7,7 @@ import { map, finalize, catchError, tap } from 'rxjs/operators';
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
 import { Socket } from 'ngx-socket-io';
-import { OrganizationStore } from './organization.store';
+import { OrganizationStore, CommunityStore } from './organization.store';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -38,7 +38,8 @@ export class OrganizationService {
 	constructor(
 		private socket: Socket,
 		private httpClient: HttpClient,
-		private organizationStore: OrganizationStore
+		private organizationStore: OrganizationStore,
+		private communityStore: CommunityStore
 	) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
@@ -57,7 +58,7 @@ export class OrganizationService {
 					catchError(handleError)
 				).subscribe(
 					(org: Organization) => {
-						this.organizationStore.add(org);
+						this.organizationStore.update(org);
 						this._org = org;
 						this.$org.next(org);
 					},
@@ -88,7 +89,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
-				tap((res: Organization[]) => this.organizationStore.add(res)),
+				tap((res: Organization[]) => this.communityStore.add(res)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -99,7 +100,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
-				tap((res: Organization[]) => this.organizationStore.add(res)),
+				tap((res: Organization[]) => this.communityStore.add(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -110,7 +111,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
-				tap((res: Organization) => this.organizationStore.add(res)),
+				tap((res: Organization) => this.communityStore.add(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -121,7 +122,11 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
-				tap((res: Organization) => this.organizationStore.update(res._id, res)),
+				tap((res: Organization) => {
+					this.organizationStore.update(res);
+					this.communityStore.update(res._id, res)
+				
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -142,7 +147,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
-				tap((res: Organization) => this.organizationStore.remove(res._id)),
+				tap((res: Organization) => this.communityStore.remove(res._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
