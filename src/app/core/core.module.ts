@@ -41,8 +41,8 @@ import { ProposalQuery } from './http/proposal/proposal.query';
 import { ProposalStore } from './http/proposal/proposal.store';
 import { MediaService } from './http/media/media.service';
 import { AdminService } from './http/admin/admin.service';
-import { OrganizationQuery } from './http/organization/organization.query';
-import { OrganizationStore } from './http/organization/organization.store';
+import { OrganizationQuery, CommunityQuery } from './http/organization/organization.query';
+import { OrganizationStore, CommunityStore } from './http/organization/organization.store';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -105,6 +105,8 @@ export function tokenGetter() {
 		OrganizationService,
 		OrganizationQuery,
 		OrganizationStore,
+		CommunityQuery,
+		CommunityStore,
 		{
 			provide: HttpClient,
 			useClass: HttpService

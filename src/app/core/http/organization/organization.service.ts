@@ -58,6 +58,7 @@ export class OrganizationService {
 					catchError(handleError)
 				).subscribe(
 					(org: Organization) => {
+						this.communityStore.add(org);
 						this.organizationStore.update(org);
 						this._org = org;
 						this.$org.next(org);
@@ -100,7 +101,10 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
-				tap((res: Organization[]) => this.communityStore.add(res)),
+				tap((res: Organization) => {
+					this.organizationStore.update(res);
+					this.communityStore.add(res)
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -123,9 +127,13 @@ export class OrganizationService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				tap((res: Organization) => {
-					this.organizationStore.update(res);
+					// If returned org matches current organization
+					// update
+					if (res._id === this._org._id) {
+						this.organizationStore.update(res);
+					}
+
 					this.communityStore.update(res._id, res)
-				
 				}),
 				map((res: any) => res),
 				catchError(handleError)

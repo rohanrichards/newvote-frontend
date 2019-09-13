@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
@@ -31,7 +31,7 @@ export class SuggestionService {
 		private voteService: VoteService,
 		private httpClient: HttpClient) { }
 
-	list(context: SuggestionContext): Observable<Suggestion[]> {
+	list(context: SuggestionContext): Observable<any> {
 		// create blank params object
 		let params = new HttpParams();
 
@@ -54,7 +54,7 @@ export class SuggestionService {
 			);
 	}
 
-	view(context: SuggestionContext): Observable<Suggestion> {
+	view(context: SuggestionContext): Observable<any> {
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
@@ -68,7 +68,7 @@ export class SuggestionService {
 			);
 	}
 
-	create(context: SuggestionContext): Observable<Suggestion> {
+	create(context: SuggestionContext): Observable<any> {
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
@@ -79,7 +79,7 @@ export class SuggestionService {
 			);
 	}
 
-	update(context: SuggestionContext): Observable<Suggestion> {
+	update(context: SuggestionContext): Observable<any> {
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
@@ -90,7 +90,7 @@ export class SuggestionService {
 			);
 	}
 
-	delete(context: SuggestionContext): Observable<Suggestion> {
+	delete(context: SuggestionContext): Observable<any> {
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
