@@ -16,10 +16,9 @@ import { Solution } from '@app/core/models/solution.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { Proposal } from '@app/core/models/proposal.model';
 import { TopicService } from '../topic/topic.service';
+import { Topic } from '@app/core/models/topic.model';
 
-
-
-type EntityTypes = Issue | Organization | Solution | Media | Suggestion | Proposal;
+type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal;
 type ServiceType = TopicService | IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
 
 @Injectable({
@@ -44,11 +43,19 @@ export class AdminService {
 	getService(model: string) {
 		const services: ServiceType[] = [this.topicService, this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
-		return <ServiceType>services[entityIndex];
+		return services[entityIndex];
+	}
+
+	getTitle(object: EntityTypes) {
+		if (typeof object === typeof Suggestion) {
+			return object['name'];
+		}
+
+		return object['title'];
 	}
 
 	onDelete(object: EntityTypes, model: string) {
-		const title: String = object.name || object.title;
+		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
@@ -72,11 +79,9 @@ export class AdminService {
 	}
 
 	onSoftDelete(object: EntityTypes, model: string) {
-		const title: String = object.name || object.title;
+		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 		const entity: EntityTypes = assign({}, object, { softDeleted: true });
-
-		console.log(entity, 'on SoftDelete');
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -98,7 +103,7 @@ export class AdminService {
 	}
 
 	onRestore(object: EntityTypes, model: string) {
-		const title: String = object.name || object.title;
+		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 
 		const entity: EntityTypes = assign({}, object, { softDeleted: false });
