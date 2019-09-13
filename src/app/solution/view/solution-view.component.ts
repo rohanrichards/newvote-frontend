@@ -26,6 +26,9 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { Proposal } from '@app/core/models/proposal.model';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-solution',
@@ -43,6 +46,9 @@ export class SolutionViewComponent implements OnInit {
 	handleImageUrl = optimizeImage;
 	organization: any;
 	suggestions: any[];
+	proposals: any[];
+	proposals$: Observable<any>;
+	suggestions$: Observable<any>;
 
 	constructor(
 		private organizationService: OrganizationService,
@@ -60,7 +66,8 @@ export class SolutionViewComponent implements OnInit {
 		private suggestionQuery: SuggestionQuery,
 		private solutionQuery: SolutionQuery,
 		private voteQuery: VotesQuery,
-		private admin: AdminService
+		private admin: AdminService,
+		private proposalQuery: ProposalQuery
 	) { }
 
 	ngOnInit() {
@@ -75,8 +82,10 @@ export class SolutionViewComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.getSolution(ID);
+			this.getProposals();
 			this.subscribeToSuggestionStore(ID);
 			this.subscribeToSolutionStore(ID);
+			this.subscribeToProposalStore(ID);
 		});
 
 		this.getSuggestions();
@@ -106,6 +115,14 @@ export class SolutionViewComponent implements OnInit {
 			);
 	}
 
+	getProposals() {
+		this.proposalService.list({})
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
+	}
+
 	getSuggestions() {
 		const isOwner = this.auth.isOwner();
 
@@ -127,12 +144,13 @@ export class SolutionViewComponent implements OnInit {
 	}
 
 	subscribeToSuggestionStore(id: string) {
-		this.suggestionQuery.selectAll({
+		this.suggestions$ = this.suggestionQuery.selectAll({
 			filterBy: entity => entity.parent === id
 		})
-			.subscribe((suggestions: Suggestion[]) => {
-				this.suggestions = suggestions;
-			})
+	}
+
+	subscribeToProposalStore(id: string) {
+		this.proposals$ = this.proposalQuery.filterBySolutionId(id);
 	}
 
 	onVote(voteData: any, model: string) {

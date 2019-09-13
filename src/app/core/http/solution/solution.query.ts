@@ -42,4 +42,26 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                 })
             )
     }
+
+    selectOneSolution(id: string) {
+        return combineQueries(
+            [
+                this.selectEntity(id),
+                this.proposalQuery.selectAll({ asObject: true }),
+            ]
+        )
+            .pipe(
+                map((results) => {
+                    let [solution, proposals] = results;
+
+                        return {
+                            ...solution,
+                            proposals: solution.proposals.map((proposalId) => {
+                                return proposals[proposalId]
+                            }),
+                            votes: solution.votes
+                        }
+                    })
+            )
+    }
 }
