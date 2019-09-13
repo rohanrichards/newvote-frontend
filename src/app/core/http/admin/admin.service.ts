@@ -40,18 +40,14 @@ export class AdminService {
 		private snackBar: MatSnackBar
 	) { }
 	
-	getService(model: string) {
+	getService(model: string): ServiceType {
 		const services: ServiceType[] = [this.topicService, this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
 		return services[entityIndex];
 	}
 
-	getTitle(object: EntityTypes) {
-		if (typeof object === typeof Suggestion) {
-			return object['name'];
-		}
-
-		return object['title'];
+	getTitle(object: EntityTypes): string {
+		return object['title'] || object['name'];;
 	}
 
 	onDelete(object: EntityTypes, model: string) {

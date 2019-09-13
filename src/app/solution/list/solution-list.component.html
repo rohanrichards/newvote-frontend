@@ -75,7 +75,7 @@
 				(softDelete)="admin.onSoftDelete($event, 'Solution')"
 				(delete)="admin.onDelete($event, 'Solution')"
 				(vote)="onVote($event, 'Solution')"
-				(childVote)="admin.onVote($event, 'Proposal')">
+				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
 			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 				<h2 class="mat-headline center-text">Suggestions for Solutions</h2>

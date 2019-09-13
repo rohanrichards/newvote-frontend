@@ -127,8 +127,7 @@ export class OrganizationService {
 			.put(routes.update(context), context.entity)
 			.pipe(
 				tap((res: Organization) => {
-					// If returned org matches current organization
-					// update
+					// since there are two stores we need to check whether to update both
 					if (res._id === this._org._id) {
 						this.organizationStore.update(res);
 					}
@@ -145,6 +144,10 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.put(routes.updateOwner(context), context.entity)
 			.pipe(
+				tap((res: Organization) => {
+					this.organizationStore.update(res)
+					this.communityStore.update(res._id, res);
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
