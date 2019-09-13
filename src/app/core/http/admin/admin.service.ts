@@ -17,6 +17,7 @@ import { Suggestion } from '@app/core/models/suggestion.model';
 import { Proposal } from '@app/core/models/proposal.model';
 import { TopicService } from '../topic/topic.service';
 import { Topic } from '@app/core/models/topic.model';
+import { Router } from '@angular/router';
 
 type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal;
 type ServiceType = TopicService | IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
@@ -37,7 +38,8 @@ export class AdminService {
 		private mediaService: MediaService,
 		private topicService: TopicService,
 		private dialog: MatDialog,
-		private snackBar: MatSnackBar
+		private snackBar: MatSnackBar,
+		private router: Router
 	) { }
 	
 	getService(model: string): ServiceType {
@@ -50,7 +52,7 @@ export class AdminService {
 		return object['title'] || object['name'];;
 	}
 
-	onDelete(object: EntityTypes, model: string) {
+	onDelete(object: EntityTypes, model: string, redirectRoute?: string) {
 		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 
@@ -67,14 +69,17 @@ export class AdminService {
 				service.delete({ id: object._id })
 					.subscribe(() => {
 						this.openSnackBar('Succesfully deleted', 'OK');
-						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+
+						if (redirectRoute) {
+							this.router.navigate([`/${redirectRoute}`]);
+						}
 					});
 			}
 		});
 
 	}
 
-	onSoftDelete(object: EntityTypes, model: string) {
+	onSoftDelete(object: EntityTypes, model: string, redirectRoute?: string) {
 		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 		const entity: EntityTypes = assign({}, object, { softDeleted: true });
@@ -92,13 +97,18 @@ export class AdminService {
 				service.update({ id: entity._id, entity })
 					.subscribe(() => {
 						this.openSnackBar('Succesfully removed', 'OK');
+
+						if (redirectRoute) {
+							console.log(redirectRoute, 'this is redirect');
+							this.router.navigate([`/${redirectRoute}`]);
+						}
 					});
 			}
 		});
 		
 	}
 
-	onRestore(object: EntityTypes, model: string) {
+	onRestore(object: EntityTypes, model: string, redirectRoute?: string) {
 		const title: String = this.getTitle(object);
 		const service: ServiceType = this.getService(model);
 
@@ -117,7 +127,10 @@ export class AdminService {
 				service.update({ id: entity._id, entity })
 					.subscribe(() => {
 						this.openSnackBar('Succesfully restored', 'OK');
-						// this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+						
+						if (redirectRoute) {
+							this.router.navigate([`/${redirectRoute}`]);
+						}
 					});
 			}
 		});

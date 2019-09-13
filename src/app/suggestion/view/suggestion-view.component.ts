@@ -19,6 +19,8 @@ import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
+import { assign } from 'lodash';
+
 @Component({
 	selector: 'app-suggestion',
 	templateUrl: './suggestion-view.component.html',
@@ -88,33 +90,15 @@ export class SuggestionViewComponent implements OnInit {
 			);
 	}
 
-	approveSuggestion() {
-		this.suggestion.status = 1;
-		this.updateSuggestion();
-	}
-
-	pendSuggestion() {
-		this.suggestion.status = 0;
-		this.updateSuggestion();
-	}
-
-	denySuggestion() {
-		this.suggestion.status = -1;
-		this.updateSuggestion();
-	}
-
-	updateSuggestion() {
+	updateSuggestion(status: number) {
 		this.isLoading = true;
-		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+
+		const entity = assign({}, this.suggestion, { status })
+		this.suggestionService.update({ id: this.suggestion._id, entity })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				(t) => {
-					this.openSnackBar('Succesfully updated', 'OK');
-					this.suggestion = t;
-				},
-				(error) => {
-					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-				}
+				(t) => this.openSnackBar('Succesfully updated', 'OK'),
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 		);
 	}
 
@@ -144,9 +128,6 @@ export class SuggestionViewComponent implements OnInit {
 				},
 			);
 	}
-
-
-
 
 	// onDelete() {
 	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
