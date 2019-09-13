@@ -25,6 +25,7 @@ import { assign, cloneDeep } from 'lodash';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { SolutionQuery } from '@app/core/http/solution/solution.query';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-solution',
@@ -58,7 +59,8 @@ export class SolutionViewComponent implements OnInit {
 		private meta: MetaService,
 		private suggestionQuery: SuggestionQuery,
 		private solutionQuery: SolutionQuery,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		private admin: AdminService
 	) { }
 
 	ngOnInit() {
@@ -160,96 +162,6 @@ export class SolutionViewComponent implements OnInit {
 			);
 	}
 
-	onDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete Solution?`,
-				message: `Are you sure you want to delete ${this.solution.title}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.solutionService.delete({ id: this.solution._id }).subscribe(() => {
-					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
-
-	onSoftDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Remove Solution?`,
-				message: `Are you sure you want to remove${this.solution.title}? This will only hide the item from the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				const entity = assign({}, this.solution, { softDeleted: true });
-				this.solutionService.update({ id: this.solution._id, entity }).subscribe(() => {
-					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
-
-	onRestore() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Restore Solution?`,
-				message: `Are you sure you want to restore ${this.solution.title}? This will make the item visible to the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				const entity = assign({}, this.solution, { softDeleted: false });
-				this.solutionService.update({ id: this.solution._id, entity }).subscribe(() => {
-					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
-
-	onRestoreProposal(event: any) {
-		this.isLoading = true;
-		event.softDeleted = false;
-
-		this.proposalService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.openSnackBar('Succesfully Restored', 'OK');
-				this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-			});
-	}
-
-	onSoftDeleteProposal(event: any) {
-		this.isLoading = true;
-		event.softDeleted = true;
-
-		this.proposalService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.openSnackBar('Succesfully removed', 'OK');
-				this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-			});
-	}
-
-	onDeleteProposal(event: any) {
-		this.proposalService.delete({ id: event._id }).subscribe(() => {
-			this.openSnackBar('Succesfully deleted', 'OK');
-			this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-		});
-	}
-
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
 			duration: 4000,
@@ -288,32 +200,6 @@ export class SolutionViewComponent implements OnInit {
 				(error) => {
 					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
 				})
-	}
-
-	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSuggestionSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSuggestionRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: false });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
 	}
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
