@@ -64,4 +64,16 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                     })
             )
     }
+
+    filterByProposalId(id: string) {
+        return this.selectAll({
+            filterBy: (entity) => {
+                const includesSolutionId = entity.proposals.some((proposal: any) => {
+					return proposal._id === id;
+				})
+
+				return includesSolutionId;
+            }
+        })
+    }
 }

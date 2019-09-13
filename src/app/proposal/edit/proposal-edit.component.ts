@@ -6,15 +6,19 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
-import { merge } from 'lodash';
+import { merge, assign, cloneDeep } from 'lodash';
 
-import { IProposal } from '@app/core/models/proposal.model';
+import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { ISolution } from '@app/core/models/solution.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
 	selector: 'app-proposal',
@@ -51,7 +55,11 @@ export class ProposalEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private proposalQuery: ProposalQuery,
+		private issueQuery: IssueQuery,
+		private solutionQuery: SolutionQuery,
+		private organizationQuery: OrganizationQuery
 	) {
 		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
 			startWith(''),
@@ -62,28 +70,16 @@ export class ProposalEditComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToProposalStore(ID);
+			this.subscribeToSolutionStore(ID);
+			this.subscribeToOrganizationStore();
+
 			this.proposalService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(proposal => {
-					this.imageUrl = proposal.imageUrl;
-					this.proposal = proposal;
-					for (let i = 0; i < proposal.solutions.length; i++) {
-						const solution = proposal.solutions[i];
-						this.solutions.push(solution);
-					}
-					this.proposalForm.setValue({
-						'title': proposal.title,
-						'description': proposal.description,
-						'imageUrl': proposal.imageUrl,
-						'solutions': ''
-					});
-					this.meta.updateTags(
-						{
-							title: `Edit ${proposal.title}`,
-							appBarTitle: 'Edit Action',
-							description: `${proposal.description}`
-						});
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err
+				);
 		});
 
 		// set up the file uploader
@@ -118,9 +114,53 @@ export class ProposalEditComponent implements OnInit {
 		};
 
 		this.solutionService.list({})
-			.subscribe(solutions => this.allSolutions = solutions);
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 
-		this.organizationService.get().subscribe(org => this.organization = org);
+	}
+
+	updateForm(proposal: Proposal) {
+		this.imageUrl = proposal.imageUrl;
+		this.proposalForm.setValue({
+			'title': proposal.title,
+			'description': proposal.description,
+			'imageUrl': proposal.imageUrl,
+			'solutions': ''
+		});
+	}
+
+	updateTags(proposal: Proposal) {
+		this.meta.updateTags(
+			{
+				title: `Edit ${proposal.title}`,
+				appBarTitle: 'Edit Action',
+				description: `${proposal.description}`
+			});
+	}
+
+	subscribeToProposalStore(id: string) {
+		this.proposalQuery.select(id)
+			.subscribe((proposal: Proposal) => {
+				this.proposal = proposal;
+				this.updateForm(proposal);
+				this.updateTags(proposal);
+			})
+	}
+
+	subscribeToSolutionStore(id: string) {
+		this.solutionQuery.filterByProposalId(id)
+			.subscribe((solutions) => {
+				this.solutions = solutions
+			})
+	}
+
+	subscribeToOrganizationStore() {
+		this.organizationQuery.select()
+			.subscribe((organization: Organization) => {
+				this.organization = organization;
+			})
 	}
 
 	onFileChange(event: any) {
@@ -145,42 +185,42 @@ export class ProposalEditComponent implements OnInit {
 	}
 
 	onSave() {
-		this.isLoading = true;
-		this.proposal.organizations = this.organization;
+		let proposal = cloneDeep(this.proposal);
+		merge(proposal, <IProposal>this.proposalForm.value);
 
+		this.isLoading = true;
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
 		};
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.proposal, <IProposal>this.proposalForm.value);
 				const res = JSON.parse(response);
-				this.proposal.imageUrl = res.secure_url;
-				this.updateWithApi();
+				proposal.imageUrl = res.secure_url;
+				this.updateWithApi(proposal);
 			}
 		};
 
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.proposal, <IProposal>this.proposalForm.value);
-			this.updateWithApi();
+			this.updateWithApi(proposal);
 		}
 	}
 
-	updateWithApi() {
+	updateWithApi(proposal: any) {
+		this.proposal.organizations = this.organization;
 		this.proposal.solutions = this.solutions;
-		this.proposalService.update({ id: this.proposal._id, entity: this.proposal })
+
+		this.proposalService.update({ id: proposal._id, entity: proposal })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.router.navigate(['/proposals']);
-				}
-			});
+				},
+				(err) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
