@@ -15,6 +15,10 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { Organization } from '@app/core/models/organization.model';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+
+import { cloneDeep } from 'lodash';
 
 @Component({
 	selector: 'app-suggestion',
@@ -52,57 +56,86 @@ export class SuggestionEditComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private route: ActivatedRoute,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private organizationQuery: OrganizationQuery,
+		private suggestionQuery: SuggestionQuery
 	) { }
 
 	ngOnInit() {
+		this.subscribeToOrganizationStore();
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToSuggestionStore(ID);
 			this.suggestionService.view({ id: ID })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(suggestion => {
-
-					this.suggestion = suggestion;
-					this.mediaList = suggestion.media;
-
-					this.suggestionForm.patchValue({
-						'title': suggestion.title,
-						'type': suggestion.type || '',
-						'description': suggestion.description,
-						'parent': suggestion.parent,
-						'parentTitle': suggestion.parentTitle,
-						'parentType': suggestion.parentType
-					});
-
-					this.meta.updateTags(
-						{
-							title: `Edit ${suggestion.title}`,
-							appBarTitle: 'Edit Suggestion',
-							description: `${suggestion.description}`
-						});
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err
+				);
 		});
+	}
 
-		this.organizationService.get().subscribe(org => this.organization = org);
+	subscribeToSuggestionStore(id: string) {
+		this.suggestionQuery.selectEntity(id)
+			.subscribe(
+				(suggestion) => {
+					this.suggestion = suggestion
+					this.updateForm(suggestion);
+					this.updateTags(suggestion);
+				},
+				(err) => err
+			)
+	}
+
+	subscribeToOrganizationStore() {
+		this.organizationQuery.select()
+			.subscribe(
+				(organization: Organization) => this.organization = organization,
+				(err) => err
+			)
+	}
+
+	updateForm(suggestion: Suggestion) {
+		this.mediaList = suggestion.media;
+
+		this.suggestionForm.patchValue({
+			'title': suggestion.title,
+			'type': suggestion.type || '',
+			'description': suggestion.description,
+			'parent': suggestion.parent,
+			'parentTitle': suggestion.parentTitle,
+			'parentType': suggestion.parentType
+		});
+	}
+
+	updateTags(suggestion: Suggestion) {
+		this.meta.updateTags(
+			{
+				title: `Edit ${suggestion.title}`,
+				appBarTitle: 'Edit Suggestion',
+				description: `${suggestion.description}`
+			});
 	}
 
 	onSave() {
 		this.isLoading = true;
-		merge(this.suggestion, <Suggestion>this.suggestionForm.value);
-		this.suggestion.organizations = this.organization;
-		this.suggestion.media = this.mediaList;
 
-		this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
+		let suggestion = cloneDeep(this.suggestion);
+		merge(suggestion, <Suggestion>this.suggestionForm.value);
+		suggestion.organizations = this.organization;
+		suggestion.media = this.mediaList;
+
+		this.suggestionService.update({ id: suggestion._id, entity: suggestion })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate([`/suggestions`], { queryParams: { forceUpdate: true } });
-				}
-			});
+					this.router.navigate([`/suggestions`]);
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
