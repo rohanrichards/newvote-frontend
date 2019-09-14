@@ -9,6 +9,7 @@ import { AppState } from '@app/core/models/state.model';
 import { assign } from 'lodash';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 import { Topic } from '@app/core/models/topic.model';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-topic',
@@ -37,7 +38,8 @@ export class TopicListComponent implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private meta: MetaService,
-		private topicQuery: TopicQuery
+		private topicQuery: TopicQuery,
+		private admin: AdminService
 	) { }
 
 	ngOnInit() {
@@ -73,31 +75,5 @@ export class TopicListComponent implements OnInit {
 	subscribeToTopicStore() {
 		this.topicQuery.selectAll()
 			.subscribe((topics: Topic[]) => this.topics = topics)
-	}
-
-	onRestore(topic: any) {
-		const entity = assign({}, topic, { softDeleted: false });
-		this.topicService.update({ id: topic._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onSoftDelete(topic: any) {
-		const entity = assign({}, topic, { softDeleted: true });
-		this.topicService.update({ id: topic._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-
-	onDelete(event: any) {
-		this.topicService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
 	}
 }

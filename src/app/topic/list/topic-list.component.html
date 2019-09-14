@@ -13,8 +13,8 @@
 		<app-grid-list path="/topics"
 		    [items]=topics
 		    model="Topic"
-		    (restore)="onRestore($event)"
-			(softDelete)="onSoftDelete($event)"
-			(delete)="onDelete($event)"></app-grid-list>
+		    (restore)="admin.onRestore($event, 'Topic')"
+			(softDelete)="admin.onSoftDelete($event, 'Topic')"
+			(delete)="admin.onDelete($event, 'Topic')"></app-grid-list>
 	</div>
 </div>
