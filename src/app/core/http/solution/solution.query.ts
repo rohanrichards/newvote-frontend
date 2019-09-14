@@ -38,8 +38,6 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                         } else {
                             sProposals = solution.proposals
                                 .filter((proposalId) => {
-                                    console.log(proposalId, 'this is proposalId');
-                                    console.log(proposals);
                                     return proposals[proposalId];
                                 })
                                 .map((proposalId) => {
