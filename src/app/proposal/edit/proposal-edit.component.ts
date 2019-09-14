@@ -219,7 +219,7 @@ export class ProposalEditComponent implements OnInit {
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.router.navigate(['/proposals']);
 				},
-				(err) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 			);
 	}
 
