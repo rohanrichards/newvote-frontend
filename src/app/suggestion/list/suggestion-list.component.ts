@@ -83,8 +83,15 @@ export class SuggestionListComponent implements OnInit {
 
 	getSuggestions() {
 		this.suggestions$ = this.query.selectAll({
-			filterBy: (entity: any) => entity.user === this.auth.credentials.user._id}
-		)
+			filterBy: (entity: any) => {
+				const userId = this.auth.credentials.user._id;
+				if (typeof entity.user === 'string') {
+					return entity.user === userId;
+				}
+
+				return entity.user._id === userId;
+			}
+		})
 	}
 
 	fetchData() {
