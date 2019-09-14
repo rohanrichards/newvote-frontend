@@ -43,6 +43,8 @@ import { MediaService } from './http/media/media.service';
 import { AdminService } from './http/admin/admin.service';
 import { OrganizationQuery, CommunityQuery } from './http/organization/organization.query';
 import { OrganizationStore, CommunityStore } from './http/organization/organization.store';
+import { MediaStore } from './http/media/media.store';
+import { MediaQuery } from './http/media/media.query';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -107,6 +109,8 @@ export function tokenGetter() {
 		OrganizationStore,
 		CommunityQuery,
 		CommunityStore,
+		MediaStore,
+		MediaQuery,
 		{
 			provide: HttpClient,
 			useClass: HttpService
