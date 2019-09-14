@@ -9,7 +9,7 @@ import { map, startWith, finalize } from 'rxjs/operators';
 import { merge, assign, cloneDeep } from 'lodash';
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model';
-import { ISolution } from '@app/core/models/solution.model';
+import { ISolution, Solution } from '@app/core/models/solution.model';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { Organization } from '@app/core/models/organization.model';
@@ -71,7 +71,6 @@ export class ProposalEditComponent implements OnInit {
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
 			this.subscribeToProposalStore(ID);
-			this.subscribeToSolutionStore(ID);
 			this.subscribeToOrganizationStore();
 
 			this.proposalService.view({ id: ID, orgs: [] })
@@ -146,13 +145,27 @@ export class ProposalEditComponent implements OnInit {
 				this.proposal = proposal;
 				this.updateForm(proposal);
 				this.updateTags(proposal);
+				this.subscribeToSolutionStore(proposal);
 			})
 	}
 
-	subscribeToSolutionStore(id: string) {
-		this.solutionQuery.filterByProposalId(id)
-			.subscribe((solutions) => {
-				this.solutions = solutions
+	subscribeToSolutionStore(proposal: any) {
+		const { solutions } = proposal;
+		const solutionsArray = solutions.map((solution: any) => {
+			if (typeof solution === 'string') {
+				return solution;
+			}
+			return solution._id;
+		})
+
+		this.solutionQuery.selectAll()
+			.subscribe((solutions: Solution[]) => {
+				this.allSolutions = solutions;
+			})
+
+		this.solutionQuery.selectMany(solutionsArray)
+			.subscribe((solutions: Solution[]) => {
+				this.solutions = solutions;
 			})
 	}
 

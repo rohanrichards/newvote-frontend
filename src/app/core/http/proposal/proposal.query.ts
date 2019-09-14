@@ -17,6 +17,12 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         return this.selectAll({
             filterBy: (entity) => {
                 const includesSolutionId = entity.solutions.some((solution: any) => {
+                    // newly created proposals will return with a solutions array with just the object id
+                    // instead of populated object
+                    if (typeof solution === 'string') {
+                        return solution === id;
+                    }
+
 					return solution._id === id;
 				})
 
