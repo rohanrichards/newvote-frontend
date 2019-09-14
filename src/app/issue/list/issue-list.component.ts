@@ -109,7 +109,7 @@ export class IssueListComponent implements OnInit {
 		private topicQuery: TopicQuery,
 		private cdR: ChangeDetectorRef,
 		private voteQuery: VotesQuery,
-		private admin: AdminService
+		public admin: AdminService
 	) {
 
 		this.subscribeToIssueStore();

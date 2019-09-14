@@ -80,4 +80,7 @@ export class CardListComponent implements OnInit {
 		return `${suggestionIcons[iconIndex]}.png`;
 	}
 
+	trackByFn(index: any, item: any) {
+		return index; // or item.id
+	  }
 }
