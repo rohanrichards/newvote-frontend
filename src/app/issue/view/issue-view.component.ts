@@ -37,6 +37,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { forkJoin, combineLatest, Observable, of } from 'rxjs';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { MediaQuery } from '@app/core/http/media/media.query';
 
 @Component({
 	selector: 'app-issue',
@@ -82,7 +83,8 @@ export class IssueViewComponent implements OnInit {
 		private solutionQuery: SolutionQuery,
 		private proposalService: ProposalService,
 		private voteQuery: VotesQuery,
-		public admin: AdminService
+		public admin: AdminService,
+		private mediaQuery: MediaQuery
 	) { }
 
 	ngOnInit() {
@@ -99,6 +101,7 @@ export class IssueViewComponent implements OnInit {
 			this.subscribeToIssueStore(ID);
 			this.subscribeToSuggestionStore(ID);
 			this.subscribeToSolutionStore(ID);
+			this.subscribeToMediaStore(ID);
 			this.fetchData(ID);
 			this.getMedia(ID);
 		});
@@ -124,6 +127,13 @@ export class IssueViewComponent implements OnInit {
 
 	subscribeToSolutionStore(id: string) {
 		this.solutions$ = this.solutionQuery.selectSolutions()
+	}
+
+	subscribeToMediaStore(id: string) {
+		this.mediaQuery.selectIssueMedia(id)
+			.subscribe((media: Media[]) => {
+				this.media = media;
+			})
 	}
 
 	fetchData(id: string) {		
@@ -189,19 +199,19 @@ export class IssueViewComponent implements OnInit {
 		)
 	}
 
-	getMedia(id: string, forceUpdate?: boolean) {
+	getMedia(id: string) {
 		const isOwner = this.auth.isOwner();
 
 		this.mediaService.list({
-			params: isOwner
-				? { issueId: id, 'showDeleted': true }
-				: { issueId: id },
-			forceUpdate,
+			params: { issueId: id, 'showDeleted': isOwner ? true : '' }
 		})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((mediaList: Array<Media>) => {
-				this.media = mediaList;
-			});
+			.subscribe(
+				(mediaList: Array<Media>) => {
+					mediaList
+				},
+				(err) => err	
+			);
 	}
 
 	onVote(voteData: any, model: string) {

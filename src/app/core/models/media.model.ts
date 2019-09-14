@@ -22,6 +22,7 @@ export class Media implements IMedia {
 		public imageOnly: boolean = false,
 		public image: string = '',
 		public organizations: any = {},
-		public softDeleted: boolean = false
+		public softDeleted: boolean = false,
+		public issues: Array<any> = []
 	) { }
 }
