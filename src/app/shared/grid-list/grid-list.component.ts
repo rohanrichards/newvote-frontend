@@ -71,4 +71,7 @@ export class GridListComponent implements OnInit {
 		window.location.href = `http://${newHostName}:${window.location.port}`;
 	}
 
+	trackByFn(index: any, item:any) {
+		return index; // or item.id
+	  }
 }
