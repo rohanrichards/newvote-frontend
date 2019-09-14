@@ -141,7 +141,7 @@ export class ProposalEditComponent implements OnInit {
 	}
 
 	subscribeToProposalStore(id: string) {
-		this.proposalQuery.select(id)
+		this.proposalQuery.selectEntity(id)
 			.subscribe((proposal: Proposal) => {
 				this.proposal = proposal;
 				this.updateForm(proposal);
