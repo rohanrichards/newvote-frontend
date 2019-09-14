@@ -40,8 +40,8 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 })
 export class SolutionListComponent implements OnInit {
 
-	solutions$: Observable<any>;
-	suggestions$: Observable<any>;
+	solutions$: Observable<any[]>;
+	suggestions$: Observable<any[]>;
 	loadingState: string;
 	solutions: Array<any>;
 	isLoading: boolean;
