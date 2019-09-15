@@ -39,7 +39,7 @@ export class TopicListComponent implements OnInit {
 		private router: Router,
 		private meta: MetaService,
 		private topicQuery: TopicQuery,
-		private admin: AdminService
+		public admin: AdminService
 	) { }
 
 	ngOnInit() {
