@@ -9,17 +9,18 @@ import { assign } from 'lodash';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { Observable } from 'rxjs';
-import { Issue } from '@app/core/models/issue.model';
-import { Media } from '@app/core/models/media.model';
-import { Organization } from '@app/core/models/organization.model';
-import { Solution } from '@app/core/models/solution.model';
-import { Suggestion } from '@app/core/models/suggestion.model';
-import { Proposal } from '@app/core/models/proposal.model';
+import { Issue, IIssue } from '@app/core/models/issue.model';
+import { Media, IMedia } from '@app/core/models/media.model';
+import { Organization, IOrganization } from '@app/core/models/organization.model';
+import { Solution, ISolution } from '@app/core/models/solution.model';
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model';
+import { Proposal, IProposal } from '@app/core/models/proposal.model';
 import { TopicService } from '../topic/topic.service';
-import { Topic } from '@app/core/models/topic.model';
+import { Topic, ITopic } from '@app/core/models/topic.model';
 import { Router } from '@angular/router';
 
-type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal;
+type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal 
+	| ITopic | IIssue | IOrganization | ISolution | IMedia | ISuggestion | IProposal;
 type ServiceType = TopicService | IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
 
 @Injectable({
@@ -66,23 +67,51 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				service.delete({ id: object._id })
-					.subscribe(() => {
-						this.openSnackBar('Succesfully deleted', 'OK');
+				let service; 
+				let data = { id: object._id }
+				if (model === "Topic") {
+					service = this.topicService.delete(data)				
+				}
 
+				if (model === "Issue") {
+					service = this.issueService.delete(data)
+				}
+
+				if (model == "Solution") {
+					service = this.solutionService.delete(data)
+				}
+
+				if (model == "Proposal") {
+					service = this.proposalService.delete(data)
+				}
+				
+				if (model == "Suggestion") {
+					service = this.suggestionService.delete(data)
+				}
+
+				if (model === "Media") {
+					service = this.mediaService.delete(data)
+				}
+
+				if (model === "Organization") {
+					service = this.organizationService.delete(data)
+				}
+
+				service.subscribe(
+					(res) => {
+						this.openSnackBar('Succesfully deleted', 'OK');
 						if (redirectRoute) {
 							this.router.navigate([`/${redirectRoute}`]);
 						}
-					});
+					}
+				)
 			}
 		});
 
 	}
 
-	onSoftDelete(object: EntityTypes, model: string, redirectRoute?: string) {
+	onSoftDelete(object: any, model: string, redirectRoute?: string) {
 		const title: String = this.getTitle(object);
-		const service: ServiceType = this.getService(model);
-		const entity: EntityTypes = assign({}, object, { softDeleted: true });
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -94,12 +123,47 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				service.update({ id: entity._id, entity })
-					.subscribe(() => {
+				let service; 
+				
+				if (model === "Topic") {
+					const entity: Topic = assign({}, object, { softDeleted: true });
+					service = this.topicService.update({ id: entity._id, entity })				
+				}
+
+				if (model === "Issue") {
+					const entity: Issue = assign({}, object, { softDeleted: true });
+					service = this.issueService.update({ id: entity._id, entity })
+				}
+
+				if (model == "Solution") {
+					const entity: Solution = assign({}, object, { softDeleted: true });
+					service = this.solutionService.update({ id: entity._id, entity })
+				}
+
+				if (model == "Proposal") {
+					const entity: Proposal = assign({}, object, { softDeleted: true });
+					service = this.proposalService.update({ id: entity._id, entity })
+				}
+				
+				if (model == "Suggestion") {
+					const entity: Suggestion = assign({}, object, { softDeleted: true });
+					service = this.suggestionService.update({ id: entity._id, entity })
+				}
+
+				if (model === "Media") {
+					const entity: Media = assign({}, object, { softDeleted: true });
+					service = this.mediaService.update({ id: entity._id, entity })
+				}
+
+				if (model === "Organization") {
+					const entity: Organization = assign({}, object, { softDeleted: true });
+					service = this.organizationService.update({ id: entity._id, entity })
+				}
+
+					service.subscribe(() => {
 						this.openSnackBar('Succesfully removed', 'OK');
 
 						if (redirectRoute) {
-							console.log(redirectRoute, 'this is redirect');
 							this.router.navigate([`/${redirectRoute}`]);
 						}
 					});
@@ -108,11 +172,8 @@ export class AdminService {
 		
 	}
 
-	onRestore(object: EntityTypes, model: string, redirectRoute?: string) {
+	onRestore(object: any, model: string, redirectRoute?: string) {
 		const title: String = this.getTitle(object);
-		const service: ServiceType = this.getService(model);
-
-		const entity: EntityTypes = assign({}, object, { softDeleted: false });
 
 		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
@@ -123,11 +184,47 @@ export class AdminService {
 		});
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {	
-				service.update({ id: entity._id, entity })
-					.subscribe(() => {
-						this.openSnackBar('Succesfully restored', 'OK');
-						
+			if (confirm) {
+				let service; 
+				
+				if (model === "Topic") {
+					const entity: Topic = assign({}, object, { softDeleted: false });
+					service = this.topicService.update({ id: entity._id, entity })				
+				}
+
+				if (model === "Issue") {
+					const entity: Issue = assign({}, object, { softDeleted: false });
+					service = this.issueService.update({ id: entity._id, entity })
+				}
+
+				if (model == "Solution") {
+					const entity: Solution = assign({}, object, { softDeleted: false });
+					service = this.solutionService.update({ id: entity._id, entity })
+				}
+
+				if (model == "Proposal") {
+					const entity: Proposal = assign({}, object, { softDeleted: false });
+					service = this.proposalService.update({ id: entity._id, entity })
+				}
+				
+				if (model == "Suggestion") {
+					const entity: Suggestion = assign({}, object, { softDeleted: false });
+					service = this.suggestionService.update({ id: entity._id, entity })
+				}
+
+				if (model === "Media") {
+					const entity: Media = assign({}, object, { softDeleted: false });
+					service = this.mediaService.update({ id: entity._id, entity })
+				}
+
+				if (model === "Organization") {
+					const entity: Organization = assign({}, object, { softDeleted: false });
+					service = this.organizationService.update({ id: entity._id, entity })
+				}
+
+					service.subscribe(() => {
+						this.openSnackBar('Succesfully removed', 'OK');
+
 						if (redirectRoute) {
 							this.router.navigate([`/${redirectRoute}`]);
 						}
