@@ -54,16 +54,20 @@ export class OrganizationEditComponent implements OnInit {
 		privateOrg: new FormControl(false, [Validators.required]),
 		voteRestrictions: new FormArray([
 			new FormGroup({
-				student: new FormControl(false),
+				role: new FormControl('student'),
+				active: new FormControl(false)
 			}),
 			new FormGroup({
-				faculty: new FormControl(false),
+				role: new FormControl('faculty'),
+				active: new FormControl(false)
 			}),
 			new FormGroup({
-				staff: new FormControl(false),
+				role: new FormControl('staff'),
+				active: new FormControl(false)
 			}),
 			new FormGroup({
-				employee: new FormControl(false),
+				role: new FormControl('employee'),
+				active: new FormControl(false)
 			})
 		])
 	});
