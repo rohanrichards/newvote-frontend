@@ -55,9 +55,9 @@
 							model="Media"
 							parent="Issue"
 							[organization]="issue.organizations.name"
-							(restore)="onMediaRestore($event)"
-							(softDelete)="onMediaSoftDelete($event)"
-							(delete)="onMediaDelete($event)"
+							(restore)="admin.onRestore($event, 'Media')"
+							(softDelete)="admin.onSoftDelete($event, 'Media')"
+							(delete)="admin.onDelete($event, 'Media')"
 							(vote)="onVote($event, 'Media')">
 						</app-swiper-wrapper>
 		</mat-expansion-panel>
@@ -125,20 +125,22 @@
 						*ngIf="issue.softDeleted"
 						matTooltip="Restore this issue"
 						color="accent"
-						(click)="onRestore()">
+						(click)="admin.onRestore(issue, 'Issue', 'issues')">
 						<mat-icon aria-label="Remove this issue">restore</mat-icon>
 					</button>
 					<button mat-icon-button
 						*ngIf="!issue.softDeleted"
 						matTooltip="Remove this Issue"
 						color="accent"
-						(click)="onSoftDelete()">
+						(click)="admin.onSoftDelete(issue, 'Issue', 'issues')">
 						<mat-icon aria-label="Remove this issue">delete</mat-icon>
 					</button>
-					<button mat-icon-button
+					<button 
+						*ngIf="auth.isAdmin()"
+						mat-icon-button
 						matTooltip="Delete this Issue"
 						color="warn"
-						(click)="onDelete()">
+						(click)="admin.onDelete(issue, 'Issue', 'issues')">
 						<mat-icon aria-label="Delete the issue forever">delete_forever</mat-icon>
 					</button>
 				</div>
@@ -225,7 +227,7 @@
 				<span class="mat-headline center-span" [style.margin-bottom]="'0'">Vote on Solutions</span>
 			</mat-toolbar>
 			<app-card-list path="/solutions"
-				[items]=solutions
+				[items$]=solutions$
 				model="Solution"
 				[showChildren]="true"
 				childPath="proposals"
@@ -233,9 +235,9 @@
 				[showParent]="true"
 				parentPath="/issues"
 				parentPropName="issues"
-				(restore)="onRestoreSolution($event)"
-				(delete)="onDeleteSolution($event)"
-				(softDelete)="onSoftDeleteSolution($event)"
+				(restore)="admin.onRestore($event, 'Solution')"
+				(delete)="admin.onDelete($event, 'Solution')"
+				(softDelete)="admin.onSoftDelete($event, 'Solution')"
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
@@ -246,12 +248,12 @@
 				<app-card-list 
 					path="/suggestions"
 					[@fadeIn]=true
-					[items]=suggestions
+					[items$]=suggestions$
 					model="Suggestion"
-					(restore)="onSuggestionRestore($event)"
-					(softDelete)="onSuggestionSoftDelete($event)"
-					(delete)="onSuggestionDelete($event)"
-					(vote)="onSuggestionVote($event, 'Suggestion')"
+					(restore)="admin.onRestore($event, 'Suggestion')"
+					(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+					(delete)="admin.onDelete($event, 'Suggestion')"
+					(vote)="onVote($event, 'Suggestion')"
 					>
 				</app-card-list>
 			</div>

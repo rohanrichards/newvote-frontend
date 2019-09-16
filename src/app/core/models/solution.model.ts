@@ -25,5 +25,6 @@ export class Solution implements ISolution {
 		public organizations: any = {},
 		public votes: any = {},
 		public softDeleted: boolean = false,
+		public issues: Array<any> = []
 	) { }
 }

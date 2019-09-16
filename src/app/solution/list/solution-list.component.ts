@@ -3,14 +3,14 @@ import { finalize } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { differenceWith } from 'lodash';
-import { isEqual } from 'lodash';
+import { isEqual, assign } from 'lodash';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { ISolution, Solution } from '@app/core/models/solution.model';
+import { Solution } from '@app/core/models/solution.model';
 import { Vote } from '@app/core/models/vote.model';
 
 import { trigger } from '@angular/animations';
@@ -19,20 +19,29 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { FormGroup } from '@angular/forms';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { OrganizationService } from '@app/core';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { forkJoin, Observable } from 'rxjs';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { Proposal } from '@app/core/models/proposal.model';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-solution',
 	templateUrl: './solution-list.component.html',
 	styleUrls: ['./solution-list.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter'))
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SolutionListComponent implements OnInit {
 
+	solutions$: Observable<any[]>;
+	suggestions$: Observable<any[]>;
 	loadingState: string;
 	solutions: Array<any>;
 	isLoading: boolean;
@@ -64,12 +73,19 @@ export class SolutionListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private route: ActivatedRoute,
-		private router: Router,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		private suggestionQuery: SuggestionQuery,
+		private solutionQuery: SolutionQuery,
+		private proposalService: ProposalService,
+		private voteQuery: VotesQuery,
+		public admin: AdminService
 	) { }
 
 	ngOnInit() {
+		this.subscribeToSuggestionStore();
+		this.subscribeToSolutionStore();
+
 		this.organizationService.get()
 			.subscribe((org) => this.organization = org);
 
@@ -84,116 +100,41 @@ export class SolutionListComponent implements OnInit {
 				title: 'All Solutions',
 				description: 'Solutions are the decisions that you think your community should make.'
 			});
-			this.route.queryParamMap.subscribe(params => {
-				const force: boolean = !!params.get('forceUpdate');
-				this.fetchData(force);
-			});
 
+		this.fetchData();
 	}
 
-	fetchData(force?: boolean) {
+	fetchData() {
 		const isOwner = this.auth.isOwner();
+		const options = { 'showDeleted': isOwner ? true : '' }
 
-		this.solutionService.list({
-			orgs: [],
-			forceUpdate: force,
-			params: isOwner ? { 'showDeleted': true } :  {}
-		})
-		.subscribe(
-			solutions => {
-				this.solutions = solutions.sort((a: Solution, b: Solution) => b.votes.up - a.votes.up);
-				return 	this.stateService.setLoadingState(AppState.complete);
-			},
-			err => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
-		
-		this.getSuggestions();
-	}
+		const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options });
+		const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options });
+		const solutionObs: Observable<Solution[]> = this.solutionService.list({ params: options });
 
-	getSuggestions() {
-		const isOwner = this.auth.isOwner();
-		this.suggestionService.list({
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'solution',
-			}
-		})
-		.subscribe((suggestions) => {
-			this.suggestions = suggestions;
-		});
-	}
-
-	// find the different solution and only update it, not entire list
-	// this stops content flashing and unwanted scrolling
-	refreshData() {
-		const isOwner = this.auth.isOwner();
-
-		this.solutionService.list({
-			orgs: [],
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'solution',
-			}
-		})
+		forkJoin([
+			suggestionObs,
+			proposalObs,
+			solutionObs
+		])
 			.subscribe(
-				solutions => {
-					const diff = differenceWith(solutions, this.solutions, isEqual);
-					if (diff.length > 0) {
-						const index = this.solutions.findIndex(s => s._id === diff[0]._id);
-						this.solutions[index] = diff[0];
-					}
-					return this.stateService.setLoadingState(AppState.complete);
-				},
-				error => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
+				response => this.stateService.setLoadingState(AppState.complete),
+				err => this.stateService.setLoadingState(AppState.serverError)
 			);
+	}
 
-		this.suggestionService.list({
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : '',
-				'type': 'solution',
-			}
+	subscribeToSolutionStore() {
+		this.solutions$ = this.solutionQuery.selectSolutions()
+	}
+
+	subscribeToSuggestionStore() {
+		this.suggestions$ = this.suggestionQuery.selectAll({
+			filterBy: entity => entity.type === 'solution'
 		})
-		.subscribe((suggestions) => {
-			this.suggestions = suggestions;
-		});
-	}
-
-	onRestore(event: any) {
-		this.isLoading = true;
-		event.softDeleted = false;
-
-		this.solutionService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
-	}
-
-	onSoftDelete(event: any) {
-		this.isLoading = true;
-		event.softDeleted = true;
-
-		this.solutionService.update({ id: event._id, entity: event })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
-	}
-
-	onDelete(event: any) {
-		this.solutionService.delete({ id: event._id }).subscribe(() => {
-			this.fetchData(true);
-		});
 	}
 
 	onVote(voteData: any, model: string) {
+
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, model, voteValue);
@@ -204,25 +145,22 @@ export class SolutionListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
+					this.updateEntityVoteData(item, model, res.voteValue);
 					this.openSnackBar('Your vote was recorded', 'OK');
-					this.refreshData();
 				},
 				(error) => {
-					if (error) {
-						if (error.status === 401) {
-							this.openSnackBar('You must be logged in to vote', 'OK');
-						} else {
-							this.openSnackBar('There was an error recording your vote', 'OK');
-						}
+
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
 					}
 				}
 			);
 	}
-
-
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
@@ -236,59 +174,44 @@ export class SolutionListComponent implements OnInit {
 		suggestion.organizations = this.organization;
 
 		this.suggestionService.create({ entity: suggestion })
-			.subscribe(t => {
-				this.openSnackBar('Succesfully created', 'OK');
-			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
+			.subscribe(
+				t => {
+					this.openSnackBar('Succesfully created', 'OK');
+				},
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+				})
 	}
 
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
 
-	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id }).subscribe(() => {
-			this.getSuggestions();
-		});
-	}
-	
-	onSuggestionSoftDelete(event: any) {
-		event.softDeleted = true;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions();
-		});
-	}
-	
-	onSuggestionRestore(event: any) {
-		event.softDeleted = false;
-		this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-			this.getSuggestions();
-		});
-	}
-	
-	
-	onSuggestionVote(voteData: any) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, 'Suggestion', voteValue);
-		const existingVote = item.votes.currentUser;
+					if (model === "Solution") {
+						return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
+					}
 
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
+					if (model === "Proposal") {
+						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+					}
 
-		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
-			.subscribe((res) => {
-				this.openSnackBar('Your vote was recorded', 'OK');
-				this.getSuggestions();
-			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
-				}
-			}
-		);
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
 	}
 }

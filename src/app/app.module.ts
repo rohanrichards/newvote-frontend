@@ -41,6 +41,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { JoyrideModule } from 'ngx-joyride';
 import { LandingModule } from './landing/landing.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 @NgModule({
 	imports: [
@@ -72,6 +74,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 		LandingModule,
 		RecaptchaModule,
 		RecaptchaFormsModule,
+		SocketIoModule.forRoot({
+			url: environment.production ? environment.serverUrl : 'http://localhost:3000', options: {}
+		}),
+		environment.production ? [] : AkitaNgDevtools.forRoot(),
 		AppRoutingModule  // must be imported as the last module as it contains the fallback route
 	],
 	declarations: [

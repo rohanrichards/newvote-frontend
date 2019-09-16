@@ -63,7 +63,7 @@
 				*ngSwitchCase="'complete'"
 				path="/solutions"
 				[@fadeIn]=true
-				[items]=solutions
+				[items$]=solutions$
 				model="Solution"
 				[showChildren]="true"
 				childPath="proposals"
@@ -71,9 +71,9 @@
 				[showParent]="true"
 				parentPath="/issues"
 				parentPropName="issues"
-				(restore)="onRestore($event)"
-				(softDelete)="onSoftDelete($event)"
-				(delete)="onDelete($event)"
+				(restore)="admin.onRestore($event, 'Solution')"
+				(softDelete)="admin.onSoftDelete($event, 'Solution')"
+				(delete)="admin.onDelete($event, 'Solution')"
 				(vote)="onVote($event, 'Solution')"
 				(childVote)="onVote($event, 'Proposal')">
 			</app-card-list>
@@ -84,12 +84,12 @@
 				*ngSwitchCase="'complete'"
 				path="/suggestions"
 				[@fadeIn]=true
-				[items]=suggestions
+				[items$]=suggestions$
 				model="Suggestion"
-				(restore)="onSuggestionRestore($event)"
-				(softDelete)="onSuggestionSoftDelete($event)"
-				(delete)="onSuggestionDelete($event)"
-				(vote)="onSuggestionVote($event, 'Suggestion')"
+				(restore)="admin.onRestore($event, 'Suggestion')"
+				(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+				(delete)="admin.onDelete($event, 'Suggestion')"
+				(vote)="onVote($event, 'Suggestion')"
 				>
 			</app-card-list>
 			<div *ngIf="auth.isVerified()">
