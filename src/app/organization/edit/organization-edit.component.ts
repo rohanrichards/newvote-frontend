@@ -155,7 +155,8 @@ export class OrganizationEditComponent implements OnInit {
 						'authType': organization.authType,
 						'authUrl': organization.authUrl,
 						'authEntityId': organization.authEntityId,
-						'privateOrg': organization.privateOrg || false
+						'privateOrg': organization.privateOrg || false,
+						'voteRoles': organization.voteRoles
 					});
 
 					this.meta.updateTags(
