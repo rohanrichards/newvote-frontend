@@ -32,7 +32,7 @@ export class OrganizationCreateComponent implements OnInit {
 	uploader: FileUploader;
 	isValid = false;
 
-	checkboxOptions = ["student", "faculty", "staff", "employee"];
+	checkboxOptions = ["student", "faculty", "staff", "employee", "member"];
 
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
@@ -49,7 +49,7 @@ export class OrganizationCreateComponent implements OnInit {
 		authUrl: new FormControl(''),
 		authEntityId: new FormControl(''),
 		privateOrg: new FormControl(false, [Validators.required]),
-		voteRestrictions: new FormArray([
+		voteRoles: new FormArray([
 				new FormGroup({
 					role: new FormControl('student'),
 					active: new FormControl(false)
@@ -64,6 +64,10 @@ export class OrganizationCreateComponent implements OnInit {
 				}),
 				new FormGroup({
 					role: new FormControl('employee'),
+					active: new FormControl(false)
+				}),
+				new FormGroup({
+					role: new FormControl('member'),
 					active: new FormControl(false)
 				})
 			])

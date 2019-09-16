@@ -83,10 +83,10 @@
 				 required>
 			</mat-form-field>
 
-			<div class="vote-section" formArrayName="voteRestrictions" *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+			<div class="vote-section" formArrayName="voteRoles" *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
 				<mat-label>Permit Voting Roles</mat-label>
 				<section class="vote-container" fxLayoutAlign="space-evenly center">
-					<div *ngFor="let item of organizationForm.get('voteRestrictions').controls; let i = index;">
+					<div *ngFor="let item of organizationForm.get('voteRoles').controls; let i = index;">
 						<div [formGroupName]="i">
 							<mat-checkbox formControlName="active">{{ checkboxOptions[i] }}</mat-checkbox>
 						</div>
