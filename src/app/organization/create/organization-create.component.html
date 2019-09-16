@@ -83,6 +83,19 @@
 				 required>
 			</mat-form-field>
 
+			<div class="vote-section" formArrayName="voteRestrictions" *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+				<mat-label>Permit Voting Roles</mat-label>
+				<section class="vote-container" fxLayoutAlign="space-evenly center">
+					<div *ngFor="let item of organizationForm.get('voteRestrictions').controls; let i = index;">
+						<div [formGroupName]="i">
+							<mat-checkbox [formControlName]="checkboxOptions[i]">{{ checkboxOptions[i] }}</mat-checkbox>
+						</div>
+					</div>
+				</section>
+			</div>
+
+		
+
 			<mat-form-field>
 				<mat-label>Public / Private Organization</mat-label>
 				<mat-select formControlName="privateOrg" 

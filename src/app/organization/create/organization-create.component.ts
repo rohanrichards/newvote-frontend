@@ -2,7 +2,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
@@ -32,6 +32,8 @@ export class OrganizationCreateComponent implements OnInit {
 	uploader: FileUploader;
 	isValid = false;
 
+	checkboxOptions = ["student", "faculty", "staff", "employee"];
+
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		url: new FormControl('', [Validators.required]),
@@ -46,8 +48,23 @@ export class OrganizationCreateComponent implements OnInit {
 		authType: new FormControl(0, [Validators.required]),
 		authUrl: new FormControl(''),
 		authEntityId: new FormControl(''),
-		privateOrg: new FormControl(false, [Validators.required])
-	});
+		privateOrg: new FormControl(false, [Validators.required]),
+		voteRestrictions: new FormArray([
+				new FormGroup({
+					student: new FormControl(false),
+				}),
+				new FormGroup({
+					faculty: new FormControl(false),
+				}),
+				new FormGroup({
+					staff: new FormControl(false),
+				}),
+				new FormGroup({
+					employee: new FormControl(false),
+				})
+			])
+		})
+
 
 	uploaderOptions: FileUploaderOptions = {
 		url: `https://api.cloudinary.com/v1_1/newvote/upload`,
@@ -85,6 +102,12 @@ export class OrganizationCreateComponent implements OnInit {
 	}
 
 	ngOnInit() {
+
+		// this.organizationForm.get('voteRestrictions').valueChanges
+		// 	.subscribe((res) => {
+		// 		console.log(res, 'this is res');
+		// 	})
+			
 		this.isLoading = true;
 
 		this.uploader = new FileUploader(this.uploaderOptions);
