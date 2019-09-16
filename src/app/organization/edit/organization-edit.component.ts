@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -33,6 +33,8 @@ export class OrganizationEditComponent implements OnInit {
 	uploader: FileUploader;
 	isValid = false;
 
+	checkboxOptions = ["student", "faculty", "staff", "employee"];
+
 	organizationForm = new FormGroup({
 		name: new FormControl('', [Validators.required]),
 		organizationName: new FormControl(''),
@@ -49,7 +51,21 @@ export class OrganizationEditComponent implements OnInit {
 		authType: new FormControl(0, [Validators.required]),
 		authUrl: new FormControl(''),
 		authEntityId: new FormControl(''),
-		privateOrg: new FormControl(false, [Validators.required])
+		privateOrg: new FormControl(false, [Validators.required]),
+		voteRestrictions: new FormArray([
+			new FormGroup({
+				student: new FormControl(false),
+			}),
+			new FormGroup({
+				faculty: new FormControl(false),
+			}),
+			new FormGroup({
+				staff: new FormControl(false),
+			}),
+			new FormGroup({
+				employee: new FormControl(false),
+			})
+		])
 	});
 
 	backgroundImage = {
