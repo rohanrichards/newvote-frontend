@@ -10,6 +10,7 @@ import { environment } from '@env/environment';
 import { Logger, I18nService, OrganizationService } from '@app/core';
 import { Organization } from './core/models/organization.model';
 
+
 const log = new Logger('App');
 
 @Component({

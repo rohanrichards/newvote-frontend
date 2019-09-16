@@ -61,11 +61,11 @@
 				*ngSwitchCase="'complete'"
 				path="/suggestions"
 				[@fadeIn]="loadingState === 'complete'"
-				[items]=suggestions
+				[items$]=suggestions$
 				model="Suggestion"
-				(restore)="onRestore($event)"
-				(softDelete)="onSoftDelete($event)"
-				(delete)="onDelete($event)"
+				(restore)="admin.onRestore($event, 'Suggestion')"
+				(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+				(delete)="admin.onDelete($event, 'Suggestion')"
 				(vote)="onVote($event)"></app-card-list>
 		</ng-container>
 	</div>

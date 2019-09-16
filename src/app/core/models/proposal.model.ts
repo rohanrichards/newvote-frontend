@@ -23,5 +23,6 @@ export class Proposal implements IProposal {
 		public organizations: any = {},
 		public votes: any = {},
 		public softDeleted: boolean = false,
+		public solutions: any = []
 	) { }
 }

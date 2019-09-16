@@ -53,20 +53,20 @@
 						*ngIf="solution.softDeleted"
 						matTooltip="Restore this Solution"
 						mat-icon-button
-						(click)="onRestore()">
+						(click)="admin.onRestore(solution, 'Solution', 'solutions')">
 						<mat-icon aria-label="Restore content">restore</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Remove this solution"
 						*ngIf="!solution.softDeleted"
 						color="accent"
-						(click)="onSoftDelete()">
+						(click)="admin.onSoftDelete(solution, 'Solution', 'solutions')">
 						<mat-icon aria-label="Remove solution">delete</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Delete this Solution"
 						color="warn"
-						(click)="onDelete()">
+						(click)="admin.onDelete(solution, 'Solution', 'solutions')">
 						<mat-icon aria-label="Delete this solution forever">delete_forever</mat-icon>
 					</button>
 				</div>
@@ -174,18 +174,18 @@
 			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px">
 			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-				<span class="mat-headline center-span" [style.margin-bottom]="'0'" *ngIf="solution && solution.proposals && solution.proposals.length > 0">Vote on Actions</span>
+				<span class="mat-headline center-span" [style.margin-bottom]="'0'">Vote on Actions</span>
 			</mat-toolbar>
 			<app-card-list path="/proposals"
-				[items]="solution.proposals"
+				[items$]="proposals$"
 				model="Action"
 				[showChildren]="false"
 				[showParent]="true"
 				parentPath="/solutions"
 				parentPropName="solutions"
-				(restore)="onRestoreProposal($event)"
-				(softDelete)="onSoftDeleteProposal($event)"
-				(delete)="onDeleteProposal($event)"
+				(restore)="admin.onRestore($event, 'Proposal')"
+				(softDelete)="admin.onSoftDelete($event, 'Proposal')"
+				(delete)="admin.onDelete($event, 'Proposal')"
 				(vote)="onVote($event, 'Proposal')">
 			</app-card-list>
 			<div>
@@ -195,12 +195,12 @@
 				<app-card-list 
 					path="/suggestions"
 					[@fadeIn]=true
-					[items]=suggestions
+					[items$]=suggestions$
 					model="Suggestion"
-					(restore)="onSuggestionRestore($event)"
-					(softDelete)="onSuggestionSoftDelete($event)"
-					(delete)="onSuggestionDelete($event)"
-					(vote)="onSuggestionVote($event, 'Suggestion')"
+					(restore)="admin.onRestore($event, 'Suggestion')"
+					(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+					(delete)="admin.onDelete($event, 'Suggestion')"
+					(vote)="onVote($event, 'Suggestion')"
 					>
 				</app-card-list>
 			</div>

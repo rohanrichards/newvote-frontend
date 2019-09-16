@@ -30,5 +30,6 @@ export class MakeSuggestionComponent implements OnInit {
 	sendForm() {
 		this.submitForm.emit(this.suggestionForm.value);
 		this.suggestionForm.reset();
+		this.createForm();
 	}
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -8,11 +7,15 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { VoteService } from '@app/core/http/vote/vote.service';
 import { MetaService } from '@app/core/meta.service';
 
-import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { Vote } from '@app/core/models/vote.model';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+
+import { assign } from 'lodash';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-proposal',
@@ -48,10 +51,11 @@ export class ProposalListComponent implements OnInit {
 		private voteService: VoteService,
 		public auth: AuthenticationService,
 		private suggestionService: SuggestionService,
-		private route: ActivatedRoute,
-		private router: Router,
 		public snackBar: MatSnackBar,
-		private meta: MetaService
+		private meta: MetaService,
+		private proposalQuery: ProposalQuery,
+		private suggestionQuery: SuggestionQuery,
+		private voteQuery: VotesQuery
 		) { }
 
 	ngOnInit() {
@@ -61,28 +65,40 @@ export class ProposalListComponent implements OnInit {
 
 		this.stateService.setLoadingState(AppState.loading);
 
-		this.route.queryParamMap.subscribe(params => {
-			const force: boolean = !!params.get('forceUpdate');
-			this.fetchData(force);
-		});
 		this.meta.updateTags(
 			{
 				title: 'All Actions',
 				description: 'List all actions.'
 			});
+		
+		this.fetchData();
+		this.subscribeToProposalStore();
+		this.subscribeToSuggestionStore();
 	}
 
-	fetchData(force?: boolean) {
+
+
+	subscribeToProposalStore() {
+		this.proposalQuery.selectAll({})
+			.subscribe((proposals) => this.proposals = proposals);
+	}
+
+	subscribeToSuggestionStore() {
+		this.suggestionQuery.selectAll({
+			filterBy: (entity) => entity.type === 'action'
+		})
+		.subscribe((suggestions) => this.suggestions = suggestions);
+	}
+
+	fetchData() {
 		const isOwner = this.auth.isOwner();
 		this.isLoading = true;
+		const params = { 'softDeleted': isOwner ? true : false };
 
-		this.proposalService.list({ orgs: [], forceUpdate: force })
+		this.proposalService.list({ orgs: [], params })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
-				proposals => { 
-					this.proposals = proposals;
-					this.stateService.setLoadingState(AppState.complete);
-				},
+				proposals => this.stateService.setLoadingState(AppState.complete),
 				error => this.stateService.setLoadingState(AppState.serverError)
 			);
 
@@ -94,21 +110,21 @@ export class ProposalListComponent implements OnInit {
 			} 
 		})
 		.subscribe(
-			(suggestions) => {
-				this.suggestions = suggestions;
-			},
-			(err) => {
-				return err
-			});
+			(res) => res,
+			(err) => err
+		);
+			
 	}
 
 	onDelete(event: any) {
-		this.proposalService.delete({ id: event._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+		this.proposalService.delete({ id: event._id })
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
-	onVote(voteData: any) {
+	onVote(voteData: any, model: string) {
 		this.isLoading = true;
 		const { item, voteValue } = voteData;
 		const vote = new Vote(item._id, 'Proposal', voteValue);
@@ -122,8 +138,9 @@ export class ProposalListComponent implements OnInit {
 			.pipe(finalize(() => this.isLoading = false ))
 			.subscribe(
 				(res) => {
-					this.openSnackBar('Your vote was recorded', 'OK');
-					this.fetchData(true);
+
+					this.updateEntityVoteData(item, model, res.voteValue);
+					this.openSnackBar('Your vote was recorded', 'OK')
 				},
 				(error) => {
 					if (error.status === 401) {
@@ -143,25 +160,50 @@ export class ProposalListComponent implements OnInit {
 	}
 
 	onSoftDelete(event: any) {
-		this.isLoading = true;
-		event.softDeleted = true;
-
-		this.proposalService.update({ id: event._id, entity: event })
+		const entity = assign({}, event, { softDeleted: true });
+		this.proposalService.update({ id: event._id, entity})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
 	onRestore(event: any) {
-		this.isLoading = true;
-		event.softDeleted = false;
-
-		this.proposalService.update({ id: event._id, entity: event })
+		const entity = assign({}, event, { softDeleted: true });
+		this.proposalService.update({ id: event._id, entity})
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				this.fetchData(true);
-			});
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
 	}
 
+	updateEntityVoteData(entity: any, model: string, voteValue: number) {
+		this.voteQuery.selectEntity(entity._id)
+			.subscribe(
+				(voteObj) => {
+					// Create a new entity object with updated vote values from
+					// vote object on store + voteValue from recent vote
+					const updatedEntity = {
+						votes: {
+							...voteObj,
+							currentUser: {
+								voteValue: voteValue === 0 ? false : voteValue
+							}
+						}
+					};
+
+					if (model === "Proposal") {
+						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+					}
+
+					if (model === "Suggestion") {
+						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}	
+				},
+				(err) => err
+		)
+
+	}
 }

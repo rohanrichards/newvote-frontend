@@ -59,7 +59,7 @@
         >
         <mat-card 
             class="organization-card"
-            *ngFor="let org of organizations"
+            *ngFor="let org of organizations$ | async;trackBy trackByFn"
             (click)="openCommunityURL($event, org.url)">
             <div mat-card-image class="organization-image" 
                 [style.background-image]="'url(' + (org.imageUrl || 'assets/solution-default.png') + ')'">

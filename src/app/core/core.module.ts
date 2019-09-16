@@ -23,6 +23,28 @@ import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { OganizationHeaderInterceptor } from './http/organization-header.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
 import { JwtModule } from '@auth0/angular-jwt';
+import { VoteStore } from './http/vote/vote.store';
+import { VotesQuery } from './http/vote/vote.query';
+import { VoteService } from './http/vote/vote.service';
+import { SuggestionStore } from './http/suggestion/suggestion.store';
+import { SuggestionQuery } from './http/suggestion/suggestion.query';
+import { IssueService } from './http/issue/issue.service';
+import { IssueQuery } from './http/issue/issue.query';
+import { IssueStore } from './http/issue/issue.store';
+import { TopicQuery } from './http/topic/topic.query';
+import { TopicStore } from './http/topic/topic.store';
+import { TopicService } from './http/topic/topic.service';
+import { SolutionService } from './http/solution/solution.service';
+import { SolutionQuery } from './http/solution/solution.query';
+import { SolutionStore } from './http/solution/solution.state';
+import { ProposalQuery } from './http/proposal/proposal.query';
+import { ProposalStore } from './http/proposal/proposal.store';
+import { MediaService } from './http/media/media.service';
+import { AdminService } from './http/admin/admin.service';
+import { OrganizationQuery, CommunityQuery } from './http/organization/organization.query';
+import { OrganizationStore, CommunityStore } from './http/organization/organization.store';
+import { MediaStore } from './http/media/media.store';
+import { MediaQuery } from './http/media/media.query';
 
 export function tokenGetter() {
 	const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials');
@@ -49,7 +71,6 @@ export function tokenGetter() {
 	],
 	providers: [
 		AuthenticationService,
-		SuggestionService,
 		AuthenticationGuard,
 		AdminGuard,
 		OwnerGuard,
@@ -65,6 +86,31 @@ export function tokenGetter() {
 		ErrorHandlerInterceptor,
 		CacheInterceptor,
 		OganizationHeaderInterceptor,
+		VoteStore,
+		VotesQuery,
+		VoteService,
+		SuggestionStore,
+		SuggestionQuery,
+		SuggestionService,
+		IssueService,
+		IssueQuery,
+		IssueStore,
+		TopicQuery,
+		TopicStore,
+		TopicService,
+		SolutionQuery,
+		SolutionStore,
+		ProposalQuery,
+		ProposalStore,
+		MediaService,
+		AdminService,
+		OrganizationService,
+		OrganizationQuery,
+		OrganizationStore,
+		CommunityQuery,
+		CommunityStore,
+		MediaStore,
+		MediaQuery,
 		{
 			provide: HttpClient,
 			useClass: HttpService

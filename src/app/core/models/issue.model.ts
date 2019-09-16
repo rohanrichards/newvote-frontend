@@ -15,6 +15,7 @@ export interface IIssue {
 
 export class Issue implements IIssue {
 	public constructor(
+		public _id: string = '',
 		public name: string = '',
 		public imageUrl: string = '',
 		public description: string = '',

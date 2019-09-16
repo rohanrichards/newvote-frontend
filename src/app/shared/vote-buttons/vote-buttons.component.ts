@@ -2,6 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { MatSnackBar } from '@angular/material';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { EntityStateHistoryPlugin } from '@datorama/akita';
+import { Observable, of } from 'rxjs';
+import { VoteMetaData } from '@app/core/http/vote/vote.store';
+import { map, flatMap, tap } from 'rxjs/operators';
+import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY } from '@angular/cdk/overlay/typings/overlay-directives';
 
 @Component({
 	selector: 'app-vote-buttons',
@@ -9,6 +15,9 @@ import { MatSnackBar } from '@angular/material';
 	styleUrls: ['./vote-buttons.component.scss']
 })
 export class VoteButtonsComponent implements OnInit {
+
+	voteMetaData$: Observable<VoteMetaData>;
+	storeVote: any;
 
 	@Input() item: any;
 	@Output() vote = new EventEmitter();
@@ -36,6 +45,7 @@ export class VoteButtonsComponent implements OnInit {
 	constructor(
 		private auth: AuthenticationService,
 		public snackBar: MatSnackBar,
+		private votesQuery: VotesQuery
 		) { }
 
 	ngOnInit() {
@@ -51,6 +61,18 @@ export class VoteButtonsComponent implements OnInit {
 				data: [this.downVotesAsPercent()]
 			}
 		];
+
+		// Get the total votes from the akita store
+		 this.getVoteMetaData()
+		 	.subscribe((vote) => {
+				this.storeVote = vote;
+			 })
+	}
+
+	getVoteMetaData() {
+		return this.votesQuery.selectEntity((entity: any) => {
+			return entity._id === this.item._id;
+		})
 	}
 
 	upVotesAsPercent() {
@@ -104,12 +126,13 @@ export class VoteButtonsComponent implements OnInit {
 		return Math.round(percentageOfUpVotes);
 	}
 
-	votesWidthAgainst() {
-		const { up, down} = this.item.votes;
+	votesWidthAgainst(vote: any) {
+
+		const { up, down} = vote;
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
-		return Math.round(percentageOfDownVotes);
+		return Math.round(percentageOfDownVotes) || 0;
 	}
 
 	totalVotes() {

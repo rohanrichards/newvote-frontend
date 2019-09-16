@@ -1,5 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { finalize } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 
 import { OrganizationService } from '@app/core';
 import { IssueService } from '@app/core/http/issue/issue.service';
@@ -20,10 +19,17 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyrideService } from 'ngx-joyride';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
+
+import { assign } from 'lodash';
+import { AdminService } from '@app/core/http/admin/admin.service';
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
+import { SolutionQuery } from '@app/core/http/solution/solution.query';
+import { Proposal } from '@app/core/models/proposal.model';
+import { Solution } from '@app/core/models/solution.model';
+import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
 	selector: 'app-home',
@@ -57,9 +63,13 @@ export class HomeComponent implements OnInit {
 		private proposalService: ProposalService,
 		private userService: UserService,
 		private meta: MetaService,
-		private cookieService: CookieService,
 		public snackBar: MatSnackBar,
-		private router: Router
+		public admin: AdminService,
+		private proposalQuery: ProposalQuery,
+		private solutionQuery: SolutionQuery,
+		private issueQuery: IssueQuery,
+		private organizationQuery: OrganizationQuery,
+		private communityQuery: CommunityQuery
 	) { }
 
 	ngOnInit() {
@@ -67,32 +77,39 @@ export class HomeComponent implements OnInit {
 			this.loadingState = state;
 		});
 
-		this.organizationService.get().subscribe((org) => {
-			this.org = org;
-			this.meta.updateTags(
-				{
-					title: 'Home'
-				});
-		});
-
+		this.meta.updateTags(
+			{
+				title: 'Home'
+			});
+		this.subscribeToOrgStore();
+		this.subscribeToIssueStore();
+		this.subscribeToProposalStore();
+		this.subscribeToSolutionStore();
 		this.fetchData();
+	}
 
-		const getSolutions = this.solutionService.list({ forceUpdate: false });
-		const getProposals = this.proposalService.list({ forceUpdate: false });
-		const getUsers = this.userService.count({ forceUpdate: false });
+	fetchData() {
+		const isOwner = this.auth.isOwner();
+		const params = { showDeleted: isOwner ? true : ' '}
+
+		this.isLoading = true;
+		this.stateService.setLoadingState(AppState.loading);
+
+		const getSolutions = this.solutionService.list({ params });
+		const getProposals = this.proposalService.list({ params });
+		const getIssues = this.issueService.list({ params });
+		const getUsers = this.userService.count({});
 
 		forkJoin({
 			solutions: getSolutions,
 			proposals: getProposals,
-			count: getUsers
+			count: getUsers,
+			issues: getIssues
 		})
 		.subscribe(
-			(results) => {
-				const { solutions, proposals, count } = results;
-
-				this.solutions = solutions;
-				this.proposals = proposals;
+			({count}) => {
 				this.userCount = count;
+				this.stateService.setLoadingState(AppState.complete);
 			},
 			(err) => {
 				return this.stateService.setLoadingState(AppState.serverError);
@@ -100,40 +117,35 @@ export class HomeComponent implements OnInit {
 		);
 	}
 
-	fetchData(force?: boolean) {
-		const isOwner = this.auth.isOwner();
+	subscribeToOrgStore() {
+		const host = document.location.host;
+		const subdomain = host.split('.')[0];
+		this.organizationQuery.select()
+			.subscribe((res) => {
+				this.org = res
+			})
 
-		this.isLoading = true;
-		this.stateService.setLoadingState(AppState.loading);
-
-		this.issueService.list({
-			orgs: [],
-			forceUpdate: force,
-			// params: isOwner ? { 'showDeleted': true } :  {}
-		})
-			.subscribe(
-				(issues) => {
-					this.issues = issues;
-					return this.stateService.setLoadingState(AppState.complete);
-				},
-				(err) => {
-					return this.stateService.setLoadingState(AppState.serverError);
-				}
-			);
 	}
 
-	onSoftDelete(issue: any) {
-		this.isLoading = true;
-		issue.softDeleted = true;
-		this.issueService.update({ id: issue._id, entity: issue })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => { this.fetchData(true); });
+	subscribeToIssueStore() {
+		this.issueQuery.selectAll()
+			.subscribe((issues: Issue[]) => {
+				this.issues = issues;
+			})
 	}
 
-	onDelete(issue: any) {
-		this.issueService.delete({ id: issue._id }).subscribe(() => {
-			this.fetchData(true);
-		});
+	subscribeToProposalStore() {
+		this.proposalQuery.selectAll()
+			.subscribe((proposals: Proposal[]) => {
+				this.proposals = proposals;
+			})
+	}
+
+	subscribeToSolutionStore() {
+		this.solutionQuery.selectAll()
+			.subscribe((solutions: Solution[]) => {
+				this.solutions = solutions;
+			})
 	}
 
 	handleUserCount(count: number) {
