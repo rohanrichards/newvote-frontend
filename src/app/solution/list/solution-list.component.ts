@@ -74,6 +74,7 @@ export class SolutionListComponent implements OnInit {
         private voteService: VoteService,
         public auth: AuthenticationService,
         private route: ActivatedRoute,
+        private router: Router,
         public snackBar: MatSnackBar,
         private meta: MetaService,
         private suggestionQuery: SuggestionQuery,
