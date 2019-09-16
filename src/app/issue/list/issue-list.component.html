@@ -15,14 +15,15 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div 
-		joyrideStep="issues1"
-		joyridePosition="center"
-		[title]="stepsArray[3].title"
-		[stepContent]="customContent"
-		fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<div>
+		<div 
+			fxFlex.sm="640px"
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+		<div 					
+			joyrideStep="issues1"
+			joyridePosition="top"
+			[title]="stepsArray[3].title"
+			[stepContent]="customContent">
 			<ng-container [ngSwitch]="loadingState">
 				<div *ngSwitchCase="'loading'" class="skeleton-form-wrap">
 					<div class="skeleton-form">
