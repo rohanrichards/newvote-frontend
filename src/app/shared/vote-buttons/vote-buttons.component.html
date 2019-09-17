@@ -34,10 +34,9 @@
         fxFlex.xs="1 1 100%"
         fxFlex.gt-xs="1 1 100%">
         <h6 class="mat-body-2"
-            [style.margin]="0">RESULTS <span
-                *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue"
+            [style.margin]="0">RESULTS <span *ngIf="userHasVoted()"
                 class="mat-body-2"> {{ storeVote.total || '' }}</span></h6>
-        <div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock"
+        <div *ngIf="userHasVoted(); else elseBlock"
             class="chart-container">
             <div class="chart-score"
                 fxLayout="row">
@@ -48,7 +47,7 @@
                     <p>{{downVotesAsPercent()}}%</p>
                 </div>
                 <div class="votes-for"
-                    [style.width.%]="votesWidthFor()"></div>
+                    [style.width.%]="upVotesAsPercent()"></div>
             </div>
         </div>
         <ng-template #elseBlock>
