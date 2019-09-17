@@ -2,228 +2,217 @@
     size="1.5"></app-loader>
 
 <ng-container [ngSwitch]="loadingState">
-	<div *ngSwitchCase="'loading'">
-		<app-skeleton-header [noLogo]=true >
-		</app-skeleton-header>
-		<app-skeleton-panel [hasVote]=true>
-		</app-skeleton-panel>
-	</div>
-	<div *ngSwitchCase="'serverError'">
-		<app-skeleton-header [noLogo]=true >
-		</app-skeleton-header>
-		<app-skeleton-panel [hasVote]=true>
-		</app-skeleton-panel>
-	</div>
-	<mat-toolbar 
-		color="primary"
-		*ngSwitchCase="'complete'"
-		[@fadeIn]=true
-		class="header-info-panel"
-		>
-		<div 
-			*ngIf="solution"
-			class="image-container"
-			fxLayout="column"
-			[defaultImage]="handleImageUrl(solution.imageUrl, true)"
-			[lazyLoad]="handleImageUrl(solution.imageUrl)">
-			<div class="admin-panel"
-				*ngIf="auth.isModerator(solution)"
-				fxLayout="column"
-				fxLayoutAlign="center end">
-				<div class="button-panel">
-					<button mat-icon-button
-						matTooltip="Create a new Solution"
-						color="accent"
-						routerLink="/solutions/create">
-						<mat-icon aria-label="Create a new Solution">add</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Add a Action for this Solution"
-						color="accent"
-						routerLink="/proposals/create/{{solution._id}}">
-						<mat-icon aria-label="Add a Action for this Solution">playlist_add</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Edit this Solution"
-						color="accent"
-						routerLink="/solutions/edit/{{solution._id}}">
-						<mat-icon aria-label="Edit this solution">edit</mat-icon>
-					</button>
-					<button color="accent"
-						*ngIf="solution.softDeleted"
-						matTooltip="Restore this Solution"
-						mat-icon-button
-						(click)="admin.onRestore(solution, 'Solution', 'solutions')">
-						<mat-icon aria-label="Restore content">restore</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Remove this solution"
-						*ngIf="!solution.softDeleted"
-						color="accent"
-						(click)="admin.onSoftDelete(solution, 'Solution', 'solutions')">
-						<mat-icon aria-label="Remove solution">delete</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Delete this Solution"
-						color="warn"
-						(click)="admin.onDelete(solution, 'Solution', 'solutions')">
-						<mat-icon aria-label="Delete this solution forever">delete_forever</mat-icon>
-					</button>
-				</div>
-			</div>
-			<div fxLayout="row"
-				fxFlex></div>
-			<!-- <div fxLayout="column"
+    <div *ngSwitchCase="'loading'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+    </div>
+    <div *ngSwitchCase="'serverError'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+    </div>
+    <mat-toolbar color="primary"
+        *ngSwitchCase="'complete'"
+        [@fadeIn]=true
+        class="header-info-panel">
+        <div *ngIf="solution"
+            class="image-container"
+            fxLayout="column"
+            [defaultImage]="handleImageUrl(solution.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(solution.imageUrl)">
+            <div class="admin-panel"
+                *ngIf="auth.isModerator(solution)"
+                fxLayout="column"
+                fxLayoutAlign="center end">
+                <div class="button-panel">
+                    <button mat-icon-button
+                        matTooltip="Create a new Solution"
+                        color="accent"
+                        routerLink="/solutions/create">
+                        <mat-icon aria-label="Create a new Solution">add
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Add a Action for this Solution"
+                        color="accent"
+                        routerLink="/proposals/create/{{solution._id}}">
+                        <mat-icon aria-label="Add a Action for this Solution">
+                            playlist_add</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Edit this Solution"
+                        color="accent"
+                        routerLink="/solutions/edit/{{solution._id}}">
+                        <mat-icon aria-label="Edit this solution">edit
+                        </mat-icon>
+                    </button>
+                    <button color="accent"
+                        *ngIf="solution.softDeleted"
+                        matTooltip="Restore this Solution"
+                        mat-icon-button
+                        (click)="admin.onRestore(solution, 'Solution', 'solutions')">
+                        <mat-icon aria-label="Restore content">restore
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Remove this solution"
+                        *ngIf="!solution.softDeleted"
+                        color="accent"
+                        (click)="admin.onSoftDelete(solution, 'Solution', 'solutions')">
+                        <mat-icon aria-label="Remove solution">delete</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Delete this Solution"
+                        color="warn"
+                        (click)="admin.onDelete(solution, 'Solution', 'solutions')">
+                        <mat-icon aria-label="Delete this solution forever">
+                            delete_forever</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div fxLayout="row"
+                fxFlex></div>
+            <!-- <div fxLayout="column"
 				fxLayoutAlign="start start">
 			</div> -->
-			<div fxLayout="row wrap"
-				fxLayoutAlign="center center">
-				<div fxFlex.gt-sm="690px"
-					fxFlex.gt-md="800px">
-					<app-share-buttons></app-share-buttons>
-				</div>
-			</div>
-		</div>
-		<div fxLayout="row wrap"
-			class="description-bar"
-			fxLayoutAlign="center center">
-			<div fxFlex.gt-sm="690px"
-				fxFlex.gt-md="800px">
-				<div class="mat-display-1"
-					translate>{{solution.title}}</div>
-				<span class="mat-body">This is a solution for:
-					<span *ngFor="let parent of solution.issues; let i = index">
-						<a mat-button
-							routerLink="/issues/{{parent._id}}">{{parent.title || parent.name}}</a>
-					</span>
-				</span>
-				<app-more-less [displayText]="solution.description"
-					maxHeight="200">
-				</app-more-less>
-				<mat-divider></mat-divider>
-				<p></p>
-				<div class="buttons">
-					<app-vote-buttons (vote)="onVote($event, 'Solution')"
-						[item]="solution">
-					</app-vote-buttons>
-				</div>
-				<div *ngIf="auth.isVerified()">
-					<h4 class="mat-subheading-1">Do you have a suggestion that's not shown below? Click here to create one.</h4>
-					<button  mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
-				</div>
-			</div>
-		</div>
-	</mat-toolbar>
+            <div fxLayout="row wrap"
+                fxLayoutAlign="center center">
+                <div fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="800px">
+                    <app-share-buttons></app-share-buttons>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row wrap"
+            class="description-bar"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="mat-display-1"
+                    translate>{{solution.title}}</div>
+                <span class="mat-body">This is a solution for:
+                    <span *ngFor="let parent of solution.issues; let i = index">
+                        <a mat-button
+                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name}}</a>
+                    </span>
+                </span>
+                <app-more-less [displayText]="solution.description"
+                    maxHeight="200">
+                </app-more-less>
+                <mat-divider></mat-divider>
+                <p></p>
+                <div class="buttons">
+                    <app-vote-buttons (vote)="onVote($event, 'Solution')"
+                        [item]="solution">
+                    </app-vote-buttons>
+                </div>
+                <div *ngIf="auth.isVerified()">
+                    <h4 class="mat-subheading-1">Do you have a suggestion that's
+                        not shown below? Click here to create one.</h4>
+                    <button mat-flat-button
+                        color="warn"
+                        (click)="populateSuggestion()">Make Suggestion</button>
+                </div>
+            </div>
+        </div>
+    </mat-toolbar>
 </ng-container>
 
 <ng-container [ngSwitch]="loadingState">
-	<div 
-		*ngSwitchCase="'loading'"
-		class="container"
-		fxLayout="column"
-		fxLayoutAlign="center start"
-		>
-		<div class="skeleton-card-list"
-			>
-			<app-skeleton-text-bar [isSubtitle]=true [width]="150">
-			</app-skeleton-text-bar>
+    <div *ngSwitchCase="'loading'"
+        class="container"
+        fxLayout="column"
+        fxLayoutAlign="center start">
+        <div class="skeleton-card-list">
+            <app-skeleton-text-bar [isSubtitle]=true
+                [width]="150">
+            </app-skeleton-text-bar>
 
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-				[showChildren]=true
-			>
-			</app-skeleton-wide-card>
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-			>
-			</app-skeleton-wide-card>
-			<app-skeleton-wide-card
-				[showImage]=true
-				[showContent]=true
-				[showActions]=true
-			>
-			</app-skeleton-wide-card>
-		</div>	
-	</div>
-	<div 
-		*ngSwitchCase="'serverError'"
-		class="container"
-		fxLayout="column"
-		fxLayoutAlign="center center"
-		>
-		<div
-		fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px">
-			<app-error-card >
-			</app-error-card>
-		</div>
-	</div>
-	
-	<div 
-		*ngSwitchCase="'complete'"
-		class="container"
-		[@fadeIn]=true
-		fxLayout="row wrap"
-		fxLayoutAlign="center start">
-		<div 
-			*ngIf="solution"
-			fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px">
-			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-				<span class="mat-headline center-span" [style.margin-bottom]="'0'">Vote on Actions</span>
-			</mat-toolbar>
-			<app-card-list path="/proposals"
-				[items$]="proposals$"
-				model="Action"
-				[showChildren]="false"
-				[showParent]="true"
-				parentPath="/solutions"
-				parentPropName="solutions"
-				(restore)="admin.onRestore($event, 'Proposal')"
-				(softDelete)="admin.onSoftDelete($event, 'Proposal')"
-				(delete)="admin.onDelete($event, 'Proposal')"
-				(vote)="onVote($event, 'Proposal')">
-			</app-card-list>
-			<div>
-				<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-					<h2 class="mat-headline center-text">Community Suggestions</h2>
-				</mat-toolbar>
-				<app-card-list 
-					path="/suggestions"
-					[@fadeIn]=true
-					[items$]=suggestions$
-					model="Suggestion"
-					(restore)="admin.onRestore($event, 'Suggestion')"
-					(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
-					(delete)="admin.onDelete($event, 'Suggestion')"
-					(vote)="onVote($event, 'Suggestion')"
-					>
-				</app-card-list>
-			</div>
-			<div *ngIf="auth.isVerified()">
-				<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-					<h2 class="mat-headline center-text">Create your own Suggestion</h2>
-				</mat-toolbar>
-				<app-make-suggestion
-					parent="action"
-					(submitForm)="handleSuggestionSubmit($event)"
-					>
-				</app-make-suggestion>
-			</div>
-		</div>
-	</div>
+            <app-skeleton-wide-card [showImage]=true
+                [showContent]=true
+                [showActions]=true
+                [showChildren]=true>
+            </app-skeleton-wide-card>
+            <app-skeleton-wide-card [showImage]=true
+                [showContent]=true
+                [showActions]=true>
+            </app-skeleton-wide-card>
+            <app-skeleton-wide-card [showImage]=true
+                [showContent]=true
+                [showActions]=true>
+            </app-skeleton-wide-card>
+        </div>
+    </div>
+    <div *ngSwitchCase="'serverError'"
+        class="container"
+        fxLayout="column"
+        fxLayoutAlign="center center">
+        <div fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px">
+            <app-error-card>
+            </app-error-card>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'complete'"
+        class="container"
+        [@fadeIn]=true
+        fxLayout="row wrap"
+        fxLayoutAlign="center start">
+        <div *ngIf="solution"
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px">
+            <mat-toolbar color="primary"
+                fxLayoutAlign="center center"
+                [style.margin-bottom]="'1rem'">
+                <span class="mat-headline center-span"
+                    [style.margin-bottom]="'0'">Vote on Actions</span>
+                AOKSNDLKASNDLKASNDKLANSKLDNASKLDNASKLDNLASKDNKLASN
+            </mat-toolbar>
+            <app-card-list path="/proposals"
+                [items$]="proposals$"
+                model="Action"
+                [showChildren]="false"
+                [showParent]="true"
+                parentPath="/solutions"
+                parentPropName="solutions"
+                (restore)="admin.onRestore($event, 'Proposal')"
+                (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                (delete)="admin.onDelete($event, 'Proposal')"
+                (vote)="onVote($event, 'Proposal')">
+            </app-card-list>
+            <div>
+                <mat-toolbar color="primary"
+                    fxLayoutAlign="center center"
+                    [style.margin-bottom]="'1rem'">
+                    <h2 class="mat-headline center-text">Community Suggestions
+                    </h2>
+                </mat-toolbar>
+                <app-card-list path="/suggestions"
+                    [@fadeIn]=true
+                    [items$]=suggestions$
+                    model="Suggestion"
+                    (restore)="admin.onRestore($event, 'Suggestion')"
+                    (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                    (delete)="admin.onDelete($event, 'Suggestion')"
+                    (vote)="onVote($event, 'Suggestion')">
+                </app-card-list>
+            </div>
+            <div *ngIf="auth.isVerified()">
+                <mat-toolbar color="primary"
+                    fxLayoutAlign="center center"
+                    [style.margin-bottom]="'1rem'">
+                    <h2 class="mat-headline center-text">Create your own
+                        Suggestion</h2>
+                </mat-toolbar>
+                <app-make-suggestion parent="action"
+                    (submitForm)="handleSuggestionSubmit($event)">
+                </app-make-suggestion>
+            </div>
+        </div>
+    </div>
 
 </ng-container>
-
-
-
-
-
-
-
-
-
