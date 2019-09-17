@@ -1,61 +1,62 @@
-<div 
-	fxLayoutGap="5px"
-	fxLayout.xs="row wrap"
-	fxLayout.sm="row-reverse"
-	fxLayout.gt-sm="row"
-	class="container parent-wrap"
-	>
-	<div 
-		fxFlex="1 1 100%"
-		fxLayout="column"
-		>
-		<span class="mat-body-2">BE HEARD</span>
-		<div 
-			fxLayout="row" 
-			fxFlex="1 1 100%"
-			fxLayoutGap="5px"
-			>
-			<button mat-raised-button
-				fxFlex="1 1 100%"
-				[color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
-				class="vote-button"
-				color="primary"
-				(click)="onVote(item, 1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE UP</span><mat-icon>arrow_upward</mat-icon></button>
+<div fxLayoutGap="5px"
+    fxLayout.xs="row wrap"
+    fxLayout.sm="row-reverse"
+    fxLayout.gt-sm="row"
+    class="container parent-wrap">
+    <div fxFlex="1 1 100%"
+        fxLayout="column">
+        <span class="mat-body-2">BE HEARD</span>
+        <div fxLayout="row"
+            fxFlex="1 1 100%"
+            fxLayoutGap="5px">
+            <button mat-raised-button
+                fxFlex="1 1 100%"
+                [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
+                class="vote-button"
+                color="primary"
+                (click)="onVote(item, 1, $event)"><span fxHide="true"
+                    fxShow.gt-xs="true">VOTE UP</span>
+                <mat-icon>arrow_upward</mat-icon>
+            </button>
 
-			<button 
-				fxFlex="1 1 100%"
-				mat-raised-button
-				[color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
-				class="vote-button vote-button-dark"
-				color="primary"
-				(click)="onVote(item, -1, $event)"><span fxHide="true" fxShow.gt-xs="true">VOTE DOWN</span><mat-icon>arrow_downward</mat-icon></button>
-		</div>
-	</div>
-	<div fxLayout="column"
-		fxFlex.xs="1 1 100%"
-		fxFlex.gt-xs="1 1 100%"
-		>
-	<h6 class="mat-body-2" [style.margin]="0">RESULTS <span *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue" class="mat-body-2"> {{ item.votes.total || storeVote.total }}</span></h6>
-		<div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock" class="chart-container">
-			<div class="chart-score"
-				fxLayout="row"
-				>
-				<div class="vote-overlay" fxLayout="row" fxLayoutAlign="space-between center">
-					<p>{{upVotesAsPercent()}}%</p>
-					<p>{{downVotesAsPercent()}}%</p>
-				</div>
-				<div class="votes-for" [style.width.%]="votesWidthFor()"></div>
-			</div>
-		</div>
-		<ng-template #elseBlock>
-			<button 
-				mat-raised-button 
-				[style.margin-right]="'0.5em'"
-				(click)="voteToRevealMessage($event)"
-			>
-				VOTE TO REVEAL
-			</button>
-		</ng-template>
-	</div>
+            <button fxFlex="1 1 100%"
+                mat-raised-button
+                [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
+                class="vote-button vote-button-dark"
+                color="primary"
+                (click)="onVote(item, -1, $event)"><span fxHide="true"
+                    fxShow.gt-xs="true">VOTE DOWN</span>
+                <mat-icon>arrow_downward</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div fxLayout="column"
+        fxFlex.xs="1 1 100%"
+        fxFlex.gt-xs="1 1 100%">
+        <h6 class="mat-body-2"
+            [style.margin]="0">RESULTS <span
+                *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue"
+                class="mat-body-2"> {{ storeVote.total || '' }}</span></h6>
+        <div *ngIf="item.votes.currentUser && item.votes.currentUser.voteValue; else elseBlock"
+            class="chart-container">
+            <div class="chart-score"
+                fxLayout="row">
+                <div class="vote-overlay"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center">
+                    <p>{{upVotesAsPercent()}}%</p>
+                    <p>{{downVotesAsPercent()}}%</p>
+                </div>
+                <div class="votes-for"
+                    [style.width.%]="votesWidthFor()"></div>
+            </div>
+        </div>
+        <ng-template #elseBlock>
+            <button mat-raised-button
+                [style.margin-right]="'0.5em'"
+                (click)="voteToRevealMessage($event)">
+                VOTE TO REVEAL
+            </button>
+        </ng-template>
+    </div>
 </div>
-		

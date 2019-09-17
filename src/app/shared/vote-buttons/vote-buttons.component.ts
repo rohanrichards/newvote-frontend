@@ -46,7 +46,7 @@ export class VoteButtonsComponent implements OnInit {
 		private auth: AuthenticationService,
 		public snackBar: MatSnackBar,
 		private votesQuery: VotesQuery
-		) { }
+	) { }
 
 	ngOnInit() {
 		this.dataSetOverride = [
@@ -63,24 +63,22 @@ export class VoteButtonsComponent implements OnInit {
 		];
 
 		// Get the total votes from the akita store
-		 this.getVoteMetaData()
-		 	.subscribe((vote) => {
+		this.getVoteMetaData()
+			.subscribe((vote) => {
 				this.storeVote = vote;
-			 })
+			})
 	}
 
 	getVoteMetaData() {
-		return this.votesQuery.selectEntity((entity: any) => {
-			return entity._id === this.item._id;
-		})
+		return this.votesQuery.selectEntity(this.item._id);
 	}
 
 	upVotesAsPercent() {
-		return this.getPercentage(this.item);
+		return this.getPercentage(this.item) || 0;
 	}
 
 	downVotesAsPercent() {
-		return 100 - this.getPercentage(this.item);
+		return 100 - this.getPercentage(this.item) || 0;
 	}
 
 	getPercentage(item: any) {
@@ -119,7 +117,7 @@ export class VoteButtonsComponent implements OnInit {
 	}
 
 	votesWidthFor() {
-		const { up, down} = this.item.votes;
+		const { up, down } = this.item.votes;
 		const totalVotes = up + down;
 
 		const percentageOfUpVotes = (up / totalVotes) * 100;
@@ -128,7 +126,7 @@ export class VoteButtonsComponent implements OnInit {
 
 	votesWidthAgainst(vote: any) {
 
-		const { up, down} = vote;
+		const { up, down } = vote;
 		const totalVotes = up + down;
 
 		const percentageOfDownVotes = (down / totalVotes) * 100;
@@ -136,8 +134,8 @@ export class VoteButtonsComponent implements OnInit {
 	}
 
 	totalVotes() {
-		const { up, down} = this.item.votes;
-		const totalVotes = up + down; 
+		const { up, down } = this.item.votes;
+		const totalVotes = up + down;
 
 		if (!(this.item.votes.currentUser && this.item.votes.currentUser.voteValue)) {
 			return '';
