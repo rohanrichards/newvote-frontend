@@ -136,7 +136,7 @@ export class IssueViewComponent implements OnInit {
 			})
 	}
 
-	fetchData(id: string) {		
+	fetchData(id: string) {
 		this.getIssue(id);
 		this.getProposals();
 		this.getSolutions();
@@ -177,7 +177,7 @@ export class IssueViewComponent implements OnInit {
 	getSolutions() {
 		const isOwner = this.auth.isOwner();
 		const params = { 'showDeleted': isOwner ? true : '' };
-		
+
 		return this.solutionService.list({
 			params
 		})
@@ -193,10 +193,10 @@ export class IssueViewComponent implements OnInit {
 		return this.proposalService.list({
 			params
 		})
-		.subscribe(
-			(res) => res,
-			(err) => err
-		)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 
 	getMedia(id: string) {
@@ -210,7 +210,7 @@ export class IssueViewComponent implements OnInit {
 				(mediaList: Array<Media>) => {
 					mediaList
 				},
-				(err) => err	
+				(err) => err
 			);
 	}
 
@@ -283,7 +283,6 @@ export class IssueViewComponent implements OnInit {
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
-				this.router.navigate([`/suggestions/${t._id}`], { replaceUrl: true });
 			},
 				(error) => {
 					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
@@ -333,10 +332,10 @@ export class IssueViewComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 

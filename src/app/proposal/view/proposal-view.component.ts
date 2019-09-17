@@ -26,13 +26,14 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-proposal',
 	templateUrl: './proposal-view.component.html',
 	styleUrls: ['./proposal-view.component.scss'],
-		animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+	animations: [
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class ProposalViewComponent implements OnInit {
@@ -59,7 +60,8 @@ export class ProposalViewComponent implements OnInit {
 		private meta: MetaService,
 		private proposalQuery: ProposalQuery,
 		private suggestionQuery: SuggestionQuery,
-		private voteQuery: VotesQuery
+		private voteQuery: VotesQuery,
+		public admin: AdminService
 	) { }
 
 	ngOnInit() {
@@ -106,10 +108,10 @@ export class ProposalViewComponent implements OnInit {
 				'showDeleted': isOwner ? true : ''
 			}
 		})
-		.subscribe(
-			(res) => res,
-			(err) => err
-		)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 
 	getProposal(id: string, forceUpdate?: boolean) {
@@ -142,7 +144,7 @@ export class ProposalViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
 					this.updateEntityVoteData(item, model, res.voteValue);
@@ -171,7 +173,7 @@ export class ProposalViewComponent implements OnInit {
 			if (confirm) {
 				this.proposalService.delete({ id: this.proposal._id }).subscribe(() => {
 					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/proposals'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/proposals'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -191,7 +193,7 @@ export class ProposalViewComponent implements OnInit {
 				const entity = assign({}, this.proposal, { softDeleted: true });
 				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully removed', 'OK');
-					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -211,7 +213,7 @@ export class ProposalViewComponent implements OnInit {
 				const entity = assign({}, this.proposal, { softDeleted: false });
 				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
 					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/solutions'], {queryParams: {forceUpdate: true} });
+					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
 				});
 			}
 		});
@@ -225,7 +227,7 @@ export class ProposalViewComponent implements OnInit {
 	}
 
 	populateSuggestion() {
-		const {_id, title } = this.proposal;
+		const { _id, title } = this.proposal;
 		const suggestionParentInfo = {
 			_id,
 			parentTitle: title,
@@ -233,7 +235,7 @@ export class ProposalViewComponent implements OnInit {
 			type: 'action'
 		}
 
-		this.router.navigateByUrl('/suggestions/create', { 
+		this.router.navigateByUrl('/suggestions/create', {
 			state: {
 				...suggestionParentInfo
 			}
@@ -243,7 +245,7 @@ export class ProposalViewComponent implements OnInit {
 	handleSuggestionSubmit(formData: any) {
 		const suggestion = <Suggestion>formData;
 		suggestion.organizations = this.organization;
-		
+
 		suggestion.parent = this.proposal._id;
 		suggestion.parentType = 'Action';
 		suggestion.parentTitle = this.proposal.title;
@@ -251,37 +253,10 @@ export class ProposalViewComponent implements OnInit {
 		this.suggestionService.create({ entity: suggestion })
 			.subscribe(t => {
 				this.openSnackBar('Succesfully created', 'OK');
-				this.router.navigate([`/suggestions/${t._id}`], { replaceUrl: true });
 			},
-			(error) => {
-				this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-			})
-	}
-
-	onSuggestionDelete(event: any) {
-		this.suggestionService.delete({ id: event._id })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
-	}
-	
-	onSuggestionSoftDelete(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
-	
-	onSuggestionRestore(event: any) {
-		const entity = assign({}, event, { softDeleted: true });
-		this.suggestionService.update({ id: event._id, entity })
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
+				(error) => {
+					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+				})
 	}
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
@@ -305,10 +280,10 @@ export class ProposalViewComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 

@@ -16,6 +16,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-proposal',
@@ -55,8 +56,9 @@ export class ProposalListComponent implements OnInit {
 		private meta: MetaService,
 		private proposalQuery: ProposalQuery,
 		private suggestionQuery: SuggestionQuery,
-		private voteQuery: VotesQuery
-		) { }
+		private voteQuery: VotesQuery,
+		public admin: AdminService
+	) { }
 
 	ngOnInit() {
 		this.stateService.loadingState$.subscribe((state: string) => {
@@ -70,7 +72,7 @@ export class ProposalListComponent implements OnInit {
 				title: 'All Actions',
 				description: 'List all actions.'
 			});
-		
+
 		this.fetchData();
 		this.subscribeToProposalStore();
 		this.subscribeToSuggestionStore();
@@ -87,7 +89,7 @@ export class ProposalListComponent implements OnInit {
 		this.suggestionQuery.selectAll({
 			filterBy: (entity) => entity.type === 'action'
 		})
-		.subscribe((suggestions) => this.suggestions = suggestions);
+			.subscribe((suggestions) => this.suggestions = suggestions);
 	}
 
 	fetchData() {
@@ -104,16 +106,16 @@ export class ProposalListComponent implements OnInit {
 
 		this.suggestionService.list({
 			forceUpdate: true,
-			params: { 
+			params: {
 				'showDeleted': isOwner ? true : '',
 				'type': 'solution',
-			} 
+			}
 		})
-		.subscribe(
-			(res) => res,
-			(err) => err
-		);
-			
+			.subscribe(
+				(res) => res,
+				(err) => err
+			);
+
 	}
 
 	onDelete(event: any) {
@@ -135,7 +137,7 @@ export class ProposalListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
 
@@ -161,7 +163,7 @@ export class ProposalListComponent implements OnInit {
 
 	onSoftDelete(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
-		this.proposalService.update({ id: event._id, entity})
+		this.proposalService.update({ id: event._id, entity })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(res) => res,
@@ -171,7 +173,7 @@ export class ProposalListComponent implements OnInit {
 
 	onRestore(event: any) {
 		const entity = assign({}, event, { softDeleted: true });
-		this.proposalService.update({ id: event._id, entity})
+		this.proposalService.update({ id: event._id, entity })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(res) => res,
@@ -200,10 +202,10 @@ export class ProposalListComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 }
