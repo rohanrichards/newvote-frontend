@@ -50,28 +50,28 @@ export class OrganizationCreateComponent implements OnInit {
 		authEntityId: new FormControl(''),
 		privateOrg: new FormControl(false, [Validators.required]),
 		voteRoles: new FormArray([
-				new FormGroup({
-					role: new FormControl('student'),
-					active: new FormControl(false)
-				}),
-				new FormGroup({
-					role: new FormControl('faculty'),
-					active: new FormControl(false)
-				}),
-				new FormGroup({
-					role: new FormControl('staff'),
-					active: new FormControl(false)
-				}),
-				new FormGroup({
-					role: new FormControl('employee'),
-					active: new FormControl(false)
-				}),
-				new FormGroup({
-					role: new FormControl('member'),
-					active: new FormControl(false)
-				})
-			])
-		})
+			new FormGroup({
+				role: new FormControl('student'),
+				active: new FormControl(false)
+			}),
+			new FormGroup({
+				role: new FormControl('faculty'),
+				active: new FormControl(false)
+			}),
+			new FormGroup({
+				role: new FormControl('staff'),
+				active: new FormControl(false)
+			}),
+			new FormGroup({
+				role: new FormControl('employee'),
+				active: new FormControl(false)
+			}),
+			new FormGroup({
+				role: new FormControl('member'),
+				active: new FormControl(false)
+			})
+		])
+	})
 
 
 	uploaderOptions: FileUploaderOptions = {
@@ -110,12 +110,6 @@ export class OrganizationCreateComponent implements OnInit {
 	}
 
 	ngOnInit() {
-
-		// this.organizationForm.get('voteRestrictions').valueChanges
-		// 	.subscribe((res) => {
-		// 		console.log(res, 'this is res');
-		// 	})
-			
 		this.isLoading = true;
 
 		this.uploader = new FileUploader(this.uploaderOptions);
