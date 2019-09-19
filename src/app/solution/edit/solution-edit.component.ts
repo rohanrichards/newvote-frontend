@@ -148,6 +148,7 @@ export class SolutionEditComponent implements OnInit {
         this.solutionQuery.selectEntity(id)
             .subscribe(
                 (solution: Solution) => {
+                    if (!solution) return false;
                     this.solution = solution
                     this.updateForm(solution)
                     this.updateTags(solution)
@@ -194,7 +195,7 @@ export class SolutionEditComponent implements OnInit {
 
     onSave() {
         const solution = cloneDeep(this.solution)
-        merge(solution, <ISolution> this.solutionForm.value)
+        merge(solution, <ISolution>this.solutionForm.value)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {

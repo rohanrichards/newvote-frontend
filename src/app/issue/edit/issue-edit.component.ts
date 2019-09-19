@@ -8,13 +8,14 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
 import { merge } from 'lodash';
 
-import { IIssue } from '@app/core/models/issue.model';
+import { IIssue, Issue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 @Component({
 	selector: 'app-issue',
@@ -51,7 +52,8 @@ export class IssueEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private issueQuery: IssueQuery
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -65,25 +67,7 @@ export class IssueEditComponent implements OnInit {
 			this.issueService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
 				.subscribe(issue => {
-					this.imageUrl = issue.imageUrl;
-					this.issue = issue;
-					for (let i = 0; i < issue.topics.length; i++) {
-						const topic = issue.topics[i];
-						this.topics.push(topic);
-					}
-					this.issueForm.setValue({
-						'name': issue.name,
-						'description': issue.description,
-						'imageUrl': issue.imageUrl,
-						'topics': ''
-					});
 
-				this.meta.updateTags(
-					{
-						title: `Edit ${issue.name}`,
-						appBarTitle: 'Edit Issue',
-						description: issue.description
-					});
 				});
 		});
 
@@ -122,6 +106,36 @@ export class IssueEditComponent implements OnInit {
 			fileItem.withCredentials = false;
 			return { fileItem, form };
 		};
+	}
+
+	subscribeToIssueStore(id: string) {
+		this.issueQuery.selectEntity(id)
+			.subscribe((issue: Issue) => {
+				if (!issue) false;
+				this.updateForm
+			})
+	}
+
+	updateForm(issue: Issue) {
+		this.imageUrl = issue.imageUrl;
+		this.issue = issue;
+		for (let i = 0; i < issue.topics.length; i++) {
+			const topic = issue.topics[i];
+			this.topics.push(topic);
+		}
+		this.issueForm.setValue({
+			'name': issue.name,
+			'description': issue.description,
+			'imageUrl': issue.imageUrl,
+			'topics': ''
+		});
+
+		this.meta.updateTags(
+			{
+				title: `Edit ${issue.name}`,
+				appBarTitle: 'Edit Issue',
+				description: issue.description
+			});
 	}
 
 	onFileChange(event: any) {

@@ -141,6 +141,7 @@ export class OrganizationEditComponent implements OnInit {
         this.communityQuery.selectEntity(id)
             .subscribe(
                 (organization: Organization) => {
+                    if (!organization) return false;
                     this.organization = organization
                     this.updateForm(organization)
                     this.updateTags(organization)
@@ -284,7 +285,7 @@ export class OrganizationEditComponent implements OnInit {
     updateWithApi() {
         // update this.org with form data and the owner manually
         const organization = cloneDeep(this.organization)
-        merge(organization, <Organization> this.organizationForm.value)
+        merge(organization, <Organization>this.organizationForm.value)
 
         organization.owner = this.owner
         organization.futureOwner = this.futureOwner
