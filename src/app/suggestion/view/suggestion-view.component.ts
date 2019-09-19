@@ -72,8 +72,8 @@ export class SuggestionViewComponent implements OnInit {
 			})
 	}
 
-	fetchData(id: string, forceUpdate?: boolean) {
-		this.suggestionService.view({ id: id, forceUpdate })
+	fetchData(id: string) {
+		this.suggestionService.view({ id: id })
 			.subscribe(
 				(suggestion: Suggestion) => {
 					this.meta.updateTags(
@@ -84,9 +84,7 @@ export class SuggestionViewComponent implements OnInit {
 						});
 					return this.stateService.setLoadingState(AppState.complete);
 				},
-				(err) => {
-					this.stateService.setLoadingState(AppState.serverError);
-				}
+				(err) => this.stateService.setLoadingState(AppState.serverError)
 			);
 	}
 

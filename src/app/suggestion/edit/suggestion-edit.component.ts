@@ -122,7 +122,7 @@ export class SuggestionEditComponent implements OnInit {
         this.isLoading = true
 
         const suggestion = cloneDeep(this.suggestion)
-        merge(suggestion, <Suggestion> this.suggestionForm.value)
+        merge(suggestion, <Suggestion>this.suggestionForm.value)
         suggestion.organizations = this.organization
         suggestion.media = this.mediaList
 
@@ -131,7 +131,7 @@ export class SuggestionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/suggestions/${t._id}`], { queryParams: { forceUpdate: true } })
+                    this.router.navigate([`/suggestions/${t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
