@@ -80,6 +80,7 @@ export class SuggestionEditComponent implements OnInit {
         this.suggestionQuery.selectEntity(id)
             .subscribe(
                 (suggestion) => {
+                    if (!suggestion) return false;
                     this.suggestion = suggestion
                     this.updateForm(suggestion)
                     this.updateTags(suggestion)
@@ -144,17 +145,22 @@ export class SuggestionEditComponent implements OnInit {
         })
     }
 
+    // imported data from query is read only, so need to copy / replace 
+    // array on each update
     mediaAdded(event: any) {
         if (event.value) {
-            this.mediaList.push(event.value)
+            let mediaList = [...this.mediaList, event.value];
+            this.mediaList = mediaList;
             this.mediaInput.nativeElement.value = ''
         }
     }
 
     mediaRemoved(media: any) {
-        const index = this.mediaList.indexOf(media)
+        let mediaList = [...this.mediaList];
+        const index = mediaList.indexOf(media)
         if (index > -1) {
-            this.mediaList.splice(index, 1)
+            mediaList.splice(index, 1);
+            this.mediaList = mediaList;
         }
     }
 
