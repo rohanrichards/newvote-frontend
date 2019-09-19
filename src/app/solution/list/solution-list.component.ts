@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { finalize } from 'rxjs/operators'
+import { finalize, take } from 'rxjs/operators'
 import { Router, ActivatedRoute } from '@angular/router'
 import { MatSnackBar } from '@angular/material'
 import { differenceWith } from 'lodash'
@@ -186,6 +186,9 @@ export class SolutionListComponent implements OnInit {
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {
         this.voteQuery.selectEntity(entity._id)
+            .pipe(
+                take(1)
+            )
             .subscribe(
                 (voteObj) => {
                     // Create a new entity object with updated vote values from

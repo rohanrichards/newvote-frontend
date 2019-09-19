@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -183,6 +183,9 @@ export class ProposalListComponent implements OnInit {
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
 		this.voteQuery.selectEntity(entity._id)
+			.pipe(
+				take(1)
+			)
 			.subscribe(
 				(voteObj) => {
 					// Create a new entity object with updated vote values from

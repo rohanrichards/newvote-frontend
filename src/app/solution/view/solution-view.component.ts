@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
@@ -222,6 +222,9 @@ export class SolutionViewComponent implements OnInit {
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
 		this.voteQuery.selectEntity(entity._id)
+			.pipe(
+				take(1)
+			)
 			.subscribe(
 				(voteObj) => {
 					// Create a new entity object with updated vote values from
