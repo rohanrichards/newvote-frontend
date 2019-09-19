@@ -22,6 +22,7 @@ export class SwiperWrapperComponent implements OnInit {
 	@Output() delete = new EventEmitter();
 	@Output() vote = new EventEmitter();
 	@Output() softDelete = new EventEmitter();
+	@Output() restore = new EventEmitter();
 
 	public config: SwiperConfigInterface = {
 		a11y: true,
@@ -78,6 +79,11 @@ export class SwiperWrapperComponent implements OnInit {
 	onSoftDelete(item: any, event: any) {
 		event.stopPropagation();
 		this.softDelete.emit(item);
+	}
+
+	onRestore(item: any, event: any) {
+		event.stopPropagation();
+		this.restore.emit(item);
 	}
 
 	onVote(item: any, voteValue: number, event: any) {

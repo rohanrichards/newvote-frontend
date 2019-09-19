@@ -1,94 +1,102 @@
-<div
-	class="container"
-	*ngIf="items && !items.length">
-	<div
-		fxLayout="row"
-		fxLayoutAlign="center"
-		>
-			<div
-				fxFlex="0 1 400px"
-				>
-				<mat-card
-					class="item-card error-card">
-					<div mat-card-image
-						class="placeholder-image"
-						>
-					</div>
-					<mat-card-content>
-						<mat-card-title [style.text-align]="'center'" translate>
-							Media
-						</mat-card-title>
-						<mat-card-subtitle [style.text-align]="'center'" class="item-subtitle">
-							There are no 3rd party media added by {{ organization }} yet.
-						</mat-card-subtitle>
-					</mat-card-content>
-				</mat-card>
-			</div>
-	</div>
+<div class="container"
+    *ngIf="items && !items.length">
+    <div fxLayout="row"
+        fxLayoutAlign="center">
+        <div fxFlex="0 1 400px">
+            <mat-card class="item-card error-card">
+                <div mat-card-image
+                    class="placeholder-image">
+                </div>
+                <mat-card-content>
+                    <mat-card-title [style.text-align]="'center'"
+                        translate>
+                        Media
+                    </mat-card-title>
+                    <mat-card-subtitle [style.text-align]="'center'"
+                        class="item-subtitle">
+                        There are no 3rd party media added by {{ organization }}
+                        yet.
+                    </mat-card-subtitle>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
 </div>
 
 
 <div class="box-container"
     fxLayout="column"
-	*ngIf="items && items.length > 0">
+    *ngIf="items && items.length > 0">
 
-	<div class="content-container"
-	    fxLayout="column"
-	    fxLayoutAlign="stretch"
-	    fxFlex="auto">
-		<swiper class="swiper-container"
-		    fxFlex="auto"
-		    [config]="config">
-			<div *ngFor="let item of items"
-			    class="swiper-slide">
-				<mat-card
-					[ngClass]="{'soft-deleted': item.softDeleted}"
-					class="item-card">
-					<div mat-card-image
-					    class="image-container"
-					    [style.background-image]="'url(' + item.image + ')'">
-						<div class="button-panel"
-						    *ngIf="auth.isModerator(item)">
-							<button color="accent"
-							    mat-icon-button
-							    (click)="$event.stopPropagation()"
-							    routerLink='{{path}}/edit/{{item._id}}'>
-			    						<mat-icon aria-label="Edit the content">edit</mat-icon>
-									  </button>
-							<button color="accent"
-								mat-icon-button
-								(click)="onSoftDelete(item, $event)">
-									<mat-icon aria-label="Remove content">delete</mat-icon>
-								</button>
-							<button color="warn"
-							    mat-icon-button
-							    (click)="onDelete(item, $event)">
-			    						<mat-icon aria-label="Delete content forever">delete_forever</mat-icon>
-			  						</button>
-						</div>
-					</div>
-					<mat-card-content>
-						<mat-card-title translate>
-							<div class="truncate-container">
-								<a
-								    (click)="visitUrl($event, item.url)"
-								    class="truncate title">{{item.title}}</a>
-							</div>
-							<mat-card-subtitle class="item-subtitle"
-							    [innerHtml]="item.description"></mat-card-subtitle>
-						</mat-card-title>
-					</mat-card-content>
-					<mat-card-actions>
-						<button mat-raised-button
-						    [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
-						    class="vote-button"
-						    color="primary"
-						    (click)="onVote(item, 1, $event)"
-						    matBadge="{{item.votes.up}}"
-							matBadgeColor="accent"><mat-icon>thumb_up</mat-icon><span fxHide="true" fxShow.gt-xs="true">LIKE</span></button>
-					</mat-card-actions>
-				</mat-card>
-			</div>
-		</swiper>
-	</div>
+    <div class="content-container"
+        fxLayout="column"
+        fxLayoutAlign="stretch"
+        fxFlex="auto">
+        <swiper class="swiper-container"
+            fxFlex="auto"
+            [config]="config">
+            <div *ngFor="let item of items"
+                class="swiper-slide">
+                <mat-card [ngClass]="{'soft-deleted': item.softDeleted}"
+                    class="item-card">
+                    <div mat-card-image
+                        class="image-container"
+                        [style.background-image]="'url(' + item.image + ')'">
+                        <div class="button-panel"
+                            *ngIf="auth.isModerator(item)">
+                            <button color="accent"
+                                mat-icon-button
+                                (click)="$event.stopPropagation()"
+                                routerLink='{{path}}/edit/{{item._id}}'>
+                                <mat-icon aria-label="Edit the content">edit
+                                </mat-icon>
+                            </button>
+                            <button color="accent"
+                                mat-icon-button
+                                (click)="onSoftDelete(item, $event)">
+                                <mat-icon aria-label="Remove content">delete
+                                </mat-icon>
+                            </button>
+                            <button *ngIf="item.softDeleted"
+                                color="accent"
+                                mat-icon-button
+                                (click)="onRestore(item, $event)">
+                                <mat-icon aria-label="Remove content">restore
+                                </mat-icon>
+                            </button>
+                            <button color="warn"
+                                mat-icon-button
+                                (click)="onDelete(item, $event)">
+                                <mat-icon aria-label="Delete content forever">
+                                    delete_forever</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <mat-card-content>
+                        <mat-card-title translate>
+                            <div class="truncate-container">
+                                <a (click)="visitUrl($event, item.url)"
+                                    class="truncate title">{{item.title}}</a>
+                            </div>
+                            <mat-card-subtitle class="item-subtitle"
+                                [innerHtml]="item.description">
+                            </mat-card-subtitle>
+                        </mat-card-title>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-raised-button
+                            [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
+                            class="vote-button"
+                            color="primary"
+                            (click)="onVote(item, 1, $event)"
+                            matBadge="{{item.votes.up}}"
+                            matBadgeColor="accent">
+                            <mat-icon>thumb_up</mat-icon><span fxHide="true"
+                                fxShow.gt-xs="true">LIKE</span>
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </swiper>
+    </div>
 </div>
