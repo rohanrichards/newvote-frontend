@@ -9,7 +9,7 @@ import { VotesQuery } from "../vote/vote.query";
 import { Proposal } from "@app/core/models/proposal.model";
 
 @Injectable()
-export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
+export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     constructor(
         protected store: SolutionStore,
         private proposalQuery: ProposalQuery,
@@ -23,7 +23,7 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
         return combineQueries(
             [
                 this.selectAll(),
-                this.proposalQuery.selectAll({ asObject: true }),
+                this.proposalQuery.selectAll(),
             ]
         )
             .pipe(
@@ -31,23 +31,22 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                     const [solutions, proposals] = results;
 
                     return solutions.map((solution) => {
-                        let sProposals: Array<Proposal>;
 
-                        if (solution.proposals.length < 1) {
-                            sProposals = [];
-                        } else {
-                            sProposals = solution.proposals
-                                .filter((proposalId) => {
-                                    return proposals[proposalId];
-                                })
-                                .map((proposalId) => {
-                                    return proposals[proposalId];
-                                });
-                        }
+                        // Backwards map proposals.solutions to solutions.proposals array
+                        // normally proposals would get attached on the backend
+                        const solutionProposals = proposals.filter((proposal: Proposal) => {
+                            return proposal.solutions.some((pSolution: any) => {
+                                if (typeof pSolution === 'string') {
+                                    return solution._id === pSolution;
+                                }
+
+                                return solution._id === pSolution._id;
+                            })
+                        })
 
                         return {
                             ...solution,
-                            proposals: sProposals,
+                            proposals: solutionProposals,
                             votes: solution.votes
                         }
                     })
@@ -66,14 +65,14 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                 map((results) => {
                     let [solution, proposals] = results;
 
-                        return {
-                            ...solution,
-                            proposals: solution.proposals.map((proposalId) => {
-                                return proposals[proposalId]
-                            }),
-                            votes: solution.votes
-                        }
-                    })
+                    return {
+                        ...solution,
+                        proposals: solution.proposals.map((proposalId) => {
+                            return proposals[proposalId]
+                        }),
+                        votes: solution.votes
+                    }
+                })
             )
     }
 
@@ -87,10 +86,10 @@ export class SolutionQuery extends  QueryEntity<SolutionState, Solution> {
                         return proposal === id;
                     }
 
-					return proposal._id === id;
-				})
+                    return proposal._id === id;
+                })
 
-				return includesSolutionId;
+                return includesSolutionId;
             }
         })
     }

@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { MatSnackBar } from '@angular/material';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 import { ITopic, Topic } from '@app/core/models/topic.model';
 import { TopicService } from '@app/core/http/topic/topic.service';
@@ -134,8 +134,9 @@ export class TopicEditComponent implements OnInit {
 	}
 
 	onSave() {
+		const topic = cloneDeep(this.topic);
 		this.isLoading = true;
-		this.topic.organizations = this.organization;
+		topic.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
@@ -143,33 +144,33 @@ export class TopicEditComponent implements OnInit {
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.topic, <ITopic>this.topicForm.value);
+				merge(topic, <ITopic>this.topicForm.value);
 				const res = JSON.parse(response);
-				this.topic.imageUrl = res.secure_url;
-				this.updateWithApi();
+				topic.imageUrl = res.secure_url;
+				this.updateWithApi(topic);
 			}
 		};
 
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.topic, <ITopic>this.topicForm.value);
-			this.updateWithApi();
+			merge(topic, <ITopic>this.topicForm.value);
+			this.updateWithApi(topic);
 		}
 	}
 
-	updateWithApi() {
-		this.topicService.update({ id: this.topic._id, entity: this.topic })
+	updateWithApi(topic: any) {
+		this.topicService.update({ id: topic._id, entity: topic })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
 					// this.router.navigate(['/issues']);
 					this.location.back();
-				}
-			});
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+
+			);
 	}
 
 	openSnackBar(message: string, action: string) {

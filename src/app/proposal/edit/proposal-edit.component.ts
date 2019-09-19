@@ -223,8 +223,8 @@ export class ProposalEditComponent implements OnInit {
     }
 
     updateWithApi(proposal: any) {
-        this.proposal.organizations = this.organization
-        this.proposal.solutions = this.solutions
+        proposal.organizations = this.organization
+        proposal.solutions = this.solutions
 
         this.proposalService.update({ id: proposal._id, entity: proposal })
             .pipe(finalize(() => { this.isLoading = false }))

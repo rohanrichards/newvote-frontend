@@ -177,14 +177,12 @@ export class SolutionCreateComponent implements OnInit {
 					if (this.suggestionTemplate) {
 						this.hideSuggestion();
 					}
-					
-					if (t.error) {
-						this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-					} else {
-						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate([`/solutions/${t._id}`], { queryParams: { forceUpdate: true } });
-					}
-			});
+
+					this.openSnackBar('Succesfully created', 'OK');
+					this.router.navigate([`/solutions/${t._id}`]);
+				},
+					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+				);
 		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
@@ -194,9 +192,10 @@ export class SolutionCreateComponent implements OnInit {
 
 				this.solutionService.create({ entity: this.solution })
 					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(t => {
+					.subscribe(
+						t => {
 							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate([`/solutions/${t._id}`], {queryParams: {forceUpdate: true} });
+							this.router.navigate([`/solutions/${t._id}`]);
 						},
 						(err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
 					);
