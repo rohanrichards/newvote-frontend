@@ -12,6 +12,7 @@ import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
 
 @Component({
 	selector: 'app-topic',
@@ -40,26 +41,21 @@ export class TopicEditComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private router: Router,
 		private location: Location,
-		private meta: MetaService
+		private meta: MetaService,
+		private topicQuery: TopicQuery
 	) { }
 
 	ngOnInit() {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToTopicStore(ID);
 			this.topicService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(topic => {
-					this.topicForm.patchValue(topic);
-					this.imageUrl = topic.imageUrl;
-					this.topic = topic;
-					this.meta.updateTags(
-						{
-							title: `Edit ${this.topic.name}`,
-							appBarTitle: 'Edit Topic',
-							description: 'List all proposals.'
-						});
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err
+				)
 		});
 
 		const uploaderOptions: FileUploaderOptions = {
@@ -93,7 +89,27 @@ export class TopicEditComponent implements OnInit {
 		};
 
 
-				this.organizationService.get().subscribe(org => this.organization = org);
+		this.organizationService.get().subscribe(org => this.organization = org);
+	}
+
+	subscribeToTopicStore(id: string) {
+		this.topicQuery.selectEntity(id)
+			.subscribe((topic: Topic) => {
+				if (!topic) return false;
+				this.updateForm(topic);
+			})
+	}
+
+	updateForm(topic: Topic) {
+		this.topicForm.patchValue(topic);
+		this.imageUrl = topic.imageUrl;
+		this.topic = topic;
+		this.meta.updateTags(
+			{
+				title: `Edit ${this.topic.name}`,
+				appBarTitle: 'Edit Topic',
+				description: 'List all proposals.'
+			});
 	}
 
 	onFileChange(event: any) {

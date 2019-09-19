@@ -6,7 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 import { IIssue, Issue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
@@ -162,8 +162,9 @@ export class IssueEditComponent implements OnInit {
 	}
 
 	onSave() {
+		const issue = cloneDeep(this.issue);
 		this.isLoading = true;
-		this.issue.organizations = this.organization;
+		issue.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
@@ -171,33 +172,32 @@ export class IssueEditComponent implements OnInit {
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.issue, <IIssue>this.issueForm.value);
+				merge(issue, <IIssue>this.issueForm.value);
 				const res = JSON.parse(response);
-				this.issue.imageUrl = res.secure_url;
-				this.updateWithApi();
+				issue.imageUrl = res.secure_url;
+				this.updateWithApi(issue);
 			}
 		};
 
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.issue, <IIssue>this.issueForm.value);
-			this.updateWithApi();
+			merge(issue, <IIssue>this.issueForm.value);
+			this.updateWithApi(issue);
 		}
 	}
 
-	updateWithApi() {
-		this.issue.topics = this.topics;
-		this.issueService.update({ id: this.issue._id, entity: this.issue })
+	updateWithApi(issue: any) {
+		issue.topics = this.topics;
+		this.issueService.update({ id: issue._id, entity: issue })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate([`/issues/${t._id}`], { queryParams: { forceUpdate: true } });
-				}
-			});
+					this.router.navigate([`/issues/${t._id}`]);
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
