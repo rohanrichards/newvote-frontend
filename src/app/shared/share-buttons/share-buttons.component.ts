@@ -20,7 +20,7 @@ export class ShareButtonsComponent implements OnInit {
 	ngOnInit() { }
 
 	getUrl() {
-		// return document.location.href;
+		return document.location.href;
 	}
 
 }
