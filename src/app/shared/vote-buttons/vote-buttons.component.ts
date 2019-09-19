@@ -154,9 +154,9 @@ export class VoteButtonsComponent implements OnInit {
 
 	userHasVoted() {
 		// If a user votes logs off and logs in on another account they will still be able to see votes
-		if (!(this.item.currentUser || this.auth.credentials.user)) {
-			return false;
-		}
+		// if (!this.item.currentUser || !this.auth.credentials || !this.auth.credentials.user) {
+		// 	return false;
+		// }
 
 		return this.item.votes.currentUser && this.item.votes.currentUser.voteValue
 	}

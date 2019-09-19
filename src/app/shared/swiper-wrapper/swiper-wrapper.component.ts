@@ -4,6 +4,7 @@ import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialo
 import { SwiperComponent, SwiperConfigInterface, SwiperPaginationInterface } from 'ngx-swiper-wrapper';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { VotesQuery } from '@app/core/http/vote/vote.query';
 
 @Component({
 	selector: 'app-swiper-wrapper',
@@ -59,7 +60,11 @@ export class SwiperWrapperComponent implements OnInit {
 		hideOnClick: false
 	};
 
-	constructor(public dialog: MatDialog, private auth: AuthenticationService) { }
+	constructor(
+		public dialog: MatDialog,
+		private auth: AuthenticationService,
+		private votesQuery: VotesQuery
+	) { }
 
 	ngOnInit() {
 
@@ -67,45 +72,19 @@ export class SwiperWrapperComponent implements OnInit {
 
 	onDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete ${this.model}`,
-				message: `Are you sure you want to delete ${item.title}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.delete.emit(item);
-			}
-		});
+		this.delete.emit(item);
 	}
 
 	onSoftDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Remove ${this.model}`,
-				message: `Are you sure you want to remove ${item.title}? This will only hide the item from the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.softDelete.emit(item);
-			}
-		});
+		this.softDelete.emit(item);
 	}
 
 	onVote(item: any, voteValue: number, event: any) {
-		this.vote.emit({item, voteValue});
+		this.vote.emit({ item, voteValue });
 	}
 
-	visitUrl (event: any, url: string) {
+	visitUrl(event: any, url: string) {
 		event.preventDefault();
 		// url isn't trimmed on backend - do here so not to get bad urls
 		url = this.setHttp(url.trim());

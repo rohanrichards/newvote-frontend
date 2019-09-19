@@ -208,7 +208,7 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(mediaList: Array<Media>) => {
-					mediaList
+					// mediaList
 				},
 				(err) => err
 			);
@@ -332,6 +332,10 @@ export class IssueViewComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+					}
+
+					if (model === "Media") {
+						return this.mediaService.updateSuggestionVote(entity._id, updatedEntity);
 					}
 				},
 				(err) => err
