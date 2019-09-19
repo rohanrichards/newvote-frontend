@@ -64,11 +64,13 @@ export class IssueEditComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToIssueStore(ID);
 			this.issueService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(issue => {
-
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err
+				);
 		});
 
 		this.topicService.list({})
@@ -111,8 +113,8 @@ export class IssueEditComponent implements OnInit {
 	subscribeToIssueStore(id: string) {
 		this.issueQuery.selectEntity(id)
 			.subscribe((issue: Issue) => {
-				if (!issue) false;
-				this.updateForm
+				if (!issue) return false;
+				this.updateForm(issue);
 			})
 	}
 
