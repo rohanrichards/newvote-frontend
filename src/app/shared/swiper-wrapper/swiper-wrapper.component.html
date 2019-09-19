@@ -51,7 +51,8 @@
                                 <mat-icon aria-label="Edit the content">edit
                                 </mat-icon>
                             </button>
-                            <button color="accent"
+                            <button *ngIf="!item.softDeleted"
+                                color="accent"
                                 mat-icon-button
                                 (click)="onSoftDelete(item, $event)">
                                 <mat-icon aria-label="Remove content">delete
