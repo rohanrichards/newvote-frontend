@@ -29,7 +29,7 @@ export interface OrganizationContext {
 
 @Injectable()
 export class OrganizationService {
-	
+
 	private _host: string;
 	private _subdomain: string;
 	private _org: Organization;
@@ -54,7 +54,6 @@ export class OrganizationService {
 			this.httpClient
 				.get('/organizations/' + this._subdomain)
 				.pipe(
-					tap((org: Organization) => {this.joinWebSocketRoom(org.url)}),
 					catchError(handleError)
 				).subscribe(
 					(org: Organization) => {
@@ -62,6 +61,7 @@ export class OrganizationService {
 						this.organizationStore.update(org);
 						this._org = org;
 						this.$org.next(org);
+						this.joinWebSocketRoom(org.url)
 					},
 					(err) => {
 						this.$org.next(null);

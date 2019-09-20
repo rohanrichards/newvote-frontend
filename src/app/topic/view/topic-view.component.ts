@@ -14,6 +14,7 @@ import { optimizeImage } from '@app/shared/helpers/cloudinary';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { Issue } from '@app/core/models/issue.model';
+import { AdminService } from '@app/core/http/admin/admin.service';
 
 @Component({
 	selector: 'app-topic',
@@ -37,7 +38,8 @@ export class TopicViewComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private meta: MetaService,
 		private topicQuery: TopicQuery,
-		private issueQuery: IssueQuery
+		private issueQuery: IssueQuery,
+		private adminService: AdminService
 	) { }
 
 	ngOnInit() {
@@ -59,12 +61,16 @@ export class TopicViewComponent implements OnInit {
 
 	subscribeToTopicStore(id: string) {
 		this.topicQuery.selectEntity(id)
-			.subscribe((topic: Topic) => this.topic = topic)
+			.subscribe((topic: Topic) => {
+				if (!topic) return false;
+				this.topic = topic
+
+			})
 	}
 
 	subscribeToIssueStore(id: string) {
 		this.issueQuery.selectAll({
-			filterBy: (entity) =>  {
+			filterBy: (entity) => {
 				return entity.topics.some((topic) => {
 					return topic._id === id;
 				})
@@ -82,38 +88,19 @@ export class TopicViewComponent implements OnInit {
 				(res) => res,
 				(err) => err
 			);
-		
+
 	}
 
 	getIssues() {
 		const isOwner = this.auth.isOwner();
-		const options = { 
-			params: {'showDeleted': isOwner ? true : '' }
+		const options = {
+			params: { 'showDeleted': isOwner ? true : '' }
 		}
 		this.issueService.list(options)
 			.subscribe(
 				(res) => res,
 				(err) => err
 			);
-	}
-
-	onDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete Topic?`,
-				message: `Are you sure you want to delete ${this.topic.name}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.topicService.delete({ id: this.topic._id }).subscribe(() => {
-					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
 	}
 
 	openSnackBar(message: string, action: string) {

@@ -95,7 +95,9 @@ export class ProposalViewComponent implements OnInit {
 	subscribeToProposalStore(id: string) {
 		this.proposalQuery.selectEntity(id)
 			.subscribe((proposal: Proposal) => {
+				if (!proposal) return false;
 				this.proposal = proposal;
+				return this.stateService.setLoadingState(AppState.complete);
 			})
 	}
 
@@ -125,7 +127,6 @@ export class ProposalViewComponent implements OnInit {
 							description: proposal.description,
 							image: proposal.imageUrl
 						});
-					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(error) => {
 					return this.stateService.setLoadingState(AppState.serverError);
@@ -158,65 +159,6 @@ export class ProposalViewComponent implements OnInit {
 					}
 				}
 			);
-	}
-
-	onDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete Proposal?`,
-				message: `Are you sure you want to delete ${this.proposal.title}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.proposalService.delete({ id: this.proposal._id }).subscribe(() => {
-					this.openSnackBar('Succesfully deleted', 'OK');
-					this.router.navigate(['/proposals'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
-
-	onSoftDelete() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Remove Proposal?`,
-				message: `Are you sure you want to remove ${this.proposal.title}? This will only hide the item from the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				const entity = assign({}, this.proposal, { softDeleted: true });
-				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
-					this.openSnackBar('Succesfully removed', 'OK');
-					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
-	}
-
-	onRestore() {
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Restore Proposal?`,
-				message: `Are you sure you want to restore ${this.proposal.title}? This will make the item visible to the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				const entity = assign({}, this.proposal, { softDeleted: false });
-				this.proposalService.update({ id: this.proposal._id, entity }).subscribe(() => {
-					this.openSnackBar('Succesfully restored', 'OK');
-					this.router.navigate(['/solutions'], { queryParams: { forceUpdate: true } });
-				});
-			}
-		});
 	}
 
 	openSnackBar(message: string, action: string) {
