@@ -74,21 +74,21 @@ export class VoteButtonsComponent implements OnInit {
 	}
 
 	upVotesAsPercent() {
-		return this.getPercentage(this.item) || 0;
+		return this.getPercentage(this.storeVote || this.item) || 0;
 	}
 
 	downVotesAsPercent() {
-		return 100 - this.getPercentage(this.item) || 0;
+		return 100 - this.getPercentage(this.storeVote || this.item.votes) || 0;
 	}
 
 	getPercentage(item: any) {
-		if (item.votes.total === 0) {
+		if (item.total === 0) {
 			// no votes yet
 			return 0;
 		}
 
-		const numerator = item.votes.up;
-		const denominator = (item.votes.up + item.votes.down);
+		const numerator = item.up;
+		const denominator = (item.up + item.down);
 
 		if (denominator === 0) {
 			// stop divide by zero

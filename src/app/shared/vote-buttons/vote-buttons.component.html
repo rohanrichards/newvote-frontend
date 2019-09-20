@@ -36,7 +36,7 @@
         <h6 class="mat-body-2"
             [style.margin]="0">RESULTS <span *ngIf="userHasVoted()"
                 class="mat-body-2">
-                {{ item.votes.total || storeVote && storeVote.total }}</span>
+                {{ storeVote.total || item.votes.total }}</span>
         </h6>
         <div *ngIf="userHasVoted(); else elseBlock"
             class="chart-container">

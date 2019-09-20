@@ -8,13 +8,14 @@ import { Observable } from 'rxjs';
 import { map, startWith, finalize, delay } from 'rxjs/operators';
 
 import { IIssue } from '@app/core/models/issue.model';
-import { ITopic } from '@app/core/models/topic.model';
+import { ITopic, Topic } from '@app/core/models/topic.model';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
+import { TopicQuery } from '@app/core/http/topic/topic.query';
 
 @Component({
 	selector: 'app-issue',
@@ -53,7 +54,8 @@ export class IssueCreateComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private router: Router,
 		private route: ActivatedRoute,
-		private meta: MetaService
+		private meta: MetaService,
+		private topicQuery: TopicQuery
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -78,6 +80,8 @@ export class IssueCreateComponent implements OnInit {
 			]
 		};
 
+		this.subscribeToTopicStore();
+
 		this.uploader = new FileUploader(uploaderOptions);
 
 		this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
@@ -92,7 +96,10 @@ export class IssueCreateComponent implements OnInit {
 		};
 
 		this.topicService.list({})
-			.subscribe(topics => this.allTopics = topics);
+			.subscribe(
+				res => res,
+				(err) => err
+			);
 
 		this.organizationService.get().subscribe(org => this.organization = org);
 
@@ -116,6 +123,13 @@ export class IssueCreateComponent implements OnInit {
 					})
 				}
 			});
+	}
+
+	subscribeToTopicStore() {
+		this.topicQuery.selectAll()
+			.subscribe(
+				(topics: Topic[]) => this.allTopics = topics
+			)
 	}
 
 	onFileChange(event: any) {

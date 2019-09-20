@@ -16,6 +16,8 @@ import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { AppState } from '@app/core/models/state.model';
+import { StateService } from '@app/core/http/state/state.service';
 
 @Component({
 	selector: 'app-issue',
@@ -53,7 +55,8 @@ export class IssueEditComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		private router: Router,
 		private meta: MetaService,
-		private issueQuery: IssueQuery
+		private issueQuery: IssueQuery,
+		private stateService: StateService
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -193,6 +196,7 @@ export class IssueEditComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(t) => {
+					this.stateService.setLoadingState(AppState.loading);
 					this.openSnackBar('Succesfully updated', 'OK');
 					this.router.navigate([`/issues/${t._id}`]);
 				},
