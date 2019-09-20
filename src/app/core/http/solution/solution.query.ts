@@ -8,6 +8,8 @@ import { IssueQuery } from "../issue/issue.query";
 import { VotesQuery } from "../vote/vote.query";
 import { Proposal } from "@app/core/models/proposal.model";
 
+import { cloneDeep } from 'lodash';
+
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     constructor(
@@ -19,7 +21,7 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         super(store);
     }
 
-    selectSolutions() {
+    selectSolutions(issueId?: string) {
         return combineQueries(
             [
                 this.selectAll(),
@@ -28,7 +30,19 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         )
             .pipe(
                 map((results) => {
-                    const [solutions, proposals] = results;
+                    let [solutions, proposals] = results;
+
+                    if (issueId) {
+                        solutions = solutions.filter((solution) => {
+                            return solution.issues.some((issue) => {
+                                if (typeof issue === 'string') {
+                                    return issue === issueId;
+                                }
+
+                                return issue._id === issueId;
+                            })
+                        })
+                    }
 
                     return solutions.map((solution) => {
 
@@ -58,18 +72,26 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         return combineQueries(
             [
                 this.selectEntity(id),
-                this.proposalQuery.selectAll({ asObject: true }),
+                this.proposalQuery.selectAll(),
             ]
         )
             .pipe(
                 map((results) => {
                     let [solution, proposals] = results;
 
+                    const solutionProposals = proposals.filter((proposal: Proposal) => {
+                        return proposal.solutions.some((pSolution: any) => {
+                            if (typeof pSolution === 'string') {
+                                return solution._id === pSolution;
+                            }
+
+                            return solution._id === pSolution._id;
+                        })
+                    })
+
                     return {
                         ...solution,
-                        proposals: solution.proposals.map((proposalId) => {
-                            return proposals[proposalId]
-                        }),
+                        proposals: solutionProposals,
                         votes: solution.votes
                     }
                 })

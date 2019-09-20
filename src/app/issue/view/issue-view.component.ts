@@ -125,8 +125,8 @@ export class IssueViewComponent implements OnInit {
 				(err) => console.log(err))
 	}
 
-	subscribeToSolutionStore(id: string) {
-		this.solutions$ = this.solutionQuery.selectSolutions()
+	subscribeToSolutionStore(issueId: string) {
+		this.solutions$ = this.solutionQuery.selectSolutions(issueId)
 	}
 
 	subscribeToMediaStore(id: string) {
@@ -170,7 +170,8 @@ export class IssueViewComponent implements OnInit {
 							image: issue.imageUrl || ''
 						});
 					this.stateService.setLoadingState(AppState.complete);
-				}
+				},
+				(err) => err
 			)
 	}
 
@@ -256,6 +257,7 @@ export class IssueViewComponent implements OnInit {
 	}
 
 	handleSubmit(value?: string) {
+
 		this.toggleHeader();
 		if (!value) {
 			return;
