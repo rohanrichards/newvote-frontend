@@ -9,6 +9,7 @@ export const environment = {
     production: true,
     version: env.npm_package_version + '-dev',
     serverUrl: 'https://api.staging.newvote.org/api',
+    socketUrl: 'https://api.staging.newvote.org/',
     defaultLanguage: 'en-US',
     supportedLanguages: [
         'en-US',
