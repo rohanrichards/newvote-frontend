@@ -108,8 +108,6 @@ export class SolutionViewComponent implements OnInit {
 							description: solution.description,
 							image: solution.imageUrl
 						});
-
-					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => this.stateService.setLoadingState(AppState.serverError)
 			);
@@ -140,7 +138,11 @@ export class SolutionViewComponent implements OnInit {
 
 	subscribeToSolutionStore(id: string) {
 		this.solutionQuery.selectEntity(id)
-			.subscribe((solution: Solution) => this.solution = solution)
+			.subscribe((solution: Solution) => {
+				if (!solution) return false;
+				this.solution = solution;
+				this.stateService.setLoadingState(AppState.complete);
+			})
 	}
 
 	subscribeToSuggestionStore(id: string) {

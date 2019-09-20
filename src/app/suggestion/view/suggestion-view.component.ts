@@ -68,7 +68,9 @@ export class SuggestionViewComponent implements OnInit {
 	subscribeToSuggestionStore(id: string) {
 		this.suggestionQuery.selectEntity(id)
 			.subscribe((suggestion: Suggestion) => {
+				if (!suggestion) return false;
 				this.suggestion = suggestion;
+				this.stateService.setLoadingState(AppState.complete);
 			})
 	}
 
@@ -82,7 +84,6 @@ export class SuggestionViewComponent implements OnInit {
 							appBarTitle: 'View Suggestion',
 							description: suggestion.description
 						});
-					return this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => this.stateService.setLoadingState(AppState.serverError)
 			);
