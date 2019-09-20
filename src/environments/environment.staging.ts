@@ -6,7 +6,7 @@
 import env from './.env'
 
 export const environment = {
-    production: true,
+    production: false,
     version: env.npm_package_version + '-dev',
     serverUrl: 'https://api.staging.newvote.org/api',
     socketUrl: 'https://api.staging.newvote.org/',

@@ -75,7 +75,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 		RecaptchaModule,
 		RecaptchaFormsModule,
 		SocketIoModule.forRoot({
-			url: environment.production ? environment.socketUrl : 'http://localhost:3000',
+			url: environment.socketUrl,
 			options: {}
 		}),
 		environment.production ? [] : AkitaNgDevtools.forRoot(),
