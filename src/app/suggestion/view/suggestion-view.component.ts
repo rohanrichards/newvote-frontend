@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
@@ -26,7 +26,7 @@ import { assign } from 'lodash';
 	templateUrl: './suggestion-view.component.html',
 	styleUrls: ['./suggestion-view.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter')) 
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SuggestionViewComponent implements OnInit {
@@ -72,8 +72,8 @@ export class SuggestionViewComponent implements OnInit {
 			})
 	}
 
-	fetchData(id: string, forceUpdate?: boolean) {
-		this.suggestionService.view({ id: id, forceUpdate })
+	fetchData(id: string) {
+		this.suggestionService.view({ id: id })
 			.subscribe(
 				(suggestion: Suggestion) => {
 					this.meta.updateTags(
@@ -84,9 +84,7 @@ export class SuggestionViewComponent implements OnInit {
 						});
 					return this.stateService.setLoadingState(AppState.complete);
 				},
-				(err) => {
-					this.stateService.setLoadingState(AppState.serverError);
-				}
+				(err) => this.stateService.setLoadingState(AppState.serverError)
 			);
 	}
 
@@ -99,7 +97,7 @@ export class SuggestionViewComponent implements OnInit {
 			.subscribe(
 				(t) => this.openSnackBar('Succesfully updated', 'OK'),
 				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-		);
+			);
 	}
 
 	onVote(voteData: any, model: string) {
@@ -113,11 +111,11 @@ export class SuggestionViewComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe(
 				(res) => {
-						this.updateEntityVoteData(item, model, res.voteValue);
-						this.openSnackBar('Your vote was recorded', 'OK');
+					this.updateEntityVoteData(item, model, res.voteValue);
+					this.openSnackBar('Your vote was recorded', 'OK');
 				},
 				(error) => {
 					if (error.status === 401) {
@@ -128,67 +126,6 @@ export class SuggestionViewComponent implements OnInit {
 				},
 			);
 	}
-
-	// onDelete() {
-	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-	// 		width: '250px',
-	// 		data: {
-	// 			title: `Delete Suggestion?`,
-	// 			message: `Are you sure you want to delete ${this.suggestion.title}? This action cannot be undone.`
-	// 		}
-	// 	});
-
-	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
-	// 		if (confirm) {
-	// 			this.suggestionService.delete({ id: this.suggestion._id }).subscribe(() => {
-	// 				this.openSnackBar('Succesfully deleted', 'OK');
-	// 				this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-	// 			});
-	// 		}
-	// 	});
-	// }
-
-	// onSoftDelete() {
-	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-	// 		width: '250px',
-	// 		data: {
-	// 			title: `Remove Suggestion?`,
-	// 			message: `Are you sure you want to remove ${this.suggestion.title}? This will only hide the item from the public.`
-	// 		}
-	// 	});
-
-	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
-	// 		if (confirm) {
-	// 			this.suggestion.softDeleted = true;
-	// 			this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
-	// 				.subscribe(() => {
-	// 					this.openSnackBar('Succesfully removed', 'OK');
-	// 					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-	// 				});
-	// 		}
-	// 	});
-	// }
-
-	// onRestore() {
-	// 	const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-	// 		width: '250px',
-	// 		data: {
-	// 			title: `Restore Suggestion?`,
-	// 			message: `Are you sure you want to restore ${this.suggestion.title}? This will make the item visible to the public.`
-	// 		}
-	// 	});
-
-	// 	dialogRef.afterClosed().subscribe((confirm: boolean) => {
-	// 		if (confirm) {
-	// 			this.suggestion.softDeleted = false;
-	// 			this.suggestionService.update({ id: this.suggestion._id, entity: this.suggestion })
-	// 				.subscribe(() => {
-	// 					this.openSnackBar('Succesfully restored', 'OK');
-	// 					this.router.navigate(['/suggestions'], { queryParams: { forceUpdate: true } });
-	// 				});
-	// 		}
-	// 	});
-	// }
 
 	openSnackBar(message: string, action: string) {
 		this.snackBar.open(message, action, {
@@ -204,7 +141,7 @@ export class SuggestionViewComponent implements OnInit {
 		}
 		const url = `/${suggestionType}s/create`;
 
-		this.router.navigateByUrl(url, { 
+		this.router.navigateByUrl(url, {
 			state: {
 				...this.suggestion
 			}
@@ -213,6 +150,9 @@ export class SuggestionViewComponent implements OnInit {
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
 		this.voteQuery.selectEntity(entity._id)
+			.pipe(
+				take(1)
+			)
 			.subscribe(
 				(voteObj) => {
 					// Create a new entity object with updated vote values from
@@ -228,10 +168,10 @@ export class SuggestionViewComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 

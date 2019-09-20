@@ -43,15 +43,16 @@ export class SolutionService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
-			.pipe(	
+			.pipe(
 				tap((data: any) => {
-					this.solutionStore.add(data);					
+					this.voteService.populateStore(data);
+					this.solutionStore.add(data);
 				}),
 				map((res: Array<any>) => res),
 				catchError(handleError),
@@ -63,7 +64,7 @@ export class SolutionService {
 		let params = new HttpParams();
 
 		if (context.params) {
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
@@ -71,6 +72,7 @@ export class SolutionService {
 			.get(routes.view(context), { params })
 			.pipe(
 				tap((res: any) => {
+					this.voteService.addEntityVote(res);
 					this.solutionStore.add(res);
 				}),
 				map((res: any) => res),

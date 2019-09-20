@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, forwardRef, Inject, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
@@ -136,7 +136,7 @@ export class IssueViewComponent implements OnInit {
 			})
 	}
 
-	fetchData(id: string) {		
+	fetchData(id: string) {
 		this.getIssue(id);
 		this.getProposals();
 		this.getSolutions();
@@ -177,7 +177,7 @@ export class IssueViewComponent implements OnInit {
 	getSolutions() {
 		const isOwner = this.auth.isOwner();
 		const params = { 'showDeleted': isOwner ? true : '' };
-		
+
 		return this.solutionService.list({
 			params
 		})
@@ -193,10 +193,10 @@ export class IssueViewComponent implements OnInit {
 		return this.proposalService.list({
 			params
 		})
-		.subscribe(
-			(res) => res,
-			(err) => err
-		)
+			.subscribe(
+				(res) => res,
+				(err) => err
+			)
 	}
 
 	getMedia(id: string) {
@@ -208,9 +208,9 @@ export class IssueViewComponent implements OnInit {
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
 				(mediaList: Array<Media>) => {
-					mediaList
+					// mediaList
 				},
-				(err) => err	
+				(err) => err
 			);
 	}
 
@@ -309,6 +309,9 @@ export class IssueViewComponent implements OnInit {
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
 		this.voteQuery.selectEntity(entity._id)
+			.pipe(
+				take(1)
+			)
 			.subscribe(
 				(voteObj) => {
 					// Create a new entity object with updated vote values from
@@ -332,10 +335,14 @@ export class IssueViewComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
+
+					if (model === "Media") {
+						return this.mediaService.updateSuggestionVote(entity._id, updatedEntity);
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 

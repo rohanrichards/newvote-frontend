@@ -19,7 +19,7 @@ import { TopicService } from '../topic/topic.service';
 import { Topic, ITopic } from '@app/core/models/topic.model';
 import { Router } from '@angular/router';
 
-type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal 
+type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal
 	| ITopic | IIssue | IOrganization | ISolution | IMedia | ISuggestion | IProposal;
 type ServiceType = TopicService | IssueService | SolutionService | OrganizationService | SuggestionService | ProposalService | OrganizationService | MediaService;
 
@@ -42,7 +42,7 @@ export class AdminService {
 		private snackBar: MatSnackBar,
 		private router: Router
 	) { }
-	
+
 	getService(model: string): ServiceType {
 		const services: ServiceType[] = [this.topicService, this.issueService, this.solutionService, this.proposalService, this.suggestionService, this.mediaService, this.organizationService]
 		let entityIndex = this.entities.findIndex(e => e === model);
@@ -67,10 +67,10 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				let service; 
+				let service;
 				let data = { id: object._id }
 				if (model === "Topic") {
-					service = this.topicService.delete(data)				
+					service = this.topicService.delete(data)
 				}
 
 				if (model === "Issue") {
@@ -84,7 +84,7 @@ export class AdminService {
 				if (model == "Proposal") {
 					service = this.proposalService.delete(data)
 				}
-				
+
 				if (model == "Suggestion") {
 					service = this.suggestionService.delete(data)
 				}
@@ -123,11 +123,11 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				let service; 
-				
+				let service;
+
 				if (model === "Topic") {
 					const entity: Topic = assign({}, object, { softDeleted: true });
-					service = this.topicService.update({ id: entity._id, entity })				
+					service = this.topicService.update({ id: entity._id, entity })
 				}
 
 				if (model === "Issue") {
@@ -144,14 +144,14 @@ export class AdminService {
 					const entity: Proposal = assign({}, object, { softDeleted: true });
 					service = this.proposalService.update({ id: entity._id, entity })
 				}
-				
+
 				if (model == "Suggestion") {
 					const entity: Suggestion = assign({}, object, { softDeleted: true });
 					service = this.suggestionService.update({ id: entity._id, entity })
 				}
 
 				if (model === "Media") {
-					const entity: Media = assign({}, object, { softDeleted: true });
+					const entity: Media = assign({}, object, { softDeleted: true, });
 					service = this.mediaService.update({ id: entity._id, entity })
 				}
 
@@ -160,16 +160,16 @@ export class AdminService {
 					service = this.organizationService.update({ id: entity._id, entity })
 				}
 
-					service.subscribe(() => {
-						this.openSnackBar('Succesfully removed', 'OK');
+				service.subscribe(() => {
+					this.openSnackBar('Succesfully removed', 'OK');
 
-						if (redirectRoute) {
-							this.router.navigate([`/${redirectRoute}`]);
-						}
-					});
+					if (redirectRoute) {
+						this.router.navigate([`/${redirectRoute}`]);
+					}
+				});
 			}
 		});
-		
+
 	}
 
 	onRestore(object: any, model: string, redirectRoute?: string) {
@@ -185,11 +185,11 @@ export class AdminService {
 
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				let service; 
-				
+				let service;
+
 				if (model === "Topic") {
 					const entity: Topic = assign({}, object, { softDeleted: false });
-					service = this.topicService.update({ id: entity._id, entity })				
+					service = this.topicService.update({ id: entity._id, entity })
 				}
 
 				if (model === "Issue") {
@@ -206,14 +206,14 @@ export class AdminService {
 					const entity: Proposal = assign({}, object, { softDeleted: false });
 					service = this.proposalService.update({ id: entity._id, entity })
 				}
-				
+
 				if (model == "Suggestion") {
 					const entity: Suggestion = assign({}, object, { softDeleted: false });
 					service = this.suggestionService.update({ id: entity._id, entity })
 				}
 
 				if (model === "Media") {
-					const entity: Media = assign({}, object, { softDeleted: false });
+					let entity: Media = assign({}, object, { softDeleted: false })
 					service = this.mediaService.update({ id: entity._id, entity })
 				}
 
@@ -222,13 +222,13 @@ export class AdminService {
 					service = this.organizationService.update({ id: entity._id, entity })
 				}
 
-					service.subscribe(() => {
-						this.openSnackBar('Succesfully removed', 'OK');
+				service.subscribe(() => {
+					this.openSnackBar('Succesfully removed', 'OK');
 
-						if (redirectRoute) {
-							this.router.navigate([`/${redirectRoute}`]);
-						}
-					});
+					if (redirectRoute) {
+						this.router.navigate([`/${redirectRoute}`]);
+					}
+				});
 			}
 		});
 	}

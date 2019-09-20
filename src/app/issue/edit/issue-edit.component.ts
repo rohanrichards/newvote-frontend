@@ -6,15 +6,16 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { map, startWith, finalize } from 'rxjs/operators';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
-import { IIssue } from '@app/core/models/issue.model';
+import { IIssue, Issue } from '@app/core/models/issue.model';
 import { ITopic } from '@app/core/models/topic.model';
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { TopicService } from '@app/core/http/topic/topic.service';
 import { Organization } from '@app/core/models/organization.model';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
 import { MetaService } from '@app/core/meta.service';
+import { IssueQuery } from '@app/core/http/issue/issue.query';
 
 @Component({
 	selector: 'app-issue',
@@ -51,7 +52,8 @@ export class IssueEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		public snackBar: MatSnackBar,
 		private router: Router,
-		private meta: MetaService
+		private meta: MetaService,
+		private issueQuery: IssueQuery
 	) {
 		this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
 			startWith(''),
@@ -62,29 +64,13 @@ export class IssueEditComponent implements OnInit {
 		this.isLoading = true;
 		this.route.paramMap.subscribe(params => {
 			const ID = params.get('id');
+			this.subscribeToIssueStore(ID);
 			this.issueService.view({ id: ID, orgs: [] })
 				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(issue => {
-					this.imageUrl = issue.imageUrl;
-					this.issue = issue;
-					for (let i = 0; i < issue.topics.length; i++) {
-						const topic = issue.topics[i];
-						this.topics.push(topic);
-					}
-					this.issueForm.setValue({
-						'name': issue.name,
-						'description': issue.description,
-						'imageUrl': issue.imageUrl,
-						'topics': ''
-					});
-
-				this.meta.updateTags(
-					{
-						title: `Edit ${issue.name}`,
-						appBarTitle: 'Edit Issue',
-						description: issue.description
-					});
-				});
+				.subscribe(
+					(res) => res,
+					(err) => err
+				);
 		});
 
 		this.topicService.list({})
@@ -124,6 +110,36 @@ export class IssueEditComponent implements OnInit {
 		};
 	}
 
+	subscribeToIssueStore(id: string) {
+		this.issueQuery.selectEntity(id)
+			.subscribe((issue: Issue) => {
+				if (!issue) return false;
+				this.updateForm(issue);
+			})
+	}
+
+	updateForm(issue: Issue) {
+		this.imageUrl = issue.imageUrl;
+		this.issue = issue;
+		for (let i = 0; i < issue.topics.length; i++) {
+			const topic = issue.topics[i];
+			this.topics.push(topic);
+		}
+		this.issueForm.setValue({
+			'name': issue.name,
+			'description': issue.description,
+			'imageUrl': issue.imageUrl,
+			'topics': ''
+		});
+
+		this.meta.updateTags(
+			{
+				title: `Edit ${issue.name}`,
+				appBarTitle: 'Edit Issue',
+				description: issue.description
+			});
+	}
+
 	onFileChange(event: any) {
 		this.newImage = true;
 		if (event.target.files && event.target.files.length) {
@@ -146,8 +162,9 @@ export class IssueEditComponent implements OnInit {
 	}
 
 	onSave() {
+		const issue = cloneDeep(this.issue);
 		this.isLoading = true;
-		this.issue.organizations = this.organization;
+		issue.organizations = this.organization;
 
 		this.uploader.onCompleteAll = () => {
 			this.isLoading = false;
@@ -155,33 +172,32 @@ export class IssueEditComponent implements OnInit {
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
 			if (status === 200 && item.isSuccess) {
-				merge(this.issue, <IIssue>this.issueForm.value);
+				merge(issue, <IIssue>this.issueForm.value);
 				const res = JSON.parse(response);
-				this.issue.imageUrl = res.secure_url;
-				this.updateWithApi();
+				issue.imageUrl = res.secure_url;
+				this.updateWithApi(issue);
 			}
 		};
 
 		if (this.newImage) {
 			this.uploader.uploadAll();
 		} else {
-			merge(this.issue, <IIssue>this.issueForm.value);
-			this.updateWithApi();
+			merge(issue, <IIssue>this.issueForm.value);
+			this.updateWithApi(issue);
 		}
 	}
 
-	updateWithApi() {
-		this.issue.topics = this.topics;
-		this.issueService.update({ id: this.issue._id, entity: this.issue })
+	updateWithApi(issue: any) {
+		issue.topics = this.topics;
+		this.issueService.update({ id: issue._id, entity: issue })
 			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe((t) => {
-				if (t.error) {
-					this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-				} else {
+			.subscribe(
+				(t) => {
 					this.openSnackBar('Succesfully updated', 'OK');
-					this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
-				}
-			});
+					this.router.navigate([`/issues/${t._id}`]);
+				},
+				(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+			);
 	}
 
 	openSnackBar(message: string, action: string) {

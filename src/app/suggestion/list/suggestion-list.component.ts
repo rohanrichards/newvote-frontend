@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
@@ -17,7 +17,7 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
-import { Observable, combineLatest} from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
@@ -27,7 +27,7 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 	templateUrl: './suggestion-list.component.html',
 	styleUrls: ['./suggestion-list.component.scss'],
 	animations: [
-    	trigger('fadeIn', fadeIn(':enter'))
+		trigger('fadeIn', fadeIn(':enter'))
 	]
 })
 export class SuggestionListComponent implements OnInit {
@@ -72,13 +72,13 @@ export class SuggestionListComponent implements OnInit {
 				description: 'Showing all suggestions.'
 			});
 
-			this.stateService.loadingState$
-				.subscribe(
-					(res: any) => {
-						this.loadingState = res;
-					},
-					err => err
-				);
+		this.stateService.loadingState$
+			.subscribe(
+				(res: any) => {
+					this.loadingState = res;
+				},
+				err => err
+			);
 	}
 
 	getSuggestions() {
@@ -105,7 +105,7 @@ export class SuggestionListComponent implements OnInit {
 		}
 
 		const options = {
-			params:{
+			params: {
 				'showDeleted': isOwner ? true : ''
 			}
 		};
@@ -128,19 +128,19 @@ export class SuggestionListComponent implements OnInit {
 		}
 
 		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false ))
+			.pipe(finalize(() => this.isLoading = false))
 			.subscribe((res) => {
 				this.updateEntityVoteData(item, model, res.voteValue);
 				this.openSnackBar('Your vote was recorded', 'OK');
 			},
-			(error) => {
-				if (error.status === 401) {
-					this.openSnackBar('You must be logged in to vote', 'OK');
-				} else {
-					this.openSnackBar('There was an error recording your vote', 'OK');
+				(error) => {
+					if (error.status === 401) {
+						this.openSnackBar('You must be logged in to vote', 'OK');
+					} else {
+						this.openSnackBar('There was an error recording your vote', 'OK');
+					}
 				}
-			}
-		);
+			);
 	}
 
 	openSnackBar(message: string, action: string) {
@@ -153,6 +153,9 @@ export class SuggestionListComponent implements OnInit {
 
 	updateEntityVoteData(entity: any, model: string, voteValue: number) {
 		this.voteQuery.selectEntity(entity._id)
+			.pipe(
+				take(1)
+			)
 			.subscribe(
 				(voteObj) => {
 					// Create a new entity object with updated vote values from
@@ -168,10 +171,10 @@ export class SuggestionListComponent implements OnInit {
 
 					if (model === "Suggestion") {
 						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}	
+					}
 				},
 				(err) => err
-		)
+			)
 
 	}
 

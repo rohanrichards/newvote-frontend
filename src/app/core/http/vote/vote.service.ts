@@ -42,7 +42,7 @@ export class VoteService {
 		private voteStore: VoteStore,
 	) {
 		this.orgService.get().subscribe(org => this._org = org);
-		
+
 		this.socket.fromEvent('vote')
 			.subscribe((vote: any) => {
 				this.updateStoreVote(vote)
@@ -57,7 +57,7 @@ export class VoteService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
@@ -110,21 +110,21 @@ export class VoteService {
 
 	addEntityVote(data: any) {
 		const entity = cloneDeep(data);
-		
+
 		let votes = <any>[];
 		let vote = entity.votes;
 		vote._id = entity._id;
 
-		if (entity.proposals) {
-			const proposals = entity.proposals.slice().reduce((prev:any, curr:any) => {
-				let pItems = prev || [];
-				curr.votes._id = curr._id;
-				return pItems.concat(curr.votes);
-			}, []);
+		// if (entity.proposals) {
+		// 	const proposals = entity.proposals.slice().reduce((prev: any, curr: any) => {
+		// 		let pItems = prev || [];
+		// 		curr.votes._id = curr._id;
+		// 		return pItems.concat(curr.votes);
+		// 	}, []);
 
-			votes = votes.concat(proposals);
-		}
-		
+		// 	votes = votes.concat(proposals);
+		// }
+
 		votes = votes.concat(vote);
 		this.voteStore.add(votes);
 		return entity;
@@ -139,22 +139,22 @@ export class VoteService {
 
 		// If there is a proposal object, we concat those objects to the main array
 		// resulting in an array of voteMetaData Objects composed from all different entity types
-		votes = serverData.reduce((previous: any, current:any) => {
+		votes = serverData.reduce((previous: any, current: any) => {
 			// either start with or reuse accumulated data
 			let items = previous || [];
-		  
-			if (current.proposals) {
-				const proposals = current.proposals.slice().reduce((prev:any, curr:any) => {
-					let pItems = prev || [];
-					curr.votes._id = curr._id;
-					return pItems.concat(curr.votes);
-				}, []);
 
-				items = items.concat(proposals);
-			}
-			
+			// if (current.proposals) {
+			// 	const proposals = current.proposals.slice().reduce((prev:any, curr:any) => {
+			// 		let pItems = prev || [];
+			// 		curr.votes._id = curr._id;
+			// 		return pItems.concat(curr.votes);
+			// 	}, []);
+
+			// 	items = items.concat(proposals);
+			// }
+
 			// Entity types can have no vote meta data if newly created so apply here
-		  	current.votes._id = current._id;
+			current.votes._id = current._id;
 			items = items.concat(current.votes);
 			return items;
 		}, []);
