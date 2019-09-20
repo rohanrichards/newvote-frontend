@@ -104,6 +104,7 @@ export class IssueViewComponent implements OnInit {
 			this.subscribeToMediaStore(ID);
 			this.fetchData(ID);
 			this.getMedia(ID);
+			this.getTopics();
 		});
 
 		this.getSuggestions();
@@ -117,16 +118,18 @@ export class IssueViewComponent implements OnInit {
 
 
 	subscribeToIssueStore(id: string) {
-		this.issueQuery.selectEntity(id)
+		this.issueQuery.getIssueWithTopic(id)
 			.subscribe(
 				(issue: Issue) => {
+					if (!issue) return issue;
 					this.issue = issue;
+					this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => console.log(err))
 	}
 
 	subscribeToSolutionStore(issueId: string) {
-		this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+		this.solutions$ = this.solutionQuery.selectSolutions(issueId);
 	}
 
 	subscribeToMediaStore(id: string) {
@@ -141,6 +144,20 @@ export class IssueViewComponent implements OnInit {
 		this.getProposals();
 		this.getSolutions();
 		this.getSuggestions();
+		this.getTopics();
+	}
+
+	getTopics() {
+		const isOwner = this.auth.isOwner();
+		const params = {
+			'showDeleted': isOwner ? true : ''
+		}
+
+		this.topicService.list({ orgs: [], params })
+			.subscribe(
+				res => res,
+				err => err
+			);
 	}
 
 	getSuggestions() {
@@ -169,7 +186,6 @@ export class IssueViewComponent implements OnInit {
 							description: issue.description || '',
 							image: issue.imageUrl || ''
 						});
-					this.stateService.setLoadingState(AppState.complete);
 				},
 				(err) => err
 			)

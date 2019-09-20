@@ -114,7 +114,7 @@ export class IssueCreateComponent implements OnInit {
 						name: suggestion.title,
 						description: suggestion.description
 					})
-				} 
+				}
 			});
 	}
 
@@ -158,7 +158,7 @@ export class IssueCreateComponent implements OnInit {
 						}
 
 						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate([`/issues/${t._id}`], { queryParams: { forceUpdate: true } });
+						this.router.navigate([`/issues/${t._id}`]);
 					},
 					(err) => {
 						this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK');
