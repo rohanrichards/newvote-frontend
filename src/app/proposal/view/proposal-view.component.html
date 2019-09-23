@@ -2,149 +2,154 @@
     size="1.5"></app-loader>
 
 <ng-container [ngSwitch]="loadingState">
-	<div *ngSwitchCase="'loading'">
-		<app-skeleton-header [noLogo]=true >
-		</app-skeleton-header>
-		<app-skeleton-panel [hasVote]=true>
-		</app-skeleton-panel>
-	</div>
-	<div *ngSwitchCase="'serverError'">
-		<app-skeleton-header [noLogo]=true >
-		</app-skeleton-header>
-		<app-skeleton-panel [hasVote]=true>
-		</app-skeleton-panel>
-		<div class="error-container">
-			<app-error-card>
-			</app-error-card>
-		</div>
-	</div>
-	<mat-toolbar 
-		*ngSwitchCase="'complete'"
-		color="primary"
-		[@fadeIn]="!isLoading"
-		class="header-info-panel"
-		>
-		<div 
-			*ngIf="proposal"
-			class="image-container"
-			fxLayout="column"
-			[defaultImage]="handleImageUrl(proposal.imageUrl, true)"
-			[lazyLoad]="handleImageUrl(proposal.imageUrl)">
-			<div class="admin-panel"
-				*ngIf="auth.isModerator(proposal)"
-				fxLayout="column"
-				fxLayoutAlign="center end">
-				<div class="button-panel">
-					<button mat-icon-button
-						matTooltip="Add a new Action"
-						color="accent"
-						routerLink="/proposals/create">
-						<mat-icon aria-label="Add a new action">playlist_add</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Edit this Action"
-						color="accent"
-						routerLink="/proposals/edit/{{proposal._id}}">
-						<mat-icon aria-label="Edit the action">edit</mat-icon>
-					</button>
-					<button mat-icon-button
-						*ngIf="proposal.softDeleted"
-						matTooltip="Restore Action"
-						color="accent"
-						(click)="onRestore()">
-						<mat-icon aria-label="Restore Action">restore</mat-icon>
-					</button>
-					<button mat-icon-button
-						*ngIf="!proposal.softDeleted"
-						matTooltip="Remove Action"
-						color="accent"
-						(click)="onSoftDelete()">
-						<mat-icon aria-label="Remove Action">delete</mat-icon>
-					</button>
-					<button mat-icon-button
-						matTooltip="Delete this Action"
-						color="warn"
-						(click)="onDelete()">
-						<mat-icon aria-label="Delete the action forever">delete_forever</mat-icon>
-					</button>
-				</div>
-			</div>
-			<div fxLayout="row"
-				fxFlex></div>
-			<!-- <div fxLayout="column"
+    <div *ngSwitchCase="'loading'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+    </div>
+    <div *ngSwitchCase="'serverError'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+        <div class="error-container">
+            <app-error-card>
+            </app-error-card>
+        </div>
+    </div>
+    <mat-toolbar *ngSwitchCase="'complete'"
+        color="primary"
+        [@fadeIn]="!isLoading"
+        class="header-info-panel">
+        <div *ngIf="proposal"
+            class="image-container"
+            fxLayout="column"
+            [defaultImage]="handleImageUrl(proposal.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(proposal.imageUrl)">
+            <div class="admin-panel"
+                *ngIf="auth.isModerator(proposal)"
+                fxLayout="column"
+                fxLayoutAlign="center end">
+                <div class="button-panel">
+                    <button mat-icon-button
+                        matTooltip="Add a new Action"
+                        color="accent"
+                        routerLink="/proposals/create">
+                        <mat-icon aria-label="Add a new action">playlist_add
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Edit this Action"
+                        color="accent"
+                        routerLink="/proposals/edit/{{proposal._id}}">
+                        <mat-icon aria-label="Edit the action">edit</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        *ngIf="proposal.softDeleted"
+                        matTooltip="Restore Action"
+                        color="accent"
+                        (click)="admin.onRestore(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Restore Action">restore</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        *ngIf="!proposal.softDeleted"
+                        matTooltip="Remove Action"
+                        color="accent"
+                        (click)="admin.onSoftDelete(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Remove Action">delete</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Delete this Action"
+                        color="warn"
+                        (click)="admin.onDelete(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Delete the action forever">
+                            delete_forever</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div fxLayout="row"
+                fxFlex></div>
+            <!-- <div fxLayout="column"
 				fxLayoutAlign="start start">
 			</div> -->
-			<div fxLayout="row wrap"
-				fxLayoutAlign="center center">
-				<div fxFlex.gt-sm="690px"
-					fxFlex.gt-md="800px">
-					<app-share-buttons></app-share-buttons>
-				</div>
-			</div>
-		</div>
-		<div fxLayout="row wrap"
-			fxLayoutAlign="center center">
-			<div fxFlex.gt-sm="690px"
-				fxFlex.gt-md="800px">
-				<div class="mat-display-1"
-					translate>{{proposal.title}}</div>
+            <div fxLayout="row wrap"
+                fxLayoutAlign="center center">
+                <div fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="800px">
+                    <app-share-buttons></app-share-buttons>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="mat-display-1"
+                    translate>{{proposal.title}}</div>
 
-				<span class="mat-body">This is a Action for:
-					<span *ngFor="let parent of proposal.solutions; let i = index">
-						<a mat-button
-							routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
-					</span>
-				</span>
-				<app-more-less [displayText]="proposal.description"
-					maxHeight="200">
-				</app-more-less>
-				<mat-divider></mat-divider>
-				<p></p>
-				<div class="buttons">
-					<app-vote-buttons [item]="proposal"
-						(vote)=onVote($event)>
-					</app-vote-buttons>
-				</div>
-				<div *ngIf="auth.isVerified()" [style.margin-bottom]="'1rem'">
-					<h4 class="mat-subtitle-1">Make a Suggestion for this action.</h4>
-					<button mat-flat-button color="warn" (click)="populateSuggestion()">Make Suggestion</button>
-				</div>
-			</div>
-		</div>
-	</mat-toolbar>
+                <span class="mat-body">This is a Action for:
+                    <span
+                        *ngFor="let parent of proposal.solutions; let i = index">
+                        <a mat-button
+                            routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
+                    </span>
+                </span>
+                <app-more-less [displayText]="proposal.description"
+                    maxHeight="200">
+                </app-more-less>
+                <mat-divider></mat-divider>
+                <p></p>
+                <div class="buttons">
+                    <app-vote-buttons [item]="proposal"
+                        (vote)="onVote($event, 'Proposal')">
+                    </app-vote-buttons>
+                </div>
+                <div *ngIf="auth.isVerified()"
+                    [style.margin-bottom]="'1rem'">
+                    <h4 class="mat-subtitle-1">Make a Suggestion for this
+                        action.</h4>
+                    <button mat-flat-button
+                        color="warn"
+                        (click)="populateSuggestion()">Make Suggestion</button>
+                </div>
+            </div>
+        </div>
+    </mat-toolbar>
 </ng-container>
 
 <div class="container"
     *ngIf="proposal"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-		fxFlex.gt-md="800px">
-		<div>
-			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-				<h2 class="mat-headline center-text">Community Suggestions</h2>
-			</mat-toolbar>
-			<app-card-list 
-				path="/suggestions"
-				[@fadeIn]=true
-				[items]=suggestions
-				model="Suggestion"
-				(restore)="onSuggestionRestore($event)"
-				(softDelete)="onSuggestionSoftDelete($event)"
-				(delete)="onSuggestionDelete($event)"
-				(vote)="onSuggestionVote($event, 'Suggestion')"
-				>
-			</app-card-list>
-		</div>
-		<div *ngIf="auth.isVerified()">
-			<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-				<h2 class="mat-headline center-text">Create your own Suggestion</h2>
-			</mat-toolbar>
-			<app-make-suggestion
-				parent="action"
-				(submitForm)="handleSuggestionSubmit($event)"
-				>
-			</app-make-suggestion>
-		</div>
-	</div>
+    <div fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px">
+        <div>
+            <mat-toolbar color="primary"
+                fxLayoutAlign="center center"
+                [style.margin-bottom]="'1rem'">
+                <h2 class="mat-headline center-text">Community Suggestions</h2>
+            </mat-toolbar>
+            <app-card-list path="/suggestions"
+                [@fadeIn]=true
+                [items]=suggestions
+                model="Suggestion"
+                (restore)="admin.onRestore($event, 'Suggestion')"
+                (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                (delete)="admin.onDelete($event, 'Suggestion')"
+                (vote)="onVote($event, 'Suggestion')">
+            </app-card-list>
+        </div>
+        <div *ngIf="auth.isVerified()">
+            <mat-toolbar color="primary"
+                fxLayoutAlign="center center"
+                [style.margin-bottom]="'1rem'">
+                <h2 class="mat-headline center-text">Create your own Suggestion
+                </h2>
+            </mat-toolbar>
+            <app-make-suggestion parent="action"
+                (submitForm)="handleSuggestionSubmit($event)">
+            </app-make-suggestion>
+        </div>
+    </div>
 </div>

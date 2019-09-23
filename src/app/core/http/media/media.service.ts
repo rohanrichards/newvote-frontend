@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
-import { IMedia } from '@app/core/models/media.model';
+import { IMedia, Media } from '@app/core/models/media.model';
+import { MediaStore } from './media.store';
+import { VoteService } from '../vote/vote.service';
 
 const routes = {
 	list: (c: MediaContext) => `/media`,
@@ -25,7 +27,11 @@ export interface MediaContext {
 @Injectable()
 export class MediaService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private httpClient: HttpClient,
+		private mediaStore: MediaStore,
+		private voteService: VoteService
+	) { }
 
 	list(context: MediaContext): Observable<any[]> {
 		// create blank params object
@@ -35,13 +41,17 @@ export class MediaService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((res: Media[]) => {
+					this.voteService.populateStore(res);
+					this.mediaStore.add(res)
+				}),
 				map((res: Array<any>) => res),
 				catchError((e) => of([{ error: e }]))
 			);
@@ -52,6 +62,10 @@ export class MediaService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((res: Media) => {
+					this.voteService.addEntityVote(res);
+					this.mediaStore.add(res)
+				}),
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
 			);
@@ -62,6 +76,7 @@ export class MediaService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((res: Media) => this.mediaStore.add(res)),
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
 			);
@@ -72,6 +87,7 @@ export class MediaService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((res: Media) => this.mediaStore.update(res._id, res)),
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
 			);
@@ -82,6 +98,7 @@ export class MediaService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((res: Media) => this.mediaStore.remove(res._id)),
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
 			);
@@ -95,6 +112,10 @@ export class MediaService {
 				map((res: any) => res),
 				catchError((e) => of({ error: e }))
 			);
+	}
+
+	updateSuggestionVote(id: string, media: any) {
+		this.mediaStore.update(id, media);
 	}
 
 }

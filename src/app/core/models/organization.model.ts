@@ -1,5 +1,5 @@
 export interface IOrganization {
-	_id?: string;
+	_id: string;
 	name: string;
 	organizationName?: string;
 	description: string;

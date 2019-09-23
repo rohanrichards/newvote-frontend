@@ -67,7 +67,7 @@ export class ProposalCreateComponent implements OnInit {
 				title: 'Create Action',
 				description: 'Creating a new action on the NewVote platform.'
 			});
-		
+
 		this.route.paramMap
 			.pipe(
 				map((data) => {
@@ -79,13 +79,13 @@ export class ProposalCreateComponent implements OnInit {
 			)
 			.subscribe(routeData => {
 				const { params, state: suggestion } = routeData;
-				
+
 				if (suggestion._id) {
 					this.suggestionTemplate = suggestion;
 					this.populateSolution(suggestion.parent);
 					return this.proposalForm.patchValue(suggestion);
 				}
-				
+
 				const ID = params._id;
 				if (params._id) {
 					this.populateSolution(params._id);
@@ -128,7 +128,7 @@ export class ProposalCreateComponent implements OnInit {
 		this.organizationService.get().subscribe(org => this.organization = org);
 	}
 
-	populateSolution (ID: string) {
+	populateSolution(ID: string) {
 		this.solutionService.view({ id: ID, orgs: [] })
 			.pipe(finalize(() => { this.isLoading = false; }))
 			.subscribe(
@@ -180,11 +180,11 @@ export class ProposalCreateComponent implements OnInit {
 						}
 
 						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
+						this.router.navigate([`/proposals/${t._id}`]);
 					},
 					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
-			);
+				);
 		}
 
 		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {

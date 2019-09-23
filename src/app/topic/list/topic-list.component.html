@@ -9,12 +9,15 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
-		<app-grid-list path="/topics"
-		    [items]=topics
-		    model="Topic"
-		    (restore)="onRestore($event)"
-			(softDelete)="onSoftDelete($event)"
-			(delete)="onDelete($event)"></app-grid-list>
-	</div>
+    <div fxFlex.lt-sm="80%"
+        fxFlex.sm="690px"
+        fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px">
+        <app-grid-list path="/topics"
+            [items]=topics
+            model="Topic"
+            (restore)="admin.onRestore($event, 'Topic')"
+            (softDelete)="admin.onSoftDelete($event, 'Topic')"
+            (delete)="admin.onDelete($event, 'Topic')"></app-grid-list>
+    </div>
 </div>

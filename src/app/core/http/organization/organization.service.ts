@@ -2,10 +2,12 @@ import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
-import { map, finalize, catchError } from 'rxjs/operators';
+import { map, finalize, catchError, tap } from 'rxjs/operators';
 
 import { Organization } from '@app/core/models/organization.model';
 import { handleError } from '@app/core/http/errors';
+import { Socket } from 'ngx-socket-io';
+import { OrganizationStore, CommunityStore } from './organization.store';
 
 const routes = {
 	list: (c: OrganizationContext) => `/organizations`,
@@ -27,13 +29,17 @@ export interface OrganizationContext {
 
 @Injectable()
 export class OrganizationService {
+
 	private _host: string;
 	private _subdomain: string;
 	private _org: Organization;
 	private $org: BehaviorSubject<any>;
 
 	constructor(
+		private socket: Socket,
 		private httpClient: HttpClient,
+		private organizationStore: OrganizationStore,
+		private communityStore: CommunityStore
 	) {
 		this._host = document.location.host;
 		this._subdomain = this._host.split('.')[0];
@@ -51,8 +57,11 @@ export class OrganizationService {
 					catchError(handleError)
 				).subscribe(
 					(org: Organization) => {
+						this.communityStore.add(org);
+						this.organizationStore.update(org);
 						this._org = org;
 						this.$org.next(org);
+						this.joinWebSocketRoom(org.url)
 					},
 					(err) => {
 						this.$org.next(null);
@@ -81,6 +90,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((res: Organization[]) => this.communityStore.add(res)),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -91,6 +101,10 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((res: Organization) => {
+					this.organizationStore.update(res);
+					this.communityStore.add(res)
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -101,6 +115,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((res: Organization) => this.communityStore.add(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -111,6 +126,14 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((res: Organization) => {
+					// since there are two stores we need to check whether to update both
+					if (res._id === this._org._id) {
+						this.organizationStore.update(res);
+					}
+
+					this.communityStore.update(res._id, res)
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -121,6 +144,10 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.put(routes.updateOwner(context), context.entity)
 			.pipe(
+				tap((res: Organization) => {
+					this.organizationStore.update(res)
+					this.communityStore.update(res._id, res);
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -131,6 +158,7 @@ export class OrganizationService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((res: Organization) => this.communityStore.remove(res._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -142,5 +170,9 @@ export class OrganizationService {
 
 	get subdomain() {
 		return this._subdomain;
+	}
+
+	joinWebSocketRoom(room: string) {
+		this.socket.emit('join org', room)
 	}
 }

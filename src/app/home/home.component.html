@@ -317,7 +317,7 @@
 		 	>
 			<h2 class="mat-h2">What's Hot?</h2>
 			<ng-container 
-			*ngIf="issues.length < 1; then noIssues; else issuesExist">
+				*ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>
 		</div>
 	</div>
@@ -341,8 +341,9 @@
 		 [itemLimit]="ISSUE_LIMIT"
 		 [titleCard]=true
 		 [items]=issues
-		 (delete)="onDelete($event)"
-		 (softDelete)="onSoftDelete($event)"></app-grid-list>
+		 (restore)="admin.onRestore($event, 'Issue')"
+		 (delete)="admin.onDelete($event, 'Issue')"
+		 (softDelete)="admin.onSoftDelete($event, 'Issue')"></app-grid-list>
 		<div>
 			<button mat-button
 			 routerLink="/issues">

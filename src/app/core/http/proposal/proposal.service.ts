@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
-import { IProposal } from '@app/core/models/proposal.model';
+import { IProposal, Proposal } from '@app/core/models/proposal.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
+import { ProposalStore } from './proposal.store';
 
 const routes = {
 	list: (c: ProposalContext) => `/proposals`,
@@ -26,7 +28,11 @@ export interface ProposalContext {
 @Injectable()
 export class ProposalService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private voteService: VoteService,
+		private httpClient: HttpClient,
+		private proposalStore: ProposalStore
+	) { }
 
 	list(context: ProposalContext): Observable<any[]> {
 		// create blank params object
@@ -36,13 +42,17 @@ export class ProposalService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((data: Proposal[]) => {
+					this.voteService.populateStore(data);
+					this.proposalStore.add(data);
+				}),
 				map((res: Array<any>) => res),
 				catchError(handleError)
 			);
@@ -53,6 +63,10 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((res: Proposal) => {
+					this.voteService.addEntityVote(res);
+					this.proposalStore.add(res);
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -63,6 +77,7 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((res: Proposal) => this.proposalStore.add(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -73,6 +88,7 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((proposal: Proposal) => this.proposalStore.upsert(proposal._id, proposal)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -83,9 +99,14 @@ export class ProposalService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((proposal: Proposal) => this.proposalStore.remove(proposal._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
+	}
+
+	updateProposalVote(id: string, proposal: any) {
+		this.proposalStore.update(id, proposal);
 	}
 
 }

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
+import { SuggestionStore } from './suggestion.store';
 
 const routes = {
 	list: (c: SuggestionContext) => `/suggestions`,
@@ -24,9 +26,12 @@ export interface SuggestionContext {
 @Injectable()
 export class SuggestionService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private suggestionStore: SuggestionStore,
+		private voteService: VoteService,
+		private httpClient: HttpClient) { }
 
-	list(context: SuggestionContext): Observable<any[]> {
+	list(context: SuggestionContext): Observable<any> {
 		// create blank params object
 		let params = new HttpParams();
 
@@ -34,14 +39,17 @@ export class SuggestionService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
-				map((res: Array<any>) => res),
+				tap((data: Suggestion[]) => {
+					this.voteService.populateStore(data);
+					this.suggestionStore.add(data);
+				}),
 				catchError(handleError)
 			);
 	}
@@ -51,6 +59,10 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.get(routes.view(context))
 			.pipe(
+				tap((res: Suggestion) => {
+					this.voteService.addEntityVote(res);
+					this.suggestionStore.add(res);
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -61,6 +73,7 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((res: Suggestion) => this.suggestionStore.add(res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -71,6 +84,7 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((res: Suggestion) => this.suggestionStore.update(res._id, res)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -81,9 +95,17 @@ export class SuggestionService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((res: any) => this.suggestionStore.remove(res._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
 	}
 
+	populateStoreMetaData(serverData: any) {
+		this.voteService.populateStore(serverData);
+	}
+
+	updateSuggestionVote(id: string, suggestion: any) {
+		this.suggestionStore.update(id, suggestion);
+	}
 }

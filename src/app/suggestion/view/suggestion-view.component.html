@@ -27,19 +27,19 @@
 						<button mat-icon-button
 							matTooltip="Set Suggestion Approved"
 							[color]="suggestion.status === 1 ? 'warn' : 'primary'"
-							(click)="approveSuggestion()">
+							(click)="updateSuggestion(1)">
 							<mat-icon aria-label="Add a new suggestion">check_circle</mat-icon>
 						</button>
 						<button mat-icon-button
 							matTooltip="Set Suggestion Pending"
 							[color]="suggestion.status === 0 ? 'warn' : 'primary'"
-							(click)="pendSuggestion()">
+							(click)="updateSuggestion(0)">
 							<mat-icon aria-label="Add a new suggestion">help_outline</mat-icon>
 						</button>
 						<button mat-icon-button
 							matTooltip="Set Suggestion Denied"
 							[color]="suggestion.status === -1 ? 'warn' : 'primary'"
-							(click)="denySuggestion()">
+							(click)="updateSuggestion(-1)">
 							<mat-icon aria-label="Add a new suggestion">block</mat-icon>
 						</button>
 					</span>
@@ -59,20 +59,20 @@
 					<button color="accent"
 						*ngIf="suggestion.softDeleted"
 						mat-icon-button
-						(click)="onRestore()">
+						(click)="admin.onRestore(suggestion, 'Suggestion', 'suggestions')">
 						<mat-icon aria-label="Restore suggestion">restore</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Remove solution"
 						*ngIf="!suggestion.softDeleted"
 						color="accent"
-						(click)="onSoftDelete()">
+						(click)="admin.onSoftDelete(suggestion, 'Suggestion', 'suggestions')">
 						<mat-icon aria-label="Remove suggestion">delete</mat-icon>
 					</button>
 					<button mat-icon-button
 						matTooltip="Delete this Suggestion"
 						color="warn"
-						(click)="onDelete()">
+						(click)="admin.onDelete(suggestion, 'Suggestion', 'suggestions')">
 						<mat-icon aria-label="Delete the suggestion forever">delete_forever</mat-icon>
 					</button>
 				</div>
@@ -105,7 +105,7 @@
 				<p></p>
 				<div class="buttons">
 					<app-vote-buttons [item]="suggestion"
-						(vote)=onVote($event)>
+						(vote)="onVote($event, 'Suggestion')">
 					</app-vote-buttons>
 				</div>
 				<div *ngIf="auth.isOwner() && suggestion.status === 1" [style.margin-bottom]="'1rem'">

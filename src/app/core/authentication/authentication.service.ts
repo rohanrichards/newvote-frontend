@@ -91,7 +91,7 @@ export class AuthenticationService {
 				},
 				(err) => {
 					if (err.status === 400) {
-						this.setCredentials();
+						return this.setCredentials();
 					}
 				}
 			)
@@ -324,7 +324,6 @@ export class AuthenticationService {
 		}
 
 		if (!isUserPartOfOrg) {
-			console.log('User is part of org');
 			return this.communityVerified = false;
 		}
 

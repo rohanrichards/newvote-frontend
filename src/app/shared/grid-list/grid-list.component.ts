@@ -26,71 +26,33 @@ export class GridListComponent implements OnInit {
 
 	constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
-	public get getItems() {
+	getItems() {
+		let newItems = this.items.slice();
 
 		if (this.itemLimit) {
-			return this.items
+			newItems = newItems
 				.filter((item: any, index: Number) => index < this.itemLimit)
 				.sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore);
 		}
 
-		return this.items;
+		return newItems;
 	}
 
 	ngOnInit() { }
 
 	onDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete ${this.model} Forever`,
-				message: `Are you sure you want to delete ${item.name}? This action cannot be undone.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.delete.emit(item);
-			}
-		});
+		this.delete.emit(item);
 	}
 
 	onSoftDelete(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Delete ${this.model}`,
-				message: `Are you sure you want to delete ${item.name}? This will only hide the item from the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.softDelete.emit(item);
-			}
-		});
+		this.softDelete.emit(item);
 	}
 
 	onRestore(item: any, event: any) {
 		event.stopPropagation();
-
-		const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-			width: '250px',
-			data: {
-				title: `Restore ${this.model}`,
-				message: `Are you sure you want to restore ${item.name}? This will make the item visible to the public.`
-			}
-		});
-
-		dialogRef.afterClosed().subscribe((confirm: boolean) => {
-			if (confirm) {
-				this.restore.emit(item);
-			}
-		});
+		this.restore.emit(item);
 	}
 
 	handleUrl(item: any) {
@@ -109,4 +71,7 @@ export class GridListComponent implements OnInit {
 		window.location.href = `http://${newHostName}:${window.location.port}`;
 	}
 
+	trackByFn(index: any, item:any) {
+		return index; // or item.id
+	  }
 }

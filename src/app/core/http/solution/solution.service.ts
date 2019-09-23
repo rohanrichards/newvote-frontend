@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
-import { ISolution } from '@app/core/models/solution.model';
+import { ISolution, Solution } from '@app/core/models/solution.model';
 import { handleError } from '@app/core/http/errors';
+import { VoteService } from '../vote/vote.service';
+import { SolutionStore } from './solution.state';
+
 
 const routes = {
 	list: (c: SolutionContext) => `/solutions`,
@@ -26,7 +29,11 @@ export interface SolutionContext {
 @Injectable()
 export class SolutionService {
 
-	constructor(private httpClient: HttpClient) { }
+	constructor(
+		private httpClient: HttpClient,
+		private voteService: VoteService,
+		private solutionStore: SolutionStore
+	) { }
 
 	list(context: SolutionContext): Observable<any[]> {
 		// create blank params object
@@ -36,15 +43,19 @@ export class SolutionService {
 		if (context.params) {
 			// context.params is assumed to have a format similar to
 			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.list(context), { params })
 			.pipe(
+				tap((data: any) => {
+					this.voteService.populateStore(data);
+					this.solutionStore.add(data);
+				}),
 				map((res: Array<any>) => res),
-				catchError(handleError)
+				catchError(handleError),
 			);
 	}
 
@@ -53,13 +64,17 @@ export class SolutionService {
 		let params = new HttpParams();
 
 		if (context.params) {
-			params = new HttpParams({fromObject: context.params});
+			params = new HttpParams({ fromObject: context.params });
 		}
 
 		return this.httpClient
 			.cache(context.forceUpdate)
 			.get(routes.view(context), { params })
 			.pipe(
+				tap((res: any) => {
+					this.voteService.addEntityVote(res);
+					this.solutionStore.add(res);
+				}),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -70,6 +85,7 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.post(routes.create(context), context.entity)
 			.pipe(
+				tap((solution: Solution) => this.solutionStore.add(solution)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -80,6 +96,7 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.put(routes.update(context), context.entity)
 			.pipe(
+				tap((solution: Solution) => this.solutionStore.update(solution._id, solution)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
@@ -90,9 +107,13 @@ export class SolutionService {
 			.cache(context.forceUpdate)
 			.delete(routes.delete(context))
 			.pipe(
+				tap((solution: Solution) => this.solutionStore.remove(solution._id)),
 				map((res: any) => res),
 				catchError(handleError)
 			);
 	}
 
+	updateSolutionVote(id: string, solution: any) {
+		this.solutionStore.update(id, solution);
+	}
 }
