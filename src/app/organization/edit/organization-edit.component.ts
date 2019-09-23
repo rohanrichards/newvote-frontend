@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { ActivatedRoute } from '@angular/router'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators'
@@ -15,9 +15,6 @@ import { UserService } from '@app/core/http/user/user.service'
 import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
-import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
-
-import { cloneDeep } from 'lodash'
 
 @Component({
     selector: 'app-organization',
@@ -36,6 +33,8 @@ export class OrganizationEditComponent implements OnInit {
     uploader: FileUploader;
     isValid = false;
 
+    checkboxOptions = ['student', 'faculty', 'staff', 'employee', 'member'];
+
     organizationForm = new FormGroup({
         name: new FormControl('', [Validators.required]),
         organizationName: new FormControl(''),
@@ -52,7 +51,29 @@ export class OrganizationEditComponent implements OnInit {
         authType: new FormControl(0, [Validators.required]),
         authUrl: new FormControl(''),
         authEntityId: new FormControl(''),
-        privateOrg: new FormControl(false, [Validators.required])
+        privateOrg: new FormControl(false, [Validators.required]),
+        voteRoles: new FormArray([
+            new FormGroup({
+                role: new FormControl('student'),
+                active: new FormControl(false)
+            }),
+            new FormGroup({
+                role: new FormControl('faculty'),
+                active: new FormControl(false)
+            }),
+            new FormGroup({
+                role: new FormControl('staff'),
+                active: new FormControl(false)
+            }),
+            new FormGroup({
+                role: new FormControl('employee'),
+                active: new FormControl(false)
+            }),
+            new FormGroup({
+                role: new FormControl('member'),
+                active: new FormControl(false)
+            })
+        ])
     });
 
     backgroundImage = {
@@ -90,9 +111,6 @@ export class OrganizationEditComponent implements OnInit {
         ]
     };
 
-    ICON_PREFIX = 'icon';
-    BACKGROUND_PREFIX = 'back'
-
     @ViewChild('ownerInput') ownerInput: ElementRef<HTMLInputElement>;
     @ViewChild('ownerAuto') ownerAutocomplete: MatAutocomplete;
     @ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
@@ -104,9 +122,7 @@ export class OrganizationEditComponent implements OnInit {
         private route: ActivatedRoute,
         public snackBar: MatSnackBar,
         private location: Location,
-        private meta: MetaService,
-        private organizationQuery: OrganizationQuery,
-        private communityQuery: CommunityQuery
+        private meta: MetaService
     ) {
         this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
             startWith(''),
@@ -117,13 +133,41 @@ export class OrganizationEditComponent implements OnInit {
         this.isLoading = true
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
-            this.subscribeToOrganizationStore(ID)
             this.organizationService.view({ id: ID, orgs: [] })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(
-                    (res) => res,
-                    (err) => err
-                )
+                .subscribe((organization: Organization) => {
+                    this.organization = organization
+                    this.backgroundImage.src = organization.imageUrl
+                    this.iconImage.src = organization.iconUrl
+                    this.owner = organization.owner
+                    this.futureOwner = organization.futureOwner
+
+                    organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m)
+
+                    this.organizationForm.patchValue({
+                        name: organization.name,
+                        organizationName: organization.organizationName,
+                        description: organization.description,
+                        longDescription: organization.longDescription,
+                        url: organization.url,
+                        moderators: organization.moderators,
+                        organizationUrl: organization.organizationUrl,
+                        futureOwner: organization.futureOwner,
+                        newLeaderEmail: '',
+                        authType: organization.authType,
+                        authUrl: organization.authUrl,
+                        authEntityId: organization.authEntityId,
+                        privateOrg: organization.privateOrg || false,
+                        voteRoles: organization.voteRoles
+                    })
+
+                    this.meta.updateTags(
+                        {
+                            title: `Edit ${organization.name} Community`,
+                            appBarTitle: 'Edit Community',
+                            description: `Edit the ${organization.name} community on the NewVote platform.`
+                        })
+                })
         })
 
         this.uploader = new FileUploader(this.uploaderOptions)
@@ -134,53 +178,6 @@ export class OrganizationEditComponent implements OnInit {
         }
 
         this.setAuthtypeValidators()
-
-    }
-
-    subscribeToOrganizationStore(id: string) {
-        this.communityQuery.selectEntity(id)
-            .subscribe(
-                (organization: Organization) => {
-                    if (!organization) return false;
-                    this.organization = organization
-                    this.updateForm(organization)
-                    this.updateTags(organization)
-                },
-                (err) => err
-            )
-    }
-
-    updateForm(organization: Organization) {
-        this.backgroundImage.src = organization.imageUrl
-        this.iconImage.src = organization.iconUrl
-        this.owner = organization.owner
-        this.futureOwner = organization.futureOwner
-        const mods = organization.moderators.slice().map((m: any) => m.email ? m.email : m)
-
-        this.organizationForm.patchValue({
-            name: organization.name,
-            organizationName: organization.organizationName,
-            description: organization.description,
-            longDescription: organization.longDescription,
-            url: organization.url,
-            moderators: mods,
-            organizationUrl: organization.organizationUrl,
-            futureOwner: organization.futureOwner,
-            newLeaderEmail: '',
-            authType: organization.authType,
-            authUrl: organization.authUrl,
-            authEntityId: organization.authEntityId,
-            privateOrg: organization.privateOrg || false
-        })
-    }
-
-    updateTags(organization: Organization) {
-        this.meta.updateTags(
-            {
-                title: `Edit ${organization.name} Community`,
-                appBarTitle: 'Edit Community',
-                description: `Edit the ${organization.name} community on the NewVote platform.`
-            })
     }
 
     setAuthtypeValidators() {
@@ -219,12 +216,8 @@ export class OrganizationEditComponent implements OnInit {
     }
 
     onFileChange(field: string, event: any) {
-
-        const prefix = field.substring(0, 4)
         if (event.target.files && event.target.files.length) {
             const [file] = event.target.files
-            file.field = prefix
-
             const reader = new FileReader()
 
             // this.imageFile = file;
@@ -232,11 +225,10 @@ export class OrganizationEditComponent implements OnInit {
             reader.onload = (pe: ProgressEvent) => {
                 const old = this[field].src
                 this[field] = {
-                    name: prefix + '-' + file.name,
+                    name: file.name,
                     src: (<FileReader>pe.target).result,
                     new: true,
-                    old: old,
-                    field
+                    old: old
                 }
             }
 
@@ -257,17 +249,15 @@ export class OrganizationEditComponent implements OnInit {
         }
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
-
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
-                const prefix = item.file.rawFile.field
 
                 // when the upload is complete compare the files name
                 // to the one we stored earlier so we know which file it is
-                if (prefix === this.BACKGROUND_PREFIX) {
+                if (item.file.name && item.file.name === this.backgroundImage.name) {
                     // this was the background image file
                     this.backgroundImage.src = res.secure_url
-                } else if (prefix === this.ICON_PREFIX) {
+                } else if (item.file.name && item.file.name === this.iconImage.name) {
                     // this was the icon image file
                     this.iconImage.src = res.secure_url
                 }
@@ -284,23 +274,22 @@ export class OrganizationEditComponent implements OnInit {
 
     updateWithApi() {
         // update this.org with form data and the owner manually
-        const organization = cloneDeep(this.organization)
-        merge(organization, <Organization>this.organizationForm.value)
+        merge(this.organization, <Organization> this.organizationForm.value)
+        this.organization.owner = this.owner
+        this.organization.futureOwner = this.futureOwner
+        this.organization.imageUrl = this.backgroundImage.src
+        this.organization.iconUrl = this.iconImage.src
 
-        organization.owner = this.owner
-        organization.futureOwner = this.futureOwner
-        organization.imageUrl = this.backgroundImage.src
-        organization.iconUrl = this.iconImage.src
-
-        this.organizationService.update({ id: this.organization._id, entity: organization })
+        this.organizationService.update({ id: this.organization._id, entity: this.organization })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe(
-                (t) => {
+            .subscribe((t) => {
+                if (t.error) {
+                    this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                } else {
                     this.openSnackBar('Succesfully updated', 'OK')
                     this.location.back()
-                },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            )
+                }
+            })
     }
 
     openSnackBar(message: string, action: string) {
