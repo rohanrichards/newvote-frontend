@@ -7,7 +7,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators'
-import { merge } from 'lodash'
+import { merge, cloneDeep } from 'lodash'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
@@ -15,6 +15,7 @@ import { UserService } from '@app/core/http/user/user.service'
 import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-organization',
@@ -122,7 +123,8 @@ export class OrganizationEditComponent implements OnInit {
         private route: ActivatedRoute,
         public snackBar: MatSnackBar,
         private location: Location,
-        private meta: MetaService
+        private meta: MetaService,
+        private organizationQuery: OrganizationQuery
     ) {
         this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
             startWith(''),
@@ -131,43 +133,15 @@ export class OrganizationEditComponent implements OnInit {
 
     ngOnInit() {
         this.isLoading = true
+        this.subscribeToOrganizationStore();
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
             this.organizationService.view({ id: ID, orgs: [] })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe((organization: Organization) => {
-                    this.organization = organization
-                    this.backgroundImage.src = organization.imageUrl
-                    this.iconImage.src = organization.iconUrl
-                    this.owner = organization.owner
-                    this.futureOwner = organization.futureOwner
-
-                    organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m)
-
-                    this.organizationForm.patchValue({
-                        name: organization.name,
-                        organizationName: organization.organizationName,
-                        description: organization.description,
-                        longDescription: organization.longDescription,
-                        url: organization.url,
-                        moderators: organization.moderators,
-                        organizationUrl: organization.organizationUrl,
-                        futureOwner: organization.futureOwner,
-                        newLeaderEmail: '',
-                        authType: organization.authType,
-                        authUrl: organization.authUrl,
-                        authEntityId: organization.authEntityId,
-                        privateOrg: organization.privateOrg || false,
-                        voteRoles: organization.voteRoles
-                    })
-
-                    this.meta.updateTags(
-                        {
-                            title: `Edit ${organization.name} Community`,
-                            appBarTitle: 'Edit Community',
-                            description: `Edit the ${organization.name} community on the NewVote platform.`
-                        })
-                })
+                .subscribe((
+                    res: Organization) => res,
+                    (err) => err
+                );
         })
 
         this.uploader = new FileUploader(this.uploaderOptions)
@@ -178,6 +152,58 @@ export class OrganizationEditComponent implements OnInit {
         }
 
         this.setAuthtypeValidators()
+    }
+
+    subscribeToOrganizationStore() {
+        this.organizationQuery.select()
+            .subscribe(
+                (organization: Organization) => {
+                    if (!organization) return false;
+                    this.organization = organization;
+                    this.updateForm(organization);
+                    this.updateTags(organization);
+                },
+                (err) => err
+            )
+    }
+
+    updateForm(storeOrganization: Organization) {
+        // copy store data to prevent readonly values from store 
+        const organization = cloneDeep(storeOrganization);
+
+        this.backgroundImage.src = organization.imageUrl
+        this.iconImage.src = organization.iconUrl
+        this.owner = organization.owner
+        this.futureOwner = organization.futureOwner
+
+        organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m)
+
+        console.log(organization.voteRoles, 'this is voteRoles');
+        this.organizationForm.patchValue({
+            name: organization.name,
+            organizationName: organization.organizationName,
+            description: organization.description,
+            longDescription: organization.longDescription,
+            url: organization.url,
+            moderators: organization.moderators,
+            organizationUrl: organization.organizationUrl,
+            futureOwner: organization.futureOwner,
+            newLeaderEmail: '',
+            authType: organization.authType,
+            authUrl: organization.authUrl,
+            authEntityId: organization.authEntityId,
+            privateOrg: organization.privateOrg || false,
+            voteRoles: organization.voteRoles
+        })
+    }
+
+    updateTags(organization: Organization) {
+        this.meta.updateTags(
+            {
+                title: `Edit ${organization.name} Community`,
+                appBarTitle: 'Edit Community',
+                description: `Edit the ${organization.name} community on the NewVote platform.`
+            })
     }
 
     setAuthtypeValidators() {
@@ -273,23 +299,23 @@ export class OrganizationEditComponent implements OnInit {
     }
 
     updateWithApi() {
+        const organization = cloneDeep(this.organization);
         // update this.org with form data and the owner manually
-        merge(this.organization, <Organization> this.organizationForm.value)
-        this.organization.owner = this.owner
-        this.organization.futureOwner = this.futureOwner
-        this.organization.imageUrl = this.backgroundImage.src
-        this.organization.iconUrl = this.iconImage.src
+        merge(organization, <Organization>this.organizationForm.value)
+        organization.owner = this.owner
+        organization.futureOwner = this.futureOwner
+        organization.imageUrl = this.backgroundImage.src
+        organization.iconUrl = this.iconImage.src
 
-        this.organizationService.update({ id: this.organization._id, entity: this.organization })
+        this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((t) => {
-                if (t.error) {
-                    this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
-                } else {
-                    this.openSnackBar('Succesfully updated', 'OK')
-                    this.location.back()
-                }
-            })
+                this.openSnackBar('Succesfully updated', 'OK')
+                this.location.back()
+            },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     openSnackBar(message: string, action: string) {
