@@ -21,7 +21,8 @@ export function createInitialStore(): Organization {
         owner: {},
         privateOrg: false,
         softDeleted: false,
-        url: ""
+        url: "",
+        voteRoles: []
     }
 }
 
