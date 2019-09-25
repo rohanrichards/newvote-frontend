@@ -45,6 +45,8 @@ import { OrganizationQuery, CommunityQuery } from './http/organization/organizat
 import { OrganizationStore, CommunityStore } from './http/organization/organization.store'
 import { MediaStore } from './http/media/media.store'
 import { MediaQuery } from './http/media/media.query'
+import { AuthenticationQuery } from './authentication/authentication.query'
+import { AuthenticationStore } from './authentication/authentication.store'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -72,6 +74,8 @@ export function tokenGetter() {
     providers: [
         AuthenticationService,
         AuthenticationGuard,
+        AuthenticationQuery,
+        AuthenticationStore,
         AdminGuard,
         OwnerGuard,
         ModeratorGuard,
