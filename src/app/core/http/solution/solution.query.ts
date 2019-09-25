@@ -9,14 +9,26 @@ import { VotesQuery } from "../vote/vote.query";
 import { Proposal } from "@app/core/models/proposal.model";
 
 import { cloneDeep } from 'lodash';
+import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
+    solution$ = this.selectAll({
+        filterBy: (entity) => {
+            if (this.auth.isOwner()) {
+                return true;
+            }
+
+            return !entity.softDeleted;
+        }
+    })
+
     constructor(
         protected store: SolutionStore,
         private proposalQuery: ProposalQuery,
         private issueQuery: IssueQuery,
-        private voteQuery: VotesQuery
+        private voteQuery: VotesQuery,
+        private auth: AuthenticationQuery
     ) {
         super(store);
     }

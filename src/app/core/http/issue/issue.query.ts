@@ -6,10 +6,22 @@ import { TopicQuery } from "../topic/topic.query";
 import { map } from "rxjs/operators";
 
 import { cloneDeep } from 'lodash';
+import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
 
 @Injectable()
 export class IssueQuery extends QueryEntity<IssueState, Issue> {
-    constructor(protected store: IssueStore, private topicQuery: TopicQuery) {
+    topics$ = this.selectAll({
+        filterBy: (entity) => {
+            if (this.auth.isOwner()) {
+                return true;
+            }
+
+            return !entity.softDeleted;
+        }
+    })
+
+
+    constructor(protected store: IssueStore, private topicQuery: TopicQuery, private auth: AuthenticationQuery) {
         super(store);
     }
 
