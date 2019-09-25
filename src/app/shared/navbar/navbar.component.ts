@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
 
     logout() {
         this.auth.logout()
-            .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }));
+            .subscribe(() => this.router.navigate(['/auth/login'], { replaceUrl: true }));
     }
 
     get title(): string {
