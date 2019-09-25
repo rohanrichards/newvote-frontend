@@ -3,7 +3,7 @@ import { QueryEntity, combineQueries } from "@datorama/akita";
 import { SolutionState, SolutionStore } from "./solution.state";
 import { Solution } from "@app/core/models/solution.model";
 import { ProposalQuery } from "../proposal/proposal.query";
-import { map } from "rxjs/operators";
+import { map, filter } from "rxjs/operators";
 import { IssueQuery } from "../issue/issue.query";
 import { VotesQuery } from "../vote/vote.query";
 import { Proposal } from "@app/core/models/proposal.model";
@@ -13,7 +13,7 @@ import { AuthenticationQuery } from "@app/core/authentication/authentication.que
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
-    solution$ = this.selectAll({
+    solutions$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isOwner()) {
                 return true;
@@ -36,8 +36,8 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     selectSolutions(issueId?: string) {
         return combineQueries(
             [
-                this.selectAll(),
-                this.proposalQuery.selectAll(),
+                this.solutions$,
+                this.proposalQuery.proposals$,
             ]
         )
             .pipe(
@@ -84,7 +84,7 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         return combineQueries(
             [
                 this.selectEntity(id),
-                this.proposalQuery.selectAll(),
+                this.proposalQuery.proposals$,
             ]
         )
             .pipe(
@@ -111,20 +111,21 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     }
 
     filterByProposalId(id: string) {
-        return this.selectAll({
-            filterBy: (entity) => {
-                const includesSolutionId = entity.proposals.some((proposal: any) => {
-                    // New proposals return an array of string _id's instead of Objects with a property of
-                    // ._id 
-                    if (typeof proposal === "string") {
-                        return proposal === id;
-                    }
+        return this.solutions$
+            .pipe(
+                filter((entity: any) => {
+                    const includesSolutionId = entity.proposals.some((proposal: any) => {
+                        // New proposals return an array of string _id's instead of Objects with a property of
+                        // ._id 
+                        if (typeof proposal === "string") {
+                            return proposal === id;
+                        }
 
-                    return proposal._id === id;
+                        return proposal._id === id;
+                    })
+
+                    return includesSolutionId;
                 })
-
-                return includesSolutionId;
-            }
-        })
+            )
     }
 }

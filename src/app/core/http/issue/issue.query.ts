@@ -10,7 +10,7 @@ import { AuthenticationQuery } from "@app/core/authentication/authentication.que
 
 @Injectable()
 export class IssueQuery extends QueryEntity<IssueState, Issue> {
-    topics$ = this.selectAll({
+    issues$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isOwner()) {
                 return true;

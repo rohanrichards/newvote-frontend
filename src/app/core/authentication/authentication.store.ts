@@ -19,9 +19,9 @@ export function createInitialState(): IUser {
     }
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 @StoreConfig({ name: 'auth', resettable: true })
-export class AuthStore extends Store<IUser> {
+export class AuthenticationStore extends Store<IUser> {
     constructor() {
         super(createInitialState());
     }
