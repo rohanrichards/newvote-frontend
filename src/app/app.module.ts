@@ -14,15 +14,15 @@ import { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
-	direction: 'horizontal',
-	slidesPerView: 3,
-	centeredSlides: false
+    direction: 'horizontal',
+    slidesPerView: 3,
+    centeredSlides: false
 };
 
 import { Cloudinary } from 'cloudinary-core';
 import { CloudinaryModule } from '@cloudinary/angular-5.x';
 export const cloudinaryLib = {
-	Cloudinary: Cloudinary
+    Cloudinary: Cloudinary
 };
 
 import { environment } from '@env/environment';
@@ -43,61 +43,63 @@ import { LandingModule } from './landing/landing.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
 
 @NgModule({
-	imports: [
-		ScrollingModule,
-		BrowserModule,
-		ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
-		FormsModule,
-		ReactiveFormsModule,
-		HttpClientModule,
-		HttpClientJsonpModule,
-		TranslateModule.forRoot(),
-		BrowserAnimationsModule,
-		MaterialModule,
-		CoreModule,
-		SharedModule,
-		ShellModule,
-		HomeModule,
-		ShareModule,
-		AngularFontAwesomeModule,
-		HttpClientXsrfModule.withOptions({
-			cookieName: 'XSRF-TOKEN',
-			headerName: 'X-XSRF-TOKEN',
-		}),
-		Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-		CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
-		SwiperModule,
-		LazyLoadImageModule,
-		JoyrideModule.forRoot(),
-		LandingModule,
-		RecaptchaModule,
-		RecaptchaFormsModule,
-		SocketIoModule.forRoot({
-			url: environment.socketUrl,
-			options: {}
-		}),
-		environment.production ? [] : AkitaNgDevtools.forRoot(),
-		AppRoutingModule  // must be imported as the last module as it contains the fallback route
-	],
-	declarations: [
-		AppComponent,
-	],
-	entryComponents: [
-		ConfirmDialogComponent
-	],
-	providers: [
-		CookieService,
-		{
-			provide: RECAPTCHA_SETTINGS,
-			useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
-		},
-		{
-			provide: SWIPER_CONFIG,
-			useValue: DEFAULT_SWIPER_CONFIG
-		}
-	],
-	bootstrap: [AppComponent]
+    imports: [
+        ScrollingModule,
+        BrowserModule,
+        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        HttpClientJsonpModule,
+        TranslateModule.forRoot(),
+        BrowserAnimationsModule,
+        MaterialModule,
+        CoreModule,
+        SharedModule,
+        ShellModule,
+        HomeModule,
+        ShareModule,
+        InternationalPhoneNumberModule,
+        AngularFontAwesomeModule,
+        HttpClientXsrfModule.withOptions({
+            cookieName: 'XSRF-TOKEN',
+            headerName: 'X-XSRF-TOKEN',
+        }),
+        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+        CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
+        SwiperModule,
+        LazyLoadImageModule,
+        JoyrideModule.forRoot(),
+        LandingModule,
+        RecaptchaModule,
+        RecaptchaFormsModule,
+        SocketIoModule.forRoot({
+            url: environment.socketUrl,
+            options: {}
+        }),
+        environment.production ? [] : AkitaNgDevtools.forRoot(),
+        AppRoutingModule  // must be imported as the last module as it contains the fallback route
+    ],
+    declarations: [
+        AppComponent,
+    ],
+    entryComponents: [
+        ConfirmDialogComponent
+    ],
+    providers: [
+        CookieService,
+        {
+            provide: RECAPTCHA_SETTINGS,
+            useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
+        },
+        {
+            provide: SWIPER_CONFIG,
+            useValue: DEFAULT_SWIPER_CONFIG
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
