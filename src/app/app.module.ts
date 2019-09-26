@@ -45,6 +45,8 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
 
+import { NgxCaptchaModule } from 'ngx-captcha';
+
 @NgModule({
     imports: [
         ScrollingModule,
@@ -76,6 +78,7 @@ import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
         LandingModule,
         RecaptchaModule,
         RecaptchaFormsModule,
+        NgxCaptchaModule,
         SocketIoModule.forRoot({
             url: environment.socketUrl,
             options: {}
@@ -93,7 +96,7 @@ import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
         CookieService,
         {
             provide: RECAPTCHA_SETTINGS,
-            useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
+            useValue: { siteKey: '6Lca03AUAAAAALXV7A5FK-noIdCDZ7bpYwWoR2yy' } as RecaptchaSettings,
         },
         {
             provide: SWIPER_CONFIG,
