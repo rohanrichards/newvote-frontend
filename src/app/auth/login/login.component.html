@@ -1,109 +1,94 @@
 <app-loader class="inline-loader"
-    [isLoading]="isLoading"></app-loader>
+ [isLoading]="isLoading"></app-loader>
 <div fxFill
-    fxLayout="column"
-    fxLayoutAlign="center center"
-    fxLayoutGap="1.5rem"
-    class="mat-typography">
-    <div class="login-container"
-        fxLayout="row"
-        fxLayoutAlign="center">
-        <mat-card fxFlex="90%"
-            fxFlex.lt-sm="90%"
-            fxFlex.sm="66%"
-            fxFlex.md="50%"
-            fxFlex.gt-md="33%"
-            class="login-box">
-            <div *ngIf="org  && org.authType && org.authType!==0"
-                fxFlex="1 0 100%"
-                fxLayout="column">
-                <ul class="mat-body terms-list">
-                    <li>
-                        {{org.name}} <span
-                            *ngIf='org && org.organizationName'>by
-                            {{org.organizationName}}</span> requires
-                        verification of your account through Single Sign-on.
-                        (don't worry, your votes and suggestions will only be
-                        anonymously available to your community leader)
-                    </li>
-                    <li>
+ fxLayout="column"
+ fxLayoutAlign="center center"
+ fxLayoutGap="1.5rem"
+ class="mat-typography">
+	<div class="login-container"
+	 fxLayout="row"
+	 fxLayoutAlign="center">
+		<mat-card fxFlex="90%"
+			fxFlex.lt-sm="90%"
+			fxFlex.sm="66%"
+			fxFlex.md="50%"
+			fxFlex.gt-md="33%"
+			class="login-box">
+			<div *ngIf="org  && org.authType && org.authType!==0"
+				fxFlex="1 0 100%"
+				fxLayout="column">
+				<ul class="mat-body larger-spacing">
+					<li>
+						{{org.name}} <span *ngIf='org && org.organizationName'>by {{org.organizationName}}</span> requires verification of your account through Single Sign-on.
+						(don't worry, your votes and suggestions will only be anonymously available to your community leader)
+					</li>
+					<li>
 
-                        By creating an account on NewVote, you are agreeing to
-                        our <a href="https://newvote.org/terms"
-                            target="_blank">Terms of Service</a>
-                        and <a class="signup-terms"
-                            href="https://newvote.org/privacy-policy"
-                            target="_blank">Privacy Policy</a>
-                    </li>
-                    <li>
-                        During this verification process, you may get a notice
-                        from the Australian Access Federation asking you
-                        to share your details with us. For your convenience,
-                        please tick the last of the three options so you will
-                        not need to give permission again.
-                    </li>
-                </ul>
-                <button mat-raised-button
-                    color="primary"
-                    type="button"
-                    (click)="loginWithSSO()">
-                    <span translate>Verify Account</span>
-                </button>
-            </div>
-            <form *ngIf="!org.authType || org.authType===0"
-                (ngSubmit)="login()"
-                [formGroup]="loginForm"
-                novalidate>
-                <div class="login-error"
-                    [hidden]="!error || isLoading"
-                    translate>
-                    Email or password incorrect.
-                </div>
-                <br />
-                <div fxLayout="column">
-                    <mat-form-field>
-                        <input type="text"
-                            matInput
-                            formControlName="username"
-                            autocomplete="username"
-                            [placeholder]="'Email Address' | translate" />
-                        <mat-error
-                            *ngIf="loginForm.controls.username.valid || loginForm.controls.username.untouched">
-                            <span translate>Email is required</span>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <input type="password"
-                            matInput
-                            formControlName="password"
-                            autocomplete="current-password"
-                            [placeholder]="'Password' | translate"
-                            required />
-                        <mat-error
-                            *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
-                            <span translate>Password is required</span>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-slide-toggle color="accent"
-                        class="remember-toggle"
-                        formControlName="remember"
-                        translate>Remember me</mat-slide-toggle>
-                    <a routerLink="/auth/forgot">Forgot password?</a>
-                    <a href="https://newvote.org/privacy-policy"
-                        [style.margin-top]="'5px'">Terms of Service</a>
-                    <br />
-                    <button mat-raised-button
-                        color="primary"
-                        type="submit"
-                        [disabled]="loginForm.invalid || isLoading">
+						By creating an account on NewVote, you are agreeing to our <a href="https://newvote.org/terms" target="_blank">Terms of Service</a>
+						and <a class="signup-terms" href="https://newvote.org/privacy-policy" target="_blank">Privacy Policy</a>
+					</li>
+					<li>
+						During this verification process, you may get a notice from the Australian Access Federation asking you
+						to share your details with us. For your convenience, please tick the last of the three options so you will
+						not need to give permission again.
+					</li>
+				</ul>
+				<button mat-raised-button
+					color="primary"
+					type="button"
+				 	(click)="loginWithSSO()">
+					<span translate>Verify Account</span>
+				</button>
+			</div>
+			<form *ngIf="!org.authType || org.authType===0"
+			 (ngSubmit)="login()"
+			 [formGroup]="loginForm"
+			 novalidate>
+				<div class="login-error"
+				 [hidden]="!error || isLoading"
+				 translate>
+					Email or password incorrect.
+				</div>
+				<br />
+				<div fxLayout="column">
+					<mat-form-field>
+						<input type="text"
+						 matInput
+						 formControlName="username"
+						 autocomplete="username"
+						 [placeholder]="'Email Address' | translate" />
+						<mat-error *ngIf="loginForm.controls.username.valid || loginForm.controls.username.untouched">
+							<span translate>Email is required</span>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<input type="password"
+						 matInput
+						 formControlName="password"
+						 autocomplete="current-password"
+						 [placeholder]="'Password' | translate"
+						 required />
+						<mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
+							<span translate>Password is required</span>
+						</mat-error>
+					</mat-form-field>
+					<mat-slide-toggle color="accent"
+					 class="remember-toggle"
+					 formControlName="remember"
+					 translate>Remember me</mat-slide-toggle>
+					<a routerLink="/auth/forgot">Forgot password?</a>
+					<a href="https://newvote.org/privacy-policy" [style.margin-top]="'5px'">Terms of Service</a>
+					<br/>
+					<button mat-raised-button
+					 color="primary"
+					 type="submit"
+					 [disabled]="loginForm.invalid || isLoading">
 
-                        <span *ngIf="isCommunityVerified"
-                            translate>Login</span>
-                        <span *ngIf="!isCommunityVerified"
-                            translate>Verify with Community</span>
-                    </button>
-                </div>
-            </form>
-        </mat-card>
-    </div>
+						 <span *ngIf="isCommunityVerified" translate>Login</span>
+						 <span *ngIf="!isCommunityVerified" translate>Verify with Community</span>
+					</button>
+				</div>
+			</form>
+		</mat-card>
+	</div>
 </div>

@@ -5,8 +5,8 @@
 
 <app-loader [isLoading]="loadingState === 'loading'"
 	size="1.5"></app-loader>
-
-<ng-template #customContent>
+	
+<ng-template #customContent>	
 	<div style="width: 200px">
 		<p class="mat-subheading-2">{{stepsArray[3].description}}</p>
 	</div>
@@ -15,22 +15,21 @@
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div
-		joyrideStep="issues1"
-		joyridePosition="center"
-		[title]="stepsArray[3].title"
-		[stepContent]="customContent"
-		fxFlex.lt-sm="80%"
-		fxFlex.sm="600px"
-		fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<div>
+		<div 
+			fxFlex.sm="640px"
+			fxFlex.gt-sm="690px"
+			fxFlex.gt-md="800px">
+		<div 					
+			joyrideStep="issues1"
+			joyridePosition="top"
+			[title]="stepsArray[3].title"
+			[stepContent]="customContent">
 			<ng-container [ngSwitch]="loadingState">
 				<div *ngSwitchCase="'loading'" class="skeleton-form-wrap">
 					<div class="skeleton-form">
-						<app-skeleton-text-bar
-							[isSubtitle]=true [width]="110"
-							[isMarginLess]=true>
+						<app-skeleton-text-bar 
+							[isSubtitle]=true [width]="110" 
+							[isMarginLess]=true> 
 						</app-skeleton-text-bar>
 					</div>
 				</div>
@@ -48,7 +47,7 @@
 								{{topic.name}}
 								<mat-icon matChipRemove>cancel</mat-icon>
 							</mat-chip>
-							<input
+							<input 
 								placeholder="Filter Topics"
 								#topicInput
 								[formControl]="topicFilter"
@@ -67,14 +66,14 @@
 					</mat-form-field>
 				</div>
 			</ng-container>
-
+		
 			<ng-container [ngSwitch]="loadingState">
 				<div *ngSwitchCase="'loading'">
 					<div class="skeleton-topic-wrap">
 						<div class="skeleton-form">
-							<app-skeleton-text-bar
-								[isHeading]=true [width]="75"
-								[isMarginLess]=true>
+							<app-skeleton-text-bar 
+								[isHeading]=true [width]="75" 
+								[isMarginLess]=true> 
 							</app-skeleton-text-bar>
 						</div>
 						<div class="skeleton-card-list">
@@ -100,9 +99,9 @@
 							</div>
 						</div>
 						<div class="skeleton-form">
-							<app-skeleton-text-bar
-								[isHeading]=true [width]="125"
-								[isMarginLess]=true>
+							<app-skeleton-text-bar 
+								[isHeading]=true [width]="125" 
+								[isMarginLess]=true> 
 							</app-skeleton-text-bar>
 						</div>
 						<div class="skeleton-card-list">
@@ -137,8 +136,8 @@
 								</div>
 							</div>
 						</mat-card>
-					</ng-container>
-					<div [@fadeIn]=true
+					</ng-container>		
+					<div [@fadeIn]=true 
 						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
 						<div class="topic-header">
 							<h2 class="mat-h1 no-margin">
@@ -165,7 +164,7 @@
 							</div>
 							<mat-divider></mat-divider>
 						</div>
-						<app-grid-list
+						<app-grid-list 
 							path="/issues"
 							[items]="filterIssues(topic, issues)"
 							model="Issue"
@@ -178,7 +177,7 @@
 					<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 						<h2 class="mat-headline center-text">Suggestions for Issues</h2>
 					</mat-toolbar>
-					<app-card-list
+					<app-card-list 
 						path="/suggestions"
 						[@fadeIn]=true
 						[items$]=suggestions$
@@ -204,3 +203,7 @@
 		</div>
 	</div>
 </div>
+
+
+
+

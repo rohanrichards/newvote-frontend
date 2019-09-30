@@ -45,310 +45,291 @@ import { AdminService } from '@app/core/http/admin/admin.service'
     ]
 })
 export class IssueListComponent implements OnInit {
-	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-	issues: Array<Issue>;
-	allTopics: Array<Topic>;
-	filteredTopics: Observable<Topic[]>;
-	selectedTopics: Array<Topic> = [];
-	organization: Organization;
-	separatorKeysCodes: number[] = [ENTER, COMMA];
-	isLoading: boolean;
-	headerTitle = 'Browse By Issue';
-	headerText = 'Issues can be any problem or topic in your community that you think needs to be addressed.';
-	headerButtons = [{
-	    text: 'New Issue',
-	    color: 'warn',
-	    routerLink: '/issues/create',
-	    role: 'admin'
-	},
-	{
-	    text: 'New Topic',
-	    color: 'warn',
-	    routerLink: '/topics/create',
-	    role: 'admin'
-	},
-	{
-	    text: 'All Topics',
-	    color: 'warn',
-	    routerLink: '/topics',
-	    role: 'admin'
-	},
-	{
-	    text: 'Make Suggestion',
-	    color: 'warn',
-	    routerLink: '/suggestions/create',
-	    role: 'user',
-	    params: { type: 'issue' }
-	}];
+    issues: Array<Issue>;
+    allTopics: Array<Topic>;
+    filteredTopics: Observable<Topic[]>;
+    selectedTopics: Array<Topic> = [];
+    organization: Organization;
+    separatorKeysCodes: number[] = [ENTER, COMMA];
+    isLoading: boolean;
+    headerTitle = 'Browse By Issue';
+    headerText = 'Issues can be any problem or topic in your community that you think needs to be addressed.';
+    headerButtons = [{
+        text: 'New Issue',
+        color: 'warn',
+        routerLink: '/issues/create',
+        role: 'admin'
+    },
+    {
+        text: 'New Topic',
+        color: 'warn',
+        routerLink: '/topics/create',
+        role: 'admin'
+    },
+    {
+        text: 'All Topics',
+        color: 'warn',
+        routerLink: '/topics',
+        role: 'admin'
+    },
+    {
+        text: 'Make Suggestion',
+        color: 'warn',
+        routerLink: '/suggestions/create',
+        role: 'user',
+        params: { type: 'issue' }
+    }];
 
-	stepsArray = [...JoyRideSteps];
+    stepsArray = [...JoyRideSteps];
 
-	topicFilter = new FormControl('');
-	topicParam: string; // filtered topics can be preselected via url param
+    topicFilter = new FormControl('');
+    topicParam: string; // filtered topics can be preselected via url param
 
-	loadingState: string;
-	suggestions: any[];
+    loadingState: string;
+    suggestions: any[];
+    suggestions$: Observable<Suggestion[]>;
 
-	constructor(
-		private voteService: VoteService,
-		public snackBar: MatSnackBar,
-		private suggestionService: SuggestionService,
-		public stateService: StateService,
-		private issueService: IssueService,
-		private topicService: TopicService,
-		private organizationService: OrganizationService,
-		public auth: AuthenticationService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private meta: MetaService
-	) {
-	    this.filteredTopics = this.topicFilter.valueChanges.pipe(
-	        startWith(''),
-	        map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()))
-	}
+    constructor(
+        private suggestionQuery: SuggestionQuery,
+        private issueQuery: IssueQuery,
+        private voteService: VoteService,
+        public snackBar: MatSnackBar,
+        private suggestionService: SuggestionService,
+        public stateService: StateService,
+        private issueService: IssueService,
+        private topicService: TopicService,
+        private organizationService: OrganizationService,
+        public auth: AuthenticationService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private meta: MetaService,
+        private topicQuery: TopicQuery,
+        private cdR: ChangeDetectorRef,
+        private voteQuery: VotesQuery,
+        public admin: AdminService
+    ) {
 
-	ngOnInit() {
-	    this.organizationService.get()
-	        .subscribe((org) => {
-	            this.organization = org
-	        })
+        this.subscribeToIssueStore()
+        this.subscribeToSuggestionStore()
+        this.subscribeToTopicStore()
 
-	    this.stateService.loadingState$.subscribe((state: string) => {
-	        this.loadingState = state
-	    })
+        this.filteredTopics = this.topicFilter.valueChanges.pipe(
+            startWith(''),
+            map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()))
+    }
 
-	    this.stateService.setLoadingState(AppState.loading)
-	    this.route.paramMap.subscribe(params => {
-	        this.topicParam = params.get('topic')
-	    })
-	    this.route.queryParamMap.subscribe(queryParams => {
-	        const force = !!queryParams.get('forceUpdate')
-	        this.fetchData(force)
-	    })
+    ngOnInit() {
 
-	    this.meta.updateTags(
-	        {
-	            title: 'All Issues',
-	            description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
-	        })
+        this.organizationService.get()
+            .subscribe((org) => {
+                this.organization = org
+            })
 
-	}
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state
+        })
 
-	fetchData(force?: boolean) {
-	    this.setAppState(AppState.loading)
-	    const isOwner = this.auth.isOwner()
+        this.stateService.setLoadingState(AppState.loading)
 
-	    const options = {
-	        orgs: [],
-	        forceUpdate: force,
-	        params: isOwner ? { showDeleted: true } : {}
-	    } as IssueContext
+        this.route.paramMap.subscribe(params => {
+            this.topicParam = params.get('topic')
+        })
 
-	    const issueObs: Observable<any[]> = this.issueService.list(options)
-	    const topicObs: Observable<any[]> = this.topicService.list({ forceUpdate: force })
-	    const suggestionObs: Observable<any[]> = this.suggestionService.list({
-	        forceUpdate: true,
-	        params: {
-	            showDeleted: isOwner ? true : '',
-	            type: 'issue',
-	        }
-	    })
+        this.meta.updateTags(
+            {
+                title: 'All Issues',
+                description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
+            })
 
-	    forkJoin({
-	        issues: issueObs,
-	        topics: topicObs,
-	        suggestions: suggestionObs
-	    })
-	        .subscribe(
-	            results => {
-	                const { issues, topics, suggestions } = results
+        this.fetchData()
+    }
 
-	                this.issues = issues
-	                this.allTopics = topics
-	                this.suggestions = suggestions
+    fetchData() {
+        const isOwner = this.auth.isOwner()
+        const params = { showDeleted: isOwner ? true : '' };
 
-	                if (this.topicParam) {
-	                    const topic = this._filter(this.topicParam)
-	                    if (topic.length) {
-	                        this.selectedTopics.push(topic[0])
-	                    }
-	                }
-	                return this.stateService.setLoadingState(AppState.complete)
-	            },
-	            err => {
-	                return this.stateService.setLoadingState(AppState.serverError)
-	            }
-	        )
-	}
+        const issueObs: Observable<any[]> = this.issueService.list({ params })
+        const topicObs: Observable<any[]> = this.topicService.list({ params })
+        const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
 
-	getSuggestions() {
-	    const isOwner = this.auth.isOwner()
+        forkJoin({
+            issues: issueObs,
+            topics: topicObs,
+            suggestions: suggestionObs
+        })
+            .subscribe(
+                results => {
+                    const { issues, topics, suggestions } = results
 
-	    this.suggestionService.list({
-	        forceUpdate: true,
-	        params: {
-	            showDeleted: isOwner ? true : '',
-	            type: 'issue',
-	        }
-	    })
-	        .subscribe(
-	            (suggestions) => {
-	                this.suggestions = suggestions
-	            },
-	            (err) => err
-	        )
-	}
+                    console.log(issues, 'this is issues')
+                    // this.allTopics = topics;
 
-	// filter the issue list for matching topicId's
-	getIssues(topicId: string) {
-	    if (!topicId) {
-	        return false
-	    }
-	    const issues = this.issues.filter(issue => {
-	        return issue.topics.some(topic => topic._id === topicId)
-	    })
-	    return issues
-	}
+                    if (this.topicParam) {
+                        const topic = this._filter(this.topicParam)
+                        if (topic.length) {
+                            this.selectedTopics.push(topic[0])
+                        }
+                    }
 
-	onDelete(event: any) {
-	    this.issueService.delete({ id: event._id }).subscribe(() => {
-	        this.fetchData(true)
-	    })
-	}
+                    return this.stateService.setLoadingState(AppState.complete)
+                },
+                err => {
+                    return this.stateService.setLoadingState(AppState.serverError)
+                }
+            )
+    }
 
-	onSoftDelete(event: any) {
-	    event.softDeleted = true
-	    this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-	        this.fetchData(true)
-	    })
-	}
+    subscribeToSuggestionStore() {
+        this.suggestions$ = this.suggestionQuery.suggestions$
+            .pipe(
+                filter((entity: any) => entity.type === 'issue')
+            )
+    }
 
-	onRestore(event: any) {
-	    event.softDeleted = false
-	    this.issueService.update({ id: event._id, entity: event }).subscribe(() => {
-	        this.fetchData(true)
-	    })
-	}
+    subscribeToTopicStore() {
+        this.topicQuery.selectAll()
+            .subscribe((topics: Topic[]) => {
+                this.allTopics = topics
+            })
+    }
 
-	onDeleteTopic(topic: any) {
-	    this.topicService.delete({ id: topic._id }).subscribe(() => {
-	        this.fetchData(true)
-	    })
-	}
+    subscribeToIssueStore() {
+        this.issueQuery.issues$
+            .subscribe((issues: Issue[]) => {
+                this.issues = issues
+            })
+    }
 
-	onSoftDeleteTopic(topic: any) {
-	    this.isLoading = true
-	    topic.softDeleted = true
+    // filter the issue list for matching topicId's
+    filterIssues(topic: Topic, issues: Issue[]) {
+        const issuesCopy = issues.slice()
 
-	    this.topicService.update({ id: topic._id, entity: topic })
-	        .pipe(finalize(() => { this.isLoading = false }))
-	        .subscribe((t) => {
-	            this.fetchData(true)
-	        })
-	}
+        return issuesCopy.filter((issue) => {
+            const topicExists = issue.topics.some((ele) => {
+                // If a new issue is created the topics array will be populated
+                // with objectId's / strings instead of objects with an ._id key
+                if (typeof ele === 'string') {
+                    return ele === topic._id
+                }
 
-	topicSelected(event: any) {
-	    const selectedItem = event.option.value
+                return ele._id === topic._id
+            })
 
-	    if (!this.selectedTopics.some(topic => topic._id === selectedItem._id)) {
-	        this.selectedTopics.push(event.option.value)
-	        this.topicFilter.setValue('')
-	        this.topicInput.nativeElement.value = ''
-	    } else {
-	        this.topicFilter.setValue('')
-	        this.topicInput.nativeElement.value = ''
-	    }
-	}
+            return topicExists
+        })
+    }
 
-	topicRemoved(topic: any) {
-	    const index = this.selectedTopics.indexOf(topic)
+    topicSelected(event: any) {
+        const selectedItem = event.option.value
 
-	    if (index >= 0) {
-	        this.selectedTopics.splice(index, 1)
-	    }
-	}
+        if (!this.selectedTopics.some(topic => topic._id === selectedItem._id)) {
+            this.selectedTopics.push(event.option.value)
+            this.topicFilter.setValue('')
+            this.topicInput.nativeElement.value = ''
+        } else {
+            this.topicFilter.setValue('')
+            this.topicInput.nativeElement.value = ''
+        }
+    }
 
-	setAppState(state: AppState) {
-	    return this.loadingState = state
-	}
+    topicRemoved(topic: any) {
+        const index = this.selectedTopics.indexOf(topic)
 
-	handleSuggestionSubmit(formData: any) {
-	    const suggestion = <Suggestion>formData
-	    suggestion.organizations = this.organization
+        if (index >= 0) {
+            this.selectedTopics.splice(index, 1)
+        }
+    }
 
-	    this.suggestionService.create({ entity: suggestion })
-	        .subscribe(t => {
-	            this.openSnackBar('Succesfully created', 'OK')
-	        },
-	        (error) => {
-	            this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-	        })
-	}
+    handleSuggestionSubmit(formData: any) {
+        const suggestion = <Suggestion>formData
+        suggestion.organizations = this.organization
 
-	openSnackBar(message: string, action: string) {
-	    this.snackBar.open(message, action, {
-	        duration: 4000,
-	        horizontalPosition: 'right'
-	    })
-	}
+        this.suggestionService.create({ entity: suggestion })
+            .subscribe(t => {
+                this.openSnackBar('Succesfully created', 'OK')
+            },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
+    }
 
-	onSuggestionDelete(event: any) {
-	    this.suggestionService.delete({ id: event._id }).subscribe(() => {
-	        this.getSuggestions()
-	    })
-	}
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        })
+    }
 
-	onSuggestionSoftDelete(event: any) {
-	    event.softDeleted = true
-	    this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-	        this.getSuggestions()
-	    })
-	}
+    onVote(voteData: any, model: string) {
 
-	onSuggestionRestore(event: any) {
-	    event.softDeleted = false
-	    this.suggestionService.update({ id: event._id, entity: event }).subscribe(() => {
-	        this.getSuggestions()
-	    })
-	}
+        this.isLoading = true
+        const { item, voteValue } = voteData
+        const vote = new Vote(item._id, model, voteValue)
+        const existingVote = item.votes.currentUser
 
-	onSuggestionVote(voteData: any) {
-	    this.isLoading = true
-	    const { item, voteValue } = voteData
-	    const vote = new Vote(item._id, 'Suggestion', voteValue)
-	    const existingVote = item.votes.currentUser
+        if (existingVote) {
+            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        }
 
-	    if (existingVote) {
-	        vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
-	    }
+        this.voteService.create({ entity: vote })
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+                (res) => {
+                    this.updateEntityVoteData(item, model, res.voteValue)
+                    this.openSnackBar('Your vote was recorded', 'OK')
+                },
+                (error) => {
+                    if (error.status === 401) {
+                        this.openSnackBar('You must be logged in to vote', 'OK')
+                    } else {
+                        this.openSnackBar('There was an error recording your vote', 'OK')
+                    }
+                }
+            )
+    }
 
-	    this.voteService.create({ entity: vote })
-	        .pipe(finalize(() => this.isLoading = false))
-	        .subscribe((res) => {
-	            this.openSnackBar('Your vote was recorded', 'OK')
-	            this.getSuggestions()
-	        },
-	        (error) => {
-	            if (error.status === 401) {
-	                this.openSnackBar('You must be logged in to vote', 'OK')
-	            } else {
-	                this.openSnackBar('There was an error recording your vote', 'OK')
-	            }
-	        }
-	        )
-	}
+    updateEntityVoteData(entity: any, model: string, voteValue: number) {
+        this.voteQuery.selectEntity(entity._id)
+            .pipe(
+                take(1)
+            )
+            .subscribe(
+                (voteObj) => {
+                    // Create a new entity object with updated vote values from
+                    // vote object on store + voteValue from recent vote
+                    const updatedEntity = {
+                        votes: {
+                            ...voteObj,
+                            currentUser: {
+                                voteValue: voteValue === 0 ? false : voteValue
+                            }
+                        }
+                    }
 
-	private _filter(value: any): Topic[] {
-	    const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase()
+                    if (model === 'Suggestion') {
+                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
+                    }
+                },
+                (err) => err
+            )
 
-	    const filterVal = this.allTopics.filter(topic => {
-	        const name = topic.name.toLowerCase()
-	        const compare = name.indexOf(filterValue) !== -1
-	        return compare
-	    })
-	    return filterVal
-	}
+    }
 
+    private _filter(value: any): Topic[] {
+        const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase()
+
+        const filterVal = this.allTopics.filter(topic => {
+            const name = topic.name.toLowerCase()
+            const compare = name.indexOf(filterValue) !== -1
+            return compare
+        })
+        return filterVal
+    }
+
+    trackByFn(index: any, item: any) {
+        return index // or item.id
+    }
 }
