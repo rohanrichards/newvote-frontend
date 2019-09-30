@@ -35,7 +35,6 @@ import { HomeModule } from './home/home.module'
 import { ShellModule } from './shell/shell.module'
 import { AppComponent } from './app.component'
 import { AppRoutingModule } from './app-routing.module'
-import { RECAPTCHA_SETTINGS, RecaptchaSettings, RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
 import { LazyLoadImageModule } from 'ng-lazyload-image'
 import { CookieService } from 'ngx-cookie-service'
 import { JoyrideModule } from 'ngx-joyride'
@@ -76,8 +75,6 @@ import { NgxCaptchaModule } from 'ngx-captcha';
         LazyLoadImageModule,
         JoyrideModule.forRoot(),
         LandingModule,
-        RecaptchaModule,
-        RecaptchaFormsModule,
         NgxCaptchaModule,
         SocketIoModule.forRoot({
             url: environment.socketUrl,
@@ -96,10 +93,6 @@ import { NgxCaptchaModule } from 'ngx-captcha';
     ],
     providers: [
         CookieService,
-        {
-            provide: RECAPTCHA_SETTINGS,
-            useValue: { siteKey: '6Lca03AUAAAAALXV7A5FK-noIdCDZ7bpYwWoR2yy' } as RecaptchaSettings,
-        },
         {
             provide: SWIPER_CONFIG,
             useValue: DEFAULT_SWIPER_CONFIG

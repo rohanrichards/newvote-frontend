@@ -25,6 +25,8 @@ export class SignupComponent implements OnInit {
     verificationCode: string;
     org: Organization;
 
+    siteKey = environment.recaptchaSitekey;
+
     constructor(private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
