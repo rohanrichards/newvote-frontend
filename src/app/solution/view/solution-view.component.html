@@ -65,6 +65,7 @@
                         <mat-icon aria-label="Remove solution">delete</mat-icon>
                     </button>
                     <button mat-icon-button
+                        *ngIf="auth.isAdmin()"
                         matTooltip="Delete this Solution"
                         color="warn"
                         (click)="admin.onDelete(solution, 'Solution', 'solutions')">

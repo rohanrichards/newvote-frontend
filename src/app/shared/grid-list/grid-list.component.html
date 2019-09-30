@@ -82,7 +82,7 @@
                         </button>
                     </div>
                     <div class="button-panel"
-                        *ngIf="auth.isModerator() && model !== 'Organization'">
+                        *ngIf="model !== 'Organization' && auth.isModerator()">
                         <button color="accent"
                             matTooltip="Edit the item"
                             mat-icon-button
@@ -111,7 +111,7 @@
                             matTooltip="Delete the item forever"
                             mat-icon-button
                             (click)="onDelete(item, $event)"
-                            *ngIf="auth.isAdmin(item)">
+                            *ngIf="auth.isAdmin()">
                             <mat-icon aria-label="Delete content forever">
                                 delete_forever</mat-icon>
                         </button>

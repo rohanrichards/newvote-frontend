@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { finalize, take } from 'rxjs/operators'
+import { finalize, take, filter } from 'rxjs/operators'
 import { Router, ActivatedRoute } from '@angular/router'
 import { MatSnackBar } from '@angular/material'
 import { differenceWith } from 'lodash'
@@ -108,7 +108,7 @@ export class SolutionListComponent implements OnInit {
 
     fetchData() {
         const isOwner = this.auth.isOwner()
-        const options = { showDeleted: isOwner ? true : '' }
+        const options = { 'showDeleted': isOwner ? true : '' }
 
         const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
         const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options })
@@ -130,9 +130,10 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.selectAll({
-            filterBy: entity => entity.type === 'solution'
-        })
+        this.suggestions$ = this.suggestionQuery.suggestions$
+            .pipe(
+                filter((entity: any) => entity.type === 'solution')
+            )
     }
 
     onVote(voteData: any, model: string) {

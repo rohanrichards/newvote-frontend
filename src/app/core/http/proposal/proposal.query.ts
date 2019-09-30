@@ -3,12 +3,24 @@ import { QueryEntity } from "@datorama/akita";
 import { Proposal } from "@app/core/models/proposal.model";
 import { ProposalStore, ProposalState } from "./proposal.store";
 import { SolutionQuery } from "../solution/solution.query";
+import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
 
 @Injectable()
 export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
+    proposals$ = this.selectAll({
+        filterBy: (entity) => {
+            if (this.auth.isOwner()) {
+                return true;
+            }
+
+            return !entity.softDeleted;
+        }
+    })
+
     constructor(
-        protected store: ProposalStore
-        ) {
+        protected store: ProposalStore,
+        private auth: AuthenticationQuery
+    ) {
         super(store);
     }
 
@@ -23,10 +35,10 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
                         return solution === id;
                     }
 
-					return solution._id === id;
-				})
+                    return solution._id === id;
+                })
 
-				return includesSolutionId;
+                return includesSolutionId;
             }
         })
     }
