@@ -74,7 +74,9 @@
 
                     <ngx-recaptcha2 #captchaElem
                         [siteKey]="siteKey"
-                        formControlName="recaptchaResponse">
+                        formControlName="recaptchaResponse"
+                        [style.margin-top.rem]="0.5"
+                        [style.margin-bottom.rem]="0.5">
                     </ngx-recaptcha2>
 
                     <mat-slide-toggle color="accent"
