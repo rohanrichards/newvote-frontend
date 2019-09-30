@@ -164,7 +164,6 @@ export class IssueListComponent implements OnInit {
                 results => {
                     const { issues, topics, suggestions } = results
 
-                    console.log(issues, 'this is issues')
                     // this.allTopics = topics;
 
                     if (this.topicParam) {
