@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
 
-import { finalize, startWith, map, take } from 'rxjs/operators'
+import { finalize, startWith, map, take, filter } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { IssueService, IssueContext } from '@app/core/http/issue/issue.service'
@@ -149,13 +149,11 @@ export class IssueListComponent implements OnInit {
 
     fetchData() {
         const isOwner = this.auth.isOwner()
-        const options = {
-            params: { showDeleted: isOwner ? true : '' }
-        }
+        const params = { showDeleted: isOwner ? true : '' };
 
-        const issueObs: Observable<any[]> = this.issueService.list(options)
-        const topicObs: Observable<any[]> = this.topicService.list(options)
-        const suggestionObs: Observable<any[]> = this.suggestionService.list(options)
+        const issueObs: Observable<any[]> = this.issueService.list({ params })
+        const topicObs: Observable<any[]> = this.topicService.list({ params })
+        const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
 
         forkJoin({
             issues: issueObs,
@@ -166,6 +164,7 @@ export class IssueListComponent implements OnInit {
                 results => {
                     const { issues, topics, suggestions } = results
 
+                    console.log(issues, 'this is issues')
                     // this.allTopics = topics;
 
                     if (this.topicParam) {
@@ -184,9 +183,10 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.selectAll({
-            filterBy: entity => entity.type === 'issue'
-        })
+        this.suggestions$ = this.suggestionQuery.suggestions$
+            .pipe(
+                filter((entity: any) => entity.type === 'issue')
+            )
     }
 
     subscribeToTopicStore() {
@@ -197,7 +197,7 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToIssueStore() {
-        this.issueQuery.selectAll()
+        this.issueQuery.issues$
             .subscribe((issues: Issue[]) => {
                 this.issues = issues
             })

@@ -8,94 +8,94 @@ import { handleError } from '@app/core/http/errors';
 import { TopicStore } from './topic.store';
 
 const routes = {
-	list: (c: TopicContext) => `/topics`,
-	view: (c: TopicContext) => `/topics/${c.id}`,
-	create: (c: TopicContext) => `/topics`,
-	update: (c: TopicContext) => `/topics/${c.id}`,
-	delete: (c: TopicContext) => `/topics/${c.id}`
+    list: (c: TopicContext) => `/topics`,
+    view: (c: TopicContext) => `/topics/${c.id}`,
+    create: (c: TopicContext) => `/topics`,
+    update: (c: TopicContext) => `/topics/${c.id}`,
+    delete: (c: TopicContext) => `/topics/${c.id}`
 };
 
 export interface TopicContext {
-	// The topic's category: 'dev', 'explicit'...
-	orgs?: Array<string>; // users organisations
-	id?: string; // id of object to find/modify
-	entity?: ITopic; // the object being created or edited
-	params?: any;
-	forceUpdate?: boolean;
+    // The topic's category: 'dev', 'explicit'...
+    orgs?: Array<string>; // users organisations
+    id?: string; // id of object to find/modify
+    entity?: ITopic; // the object being created or edited
+    params?: any;
+    forceUpdate?: boolean;
 }
 
 @Injectable()
 export class TopicService {
 
-	constructor(
-		private httpClient: HttpClient,
-		private topicStore: TopicStore,
-	) { }
+    constructor(
+        private httpClient: HttpClient,
+        private topicStore: TopicStore,
+    ) { }
 
-	list(context: TopicContext): Observable<any[]> {
-		// create blank params object
-		let params = new HttpParams();
+    list(context: TopicContext): Observable<any[]> {
+        // create blank params object
+        let params = new HttpParams();
 
-		// if we have params provided in the context, replace with those
-		if (context.params) {
-			// context.params is assumed to have a format similar to
-			// { topicId: [id], search: [search terms], ...}
-			params = new HttpParams({ fromObject: context.params });
-		}
+        // if we have params provided in the context, replace with those
+        if (context.params) {
+            // context.params is assumed to have a format similar to
+            // { topicId: [id], search: [search terms], ...}
+            params = new HttpParams({ fromObject: context.params });
+        }
 
-		return this.httpClient
-			.cache(context.forceUpdate)
-			.get(routes.list(context), { params })
-			.pipe(
-				tap((topics: Topic[]) => this.topicStore.add(topics)),
-				map((res: Array<any>) => res),
-				catchError(handleError)
-			);
-	}
+        return this.httpClient
+            // .cache(context.forceUpdate)
+            .get(routes.list(context), { params })
+            .pipe(
+                tap((topics: Topic[]) => this.topicStore.add(topics)),
+                map((res: Array<any>) => res),
+                catchError(handleError)
+            );
+    }
 
-	view(context: TopicContext): Observable<any> {
+    view(context: TopicContext): Observable<any> {
 
-		return this.httpClient
-			.cache(context.forceUpdate)
-			.get(routes.view(context))
-			.pipe(
-				tap((topic: Topic) => this.topicStore.add(topic)),
-				map((res: any) => res),
-				catchError(handleError)
-			);
-	}
+        return this.httpClient
+            // .cache(context.forceUpdate)
+            .get(routes.view(context))
+            .pipe(
+                tap((topic: Topic) => this.topicStore.add(topic)),
+                map((res: any) => res),
+                catchError(handleError)
+            );
+    }
 
-	create(context: TopicContext): Observable<any> {
-		return this.httpClient
-			.cache(context.forceUpdate)
-			.post(routes.create(context), context.entity)
-			.pipe(
-				tap((topic: Topic) => this.topicStore.add(topic)),
-				map((res: any) => res),
-				catchError(handleError)
-			);
-	}
+    create(context: TopicContext): Observable<any> {
+        return this.httpClient
+            // .cache(context.forceUpdate)
+            .post(routes.create(context), context.entity)
+            .pipe(
+                tap((topic: Topic) => this.topicStore.add(topic)),
+                map((res: any) => res),
+                catchError(handleError)
+            );
+    }
 
-	update(context: TopicContext): Observable<any> {
-		return this.httpClient
-			.cache(context.forceUpdate)
-			.put(routes.update(context), context.entity)
-			.pipe(
-				tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
-				map((res: any) => res),
-				catchError(handleError)
-			);
-	}
+    update(context: TopicContext): Observable<any> {
+        return this.httpClient
+            // .cache(context.forceUpdate)
+            .put(routes.update(context), context.entity)
+            .pipe(
+                tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
+                map((res: any) => res),
+                catchError(handleError)
+            );
+    }
 
-	delete(context: TopicContext): Observable<any> {
-		return this.httpClient
-			.cache(context.forceUpdate)
-			.delete(routes.delete(context))
-			.pipe(
-				tap((topic: Topic) => this.topicStore.remove(topic._id)),
-				map((res: any) => res),
-				catchError(handleError)
-			);
-	}
+    delete(context: TopicContext): Observable<any> {
+        return this.httpClient
+            // .cache(context.forceUpdate)
+            .delete(routes.delete(context))
+            .pipe(
+                tap((topic: Topic) => this.topicStore.remove(topic._id)),
+                map((res: any) => res),
+                catchError(handleError)
+            );
+    }
 
 }
