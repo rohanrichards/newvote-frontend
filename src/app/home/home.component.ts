@@ -32,172 +32,172 @@ import { Solution } from '@app/core/models/solution.model';
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
-	selector: 'app-home',
-	templateUrl: './home.component.html',
-	styleUrls: ['./home.component.scss'],
-	animations: [
-		trigger('fadeIn', fadeIn(':enter'))
-	]
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    animations: [
+        trigger('fadeIn', fadeIn(':enter'))
+    ]
 })
 export class HomeComponent implements OnInit {
 
-	isLoading: boolean;
-	org: Organization;
-	issues: Issue[];
-	solutions: any[];
-	proposals: any[];
-	userCount: number;
-	loadingState: string;
-	handleImageUrl = optimizeImage;
-	loadTour = true;
-	ISSUE_LIMIT = 6;
-	stepsArray = [...JoyRideSteps];
+    isLoading: boolean;
+    org: Organization;
+    issues: Issue[];
+    solutions: any[];
+    proposals: any[];
+    userCount: number;
+    loadingState: string;
+    handleImageUrl = optimizeImage;
+    loadTour = true;
+    ISSUE_LIMIT = 6;
+    stepsArray = [...JoyRideSteps];
 
-	constructor(
-		private readonly joyrideService: JoyrideService,
-		public stateService: StateService,
-		public auth: AuthenticationService,
-		private organizationService: OrganizationService,
-		private issueService: IssueService,
-		private solutionService: SolutionService,
-		private proposalService: ProposalService,
-		private userService: UserService,
-		private meta: MetaService,
-		public snackBar: MatSnackBar,
-		public admin: AdminService,
-		private proposalQuery: ProposalQuery,
-		private solutionQuery: SolutionQuery,
-		private issueQuery: IssueQuery,
-		private organizationQuery: OrganizationQuery,
-		private communityQuery: CommunityQuery
-	) { }
+    constructor(
+        private readonly joyrideService: JoyrideService,
+        public stateService: StateService,
+        public auth: AuthenticationService,
+        private organizationService: OrganizationService,
+        private issueService: IssueService,
+        private solutionService: SolutionService,
+        private proposalService: ProposalService,
+        private userService: UserService,
+        private meta: MetaService,
+        public snackBar: MatSnackBar,
+        public admin: AdminService,
+        private proposalQuery: ProposalQuery,
+        private solutionQuery: SolutionQuery,
+        private issueQuery: IssueQuery,
+        private organizationQuery: OrganizationQuery,
+        private communityQuery: CommunityQuery
+    ) { }
 
-	ngOnInit() {
-		this.stateService.loadingState$.subscribe((state: string) => {
-			this.loadingState = state;
-		});
+    ngOnInit() {
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state;
+        });
 
-		this.meta.updateTags(
-			{
-				title: 'Home'
-			});
-		this.subscribeToOrgStore();
-		this.subscribeToIssueStore();
-		this.subscribeToProposalStore();
-		this.subscribeToSolutionStore();
-		this.fetchData();
-	}
+        this.meta.updateTags(
+            {
+                title: 'Home'
+            });
+        this.subscribeToOrgStore();
+        this.subscribeToIssueStore();
+        this.subscribeToProposalStore();
+        this.subscribeToSolutionStore();
+        this.fetchData();
+    }
 
-	fetchData() {
-		const isOwner = this.auth.isOwner();
-		const params = { showDeleted: isOwner ? true : ' '}
+    fetchData() {
+        const isOwner = this.auth.isOwner();
+        const params = { 'showDeleted': isOwner ? true : ' ' }
 
-		this.isLoading = true;
-		this.stateService.setLoadingState(AppState.loading);
+        this.isLoading = true;
+        this.stateService.setLoadingState(AppState.loading);
 
-		const getSolutions = this.solutionService.list({ params });
-		const getProposals = this.proposalService.list({ params });
-		const getIssues = this.issueService.list({ params });
-		const getUsers = this.userService.count({});
+        const getSolutions = this.solutionService.list({ params });
+        const getProposals = this.proposalService.list({ params });
+        const getIssues = this.issueService.list({ params });
+        const getUsers = this.userService.count({});
 
-		forkJoin({
-			solutions: getSolutions,
-			proposals: getProposals,
-			count: getUsers,
-			issues: getIssues
-		})
-		.subscribe(
-			({count}) => {
-				this.userCount = count;
-				this.stateService.setLoadingState(AppState.complete);
-			},
-			(err) => {
-				return this.stateService.setLoadingState(AppState.serverError);
-			}
-		);
-	}
+        forkJoin({
+            solutions: getSolutions,
+            proposals: getProposals,
+            count: getUsers,
+            issues: getIssues
+        })
+            .subscribe(
+                ({ count }) => {
+                    this.userCount = count;
+                    this.stateService.setLoadingState(AppState.complete);
+                },
+                (err) => {
+                    return this.stateService.setLoadingState(AppState.serverError);
+                }
+            );
+    }
 
-	subscribeToOrgStore() {
-		const host = document.location.host;
-		const subdomain = host.split('.')[0];
-		this.organizationQuery.select()
-			.subscribe((res) => {
-				this.org = res
-			})
+    subscribeToOrgStore() {
+        const host = document.location.host;
+        const subdomain = host.split('.')[0];
+        this.organizationQuery.select()
+            .subscribe((res) => {
+                this.org = res
+            })
 
-	}
+    }
 
-	subscribeToIssueStore() {
-		this.issueQuery.selectAll()
-			.subscribe((issues: Issue[]) => {
-				this.issues = issues;
-			})
-	}
+    subscribeToIssueStore() {
+        this.issueQuery.issues$
+            .subscribe((issues: Issue[]) => {
+                this.issues = issues;
+            })
+    }
 
-	subscribeToProposalStore() {
-		this.proposalQuery.selectAll()
-			.subscribe((proposals: Proposal[]) => {
-				this.proposals = proposals;
-			})
-	}
+    subscribeToProposalStore() {
+        this.proposalQuery.proposals$
+            .subscribe((proposals: Proposal[]) => {
+                this.proposals = proposals;
+            })
+    }
 
-	subscribeToSolutionStore() {
-		this.solutionQuery.selectAll()
-			.subscribe((solutions: Solution[]) => {
-				this.solutions = solutions;
-			})
-	}
+    subscribeToSolutionStore() {
+        this.solutionQuery.solutions$
+            .subscribe((solutions: Solution[]) => {
+                this.solutions = solutions;
+            })
+    }
 
-	handleUserCount(count: number) {
-		if (this.auth.isAdmin() || this.auth.isOwner()) {
-			return `${count}`;
-		}
+    handleUserCount(count: number) {
+        if (this.auth.isAdmin() || this.auth.isOwner()) {
+            return `${count}`;
+        }
 
-		if (!count) {
-			return `0`;
-		}
+        if (!count) {
+            return `0`;
+        }
 
-		if (count < 1000) {
-			return `< 1K`;
-		}
+        if (count < 1000) {
+            return `< 1K`;
+        }
 
-		return `${Math.floor(count / 1000)}K+`;
-	}
+        return `${Math.floor(count / 1000)}K+`;
+    }
 
-	onDone() {
-		return this.completeTour();
-	}
+    onDone() {
+        return this.completeTour();
+    }
 
-	startTour(event: any) {
-		event.stopPropagation();
-		this.joyrideService.startTour(
-			{
-				steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
-					'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
-				showPrevButton: true,
-				stepDefaultPosition: 'center',
-				waitingTime: 1150,
-			}
-		);
-	}
+    startTour(event: any) {
+        event.stopPropagation();
+        this.joyrideService.startTour(
+            {
+                steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
+                    'solution1@solutions', 'suggestion1@suggestions', 'finish@home'],
+                showPrevButton: true,
+                stepDefaultPosition: 'center',
+                waitingTime: 1150,
+            }
+        );
+    }
 
-	completeTour() {
-		const user = this.auth.credentials.user;
-		user.completedTour = true;
-		this.userService.patch({ id: user._id, entity: user })
-			.subscribe(
-				(res) => {
-					this.auth.saveTourToLocalStorage();
-					this.openSnackBar('Tour Complete', 'OK');
-				},
-				(err) => err
-			)
-	}
+    completeTour() {
+        const user = this.auth.credentials.user;
+        user.completedTour = true;
+        this.userService.patch({ id: user._id, entity: user })
+            .subscribe(
+                (res) => {
+                    this.auth.saveTourToLocalStorage();
+                    this.openSnackBar('Tour Complete', 'OK');
+                },
+                (err) => err
+            )
+    }
 
-	openSnackBar(message: string, action: string) {
-		this.snackBar.open(message, action, {
-			duration: 4000,
-			horizontalPosition: 'right'
-		});
-	}
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        });
+    }
 }

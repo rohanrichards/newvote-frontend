@@ -1,27 +1,28 @@
-import { Injectable } from "@angular/core";
-import { StoreConfig, Store, EntityState, EntityStore } from "@datorama/akita";
-import { Organization } from "@app/core/models/organization.model";
+import { Injectable } from '@angular/core'
+import { StoreConfig, Store, EntityState, EntityStore } from '@datorama/akita'
+import { Organization } from '@app/core/models/organization.model'
 
 export function createInitialStore(): Organization {
     return {
-        _id: "",
-        authEntityId: "",
+        _id: '',
+        authEntityId: '',
         authType: 0,
-        authUrl: "",
-        description: "",
+        authUrl: '',
+        description: '',
         futureOwner: {},
-        iconUrl: "",
-        imageUrl: "",
-        longDescription: "",
+        iconUrl: '',
+        imageUrl: '',
+        longDescription: '',
         moderators: [],
-        name: "",
-        newLeaderEmail: "",
-        organizationName: "",
-        organizationUrl: "",
+        name: '',
+        newLeaderEmail: '',
+        organizationName: '',
+        organizationUrl: '',
         owner: {},
         privateOrg: false,
         softDeleted: false,
-        url: ""
+        url: '',
+        voteRoles: []
     }
 }
 
@@ -29,7 +30,7 @@ export function createInitialStore(): Organization {
 @StoreConfig({ name: 'organization' })
 export class OrganizationStore extends Store<Organization> {
     constructor() {
-        super(createInitialStore());
+        super(createInitialStore())
     }
 }
 
@@ -39,6 +40,6 @@ export interface CommunityState extends EntityState<Organization> { }
 @StoreConfig({ name: 'communities', idKey: '_id' })
 export class CommunityStore extends EntityStore<CommunityState> {
     constructor() {
-        super();
+        super()
     }
 }
