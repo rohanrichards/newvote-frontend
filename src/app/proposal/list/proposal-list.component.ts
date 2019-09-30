@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize, take, filter } from 'rxjs/operators';
+import { finalize, take, filter, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -87,7 +87,9 @@ export class ProposalListComponent implements OnInit {
     subscribeToSuggestionStore() {
         this.suggestionQuery.suggestions$
             .pipe(
-                filter((entity: any) => entity.type === 'action')
+                map((suggestions) => {
+                    return suggestions.filter((suggestion) => suggestion.type === 'action')
+                }),
             )
             .subscribe((suggestions) => this.suggestions = suggestions);
     }

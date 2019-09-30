@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
 
-import { finalize, startWith, map, take, filter } from 'rxjs/operators'
+import { finalize, startWith, map, take, filter, tap } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { IssueService, IssueContext } from '@app/core/http/issue/issue.service'
@@ -184,7 +184,9 @@ export class IssueListComponent implements OnInit {
     subscribeToSuggestionStore() {
         this.suggestions$ = this.suggestionQuery.suggestions$
             .pipe(
-                filter((entity: any) => entity.type === 'issue')
+                map((suggestions) => {
+                    return suggestions.filter((suggestion) => suggestion.type === 'issue')
+                }),
             )
     }
 
