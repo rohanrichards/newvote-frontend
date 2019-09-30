@@ -102,7 +102,6 @@ export class OrganizationService {
             .get(routes.view(context))
             .pipe(
                 tap((res: Organization) => {
-                    console.log(res, 'this is res from server');
                     this.organizationStore.update(res);
                     this.communityStore.add(res)
                 }),
@@ -130,7 +129,6 @@ export class OrganizationService {
                 tap((res: Organization) => {
                     // since there are two stores we need to check whether to update both
                     if (res._id === this._org._id) {
-                        console.log(res, 'received res from server');
                         this.organizationStore.update(res);
                     }
 
