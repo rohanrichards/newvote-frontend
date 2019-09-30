@@ -76,9 +76,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
         RecaptchaFormsModule,
         SocketIoModule.forRoot({
             url: environment.socketUrl,
-            options: {
-                transports: ['websocket']
-            }
+            options: {}
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
         AppRoutingModule // must be imported as the last module as it contains the fallback route
