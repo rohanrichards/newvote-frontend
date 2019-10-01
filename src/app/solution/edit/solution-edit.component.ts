@@ -193,6 +193,12 @@ export class SolutionEditComponent implements OnInit {
         this.imageUrl = this.solutionForm.get('imageUrl').value
     }
 
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/solution-default.png';
+        this.newImage = true;
+        this.imageUrl = DEFAULT_IMAGE;
+    }
+
     onSave() {
         const solution = cloneDeep(this.solution)
         merge(solution, <ISolution>this.solutionForm.value)
