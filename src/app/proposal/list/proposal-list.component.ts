@@ -95,9 +95,9 @@ export class ProposalListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         this.isLoading = true;
-        const params = { 'softDeleted': isOwner ? true : '' };
+        const params = { 'softDeleted': isModerator ? true : '' };
 
         this.proposalService.list({ orgs: [], params })
             .pipe(finalize(() => { this.isLoading = false; }))
@@ -109,7 +109,7 @@ export class ProposalListComponent implements OnInit {
         this.suggestionService.list({
             forceUpdate: true,
             params: {
-                'showDeleted': isOwner ? true : '',
+                'showDeleted': isModerator ? true : '',
                 'type': 'solution',
             }
         })
@@ -153,26 +153,6 @@ export class ProposalListComponent implements OnInit {
             duration: 4000,
             horizontalPosition: 'right'
         });
-    }
-
-    onSoftDelete(event: any) {
-        const entity = assign({}, event, { softDeleted: true });
-        this.proposalService.update({ id: event._id, entity })
-            .pipe(finalize(() => { this.isLoading = false; }))
-            .subscribe(
-                (res) => res,
-                (err) => err
-            );
-    }
-
-    onRestore(event: any) {
-        const entity = assign({}, event, { softDeleted: true });
-        this.proposalService.update({ id: event._id, entity })
-            .pipe(finalize(() => { this.isLoading = false; }))
-            .subscribe(
-                (res) => res,
-                (err) => err
-            );
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

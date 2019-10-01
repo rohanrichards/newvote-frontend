@@ -148,8 +148,8 @@ export class IssueListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner()
-        const params = { showDeleted: isOwner ? true : '' };
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : '' };
 
         const issueObs: Observable<any[]> = this.issueService.list({ params })
         const topicObs: Observable<any[]> = this.topicService.list({ params })

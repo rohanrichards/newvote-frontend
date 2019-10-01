@@ -107,8 +107,8 @@ export class SolutionListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner()
-        const options = { 'showDeleted': isOwner ? true : '' }
+        const isModerator = this.auth.isModerator()
+        const options = { 'showDeleted': isModerator ? true : '' }
 
         const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
         const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options })

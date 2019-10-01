@@ -21,23 +21,31 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     isOwner() {
-        return !!this.getValue().roles.includes('admin') || (this.organizationQuery.getValue().owner._id && this.organizationQuery.getValue().owner._id === this.getValue()._id)
+        const user = this.getValue();
+        const organization = this.organizationQuery.getValue();
+
+        const organizationOwner = (organization.owner && organization.owner._id) && organization.owner._id === user._id
+        return !!this.getValue().roles.includes('admin') || !!organizationOwner
     }
 
     isModerator() {
+        const organization = this.organizationQuery.getValue();
 
         if (this.isOwner()) {
             return true;
         }
 
-        return this.organizationQuery.getValue().moderators.some((moderator: any) => {
-            const id = this.getValue()._id;
+        if (!organization.moderators.length) {
+            return false;
+        }
 
+        return organization.moderators.some((moderator: any) => {
+            const userId = this.getValue()._id;
             if (typeof moderator === 'string') {
-                return moderator === id;
+                return moderator === userId;
             }
 
-            return moderator._id === id;
+            return moderator._id === userId;
         })
     }
 
