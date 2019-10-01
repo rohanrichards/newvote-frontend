@@ -24,4 +24,21 @@ export class AuthenticationQuery extends Query<IUser> {
         return !!this.getValue().roles.includes('admin') || (this.organizationQuery.getValue().owner._id && this.organizationQuery.getValue().owner._id === this.getValue()._id)
     }
 
+    isModerator() {
+
+        if (this.isOwner()) {
+            return true;
+        }
+
+        return this.organizationQuery.getValue().moderators.some((moderator: any) => {
+            const id = this.getValue()._id;
+
+            if (typeof moderator === 'string') {
+                return moderator === id;
+            }
+
+            return moderator._id === id;
+        })
+    }
+
 }

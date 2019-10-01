@@ -9,7 +9,7 @@ import { AuthenticationQuery } from "@app/core/authentication/authentication.que
 export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
     proposals$ = this.selectAll({
         filterBy: (entity) => {
-            if (this.auth.isOwner()) {
+            if (this.auth.isModerator()) {
                 return true;
             }
 
