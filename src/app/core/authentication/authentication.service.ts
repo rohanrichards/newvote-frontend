@@ -257,7 +257,7 @@ export class AuthenticationService {
             return true
         }
 
-        if (!this._org.moderators.length) {
+        if (!this._org || !this._org.moderators || !this._org.moderators.length) {
             return false
         }
 
