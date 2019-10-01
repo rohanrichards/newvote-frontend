@@ -11,35 +11,35 @@ import { SolutionCreateComponent } from './create/solution-create.component';
 import { SolutionEditComponent } from './edit/solution-edit.component';
 
 const routes: Routes = [
-	{ path: '', component: SolutionListComponent, data: { title: extract('All Solutions') } },
-	{
-		path: 'create',
-		component: SolutionCreateComponent,
-		data: { title: extract('New Solution') },
-		canActivate: [ModeratorGuard]
-	},
-	{
-		path: 'create/:id',
-		component: SolutionCreateComponent,
-		data: { title: extract('New Solution') },
-		canActivate: [ModeratorGuard]
-	},
-	{
-		path: 'edit/:id',
-		component: SolutionEditComponent,
-		data: { title: extract('Edit Solution') },
-		canActivate: [ModeratorGuard]
-	},
-	{
-		path: ':id',
-		component: SolutionViewComponent,
-		data: { title: extract('Solution') }
-	},
+    { path: '', component: SolutionListComponent, data: { title: extract('All Solutions'), level: 'root' } },
+    {
+        path: 'create',
+        component: SolutionCreateComponent,
+        data: { title: extract('New Solution'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: 'create/:id',
+        component: SolutionCreateComponent,
+        data: { title: extract('New Solution'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: 'edit/:id',
+        component: SolutionEditComponent,
+        data: { title: extract('Edit Solution'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: ':id',
+        component: SolutionViewComponent,
+        data: { title: extract('Solution'), level: 'child' }
+    },
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-	providers: []
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    providers: []
 })
 export class SolutionRoutingModule { }

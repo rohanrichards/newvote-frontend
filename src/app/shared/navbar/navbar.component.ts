@@ -1,11 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Organization } from '@app/core/models/organization.model';
 import { AuthenticationService } from '@app/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, RoutesRecognized } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from '@app/core/meta.service';
 import { MatSidenav } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
+import { filter, map } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'div[sticky-component]',
@@ -20,15 +22,23 @@ export class NavbarComponent implements OnInit {
     showSearch = false;
     hideVerify = false;
 
+    routeLevel: string;
+
     constructor(
         private meta: MetaService,
         private titleService: Title,
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
+        private activatedRoute: ActivatedRoute,
+        private location: Location
     ) { }
 
     ngOnInit() {
+        this.meta.routeLevel$
+            .subscribe((res) => {
+                this.routeLevel = res;
+            })
     }
 
     toggleSearch() {
@@ -83,5 +93,9 @@ export class NavbarComponent implements OnInit {
 
     handleToggle() {
         this.sideNavRef.toggle();
+    }
+
+    handleBackClick() {
+        this.location.back();
     }
 }

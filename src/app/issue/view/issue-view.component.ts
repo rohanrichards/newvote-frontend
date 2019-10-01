@@ -105,7 +105,11 @@ export class IssueViewComponent implements OnInit {
 			this.fetchData(ID);
 			this.getMedia(ID);
 			this.getTopics();
-		});
+        });
+        
+        this.route.data.subscribe((res) => {
+            this.meta.updateRouteLevel(res.level);
+        })
 
 		this.getSuggestions();
 	}
