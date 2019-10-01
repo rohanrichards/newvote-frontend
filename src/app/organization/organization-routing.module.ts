@@ -12,39 +12,39 @@ import { OrganizationEditComponent } from './edit/organization-edit.component';
 import { OrganizationClaimComponent } from './claim/organization-claim.component';
 
 const routes: Routes = [
-	{
-		path: 'claim/:id',
-		component: OrganizationClaimComponent,
-		data: { title: extract('Community') }
-	},
-	{
-		path: '',
-		component: OrganizationListComponent,
-		data: { title: extract('All Communities') }
-	},
-	{
-		path: 'create',
-		component: OrganizationCreateComponent,
-		data: { title: extract('New Community') },
-		canActivate: [AdminGuard]
-	},
-	{
-		path: 'edit/:id',
-		component: OrganizationEditComponent,
-		data: { title: extract('Edit Community') },
-		canActivate: [OwnerGuard]
-	},
-	// {
-	// 	path: ':id',
-	// 	component: OrganizationViewComponent,
-	// 	data: { title: extract('Community') },
-	// 	canActivate: [AdminGuard]
-	// },
+    {
+        path: 'claim/:id',
+        component: OrganizationClaimComponent,
+        data: { title: extract('Community'), level: 'child' }
+    },
+    {
+        path: '',
+        component: OrganizationListComponent,
+        data: { title: extract('All Communities'), level: 'root' }
+    },
+    {
+        path: 'create',
+        component: OrganizationCreateComponent,
+        data: { title: extract('New Community'), level: 'child' },
+        canActivate: [AdminGuard]
+    },
+    {
+        path: 'edit/:id',
+        component: OrganizationEditComponent,
+        data: { title: extract('Edit Community'), level: 'child' },
+        canActivate: [OwnerGuard]
+    },
+    // {
+    // 	path: ':id',
+    // 	component: OrganizationViewComponent,
+    // 	data: { title: extract('Community') },
+    // 	canActivate: [AdminGuard]
+    // },
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-	providers: []
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    providers: []
 })
 export class OrganizationRoutingModule { }

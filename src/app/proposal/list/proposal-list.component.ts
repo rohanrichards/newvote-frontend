@@ -17,6 +17,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-proposal',
@@ -57,7 +58,8 @@ export class ProposalListComponent implements OnInit {
         private proposalQuery: ProposalQuery,
         private suggestionQuery: SuggestionQuery,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
@@ -76,6 +78,14 @@ export class ProposalListComponent implements OnInit {
         this.fetchData();
         this.subscribeToProposalStore();
         this.subscribeToSuggestionStore();
+
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
     }
 
 

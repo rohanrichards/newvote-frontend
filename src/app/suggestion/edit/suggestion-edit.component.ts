@@ -5,7 +5,7 @@ import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { Observable, of } from 'rxjs'
-import { switchMap, startWith, finalize, debounceTime } from 'rxjs/operators'
+import { switchMap, startWith, finalize, debounceTime, take } from 'rxjs/operators'
 import { merge } from 'lodash'
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
@@ -74,6 +74,14 @@ export class SuggestionEditComponent implements OnInit {
                     (err) => err
                 )
         })
+
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
     }
 
     subscribeToSuggestionStore(id: string) {

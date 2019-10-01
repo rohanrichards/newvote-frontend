@@ -138,9 +138,13 @@ export class IssueListComponent implements OnInit {
             this.topicParam = params.get('topic')
         })
 
-        this.route.data.subscribe((res) => {
-            this.meta.updateRouteLevel(res.level);
-        })
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
 
         this.meta.updateTags(
             {

@@ -81,6 +81,14 @@ export class ProposalViewComponent implements OnInit {
             this.getProposal(ID);
             this.getSuggestions(ID);
         });
+
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
     }
 
     subscribeToSuggestionStore(id: string) {

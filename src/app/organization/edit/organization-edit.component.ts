@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators'
+import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged, take } from 'rxjs/operators'
 import { merge, cloneDeep } from 'lodash'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -150,6 +150,14 @@ export class OrganizationEditComponent implements OnInit {
         if (this.auth.isAdmin()) {
             this.userService.list({}).subscribe(users => this.allUsers = users)
         }
+
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
 
         this.setAuthtypeValidators()
     }

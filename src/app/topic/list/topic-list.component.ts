@@ -10,70 +10,79 @@ import { assign } from 'lodash';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 import { Topic } from '@app/core/models/topic.model';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { take } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-topic',
-	templateUrl: './topic-list.component.html',
-	styleUrls: ['./topic-list.component.scss']
+    selector: 'app-topic',
+    templateUrl: './topic-list.component.html',
+    styleUrls: ['./topic-list.component.scss']
 })
 export class TopicListComponent implements OnInit {
 
-	topics: Array<any>;
-	isLoading: boolean;
-	loadingState: string;
-	headerTitle = 'Browse By Topic';
-	headerText = 'Topics arrange the current issues into broader categories. \
+    topics: Array<any>;
+    isLoading: boolean;
+    loadingState: string;
+    headerTitle = 'Browse By Topic';
+    headerText = 'Topics arrange the current issues into broader categories. \
 		Select a topic below to learn more about it and explore relevant issues being discussed.';
-	headerButtons = [{
-		text: 'New Topic',
-		color: 'warn',
-		routerLink: '/topics/create',
-		role: 'admin'
-	}];
+    headerButtons = [{
+        text: 'New Topic',
+        color: 'warn',
+        routerLink: '/topics/create',
+        role: 'admin'
+    }];
 
-	constructor(
-		private stateService: StateService,
-		private topicService: TopicService,
-		public auth: AuthenticationService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private meta: MetaService,
-		private topicQuery: TopicQuery,
-		public admin: AdminService
-	) { }
+    constructor(
+        private stateService: StateService,
+        private topicService: TopicService,
+        public auth: AuthenticationService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private meta: MetaService,
+        private topicQuery: TopicQuery,
+        public admin: AdminService
+    ) { }
 
-	ngOnInit() {
-		this.stateService.loadingState$.subscribe((state: string) => {
-			this.loadingState = state;
-		});
+    ngOnInit() {
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state;
+        });
 
-		this.subscribeToTopicStore();
-		this.stateService.setLoadingState(AppState.loading);
-		this.meta.updateTags(
-			{
-				title: 'All Topics',
-				description: 'List all topics.'
-			});
+        this.subscribeToTopicStore();
+        this.stateService.setLoadingState(AppState.loading);
+        this.meta.updateTags(
+            {
+                title: 'All Topics',
+                description: 'List all topics.'
+            });
 
-		this.fetchData();
-	}
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
 
-	fetchData() {
-		const isOwner = this.auth.isOwner();
-		const params = {
-			'showDeleted': isOwner ? true : ''
-		}
+        this.fetchData();
+    }
 
-		this.stateService.setLoadingState(AppState.loading);
-		this.topicService.list({ orgs: [], params })
-			.subscribe(
-				topics => this.stateService.setLoadingState(AppState.complete),
-				err => this.stateService.setLoadingState(AppState.serverError)
-			);
-	}
+    fetchData() {
+        const isOwner = this.auth.isOwner();
+        const params = {
+            'showDeleted': isOwner ? true : ''
+        }
 
-	subscribeToTopicStore() {
-		this.topicQuery.selectAll()
-			.subscribe((topics: Topic[]) => this.topics = topics)
-	}
+        this.stateService.setLoadingState(AppState.loading);
+        this.topicService.list({ orgs: [], params })
+            .subscribe(
+                topics => this.stateService.setLoadingState(AppState.complete),
+                err => this.stateService.setLoadingState(AppState.serverError)
+            );
+    }
+
+    subscribeToTopicStore() {
+        this.topicQuery.selectAll()
+            .subscribe((topics: Topic[]) => this.topics = topics)
+    }
 }
