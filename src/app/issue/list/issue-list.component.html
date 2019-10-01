@@ -11,19 +11,19 @@
 		<p class="mat-subheading-2">{{stepsArray[3].description}}</p>
 	</div>
 </ng-template>
-
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-		<div 
-			fxFlex.sm="640px"
-			fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px">
-		<div 					
-			joyrideStep="issues1"
-			joyridePosition="top"
-			[title]="stepsArray[3].title"
-			[stepContent]="customContent">
+	<div 
+		joyrideStep="issues1"
+		joyridePosition="center"
+		[title]="stepsArray[3].title"
+		[stepContent]="customContent"
+		fxFlex.lt-sm="80%"
+		fxFlex.sm="600px"
+		fxFlex.gt-sm="690px"
+	    fxFlex.gt-md="800px">
+		<div>
 			<ng-container [ngSwitch]="loadingState">
 				<div *ngSwitchCase="'loading'" class="skeleton-form-wrap">
 					<div class="skeleton-form">
