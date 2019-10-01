@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
@@ -42,6 +42,13 @@ export class VerifyComponent implements OnInit {
                 description: 'The NewVote platform requires mobile verification'
             });
 
+        this.route.data
+            .pipe(
+                take(1)
+            )
+            .subscribe((res) => {
+                this.meta.updateRouteLevel(res.level);
+            })
     }
 
     sendCode() {
