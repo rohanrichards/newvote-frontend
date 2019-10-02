@@ -31,231 +31,241 @@ import { Proposal } from '@app/core/models/proposal.model';
 import { Observable } from 'rxjs';
 
 @Component({
-	selector: 'app-solution',
-	templateUrl: './solution-view.component.html',
-	styleUrls: ['./solution-view.component.scss'],
-	animations: [
-		trigger('fadeIn', fadeIn(':enter'))
-	]
+    selector: 'app-solution',
+    templateUrl: './solution-view.component.html',
+    styleUrls: ['./solution-view.component.scss'],
+    animations: [
+        trigger('fadeIn', fadeIn(':enter'))
+    ]
 })
 export class SolutionViewComponent implements OnInit {
 
-	solution: Solution;
-	isLoading: boolean;
-	loadingState: string;
-	handleImageUrl = optimizeImage;
-	organization: any;
-	suggestions: any[];
-	proposals: any[];
-	proposals$: Observable<any>;
-	suggestions$: Observable<any>;
+    solution: Solution;
+    isLoading: boolean;
+    loadingState: string;
+    handleImageUrl = optimizeImage;
+    organization: any;
+    suggestions: any[] = [];
+    proposals: any[] = [];
+    proposals$: Observable<any>;
+    suggestions$: Observable<any>;
 
-	constructor(
-		private organizationService: OrganizationService,
-		private suggestionService: SuggestionService,
-		private stateService: StateService,
-		private solutionService: SolutionService,
-		private voteService: VoteService,
-		private proposalService: ProposalService,
-		public auth: AuthenticationService,
-		private route: ActivatedRoute,
-		private router: Router,
-		public dialog: MatDialog,
-		public snackBar: MatSnackBar,
-		private meta: MetaService,
-		private suggestionQuery: SuggestionQuery,
-		private solutionQuery: SolutionQuery,
-		private voteQuery: VotesQuery,
-		private admin: AdminService,
-		private proposalQuery: ProposalQuery
-	) { }
+    constructor(
+        private organizationService: OrganizationService,
+        private suggestionService: SuggestionService,
+        private stateService: StateService,
+        private solutionService: SolutionService,
+        private voteService: VoteService,
+        private proposalService: ProposalService,
+        public auth: AuthenticationService,
+        private route: ActivatedRoute,
+        private router: Router,
+        public dialog: MatDialog,
+        public snackBar: MatSnackBar,
+        private meta: MetaService,
+        private suggestionQuery: SuggestionQuery,
+        private solutionQuery: SolutionQuery,
+        private voteQuery: VotesQuery,
+        private admin: AdminService,
+        private proposalQuery: ProposalQuery
+    ) { }
 
-	ngOnInit() {
-		this.organizationService.get()
-			.subscribe((org) => this.organization = org);
-		this.stateService.loadingState$.subscribe((state: string) => {
-			this.loadingState = state;
-		});
+    ngOnInit() {
+        this.organizationService.get()
+            .subscribe((org) => this.organization = org);
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state;
+        });
 
-		this.stateService.setLoadingState(AppState.loading);
+        this.stateService.setLoadingState(AppState.loading);
 
-		this.route.paramMap.subscribe(params => {
-			const ID = params.get('id');
-			this.getSolution(ID);
-			this.getProposals();
-			this.subscribeToSuggestionStore(ID);
-			this.subscribeToSolutionStore(ID);
-			this.subscribeToProposalStore(ID);
-		});
+        this.route.paramMap.subscribe(params => {
+            const ID = params.get('id');
+            this.getSolution(ID);
+            this.getProposals();
+            this.subscribeToSuggestionStore(ID);
+            this.subscribeToSolutionStore(ID);
+            this.subscribeToProposalStore(ID);
+        });
 
-		this.getSuggestions();
-	}
+        this.getSuggestions();
+    }
 
-	getSolution(id: string) {
-		const isOwner = this.auth.isOwner();
-		const options = { 'showDeleted': isOwner ? true : '' };
+    getSolution(id: string) {
+        const isOwner = this.auth.isOwner();
+        const options = { 'showDeleted': isOwner ? true : '' };
 
-		this.solutionService.view({
-			id: id,
-			params: options
-		})
-			.subscribe(
-				(solution: Solution) => {
-					this.meta.updateTags(
-						{
-							title: solution.title,
-							appBarTitle: 'View Solution',
-							description: solution.description,
-							image: solution.imageUrl
-						});
-				},
-				(err) => this.stateService.setLoadingState(AppState.serverError)
-			);
-	}
+        this.solutionService.view({
+            id: id,
+            params: options
+        })
+            .subscribe(
+                (solution: Solution) => {
+                    this.meta.updateTags(
+                        {
+                            title: solution.title,
+                            appBarTitle: 'View Solution',
+                            description: solution.description,
+                            image: solution.imageUrl
+                        });
+                },
+                (err) => this.stateService.setLoadingState(AppState.serverError)
+            );
+    }
 
-	getProposals() {
-		this.proposalService.list({})
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
-	}
+    getProposals() {
+        this.proposalService.list({})
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
+    }
 
-	getSuggestions() {
-		const isOwner = this.auth.isOwner();
+    getSuggestions() {
+        const isOwner = this.auth.isOwner();
 
-		this.suggestionService.list({
-			forceUpdate: true,
-			params: {
-				'showDeleted': isOwner ? true : ''
-			}
-		})
-			.subscribe(
-				(res) => res,
-				(err) => err
-			)
-	}
+        this.suggestionService.list({
+            forceUpdate: true,
+            params: {
+                'showDeleted': isOwner ? true : ''
+            }
+        })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
+    }
 
-	subscribeToSolutionStore(id: string) {
-		this.solutionQuery.selectEntity(id)
-			.subscribe((solution: Solution) => {
-				if (!solution) return false;
-				this.solution = solution;
-				this.stateService.setLoadingState(AppState.complete);
-			})
-	}
+    subscribeToSolutionStore(id: string) {
+        this.solutionQuery.selectEntity(id)
+            .subscribe((solution: Solution) => {
+                if (!solution) return false;
+                this.solution = solution;
+                this.stateService.setLoadingState(AppState.complete);
+            })
+    }
 
-	subscribeToSuggestionStore(id: string) {
-		this.suggestions$ = this.suggestionQuery.selectAll({
-			filterBy: entity => entity.parent === id
-		})
-	}
+    subscribeToSuggestionStore(id: string) {
+        this.suggestions$ = this.suggestionQuery.selectAll({
+            filterBy: entity => entity.parent === id
+        })
 
-	subscribeToProposalStore(id: string) {
-		this.proposals$ = this.proposalQuery.filterBySolutionId(id);
-	}
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false;
+            this.suggestions = res;
+        })
+    }
 
-	onVote(voteData: any, model: string) {
-		this.isLoading = true;
-		const { item, voteValue } = voteData;
-		const vote = new Vote(item._id, model, voteValue);
-		const existingVote = item.votes.currentUser;
+    subscribeToProposalStore(id: string) {
+        this.proposals$ = this.proposalQuery.filterBySolutionId(id);
 
-		if (existingVote) {
-			vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
-		}
+        this.proposals$.subscribe((res) => {
+            if (res) return res;
+            this.proposals = res;
+        })
+    }
 
-		this.voteService.create({ entity: vote })
-			.pipe(finalize(() => this.isLoading = false))
-			.subscribe(
-				(res) => {
-					this.updateEntityVoteData(item, model, res.voteValue);
-					this.openSnackBar('Your vote was recorded', 'OK');
-				},
-				(error) => {
-					if (error.status === 401) {
-						this.openSnackBar('You must be logged in to vote', 'OK');
-					} else {
-						this.openSnackBar('There was an error recording your vote', 'OK');
-					}
-				}
-			);
-	}
+    onVote(voteData: any, model: string) {
+        this.isLoading = true;
+        const { item, voteValue } = voteData;
+        const vote = new Vote(item._id, model, voteValue);
+        const existingVote = item.votes.currentUser;
 
-	openSnackBar(message: string, action: string) {
-		this.snackBar.open(message, action, {
-			duration: 4000,
-			horizontalPosition: 'right'
-		});
-	}
+        if (existingVote) {
+            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+        }
 
-	populateSuggestion() {
-		const { _id, title } = this.solution;
-		const suggestionParentInfo = {
-			_id,
-			parentTitle: title,
-			parentType: 'Solution',
-			type: 'action'
-		}
+        this.voteService.create({ entity: vote })
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+                (res) => {
+                    this.updateEntityVoteData(item, model, res.voteValue);
+                    this.openSnackBar('Your vote was recorded', 'OK');
+                },
+                (error) => {
+                    if (error.status === 401) {
+                        this.openSnackBar('You must be logged in to vote', 'OK');
+                    } else {
+                        this.openSnackBar('There was an error recording your vote', 'OK');
+                    }
+                }
+            );
+    }
 
-		this.router.navigateByUrl('/suggestions/create', {
-			state: {
-				...suggestionParentInfo
-			}
-		})
-	}
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        });
+    }
 
-	handleSuggestionSubmit(formData: any) {
-		const suggestion = <Suggestion>formData;
-		suggestion.organizations = this.organization;
+    populateSuggestion() {
+        const { _id, title } = this.solution;
+        const suggestionParentInfo = {
+            _id,
+            parentTitle: title,
+            parentType: 'Solution',
+            type: 'action'
+        }
 
-		suggestion.parent = this.solution._id;
-		suggestion.parentType = 'Solution';
-		suggestion.parentTitle = this.solution.title;
+        this.router.navigateByUrl('/suggestions/create', {
+            state: {
+                ...suggestionParentInfo
+            }
+        })
+    }
 
-		this.suggestionService.create({ entity: suggestion })
-			.subscribe(t => {
-				this.openSnackBar('Succesfully created', 'OK');
-			},
-				(error) => {
-					this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-				})
-	}
+    handleSuggestionSubmit(formData: any) {
+        const suggestion = <Suggestion>formData;
+        suggestion.organizations = this.organization;
 
-	updateEntityVoteData(entity: any, model: string, voteValue: number) {
-		this.voteQuery.selectEntity(entity._id)
-			.pipe(
-				take(1)
-			)
-			.subscribe(
-				(voteObj) => {
-					// Create a new entity object with updated vote values from
-					// vote object on store + voteValue from recent vote
-					const updatedEntity = {
-						votes: {
-							...voteObj,
-							currentUser: {
-								voteValue: voteValue === 0 ? false : voteValue
-							}
-						}
-					};
+        suggestion.parent = this.solution._id;
+        suggestion.parentType = 'Solution';
+        suggestion.parentTitle = this.solution.title;
 
-					if (model === "Solution") {
-						return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
-					}
+        this.suggestionService.create({ entity: suggestion })
+            .subscribe(t => {
+                this.openSnackBar('Succesfully created', 'OK');
+            },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+                })
+    }
 
-					if (model === "Proposal") {
-						return this.proposalService.updateProposalVote(entity._id, updatedEntity);
-					}
+    updateEntityVoteData(entity: any, model: string, voteValue: number) {
+        this.voteQuery.selectEntity(entity._id)
+            .pipe(
+                take(1)
+            )
+            .subscribe(
+                (voteObj) => {
+                    // Create a new entity object with updated vote values from
+                    // vote object on store + voteValue from recent vote
+                    const updatedEntity = {
+                        votes: {
+                            ...voteObj,
+                            currentUser: {
+                                voteValue: voteValue === 0 ? false : voteValue
+                            }
+                        }
+                    };
 
-					if (model === "Suggestion") {
-						return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
-					}
-				},
-				(err) => err
-			)
+                    if (model === "Solution") {
+                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
+                    }
 
-	}
+                    if (model === "Proposal") {
+                        return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+                    }
+
+                    if (model === "Suggestion") {
+                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+                    }
+                },
+                (err) => err
+            )
+
+    }
 
 }
 

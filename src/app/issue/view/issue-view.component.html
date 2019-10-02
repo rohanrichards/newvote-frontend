@@ -27,7 +27,7 @@
     </div>
 </ng-template>
 
-<ng-template #mainMedia>
+<!-- <ng-template #mainMedia>
     <div [@fadeIn]=true
         class="container"
         *ngIf="media"
@@ -37,30 +37,9 @@
             fxFlex.gt-md="800px"
             *ngIf="media && !headingEdit"
             [style.width]="'100%'">
-            <mat-accordion>
-                <mat-expansion-panel class="accordion-header">
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            {{ this.issue.mediaHeading || "Third Party Media"}}
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-swiper-wrapper [@fadeIn]=true
-                        path="/media"
-                        [items]="media"
-                        model="Media"
-                        parent="Issue"
-                        [organization]="issue.organizations.name"
-                        (restore)="admin.onRestore($event, 'Media')"
-                        (softDelete)="admin.onSoftDelete($event, 'Media')"
-                        (delete)="admin.onDelete($event, 'Media')"
-                        (vote)="onVote($event, 'Media')">
-                    </app-swiper-wrapper>
-                </mat-expansion-panel>
-            </mat-accordion>
         </div>
     </div>
-</ng-template>
+</ng-template> -->
 
 
 <ng-container *ngIf="loadingState === 'loading';
@@ -216,9 +195,31 @@
         <div fxFlex.gt-sm="690px"
             fxFlex.gt-md="800px">
 
+            <mat-expansion-panel class="accordion-header">
+                <mat-expansion-panel-header>
+                    <h3 class="mat-headline"
+                        [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                        {{ this.issue.mediaHeading || "Third Party Media"}}
+                    </h3>
+                </mat-expansion-panel-header>
+                <app-swiper-wrapper [@fadeIn]=true
+                    path="/media"
+                    [items]="media"
+                    model="Media"
+                    parent="Issue"
+                    [organization]="issue.organizations.name"
+                    (restore)="admin.onRestore($event, 'Media')"
+                    (softDelete)="admin.onSoftDelete($event, 'Media')"
+                    (delete)="admin.onDelete($event, 'Media')"
+                    (vote)="onVote($event, 'Media')">
+                </app-swiper-wrapper>
+            </mat-expansion-panel>
+
             <mat-accordion [style.margin-bottom.rem]="1"
+                [multi]="true"
                 [style.display]="'block'">
-                <mat-expansion-panel class="accordion-header">
+                <mat-expansion-panel class="accordion-header"
+                    [expanded]="solutions && solutions.length && solutions.length > 0">
                     <mat-expansion-panel-header>
                         <h3 class="mat-headline"
                             [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
@@ -242,11 +243,8 @@
                         [style.margin-top.rem]="1">
                     </app-card-list>
                 </mat-expansion-panel>
-            </mat-accordion>
-
-            <mat-accordion [style.margin-bottom.rem]="1"
-                [style.display]="'block'">
-                <mat-expansion-panel class="accordion-header">
+                <mat-expansion-panel class="accordion-header"
+                    [expanded]="suggestions && suggestions.length && suggestions.length > 0">
                     <mat-expansion-panel-header>
                         <h3 class="mat-headline"
                             [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">

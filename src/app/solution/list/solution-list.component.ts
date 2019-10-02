@@ -40,10 +40,12 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 })
 export class SolutionListComponent implements OnInit {
 
+    organization: any;
     solutions$: Observable<any[]>;
     suggestions$: Observable<any[]>;
     loadingState: string;
-    solutions: Array<any>;
+    solutions: Array<any> = [];
+    suggestions: Array<any> = [];
     isLoading: boolean;
     headerTitle = 'Browse By Solution';
     headerText = 'Solutions are the decisions that you think your community should make.';
@@ -63,8 +65,6 @@ export class SolutionListComponent implements OnInit {
 
     stepsArray = [...JoyRideSteps];
 
-    suggestions: Array<any>;
-    organization: any;
 
     constructor(
         private organizationService: OrganizationService,
@@ -126,7 +126,12 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSolutionStore() {
-        this.solutions$ = this.solutionQuery.selectSolutions()
+        this.solutions$ = this.solutionQuery.selectSolutions();
+
+        this.solutions$.subscribe((res) => {
+            if (!res.length) return false;
+            this.solutions = res;
+        })
     }
 
     subscribeToSuggestionStore() {
@@ -134,6 +139,11 @@ export class SolutionListComponent implements OnInit {
             .pipe(
                 filter((entity: any) => entity.type === 'solution')
             )
+
+        this.suggestions$.subscribe((res) => {
+            if (!res.length) return false;
+            this.suggestions = res;
+        })
     }
 
     onVote(voteData: any, model: string) {

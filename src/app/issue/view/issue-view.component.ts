@@ -50,7 +50,6 @@ import { MediaQuery } from '@app/core/http/media/media.query';
 export class IssueViewComponent implements OnInit {
 
     issue: IIssue;
-    solutions: Array<Solution>;
     media: Array<Media>;
     isLoading: boolean;
     voteSnack: any;
@@ -59,7 +58,8 @@ export class IssueViewComponent implements OnInit {
     handleImageUrl = optimizeImage;
     isOpen = false;
     organization: any;
-    suggestions: any;
+    suggestions: Array<Suggestion> = [];
+    solutions: Array<Solution> = [];
     solutions$: Observable<Solution[]>;
     suggestions$: Observable<Suggestion[]>;
 
@@ -114,6 +114,11 @@ export class IssueViewComponent implements OnInit {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
         })
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false;
+            this.suggestions = res;
+        })
     }
 
 
@@ -130,6 +135,11 @@ export class IssueViewComponent implements OnInit {
 
     subscribeToSolutionStore(issueId: string) {
         this.solutions$ = this.solutionQuery.selectSolutions(issueId);
+
+        this.solutions$.subscribe((res) => {
+            if (!res.length) return false;
+            this.solutions = res;
+        })
     }
 
     subscribeToMediaStore(id: string) {

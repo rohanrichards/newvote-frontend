@@ -186,6 +186,11 @@ export class IssueListComponent implements OnInit {
             .pipe(
                 filter((entity: any) => entity.type === 'issue')
             )
+
+        this.suggestions$.subscribe((res) => {
+            if (!res.length) return false;
+            this.suggestions = res;
+        })
     }
 
     subscribeToTopicStore() {

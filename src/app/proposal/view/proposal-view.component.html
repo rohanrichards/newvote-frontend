@@ -128,7 +128,8 @@
 
         <mat-accordion [style.margin-bottom.rem]="1"
             [style.display]="'block'">
-            <mat-expansion-panel class="accordion-header">
+            <mat-expansion-panel class="accordion-header"
+                [expanded]="suggestions && suggestions.length && suggestions.length > 0">
                 <mat-expansion-panel-header>
                     <h3 class="mat-headline"
                         [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
