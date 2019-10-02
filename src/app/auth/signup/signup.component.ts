@@ -72,7 +72,7 @@ export class SignupComponent implements OnInit {
             .subscribe(credentials => {
                 log.debug(`${credentials.user.username} successfully logged in`);
                 this.route.queryParams.subscribe(
-                    params => this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true })
+                    params => this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true, state: { login: true } })
                 );
             }, (res: any) => {
                 log.debug(`Signup error: ${res}`);

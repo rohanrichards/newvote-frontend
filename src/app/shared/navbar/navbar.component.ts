@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from '@app/core/meta.service';
 import { MatSidenav } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { Location } from '@angular/common';
 
 @Component({
@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
-        private activatedRoute: ActivatedRoute,
+        private route: ActivatedRoute,
         private location: Location
     ) { }
 
@@ -96,6 +96,24 @@ export class NavbarComponent implements OnInit {
     }
 
     handleBackClick() {
-        this.location.back();
+        this.route.paramMap.pipe(
+            take(1),
+            map((data) => {
+                return {
+                    params: data,
+                    state: window.history.state
+                }
+            })
+        )
+            .subscribe(({ state }) => {
+                const redirect = !!state.login
+
+                if (redirect) {
+                    return this.router.navigate(['/']);
+                }
+
+                return this.location.back();
+            })
+
     }
 }

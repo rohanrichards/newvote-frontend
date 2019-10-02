@@ -81,7 +81,7 @@ export class VerifyComponent implements OnInit {
                 // route out here
                 this.route.queryParams.subscribe(
                     params => {
-                        this.router.navigate([params.redirect || '/'], { replaceUrl: true });
+                        this.router.navigate([params.redirect || '/'], { replaceUrl: true, state: { login: true } });
                     }
                 );
             }, (res: any) => {

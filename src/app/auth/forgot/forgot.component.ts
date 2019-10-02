@@ -84,7 +84,7 @@ export class ForgotComponent implements OnInit {
                 this.isLoading = false;
             }))
             .subscribe(() => {
-                this.router.navigate(['/auth/login'], { replaceUrl: true });
+                this.router.navigate(['/auth/login'], { replaceUrl: true, state: { login: true } });
             }, (res: any) => {
                 log.debug(`Forgot error: ${res}`);
                 this.error = res.error ? res.error : res;
