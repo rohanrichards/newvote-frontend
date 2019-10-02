@@ -1,22 +1,48 @@
 .container {
-  padding: 1em;
+    padding: 1em;
 }
 
 .logo {
-  width: 150px;
-  margin: 0 auto;
+    width: 150px;
+    margin: 0 auto;
 }
 
 q {
-  font-style: italic;
-  topics: "« " " »";
+    font-style: italic;
+    topics: "« "" »";
 }
 
 .skeleton-card-list {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.center-text  {
-  text-align: center;
+.center-text {
+    text-align: center;
+}
+
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        background: white;
+        padding-top: 1rem !important;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
 }

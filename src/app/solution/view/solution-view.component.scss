@@ -1,80 +1,106 @@
 .container {
-  padding: 1em;
+    padding: 1em;
 }
 
 .logo {
-  width: 150px;
-  margin: 0 auto;
+    width: 150px;
+    margin: 0 auto;
 }
 
 q {
-  font-style: italic;
-  solutions: "« " " »";
+    font-style: italic;
+    solutions: "« "" »";
 }
 
 //global overrides for mat-toolbar
 .header-info-panel {
-	white-space: normal !important;
-	padding-top: 16px;
-	height: auto;
-	min-height: 32px;
-	line-height: 32px;
-	display: block;
+    white-space: normal !important;
+    padding-top: 16px;
+    height: auto;
+    min-height: 32px;
+    line-height: 32px;
+    display: block;
 }
 
 .description-bar {
-	padding-top: 32px;
-	padding-bottom: 32px;
+    padding-top: 32px;
+    padding-bottom: 32px;
 }
 
 .image-container {
-	height: 350px !important;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
+    height: 350px !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 
-	width: calc(100% + 32px);
-	margin: -16px -16px 0px -16px;
+    width: calc(100% + 32px);
+    margin: -16px -16px 0px -16px;
 }
 
 .admin-panel {
-	.button-panel {
-		background-color: rgba(0, 0, 0, 0.6);
-		border-bottom-left-radius: 15px;
-	}
+    .button-panel {
+        background-color: rgba(0, 0, 0, 0.6);
+        border-bottom-left-radius: 15px;
+    }
 }
 
 .buttons {
-	margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 /* Skeleton Section */
 
 .skeleton-panel {
-	height: 23.5vh;
-	background-color: #039BE5;
-	padding: 2.5rem 1em;
+    height: 23.5vh;
+    background-color: #039BE5;
+    padding: 2.5rem 1em;
 }
 
 .skeleton-chip {
-	display: block;
+    display: block;
     padding: 7px 12px;
     border-radius: 16px;
     align-items: center;
     cursor: default;
     min-height: 32px;
     height: 1px;
-	background-color: #e0e0e0;
-	width: 64px;
-	margin-bottom: 1rem;
+    background-color: #e0e0e0;
+    width: 64px;
+    margin-bottom: 1rem;
 }
 
 .skeleton-card-list {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .center-span {
-	text-align: center;
+    text-align: center;
     display: block;
+}
+
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        background: white;
+        padding-top: 1rem !important;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
 }
