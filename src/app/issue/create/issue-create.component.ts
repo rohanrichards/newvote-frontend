@@ -192,7 +192,7 @@ export class IssueCreateComponent implements OnInit {
                             this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
                         } else {
                             this.openSnackBar('Succesfully created', 'OK');
-                            this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } });
+                            this.router.navigate(['/issues']);
                         }
                     });
             }
@@ -237,7 +237,7 @@ export class IssueCreateComponent implements OnInit {
             softDeleted: true
         };
 
-        this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
+        this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
             .pipe(finalize(() => { this.isLoading = false; }))
             .subscribe(
                 (res) => res,

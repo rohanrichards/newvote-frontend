@@ -77,7 +77,6 @@ export class ProposalViewComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id');
             this.subscribeToProposalStore(ID);
-            this.subscribeToSuggestionStore(ID);
             this.getProposal(ID);
             this.getSuggestions(ID);
         });
@@ -95,19 +94,30 @@ export class ProposalViewComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposalQuery.selectEntity(id)
-            .subscribe((proposal: Proposal) => {
-                if (!proposal) return false;
-                this.proposal = proposal;
-                return this.stateService.setLoadingState(AppState.complete);
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            this.proposalQuery.selectEntity(id)
+                .subscribe((proposal: Proposal) => {
+                    if (!proposal) return false;
+                    this.proposal = proposal;
+                    this.subscribeToSuggestionStore(proposal._id);
+                    return this.stateService.setLoadingState(AppState.complete);
+                })
+        } else {
+            this.proposalQuery.selectAll({
+                filterBy: (entity) => entity.slug === id
             })
+                .subscribe((proposals: Proposal[]) => {
+                    if (!proposals) return false;
+                    this.proposal = proposals[0]
+                    this.subscribeToSuggestionStore(proposals[0]._id);
+                })
+        }
     }
 
     getSuggestions(id: string) {
         const isOwner = this.auth.isOwner();
 
         this.suggestionService.list({
-            forceUpdate: true,
             params: {
                 'showDeleted': isOwner ? true : ''
             }

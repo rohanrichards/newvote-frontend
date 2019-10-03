@@ -17,253 +17,253 @@ import { MetaService } from '@app/core/meta.service';
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 
 @Component({
-	selector: 'app-proposal',
-	templateUrl: './proposal-create.component.html',
-	styleUrls: ['./proposal-create.component.scss']
+    selector: 'app-proposal',
+    templateUrl: './proposal-create.component.html',
+    styleUrls: ['./proposal-create.component.scss']
 })
 export class ProposalCreateComponent implements OnInit {
 
-	proposal: IProposal;
-	allSolutions: Array<ISolution> = [];
-	solutions: Array<ISolution> = [];
-	organization: Organization;
-	filteredSolutions: Observable<ISolution[]>;
-	separatorKeysCodes: number[] = [ENTER, COMMA];
-	isLoading = true;
-	imageUrl: any;
-	uploader: FileUploader;
-	userImageUpload: boolean;
+    proposal: IProposal;
+    allSolutions: Array<ISolution> = [];
+    solutions: Array<ISolution> = [];
+    organization: Organization;
+    filteredSolutions: Observable<ISolution[]>;
+    separatorKeysCodes: number[] = [ENTER, COMMA];
+    isLoading = true;
+    imageUrl: any;
+    uploader: FileUploader;
+    userImageUpload: boolean;
 
-	proposalForm = new FormGroup({
-		title: new FormControl('', [Validators.required]),
-		description: new FormControl('', [Validators.required]),
-		solutions: new FormControl(''),
-		imageUrl: new FormControl('', [])
-	});
+    proposalForm = new FormGroup({
+        title: new FormControl('', [Validators.required]),
+        description: new FormControl('', [Validators.required]),
+        solutions: new FormControl(''),
+        imageUrl: new FormControl('', [])
+    });
 
-	@ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
-	suggestionTemplate: any;
+    @ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    suggestionTemplate: any;
 
-	constructor(
-		private suggestionService: SuggestionService,
-		private proposalService: ProposalService,
-		private solutionService: SolutionService,
-		private organizationService: OrganizationService,
-		public snackBar: MatSnackBar,
-		private route: ActivatedRoute,
-		private router: Router,
-		private meta: MetaService
-	) {
-		this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
-			startWith(''),
-			map((solution: string) => solution ? this._filter(solution) : this.allSolutions.slice()));
-	}
+    constructor(
+        private suggestionService: SuggestionService,
+        private proposalService: ProposalService,
+        private solutionService: SolutionService,
+        private organizationService: OrganizationService,
+        public snackBar: MatSnackBar,
+        private route: ActivatedRoute,
+        private router: Router,
+        private meta: MetaService
+    ) {
+        this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
+            startWith(''),
+            map((solution: string) => solution ? this._filter(solution) : this.allSolutions.slice()));
+    }
 
-	ngOnInit() {
-		this.isLoading = true;
-		this.meta.updateTags(
-			{
-				title: 'Create Action',
-				description: 'Creating a new action on the NewVote platform.'
-			});
+    ngOnInit() {
+        this.isLoading = true;
+        this.meta.updateTags(
+            {
+                title: 'Create Action',
+                description: 'Creating a new action on the NewVote platform.'
+            });
 
-		this.route.paramMap
-			.pipe(
-				map((data) => {
-					return {
-						params: { _id: data.get('id') },
-						state: window.history.state
-					}
-				})
-			)
-			.subscribe(routeData => {
-				const { params, state: suggestion } = routeData;
+        this.route.paramMap
+            .pipe(
+                map((data) => {
+                    return {
+                        params: { _id: data.get('id') },
+                        state: window.history.state
+                    }
+                })
+            )
+            .subscribe(routeData => {
+                const { params, state: suggestion } = routeData;
 
-				if (suggestion._id) {
-					this.suggestionTemplate = suggestion;
-					this.populateSolution(suggestion.parent);
-					return this.proposalForm.patchValue(suggestion);
-				}
+                if (suggestion._id) {
+                    this.suggestionTemplate = suggestion;
+                    this.populateSolution(suggestion.parent);
+                    return this.proposalForm.patchValue(suggestion);
+                }
 
-				const ID = params._id;
-				if (params._id) {
-					this.populateSolution(params._id);
-				}
-			});
+                const ID = params._id;
+                if (params._id) {
+                    this.populateSolution(params._id);
+                }
+            });
 
-		const uploaderOptions: FileUploaderOptions = {
-			url: `https://api.cloudinary.com/v1_1/newvote/upload`,
-			// Upload files automatically upon addition to upload queue
-			autoUpload: false,
-			// Use xhrTransport in favor of iframeTransport
-			isHTML5: true,
-			// Calculate progress independently for each uploaded file
-			removeAfterUpload: true,
-			// XHR request headers
-			headers: [
-				{
-					name: 'X-Requested-With',
-					value: 'XMLHttpRequest'
-				}
-			]
-		};
+        const uploaderOptions: FileUploaderOptions = {
+            url: `https://api.cloudinary.com/v1_1/newvote/upload`,
+            // Upload files automatically upon addition to upload queue
+            autoUpload: false,
+            // Use xhrTransport in favor of iframeTransport
+            isHTML5: true,
+            // Calculate progress independently for each uploaded file
+            removeAfterUpload: true,
+            // XHR request headers
+            headers: [
+                {
+                    name: 'X-Requested-With',
+                    value: 'XMLHttpRequest'
+                }
+            ]
+        };
 
-		this.uploader = new FileUploader(uploaderOptions);
+        this.uploader = new FileUploader(uploaderOptions);
 
-		this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
-			// Add Cloudinary's unsigned upload preset to the upload form
-			form.append('upload_preset', 'qhf7z3qa');
-			// Add file to upload
-			form.append('file', fileItem);
+        this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
+            // Add Cloudinary's unsigned upload preset to the upload form
+            form.append('upload_preset', 'qhf7z3qa');
+            // Add file to upload
+            form.append('file', fileItem);
 
-			// Use default "withCredentials" value for CORS requests
-			fileItem.withCredentials = false;
-			return { fileItem, form };
-		};
+            // Use default "withCredentials" value for CORS requests
+            fileItem.withCredentials = false;
+            return { fileItem, form };
+        };
 
-		this.solutionService.list({})
-			.subscribe(solutions => this.allSolutions = solutions);
+        this.solutionService.list({})
+            .subscribe(solutions => this.allSolutions = solutions);
 
-		this.organizationService.get().subscribe(org => this.organization = org);
-	}
+        this.organizationService.get().subscribe(org => this.organization = org);
+    }
 
-	populateSolution(ID: string) {
-		this.solutionService.view({ id: ID, orgs: [] })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(
-				solution => {
-					if (solution) {
-						this.solutions.push(solution);
-					}
-				},
-				(err) => err
-			);
-	}
-	onFileChange(event: any) {
-		if (event.target.files && event.target.files.length) {
-			const [file] = event.target.files;
-			const reader = new FileReader();
+    populateSolution(ID: string) {
+        this.solutionService.view({ id: ID, orgs: [] })
+            .pipe(finalize(() => { this.isLoading = false; }))
+            .subscribe(
+                solution => {
+                    if (solution) {
+                        this.solutions.push(solution);
+                    }
+                },
+                (err) => err
+            );
+    }
+    onFileChange(event: any) {
+        if (event.target.files && event.target.files.length) {
+            const [file] = event.target.files;
+            const reader = new FileReader();
 
-			reader.onload = (pe: ProgressEvent) => {
-				this.imageUrl = (<FileReader>pe.target).result;
-			};
+            reader.onload = (pe: ProgressEvent) => {
+                this.imageUrl = (<FileReader>pe.target).result;
+            };
 
-			reader.readAsDataURL(file);
-			// flag - user has attempted to upload an image
-			this.userImageUpload = true;
-		}
-	}
+            reader.readAsDataURL(file);
+            // flag - user has attempted to upload an image
+            this.userImageUpload = true;
+        }
+    }
 
-	onSave() {
-		this.isLoading = true;
-		this.proposal = <IProposal>this.proposalForm.value;
-		this.proposal.solutions = this.solutions;
-		this.proposal.organizations = this.organization;
+    onSave() {
+        this.isLoading = true;
+        this.proposal = <IProposal>this.proposalForm.value;
+        this.proposal.solutions = this.solutions;
+        this.proposal.organizations = this.organization;
 
-		if (this.suggestionTemplate) {
-			this.proposal.suggestionTemplate = this.suggestionTemplate;
-		}
+        if (this.suggestionTemplate) {
+            this.proposal.suggestionTemplate = this.suggestionTemplate;
+        }
 
-		this.uploader.onCompleteAll = () => {
-			this.isLoading = false;
-		};
+        this.uploader.onCompleteAll = () => {
+            this.isLoading = false;
+        };
 
-		if (!this.userImageUpload) {
-			// this.imageUrl = 'assets/action-default.png';
-			return this.proposalService.create({ entity: this.proposal })
-				.pipe(finalize(() => { this.isLoading = false; }))
-				.subscribe(
-					t => {
-						if (this.suggestionTemplate) {
-							this.hideSuggestion();
-						}
+        if (!this.userImageUpload) {
+            // this.imageUrl = 'assets/action-default.png';
+            return this.proposalService.create({ entity: this.proposal })
+                .pipe(finalize(() => { this.isLoading = false; }))
+                .subscribe(
+                    t => {
+                        if (this.suggestionTemplate) {
+                            this.hideSuggestion();
+                        }
 
-						this.openSnackBar('Succesfully created', 'OK');
-						this.router.navigate([`/proposals/${t._id}`]);
-					},
-					(error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                        this.openSnackBar('Succesfully created', 'OK');
+                        this.router.navigate([`/proposals/${t._id}`]);
+                    },
+                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
-				);
-		}
+                );
+        }
 
-		this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
-			if (status === 200 && item.isSuccess) {
-				const res = JSON.parse(response);
-				this.proposal.imageUrl = res.secure_url;
+        this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
+            if (status === 200 && item.isSuccess) {
+                const res = JSON.parse(response);
+                this.proposal.imageUrl = res.secure_url;
 
-				this.proposalService.create({ entity: this.proposal })
-					.pipe(finalize(() => { this.isLoading = false; }))
-					.subscribe(t => {
+                this.proposalService.create({ entity: this.proposal })
+                    .pipe(finalize(() => { this.isLoading = false; }))
+                    .subscribe(t => {
 
-						if (this.suggestionTemplate) {
-							this.hideSuggestion();
-						}
+                        if (this.suggestionTemplate) {
+                            this.hideSuggestion();
+                        }
 
-						if (t.error) {
-							this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
-						} else {
-							this.openSnackBar('Succesfully created', 'OK');
-							this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
-						}
-					});
-			}
-		};
+                        if (t.error) {
+                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+                        } else {
+                            this.openSnackBar('Succesfully created', 'OK');
+                            this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`]);
+                        }
+                    });
+            }
+        };
 
-		this.uploader.uploadAll();
-	}
+        this.uploader.uploadAll();
+    }
 
-	openSnackBar(message: string, action: string) {
-		this.snackBar.open(message, action, {
-			duration: 4000,
-			horizontalPosition: 'right'
-		});
-	}
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        });
+    }
 
-	solutionSelected(event: any) {
-		const selectedItem = event.option.value;
-		// have to make sure the item isn't already in the list
-		if (!this.solutions.some(solution => solution._id === selectedItem._id)) {
-			this.solutions.push(event.option.value);
-			this.proposalForm.get('solutions').setValue('');
-			this.solutionInput.nativeElement.value = '';
-		} else {
-			this.proposalForm.get('solutions').setValue('');
-			this.solutionInput.nativeElement.value = '';
-		}
-	}
+    solutionSelected(event: any) {
+        const selectedItem = event.option.value;
+        // have to make sure the item isn't already in the list
+        if (!this.solutions.some(solution => solution._id === selectedItem._id)) {
+            this.solutions.push(event.option.value);
+            this.proposalForm.get('solutions').setValue('');
+            this.solutionInput.nativeElement.value = '';
+        } else {
+            this.proposalForm.get('solutions').setValue('');
+            this.solutionInput.nativeElement.value = '';
+        }
+    }
 
-	solutionRemoved(solution: any) {
-		const index = this.solutions.indexOf(solution);
+    solutionRemoved(solution: any) {
+        const index = this.solutions.indexOf(solution);
 
-		if (index >= 0) {
-			this.solutions.splice(index, 1);
-		}
-	}
+        if (index >= 0) {
+            this.solutions.splice(index, 1);
+        }
+    }
 
-	private hideSuggestion() {
-		const updatedSuggestion = {
-			...this.suggestionTemplate,
-			softDeleted: true
-		};
+    private hideSuggestion() {
+        const updatedSuggestion = {
+            ...this.suggestionTemplate,
+            softDeleted: true
+        };
 
-		this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
-			.pipe(finalize(() => { this.isLoading = false; }))
-			.subscribe(
-				(res) => res,
-				(err) => err
-			);
-	}
+        this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+            .pipe(finalize(() => { this.isLoading = false; }))
+            .subscribe(
+                (res) => res,
+                (err) => err
+            );
+    }
 
-	private _filter(value: any): ISolution[] {
-		const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase();
+    private _filter(value: any): ISolution[] {
+        const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase();
 
-		const filterVal = this.allSolutions.filter(solution => {
-			const name = solution.title.toLowerCase();
-			const compare = name.indexOf(filterValue) !== -1;
-			return compare;
-		});
-		return filterVal;
-	}
+        const filterVal = this.allSolutions.filter(solution => {
+            const name = solution.title.toLowerCase();
+            const compare = name.indexOf(filterValue) !== -1;
+            return compare;
+        });
+        return filterVal;
+    }
 
 }
