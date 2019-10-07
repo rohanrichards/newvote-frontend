@@ -44,8 +44,8 @@ export class IssueEditComponent implements OnInit {
 		imageUrl: new FormControl('', [Validators.required])
 	});
 
-	@ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+	@ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
 	constructor(
 		private issueService: IssueService,

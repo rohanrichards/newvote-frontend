@@ -45,8 +45,8 @@ import { AdminService } from '@app/core/http/admin/admin.service'
     ]
 })
 export class IssueListComponent implements OnInit {
-    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: false }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
     issues: Array<Issue>;
     allTopics: Array<Topic>;
@@ -207,6 +207,12 @@ export class IssueListComponent implements OnInit {
     // filter the issue list for matching topicId's
     filterIssues(topic: Topic, issues: Issue[]) {
         const issuesCopy = issues.slice()
+
+        if (!topic) {
+            return issuesCopy.filter((issue) => {
+                return !issue.topics.length
+            })
+        }
 
         return issuesCopy.filter((issue) => {
             const topicExists = issue.topics.some((ele) => {
