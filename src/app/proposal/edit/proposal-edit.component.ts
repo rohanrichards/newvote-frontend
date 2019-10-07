@@ -231,7 +231,7 @@ export class ProposalEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/proposals/${t._id}`])
+                    this.router.navigate([`/proposals/${t.slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
