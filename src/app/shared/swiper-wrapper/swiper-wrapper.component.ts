@@ -13,7 +13,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query';
 })
 export class SwiperWrapperComponent implements OnInit {
 
-	@ViewChild(SwiperComponent) componentRef?: SwiperComponent;
+	@ViewChild(SwiperComponent, { static: false }) componentRef?: SwiperComponent;
 	@Input() path: string;
 	@Input() model: string;
 	@Input() items: Array<any>;

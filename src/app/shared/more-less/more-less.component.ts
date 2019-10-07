@@ -9,9 +9,9 @@ export class MoreLessComponent implements OnInit, AfterViewInit {
 
 	@Input() maxHeight: string;
 	@Input() displayText: string;
-	@ViewChild('spanContainer') spanContainer: ElementRef;
-	@ViewChild('fadeContainer') fadeContainer: ElementRef;
-	@ViewChild('buttonContainer') buttonContainer: ElementRef;
+	@ViewChild('spanContainer', { static: true }) spanContainer: ElementRef;
+	@ViewChild('fadeContainer', { static: false }) fadeContainer: ElementRef;
+	@ViewChild('buttonContainer', { static: true }) buttonContainer: ElementRef;
 
 	public showing = false;
 	public shrunk = false;
