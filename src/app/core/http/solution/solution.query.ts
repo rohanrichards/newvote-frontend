@@ -9,9 +9,11 @@ import { VotesQuery } from '../vote/vote.query'
 import { Proposal } from '@app/core/models/proposal.model'
 
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { combineLatest } from 'rxjs'
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
+    selectFilter$ = this.select(state => state.filter);
     solutions$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isModerator()) {
@@ -21,6 +23,14 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
             return !entity.softDeleted
         }
     })
+
+    // https://blog.angularindepth.com/plan-your-next-party-with-an-angular-invite-app-using-akita-422495351767
+    sortedSolutions$ = combineLatest(this.selectFilter$, this.solutions$)
+        .pipe(
+            map(([filter, solutions]) => {
+                return this.sortSolutions(filter, solutions)
+            })
+        )
 
     constructor(
         protected store: SolutionStore,
@@ -42,7 +52,7 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     selectSolutions(issueId?: string) {
         return combineQueries(
             [
-                this.solutions$,
+                this.sortedSolutions$,
                 this.proposalQuery.proposals$,
             ]
         )
@@ -103,5 +113,24 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
                     return includesSolutionId
                 })
             )
+    }
+
+    sortSolutions(filter: string, solutions: Solution[]) {
+        switch (filter) {
+            case 'SHOW_ALL':
+                return solutions
+            case 'VOTES':
+                return solutions.sort((a: any, b: any) => {
+                    return a.votes.total - b.votes.total
+                })
+            case 'ACTIONS':
+                return solutions.sort((a: any, b: any) => {
+                    return a.proposals.length - b.proposals.length
+                })
+            case 'TITLE':
+                return solutions.sort((a: any, b: any) => {
+                    return a.title - b.title
+                })
+        }
     }
 }
