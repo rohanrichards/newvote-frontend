@@ -26,6 +26,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service'
 import { Proposal } from '@app/core/models/proposal.model'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { FormControl } from '@angular/forms'
 
 @Component({
     selector: 'app-solution',
@@ -62,6 +63,7 @@ export class SolutionListComponent implements OnInit {
 
     suggestions: Array<any>;
     organization: any;
+    sort: string;
 
     constructor(
         private organizationService: OrganizationService,
@@ -228,6 +230,10 @@ export class SolutionListComponent implements OnInit {
                 },
                 (err) => err
             )
+    }
 
+    sortSolutionsBy(event: any) {
+        const { value } = event;
+        this.solutionService.updateFilter(value);
     }
 }
