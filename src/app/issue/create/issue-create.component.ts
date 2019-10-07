@@ -172,7 +172,7 @@ export class IssueCreateComponent implements OnInit {
                         }
 
                         this.openSnackBar('Succesfully created', 'OK');
-                        this.router.navigate([`/issues/${t._id}`]);
+                        this.router.navigate([`/issues/${t.slug || t._id}`]);
                     },
                     (err) => {
                         this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK');

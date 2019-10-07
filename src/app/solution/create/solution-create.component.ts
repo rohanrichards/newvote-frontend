@@ -179,7 +179,7 @@ export class SolutionCreateComponent implements OnInit {
                     }
 
                     this.openSnackBar('Succesfully created', 'OK');
-                    this.router.navigate([`/solutions/${t._id}`]);
+                    this.router.navigate([`/solutions/${t._slug || t._id}`]);
                 },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 );
@@ -195,7 +195,7 @@ export class SolutionCreateComponent implements OnInit {
                     .subscribe(
                         t => {
                             this.openSnackBar('Succesfully created', 'OK');
-                            this.router.navigate([`/solutions/${t._id}`]);
+                            this.router.navigate([`/solutions/${t.slug || t._id}`]);
                         },
                         (err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     );
