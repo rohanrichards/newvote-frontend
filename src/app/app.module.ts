@@ -35,7 +35,6 @@ import { HomeModule } from './home/home.module'
 import { ShellModule } from './shell/shell.module'
 import { AppComponent } from './app.component'
 import { AppRoutingModule } from './app-routing.module'
-import { RECAPTCHA_SETTINGS, RecaptchaSettings, RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha'
 import { LazyLoadImageModule } from 'ng-lazyload-image'
 import { CookieService } from 'ngx-cookie-service'
 import { JoyrideModule } from 'ngx-joyride'
@@ -43,6 +42,10 @@ import { LandingModule } from './landing/landing.module'
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
+import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
+
+import { NgxCaptchaModule } from 'ngx-captcha';
+
 
 @NgModule({
     imports: [
@@ -61,6 +64,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
         ShellModule,
         HomeModule,
         ShareModule,
+        InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
         HttpClientXsrfModule.withOptions({
             cookieName: 'XSRF-TOKEN',
@@ -72,8 +76,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
         LazyLoadImageModule,
         JoyrideModule.forRoot(),
         LandingModule,
-        RecaptchaModule,
-        RecaptchaFormsModule,
+        NgxCaptchaModule,
         SocketIoModule.forRoot({
             url: environment.socketUrl,
             options: {
@@ -91,10 +94,6 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
     ],
     providers: [
         CookieService,
-        {
-            provide: RECAPTCHA_SETTINGS,
-            useValue: { siteKey: environment.recaptchaSitekey } as RecaptchaSettings,
-        },
         {
             provide: SWIPER_CONFIG,
             useValue: DEFAULT_SWIPER_CONFIG

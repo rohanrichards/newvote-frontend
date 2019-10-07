@@ -21,7 +21,7 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     isOwner() {
-        return !!this.getValue().roles.includes('admin') || this.organizationQuery.getValue().owner._id === this.getValue()._id
+        return !!this.getValue().roles.includes('admin') || (this.organizationQuery.getValue().owner._id && this.organizationQuery.getValue().owner._id === this.getValue()._id)
     }
 
 }

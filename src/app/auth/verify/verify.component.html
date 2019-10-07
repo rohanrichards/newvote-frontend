@@ -5,97 +5,128 @@
     fxLayoutAlign="center center"
     fxLayoutGap="1.5rem"
     class="mat-typography">
-	<div class="verify-container"
-	    fxLayout="row"
-	    fxLayoutAlign="center">
-		<mat-card fxFlex="90%"
-		    fxFlex.sm="66%"
-		    fxFlex.md="50%"
-		    fxFlex.gt-md="33%"
-		    class="verify-box">
-			<div class="verify-error"
-			    *ngIf="error && error.message"
-			    [hidden]="!error || isLoading"
-			    translate>
-				{{error.message}}
-			</div>
-			<form *ngIf="state==='initial'"
-			    (ngSubmit)="sendCode()"
-			    [formGroup]="numberForm"
-			    novalidate>
-				<br />
-				<div fxLayout="column">
-					<span class="mat-display-1">Verify your account</span>
-					<p class="caption">To participate within this community you will need to verify your account by providing us with a mobile number.</p>
-					<p class="caption">We're going to use it to send you an SMS with a secret code.</p>
-					<mat-form-field>
-						<input type="number"
-						    matInput
-						    formControlName="number"
-						    [placeholder]="'Mobile Number' | translate"
-						    required />
-						<mat-error *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.required">
-							<span translate>Mobile number is required</span>
-						</mat-error>
-						<mat-error *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.valid && !numberForm.controls.number.errors.required">
-							<span translate>Mobile number is not valid</span>
-						</mat-error>
+    <div class="verify-container"
+        fxLayout="row"
+        fxLayoutAlign="center">
+        <mat-card fxFlex="90%"
+            fxFlex.sm="66%"
+            fxFlex.md="50%"
+            fxFlex.gt-md="33%"
+            class="verify-box">
+            <div class="verify-error"
+                *ngIf="error && error.message"
+                [hidden]="!error || isLoading"
+                translate>
+                {{error.message}}
+            </div>
+            <form *ngIf="state==='initial'"
+                (ngSubmit)="sendCode()"
+                [formGroup]="numberForm"
+                novalidate>
+                <br />
+                <div fxLayout="column">
+                    <span class="mat-display-1">Verify your account</span>
+                    <p class="caption">To participate within this community you
+                        will need to verify your account by providing us with a
+                        mobile number.</p>
+                    <p class="caption">We're going to use it to send you an SMS
+                        with a secret code.</p>
 
-					</mat-form-field>
+                    <div>
+                        <p class="mat-title">Enter Your Mobile
+                            Number</p>
+                        <div class="verify-input-container">
+                            <international-phone-number formControlName="number"
+                                placeholder="Enter phone number"
+                                [maxlength]="20"
+                                [defaultCountry]="'au'"
+                                [required]="true"
+                                name="phone_number">
+                            </international-phone-number>
+                            <div *ngIf="!numberForm.valid"
+                                class="help-block">Phone number is required
+                            </div>
+                        </div>
 
-					<!-- valid: {{verifyForm.controls.valid === true}} -->
+                    </div>
 
-					<button mat-raised-button
-					    color="primary"
-					    type="submit"
-					    [disabled]="numberForm.invalid || isLoading">
-						<span translate>Send Code</span>
-					</button>
-				</div>
-			</form>
+                    <!-- <div *ngIf="!phoneNumber.valid"
+                            class="help-block">Phone number is required and
+                            should be valid</div> -->
 
-			<form *ngIf="state==='sent'"
-			    (ngSubmit)="verify()"
-			    [formGroup]="verifyForm"
-			    novalidate>
-				<br />
-				<div fxLayout="column">
-					<span class="mat-display-1">Code sent!</span>
-					<p class="caption">Once you receive the SMS enter it below to complete your verification.</p>
-					<mat-form-field>
-						<input type="text"
-						    matInput
-						    formControlName="code"
-						    [placeholder]="'Verification Code' | translate"
-						    required />
-						<mat-error *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.required">
-							<span translate>Verification code is required</span>
-						</mat-error>
-						<mat-error *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.valid && !verifyForm.controls.code.errors.required">
-							<span translate>Verification code is not valid</span>
-						</mat-error>
+                    <!-- <mat-form-field>
+                        <input type="number"
+                            matInput
+                            formControlName="number"
+                            [placeholder]="'Mobile Number' | translate"
+                            required />
+                        <mat-error
+                            *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.required">
+                            <span translate>Mobile number is required</span>
+                        </mat-error>
+                        <mat-error
+                            *ngIf="numberForm.controls.number.errors && numberForm.controls.number.errors.valid && !numberForm.controls.number.errors.required">
+                            <span translate>Mobile number is not valid</span>
+                        </mat-error>
+                    </mat-form-field> -->
 
-					</mat-form-field>
+                    <!-- valid: {{verifyForm.controls.valid === true}} -->
 
-					<!-- valid: {{verifyForm.controls.valid === true}} -->
+                    <button mat-raised-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="numberForm.invalid || isLoading">
+                        <span translate>Send Code</span>
+                    </button>
+                </div>
+            </form>
 
-					<div>
-						<button mat-stroked-button
-						    color="primary"
-							type="button"
-							(click)="resetForms()">
-							<span translate>Cancel</span>
-						</button>
+            <form *ngIf="state==='sent'"
+                (ngSubmit)="verify()"
+                [formGroup]="verifyForm"
+                novalidate>
+                <br />
+                <div fxLayout="column">
+                    <span class="mat-display-1">Code sent!</span>
+                    <p class="caption">Once you receive the SMS enter it below
+                        to complete your verification.</p>
+                    <mat-form-field>
+                        <input type="text"
+                            matInput
+                            formControlName="code"
+                            [placeholder]="'Verification Code' | translate"
+                            required />
+                        <mat-error
+                            *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.required">
+                            <span translate>Verification code is required</span>
+                        </mat-error>
+                        <mat-error
+                            *ngIf="verifyForm.controls.code.errors && verifyForm.controls.code.errors.valid && !verifyForm.controls.code.errors.required">
+                            <span translate>Verification code is not
+                                valid</span>
+                        </mat-error>
 
-						<button mat-raised-button
-						    color="primary"
-						    type="submit"
-						    [disabled]="verifyForm.invalid || isLoading">
-							<span translate>Verify Code</span>
-						</button>
-					</div>
-				</div>
-			</form>
-		</mat-card>
-	</div>
+                    </mat-form-field>
+
+                    <!-- valid: {{verifyForm.controls.valid === true}} -->
+
+                    <div>
+                        <button mat-stroked-button
+                            color="primary"
+                            type="button"
+                            (click)="resetForms()">
+                            <span translate>Cancel</span>
+                        </button>
+
+                        <button mat-raised-button
+                            color="primary"
+                            type="submit"
+                            [disabled]="verifyForm.invalid || isLoading">
+                            <span translate>Verify Code</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </mat-card>
+    </div>
 </div>
