@@ -164,7 +164,6 @@ export class IssueListComponent implements OnInit {
                 results => {
                     const { issues, topics, suggestions } = results
 
-                    console.log(issues, 'this is issues')
                     // this.allTopics = topics;
 
                     if (this.topicParam) {
@@ -206,6 +205,12 @@ export class IssueListComponent implements OnInit {
     // filter the issue list for matching topicId's
     filterIssues(topic: Topic, issues: Issue[]) {
         const issuesCopy = issues.slice()
+
+        if (!topic) {
+            return issuesCopy.filter((issue) => {
+                return !issue.topics.length
+            })
+        }
 
         return issuesCopy.filter((issue) => {
             const topicExists = issue.topics.some((ele) => {
