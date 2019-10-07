@@ -178,7 +178,6 @@ export class OrganizationEditComponent implements OnInit {
 
         organization.moderators = organization.moderators.map((m: any) => m.email ? m.email : m)
 
-        console.log(organization.voteRoles, 'this is voteRoles');
         this.organizationForm.patchValue({
             name: organization.name,
             organizationName: organization.organizationName,

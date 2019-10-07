@@ -104,12 +104,12 @@ export class ProposalViewComponent implements OnInit {
     }
 
     getSuggestions(id: string) {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
 
         this.suggestionService.list({
             forceUpdate: true,
             params: {
-                'showDeleted': isOwner ? true : ''
+                'showDeleted': isModerator ? true : ''
             }
         })
             .subscribe(

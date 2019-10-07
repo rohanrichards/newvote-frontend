@@ -89,8 +89,8 @@ export class HomeComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner();
-        const params = { 'showDeleted': isOwner ? true : ' ' }
+        const isModerator = this.auth.isModerator();
+        const params = { 'showDeleted': isModerator ? true : ' ' }
 
         this.isLoading = true;
         this.stateService.setLoadingState(AppState.loading);
