@@ -68,7 +68,7 @@ export class SuggestionViewComponent implements OnInit {
 
     subscribeToSuggestionStore(id: string) {
         // Need to handle both instances whether a link is via _id or slug
-        // as old entities will have no slug until updated
+        // old entities will have no slug until updated
         if (id.match(/^[0-9a-fA-F]{24}$/)) {
             this.suggestionQuery.selectEntity(id)
                 .subscribe((suggestion: Suggestion) => {

@@ -62,7 +62,7 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
                         return issue;
                     }
 
-                    const populateIssueTopics = issue.topics.map((issueTopic) => {
+                    const populateIssueTopics = issue.topics.map((issueTopic: any) => {
                         return topics.find((topic) => {
                             if (typeof issueTopic === 'string') {
                                 return issueTopic === topic._id;
