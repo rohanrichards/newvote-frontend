@@ -59,6 +59,7 @@
     "ngx-captcha": "^7.0.0",
     "ngx-clipboard": "^12.2.0",
     "ngx-cookie-service": "^2.2.0",
+    "ngx-international-phone-number": "^1.0.4",
     "ngx-joyride": "^2.2.10",
     "ngx-material-file-input": "^1.1.0",
     "ngx-quill": "^7.1.2",

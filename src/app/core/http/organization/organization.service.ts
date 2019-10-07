@@ -87,7 +87,6 @@ export class OrganizationService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((res: Organization[]) => this.communityStore.add(res)),
@@ -98,11 +97,9 @@ export class OrganizationService {
 
     view(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((res: Organization) => {
-                    console.log(res, 'this is res from server');
                     this.organizationStore.update(res);
                     this.communityStore.add(res)
                 }),
@@ -113,7 +110,6 @@ export class OrganizationService {
 
     create(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((res: Organization) => this.communityStore.add(res)),
@@ -124,13 +120,11 @@ export class OrganizationService {
 
     update(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((res: Organization) => {
                     // since there are two stores we need to check whether to update both
                     if (res._id === this._org._id) {
-                        console.log(res, 'received res from server');
                         this.organizationStore.update(res);
                     }
 
@@ -143,7 +137,6 @@ export class OrganizationService {
 
     setFutureOwner(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.updateOwner(context), context.entity)
             .pipe(
                 tap((res: Organization) => {
@@ -157,7 +150,6 @@ export class OrganizationService {
 
     delete(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((res: Organization) => this.communityStore.remove(res._id)),
