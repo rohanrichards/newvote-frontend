@@ -43,7 +43,6 @@ export class SuggestionService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((data: Suggestion[]) => {
@@ -56,7 +55,6 @@ export class SuggestionService {
 
     view(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((res: Suggestion) => {
@@ -70,7 +68,6 @@ export class SuggestionService {
 
     create(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((res: Suggestion) => this.suggestionStore.add(res)),
@@ -81,7 +78,6 @@ export class SuggestionService {
 
     update(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((res: Suggestion) => this.suggestionStore.update(res._id, res)),
@@ -92,7 +88,6 @@ export class SuggestionService {
 
     delete(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((res: any) => this.suggestionStore.remove(res._id)),

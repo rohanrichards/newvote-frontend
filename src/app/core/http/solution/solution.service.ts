@@ -47,7 +47,6 @@ export class SolutionService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((data: any) => {
@@ -68,7 +67,6 @@ export class SolutionService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context), { params })
             .pipe(
                 tap((res: any) => {
@@ -82,7 +80,6 @@ export class SolutionService {
 
     create(context: SolutionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((solution: Solution) => this.solutionStore.add(solution)),
@@ -93,7 +90,6 @@ export class SolutionService {
 
     update(context: SolutionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((solution: Solution) => this.solutionStore.update(solution._id, solution)),
@@ -104,7 +100,6 @@ export class SolutionService {
 
     delete(context: SolutionContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((solution: Solution) => this.solutionStore.remove(solution._id)),

@@ -45,8 +45,8 @@ export class ProposalEditComponent implements OnInit {
         imageUrl: new FormControl('', [Validators.required])
     });
 
-    @ViewChild('solutionInput') solutionInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
         private proposalService: ProposalService,
