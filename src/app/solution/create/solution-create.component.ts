@@ -179,7 +179,7 @@ export class SolutionCreateComponent implements OnInit {
                     }
 
                     this.openSnackBar('Succesfully created', 'OK');
-                    this.router.navigate([`/solutions/${t._slug || t._id}`]);
+                    this.router.navigate([`/solutions/${t.slug || t._id}`]);
                 },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 );

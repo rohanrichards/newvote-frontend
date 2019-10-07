@@ -203,7 +203,7 @@ export class ProposalCreateComponent implements OnInit {
                         if (t.error) {
                             this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
                         } else {
-                            const url = this.proposal.solutions[0].slug || this.proposal.solutions[0]._id;
+                            const url = t.slug || t._id;
                             this.openSnackBar('Succesfully created', 'OK');
                             this.router.navigate([`/solutions/${url}`]);
                         }

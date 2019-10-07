@@ -59,7 +59,6 @@ export class SuggestionViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading);
 
         this.route.paramMap.subscribe(params => {
-            console.log(params, 'this is params');
             const ID = params.get('id');
             this.subscribeToSuggestionStore(ID);
             this.fetchData(ID);
