@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from "@angular/common";
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
 import { map, finalize, catchError, tap } from 'rxjs/operators';

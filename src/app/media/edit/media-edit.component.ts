@@ -44,8 +44,8 @@ export class MediaEditComponent implements OnInit {
 		image: new FormControl('', [])
 	});
 
-	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
+	@ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
 	constructor(
 		private mediaService: MediaService,

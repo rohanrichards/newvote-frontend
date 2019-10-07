@@ -40,8 +40,8 @@ export class SolutionCreateComponent implements OnInit {
 		imageUrl: new FormControl('', [])
 	});
 
-	@ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
+	@ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 	suggestionTemplate: any;
 
 	constructor(

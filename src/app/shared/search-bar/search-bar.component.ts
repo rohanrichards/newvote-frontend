@@ -17,8 +17,8 @@ export class SearchBarComponent implements OnInit {
 	@Output() isVisibleChange = new EventEmitter<boolean>();
 	@Output() closeSearch = new EventEmitter();
 
-	@ViewChild('searchInputElement') searchInputElement: ElementRef<HTMLInputElement>;
-	@ViewChild('auto') matAutocomplete: MatAutocomplete;
+	@ViewChild('searchInputElement', { static: false }) searchInputElement: ElementRef<HTMLInputElement>;
+	@ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
 	searchInputControl = new FormControl('', []);
 	public searchResults$: Observable<any>;
