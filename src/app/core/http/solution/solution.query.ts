@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { QueryEntity, combineQueries } from '@datorama/akita'
-import { SolutionState, SolutionStore } from './solution.state'
+import { SolutionState, SolutionStore } from './solution.store'
 import { Solution } from '@app/core/models/solution.model'
 import { ProposalQuery } from '../proposal/proposal.query'
 import { map, filter } from 'rxjs/operators'

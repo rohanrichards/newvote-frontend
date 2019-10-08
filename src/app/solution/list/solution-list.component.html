@@ -58,19 +58,7 @@
                             Vote On Solutions
                         </h3>
                     </mat-expansion-panel-header>
-                    <div [style.width.%]="100"
-                        fxLayoutAlign="flex-end center">
-                        <mat-form-field>
-                            <mat-label>Sort By</mat-label>
-                            <mat-select [(ngModel)]="sort"
-                                (selectionChange)="sortSolutionsBy($event)">
-                                <mat-option value="SHOW_ALL">None</mat-option>
-                                <mat-option value="VOTES">Votes</mat-option>
-                                <mat-option value="TITLE">Title</mat-option>
-                                <mat-option value="ACTIONS">Actions</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
+                    <app-sort-bar model="Solution"></app-sort-bar>
                     <app-card-list *ngSwitchCase="'complete'"
                         path="/solutions"
                         [@fadeIn]=true

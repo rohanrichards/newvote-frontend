@@ -4,7 +4,6 @@ import { ProposalService } from '../proposal/proposal.service';
 import { SolutionService } from '../solution/solution.service';
 import { SuggestionService } from '../suggestion/suggestion.service';
 import { IssueService } from '../issue/issue.service';
-import { thisExpression } from 'babel-types';
 
 
 type Services = {
@@ -37,15 +36,11 @@ export class SortingService {
     ) { }
 
 
-    sortSolutionsBy(model: string, event: any) {
-        const { value } = event;
-
-        this.services[model].updateFilter(value);
+    sortEntityBy(model: string, sort: string) {
+        this.services[model].updateFilter(sort);
     }
 
-    toggleOrder(model: string, order: string) {
-        const { value } = event;
-
-        this.services[model].updateOrder(value);
+    orderEntityBy(model: string, order: string) {
+        this.services[model].updateOrder(order);
     }
 }
