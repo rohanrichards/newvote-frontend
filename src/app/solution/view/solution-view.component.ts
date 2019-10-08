@@ -92,8 +92,8 @@ export class SolutionViewComponent implements OnInit {
     }
 
     getSolution(id: string) {
-        const isOwner = this.auth.isOwner();
-        const options = { 'showDeleted': isOwner ? true : '' };
+        const isModerator = this.auth.isModerator();
+        const options = { 'showDeleted': isModerator ? true : '' };
 
         this.solutionService.view({
             id: id,
@@ -122,12 +122,12 @@ export class SolutionViewComponent implements OnInit {
     }
 
     getSuggestions() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
 
         this.suggestionService.list({
             forceUpdate: true,
             params: {
-                'showDeleted': isOwner ? true : ''
+                'showDeleted': isModerator ? true : ''
             }
         })
             .subscribe(

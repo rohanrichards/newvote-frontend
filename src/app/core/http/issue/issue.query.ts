@@ -12,7 +12,7 @@ import { AuthenticationQuery } from "@app/core/authentication/authentication.que
 export class IssueQuery extends QueryEntity<IssueState, Issue> {
     issues$ = this.selectAll({
         filterBy: (entity) => {
-            if (this.auth.isOwner()) {
+            if (this.auth.isModerator()) {
                 return true;
             }
 

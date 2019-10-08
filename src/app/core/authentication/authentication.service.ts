@@ -77,6 +77,7 @@ export class AuthenticationService {
         if (savedCredentials) {
             const creds: Credentials = <Credentials>JSON.parse(savedCredentials)
             this.setCredentials(creds, true)
+            this.authenticationStore.update(creds.user)
             if (this.isTokenExpired()) {
                 this.logout()
             }
@@ -256,7 +257,7 @@ export class AuthenticationService {
             return true
         }
 
-        if (!this._org.moderators.length) {
+        if (!this._org || !this._org.moderators || !this._org.moderators.length) {
             return false
         }
 
@@ -388,7 +389,6 @@ export class AuthenticationService {
 	 */
     private setCredentials(credentials?: Credentials, remember?: boolean) {
         this._credentials = credentials || null
-
         if (credentials) {
             const storage = remember ? localStorage : sessionStorage
             storage.setItem(credentialsKey, JSON.stringify(credentials))

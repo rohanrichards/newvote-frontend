@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
 
-import { finalize, startWith, map, take, filter } from 'rxjs/operators'
+import { finalize, startWith, map, take, filter, tap } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { IssueService, IssueContext } from '@app/core/http/issue/issue.service'
@@ -89,7 +89,7 @@ export class IssueListComponent implements OnInit {
     topicParam: string; // filtered topics can be preselected via url param
 
     loadingState: string;
-    suggestions: any[];
+    suggestions: any[] = [];
     suggestions$: Observable<Suggestion[]>;
 
     constructor(
@@ -148,8 +148,8 @@ export class IssueListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner()
-        const params = { showDeleted: isOwner ? true : '' };
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : '' };
 
         const issueObs: Observable<any[]> = this.issueService.list({ params })
         const topicObs: Observable<any[]> = this.topicService.list({ params })
@@ -184,7 +184,9 @@ export class IssueListComponent implements OnInit {
     subscribeToSuggestionStore() {
         this.suggestions$ = this.suggestionQuery.suggestions$
             .pipe(
-                filter((entity: any) => entity.type === 'issue')
+                map((suggestions) => {
+                    return suggestions.filter((suggestion) => suggestion.type === 'issue')
+                }),
             )
 
         this.suggestions$.subscribe((res) => {
@@ -210,6 +212,12 @@ export class IssueListComponent implements OnInit {
     // filter the issue list for matching topicId's
     filterIssues(topic: Topic, issues: Issue[]) {
         const issuesCopy = issues.slice()
+
+        if (!topic) {
+            return issuesCopy.filter((issue) => {
+                return !issue.topics.length
+            })
+        }
 
         return issuesCopy.filter((issue) => {
             const topicExists = issue.topics.some((ele) => {

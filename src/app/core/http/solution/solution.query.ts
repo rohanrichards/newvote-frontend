@@ -15,7 +15,7 @@ import { AuthenticationQuery } from "@app/core/authentication/authentication.que
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     solutions$ = this.selectAll({
         filterBy: (entity) => {
-            if (this.auth.isOwner()) {
+            if (this.auth.isModerator()) {
                 return true;
             }
 
