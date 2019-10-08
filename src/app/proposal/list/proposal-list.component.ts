@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize, take, filter } from 'rxjs/operators';
+import { finalize, take, filter, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
@@ -87,15 +87,17 @@ export class ProposalListComponent implements OnInit {
     subscribeToSuggestionStore() {
         this.suggestionQuery.suggestions$
             .pipe(
-                filter((entity: any) => entity.type === 'action')
+                map((suggestions) => {
+                    return suggestions.filter((suggestion) => suggestion.type === 'action')
+                }),
             )
             .subscribe((suggestions) => this.suggestions = suggestions);
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         this.isLoading = true;
-        const params = { 'softDeleted': isOwner ? true : '' };
+        const params = { 'softDeleted': isModerator ? true : '' };
 
         this.proposalService.list({ orgs: [], params })
             .pipe(finalize(() => { this.isLoading = false; }))
@@ -106,7 +108,7 @@ export class ProposalListComponent implements OnInit {
 
         this.suggestionService.list({
             params: {
-                'showDeleted': isOwner ? true : '',
+                'showDeleted': isModerator ? true : '',
                 'type': 'solution',
             }
         })
@@ -150,26 +152,6 @@ export class ProposalListComponent implements OnInit {
             duration: 4000,
             horizontalPosition: 'right'
         });
-    }
-
-    onSoftDelete(event: any) {
-        const entity = assign({}, event, { softDeleted: true });
-        this.proposalService.update({ id: event._id, entity })
-            .pipe(finalize(() => { this.isLoading = false; }))
-            .subscribe(
-                (res) => res,
-                (err) => err
-            );
-    }
-
-    onRestore(event: any) {
-        const entity = assign({}, event, { softDeleted: true });
-        this.proposalService.update({ id: event._id, entity })
-            .pipe(finalize(() => { this.isLoading = false; }))
-            .subscribe(
-                (res) => res,
-                (err) => err
-            );
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

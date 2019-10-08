@@ -40,8 +40,8 @@ export class SolutionCreateComponent implements OnInit {
         imageUrl: new FormControl('', [])
     });
 
-    @ViewChild('issueInput') issueInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
     suggestionTemplate: any;
 
     constructor(
@@ -179,7 +179,7 @@ export class SolutionCreateComponent implements OnInit {
                     }
 
                     this.openSnackBar('Succesfully created', 'OK');
-                    this.router.navigate([`/solutions/${t.slug || t._id}`]);
+                    this.router.navigate([`/solutions/${t._id}`]);
                 },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 );
@@ -195,7 +195,7 @@ export class SolutionCreateComponent implements OnInit {
                     .subscribe(
                         t => {
                             this.openSnackBar('Succesfully created', 'OK');
-                            this.router.navigate([`/solutions/${t.slug || t._id}`]);
+                            this.router.navigate([`/solutions/${t._id}`]);
                         },
                         (err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     );
@@ -239,7 +239,7 @@ export class SolutionCreateComponent implements OnInit {
             softDeleted: true
         };
 
-        this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion })
+        this.suggestionService.update({ id: updatedSuggestion._id, entity: updatedSuggestion, forceUpdate: true })
             .pipe(finalize(() => { this.isLoading = false; }))
             .subscribe(
                 (res) => res,

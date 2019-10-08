@@ -173,10 +173,29 @@
 							(softDelete)="admin.onSoftDelete($event, 'Issue')"
 							(delete)="admin.onDelete($event, 'Issue')">
 						</app-grid-list>
-					</div>
+                    </div>
+                    
+                    <!-- Orphaned Topics -->
+                    <div [@fadeIn]=true >
+                        <div class="topic-header">
+                            <h2 class="mat-h1 no-margin">
+                                General Issues
+                            </h2>
+                                <mat-divider></mat-divider>
+                        </div>
+                        <app-grid-list 
+                            path="/issues"
+                            [items]="filterIssues(false, issues)"
+                            model="Issue"
+                            [titleCard]=true
+                            (restore)="admin.onRestore($event, 'Issue')"
+                            (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                            (delete)="admin.onDelete($event, 'Issue')">
+                        </app-grid-list>
+                    </div>
 					<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 						<h2 class="mat-headline center-text">Suggestions for Issues</h2>
-					</mat-toolbar>
+                    </mat-toolbar>
 					<app-card-list 
 						path="/suggestions"
 						[@fadeIn]=true
@@ -187,7 +206,7 @@
 						(delete)="admin.onDelete($event, 'Suggestion')"
 						(vote)="onVote($event, 'Suggestion')"
 						>
-					</app-card-list>
+                    </app-card-list>
 					<div *ngIf="auth.isVerified()">
 						<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 							<h2 class="mat-headline center-text">Create your own Suggestion</h2>

@@ -14,7 +14,6 @@ import { MetaService } from '@app/core/meta.service';
 
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { Organization } from '@app/core/models/organization.model';
-import { InternalFormsSharedModule } from '@angular/forms/src/directives';
 
 @Component({
     selector: 'app-suggestion',
@@ -45,9 +44,9 @@ export class SuggestionCreateComponent implements OnInit {
         parentType: new FormControl('')
     });
 
-    @ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
-    @ViewChild('mediaInput') mediaInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('parentInput', { static: false }) parentInput: ElementRef<HTMLInputElement>;
+    @ViewChild('mediaInput', { static: false }) mediaInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
 
     constructor(

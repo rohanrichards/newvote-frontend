@@ -91,9 +91,9 @@ export class OrganizationCreateComponent implements OnInit {
         ]
     };
 
-    @ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
-    @ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
+    @ViewChild('userInput', { static: false }) userInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private userService: UserService,
@@ -204,7 +204,7 @@ export class OrganizationCreateComponent implements OnInit {
                         this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
                     } else {
                         this.openSnackBar('Succesfully created', 'OK');
-                        this.router.navigate([`/organizations`]);
+                        this.router.navigate([`/organizations`], { queryParams: { forceUpdate: true } });
                     }
                 });
         };

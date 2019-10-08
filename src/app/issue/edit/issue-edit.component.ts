@@ -44,8 +44,8 @@ export class IssueEditComponent implements OnInit {
         imageUrl: new FormControl('', [Validators.required])
     });
 
-    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
         private issueService: IssueService,
@@ -198,7 +198,7 @@ export class IssueEditComponent implements OnInit {
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading);
                     this.openSnackBar('Succesfully updated', 'OK');
-                    this.router.navigate([`/issues/${t.slug || t._id}`]);
+                    this.router.navigate([`/issues/${t._id}`]);
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             );

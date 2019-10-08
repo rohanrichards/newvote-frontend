@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -77,6 +78,7 @@ export class TopicViewComponent implements OnInit {
         }
     }
 
+
     subscribeToIssueStore(id: string) {
         this.issueQuery.selectAll({
             filterBy: (entity) => {
@@ -101,9 +103,9 @@ export class TopicViewComponent implements OnInit {
     }
 
     getIssues() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         const options = {
-            params: { 'showDeleted': isOwner ? true : '' }
+            params: { 'showDeleted': isModerator ? true : '' }
         }
         this.issueService.list(options)
             .subscribe(
