@@ -8,7 +8,7 @@ import { IssueQuery } from '../issue/issue.query'
 import { VotesQuery } from '../vote/vote.query'
 import { Proposal } from '@app/core/models/proposal.model'
 
-import { cloneDeep, orderBy } from 'lodash'
+import { orderBy } from 'lodash'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { combineLatest } from 'rxjs'
 
