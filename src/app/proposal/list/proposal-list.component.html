@@ -50,6 +50,7 @@
                             Vote on Actions
                         </h3>
                     </mat-expansion-panel-header>
+                    <app-sort-bar model="Action"></app-sort-bar>
                     <app-card-list *ngSwitchCase="'complete'"
                         path="/proposals"
                         [items$]="proposals$"
