@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit {
         });
     }
 
-    @ViewChild('captchaElem') captchaElem: ReCaptcha2Component;
+    @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
 
     ngOnInit() {
         this.meta.updateTags(
