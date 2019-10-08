@@ -16,12 +16,11 @@
             <mat-icon>arrow_downward</mat-icon>
         </button>
     </div>
-
     <mat-form-field>
         <mat-label>Sort By</mat-label>
         <mat-select [(ngModel)]="sort"
             (selectionChange)="handleSort($event)">
-            <mat-option *ngFor="let option of orderOptions"
+            <mat-option *ngFor="let option of orderOptions[model]"
                 [value]="option.value">{{ option.display }}</mat-option>
         </mat-select>
     </mat-form-field>

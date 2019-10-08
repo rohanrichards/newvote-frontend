@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SortingService } from '@app/core/http/sorting/sorting.service';
 
+import { entityOptions } from '../helpers/order'
+
 @Component({
     selector: 'app-sort-bar',
     templateUrl: './sort-bar.component.html',
@@ -10,20 +12,7 @@ export class SortBarComponent implements OnInit {
 
     sort: string = 'SHOW_ALL';
     order: string = 'ASCENDING';
-
-    orderOptions = [{
-        value: 'SHOW_ALL',
-        display: 'None'
-    }, {
-        value: 'VOTES',
-        display: 'Votes'
-    }, {
-        value: 'ACTIONS',
-        display: 'Actions'
-    }, {
-        value: 'TITLE',
-        display: 'Title'
-    }]
+    orderOptions = entityOptions;
 
     @Input() model: string;
 
