@@ -48,7 +48,6 @@ export class IssueService {
         };
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), options)
             .pipe(
                 tap((issues: Issue[]) => this.issueStore.add(issues)),
@@ -59,7 +58,6 @@ export class IssueService {
 
     view(context: IssueContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((issue: Issue) => this.issueStore.add(issue)),

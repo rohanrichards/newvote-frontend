@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from "@angular/common";
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs';
 import { map, finalize, catchError, tap } from 'rxjs/operators';
@@ -87,7 +87,6 @@ export class OrganizationService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((res: Organization[]) => this.communityStore.add(res)),
@@ -98,7 +97,6 @@ export class OrganizationService {
 
     view(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((res: Organization) => {
@@ -112,7 +110,6 @@ export class OrganizationService {
 
     create(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((res: Organization) => this.communityStore.add(res)),
@@ -123,7 +120,6 @@ export class OrganizationService {
 
     update(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((res: Organization) => {
@@ -141,7 +137,6 @@ export class OrganizationService {
 
     setFutureOwner(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.updateOwner(context), context.entity)
             .pipe(
                 tap((res: Organization) => {
@@ -155,7 +150,6 @@ export class OrganizationService {
 
     delete(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((res: Organization) => this.communityStore.remove(res._id)),

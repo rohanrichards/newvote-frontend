@@ -104,7 +104,7 @@ export class SuggestionListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         const isVerified = this.auth.isVerified();
         let id;
 
@@ -115,7 +115,7 @@ export class SuggestionListComponent implements OnInit {
 
         const options = {
             params: {
-                'showDeleted': isOwner ? true : ''
+                'showDeleted': isModerator ? true : ''
             }
         };
 

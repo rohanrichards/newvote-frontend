@@ -100,9 +100,9 @@ export class TopicViewComponent implements OnInit {
     }
 
     getIssues() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         const options = {
-            params: { 'showDeleted': isOwner ? true : '' }
+            params: { 'showDeleted': isModerator ? true : '' }
         }
         this.issueService.list(options)
             .subscribe(

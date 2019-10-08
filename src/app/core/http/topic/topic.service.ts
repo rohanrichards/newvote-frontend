@@ -44,7 +44,6 @@ export class TopicService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((topics: Topic[]) => this.topicStore.add(topics)),
@@ -56,7 +55,6 @@ export class TopicService {
     view(context: TopicContext): Observable<any> {
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((topic: Topic) => this.topicStore.add(topic)),
@@ -67,7 +65,6 @@ export class TopicService {
 
     create(context: TopicContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((topic: Topic) => this.topicStore.add(topic)),
@@ -78,7 +75,6 @@ export class TopicService {
 
     update(context: TopicContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
@@ -89,7 +85,6 @@ export class TopicService {
 
     delete(context: TopicContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((topic: Topic) => this.topicStore.remove(topic._id)),

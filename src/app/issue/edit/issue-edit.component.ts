@@ -44,8 +44,8 @@ export class IssueEditComponent implements OnInit {
         imageUrl: new FormControl('', [Validators.required])
     });
 
-    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
         private issueService: IssueService,
@@ -76,10 +76,6 @@ export class IssueEditComponent implements OnInit {
                 );
         });
 
-        this.route.data.subscribe((res) => {
-            this.meta.updateRouteLevel(res.level);
-        })
-
         this.topicService.list({})
             .subscribe(topics => this.allTopics = topics);
 
@@ -102,6 +98,10 @@ export class IssueEditComponent implements OnInit {
                 }
             ]
         };
+
+        this.route.data.subscribe((res) => {
+            this.meta.updateRouteLevel(res.level);
+        })
 
         this.uploader = new FileUploader(uploaderOptions);
 

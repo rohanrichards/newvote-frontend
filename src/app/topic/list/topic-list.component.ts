@@ -56,6 +56,7 @@ export class TopicListComponent implements OnInit {
                 description: 'List all topics.'
             });
 
+
         this.route.data
             .pipe(
                 take(1)
@@ -68,9 +69,9 @@ export class TopicListComponent implements OnInit {
     }
 
     fetchData() {
-        const isOwner = this.auth.isOwner();
+        const isModerator = this.auth.isModerator();
         const params = {
-            'showDeleted': isOwner ? true : ''
+            'showDeleted': isModerator ? true : ''
         }
 
         this.stateService.setLoadingState(AppState.loading);

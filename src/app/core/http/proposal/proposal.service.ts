@@ -46,7 +46,6 @@ export class ProposalService {
         }
 
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.list(context), { params })
             .pipe(
                 tap((data: Proposal[]) => {
@@ -60,7 +59,6 @@ export class ProposalService {
 
     view(context: ProposalContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .get(routes.view(context))
             .pipe(
                 tap((res: Proposal) => {
@@ -74,7 +72,6 @@ export class ProposalService {
 
     create(context: ProposalContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .post(routes.create(context), context.entity)
             .pipe(
                 tap((res: Proposal) => this.proposalStore.add(res)),
@@ -85,7 +82,6 @@ export class ProposalService {
 
     update(context: ProposalContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((proposal: Proposal) => this.proposalStore.upsert(proposal._id, proposal)),
@@ -96,7 +92,6 @@ export class ProposalService {
 
     delete(context: ProposalContext): Observable<any> {
         return this.httpClient
-            // .cache(context.forceUpdate)
             .delete(routes.delete(context))
             .pipe(
                 tap((proposal: Proposal) => this.proposalStore.remove(proposal._id)),

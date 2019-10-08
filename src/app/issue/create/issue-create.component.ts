@@ -43,8 +43,8 @@ export class IssueCreateComponent implements OnInit {
 
     suggestionTemplate: any;
 
-    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
         private suggestionService: SuggestionService,
