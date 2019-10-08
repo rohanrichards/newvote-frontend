@@ -51,7 +51,7 @@ export class SuggestionListComponent implements OnInit {
 
     constructor(
         private suggestionService: SuggestionService,
-        private query: SuggestionQuery,
+        private suggestionQuery: SuggestionQuery,
         private stateService: StateService,
         private voteService: VoteService,
         public auth: AuthenticationService,
@@ -84,16 +84,7 @@ export class SuggestionListComponent implements OnInit {
     }
 
     getSuggestions() {
-        this.suggestions$ = this.query.selectAll({
-            filterBy: (entity: any) => {
-                const userId = this.auth.credentials.user._id
-                if (typeof entity.user === 'string') {
-                    return entity.user === userId
-                }
-
-                return entity.user._id === userId
-            }
-        })
+        this.suggestions$ = this.suggestionQuery.getUsersSuggestions()
     }
 
     fetchData() {

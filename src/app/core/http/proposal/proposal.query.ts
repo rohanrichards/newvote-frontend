@@ -26,7 +26,7 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
     sortedProposals$ = combineLatest(this.selectFilter$, this.selectOrder$, this.proposals$)
         .pipe(
             map(([filter, order, proposals]) => {
-                return this.sortedProposals$(filter, order, proposals)
+                return this.sortProposals$(filter, order, proposals)
             })
         )
 
@@ -45,24 +45,29 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
     }
 
     filterBySolutionId(id: string) {
-        return this.proposals$
+        return this.sortedProposals$
             .pipe(
-                map((proposals: any) => {
-                    return proposals.filter((item: any) => {
-                        return item.solutions.some((solution: any) => {
-                            if (typeof solution === 'string') {
-                                return solution === id
-                            }
+                map(
+                    (entity) => {
+                        return entity.filter((proposal: Proposal) => {
+                            const includesSolutionId = proposal.solutions.some((solution: any) => {
+                                // newly created proposals will return with a solutions array with just the object id
+                                // instead of populated object
+                                if (typeof solution === 'string') {
+                                    return solution === id
+                                }
 
-                            return solution._id === id
+                                return solution._id === id
+                            })
+
+                            return includesSolutionId
                         })
                     }
-                    )
-                })
+                )
             )
     }
 
-    sortSolutions(filter: string, order: string, proposals: Proposal[]) {
+    sortProposals$(filter: string, order: string, proposals: Proposal[]) {
         const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
 
         switch (filter) {

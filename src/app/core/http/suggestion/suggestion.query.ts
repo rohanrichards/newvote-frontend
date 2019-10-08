@@ -21,10 +21,10 @@ export class SuggestionQuery extends QueryEntity<SuggestionState, Suggestion> {
         }
     })
 
-    sortedProposals$ = combineLatest(this.selectFilter$, this.selectOrder$, this.suggestions$)
+    sortedSuggestions$ = combineLatest(this.selectFilter$, this.selectOrder$, this.suggestions$)
         .pipe(
-            map(([filter, order, proposals]) => {
-                return this.sortedProposals$(filter, order, proposals)
+            map(([filter, order, suggestions]) => {
+                return this.sortSuggestions(filter, order, suggestions)
             })
         )
 
@@ -35,7 +35,24 @@ export class SuggestionQuery extends QueryEntity<SuggestionState, Suggestion> {
         super(store)
     }
 
-    sortSolutions(filter: string, order: string, suggestions: Suggestion[]) {
+    getUsersSuggestions() {
+        return this.sortedSuggestions$
+            .pipe(
+                map((suggestionsArray: Suggestion[]) => {
+                    return suggestionsArray.filter((suggestion: any) => {
+                        const userId = this.auth.getValue()._id
+
+                        if (typeof suggestion.user === 'string') {
+                            return suggestion.user === userId
+                        }
+
+                        return suggestion.user._id === userId
+                    })
+                })
+            )
+    }
+
+    sortSuggestions(filter: string, order: string, suggestions: Suggestion[]) {
         const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
 
         switch (filter) {

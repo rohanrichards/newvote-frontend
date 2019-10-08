@@ -12,7 +12,7 @@ export const entityOptions = {
         value: 'TITLE',
         display: 'Title'
     }],
-    'Proposal': [{
+    'Action': [{
         value: 'SHOW_ALL',
         display: 'None'
     }, {
