@@ -114,4 +114,8 @@ export class SolutionService {
     updateFilter(filter: string) {
         this.solutionStore.update({ filter })
     }
+
+    updateOrder(order: string) {
+        this.solutionStore.update({ order });
+    }
 }

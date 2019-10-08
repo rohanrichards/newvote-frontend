@@ -8,12 +8,15 @@ import { IssueQuery } from '../issue/issue.query'
 import { VotesQuery } from '../vote/vote.query'
 import { Proposal } from '@app/core/models/proposal.model'
 
+import { cloneDeep, orderBy } from 'lodash'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { combineLatest } from 'rxjs'
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     selectFilter$ = this.select(state => state.filter);
+    selectOrder$ = this.select(state => state.order);
+
     solutions$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isModerator()) {
@@ -25,10 +28,10 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     })
 
     // https://blog.angularindepth.com/plan-your-next-party-with-an-angular-invite-app-using-akita-422495351767
-    sortedSolutions$ = combineLatest(this.selectFilter$, this.solutions$)
+    sortedSolutions$ = combineLatest(this.selectFilter$, this.selectOrder$, this.solutions$)
         .pipe(
-            map(([filter, solutions]) => {
-                return this.sortSolutions(filter, solutions)
+            map(([filter, order, solutions]) => {
+                return this.sortSolutions(filter, order, solutions)
             })
         )
 
@@ -115,22 +118,18 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
             )
     }
 
-    sortSolutions(filter: string, solutions: Solution[]) {
+    sortSolutions(filter: string, order: string, solutions: Solution[]) {
+        const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
+
         switch (filter) {
             case 'SHOW_ALL':
                 return solutions
             case 'VOTES':
-                return solutions.sort((a: any, b: any) => {
-                    return a.votes.total - b.votes.total
-                })
+                return orderBy(solutions, ['votes.total'], sortedOrder)
             case 'ACTIONS':
-                return solutions.sort((a: any, b: any) => {
-                    return a.proposals.length - b.proposals.length
-                })
+                return orderBy(solutions, ['proposals.length'], sortedOrder)
             case 'TITLE':
-                return solutions.sort((a: any, b: any) => {
-                    return a.title - b.title
-                })
+                return orderBy(solutions, ['title'], sortedOrder)
         }
     }
 }

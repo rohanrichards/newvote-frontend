@@ -104,4 +104,12 @@ export class ProposalService {
         this.proposalStore.update(id, proposal)
     }
 
+    updateFilter(filter: string) {
+        this.proposalStore.update({ filter })
+    }
+
+    updateOrder(order: string) {
+        this.proposalStore.update({ order });
+    }
+
 }

@@ -103,4 +103,12 @@ export class SuggestionService {
     updateSuggestionVote(id: string, suggestion: any) {
         this.suggestionStore.update(id, suggestion)
     }
+
+    updateFilter(filter: string) {
+        this.suggestionStore.update({ filter })
+    }
+
+    updateOrder(order: string) {
+        this.suggestionStore.update({ order });
+    }
 }

@@ -7,7 +7,8 @@ export interface SolutionState extends EntityState<Solution> {
 };
 
 const initialState = {
-    filter: 'SHOW_ALL'
+    filter: 'SHOW_ALL',
+    sort: 'ASCENDING'
 }
 
 @Injectable()
