@@ -36,7 +36,7 @@ export class ShellComponent implements OnInit {
 	pageLoading = false;
 
 	@Output() closeSearch = new EventEmitter();
-	@ViewChild(MatSidenavContainer) sidenavContainer: MatSidenavContainer;
+	@ViewChild(MatSidenavContainer, { static: true }) sidenavContainer: MatSidenavContainer;
 
 	scrollingSubscription: any;
 

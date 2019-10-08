@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { PlatformLocation, Location } from '@angular/common';
-import { DOCUMENT } from '@angular/platform-browser';
+import { PlatformLocation, Location, DOCUMENT } from '@angular/common';
+
 import { ShareService } from '@ngx-share/core';
 
 @Component({

@@ -45,8 +45,8 @@ import { AdminService } from '@app/core/http/admin/admin.service'
     ]
 })
 export class IssueListComponent implements OnInit {
-    @ViewChild('topicInput') topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto') matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: false }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
     issues: Array<Issue>;
     allTopics: Array<Topic>;
