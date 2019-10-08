@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { ISolution, Solution } from '@app/core/models/solution.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
-import { SolutionStore } from './solution.state'
+import { SolutionStore } from './solution.store'
 
 const routes = {
     list: () => '/solutions',
@@ -116,6 +116,6 @@ export class SolutionService {
     }
 
     updateOrder(order: string) {
-        this.solutionStore.update({ order });
+        this.solutionStore.update({ order })
     }
 }
