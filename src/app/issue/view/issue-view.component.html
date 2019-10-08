@@ -244,7 +244,7 @@
                     </app-card-list>
                 </mat-expansion-panel>
                 <mat-expansion-panel class="accordion-header"
-                    [expanded]="suggestions && suggestions.length && suggestions.length > 0">
+                    [expanded]="!!suggestions.length && suggestions.length > 0">
                     <mat-expansion-panel-header>
                         <h3 class="mat-headline"
                             [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
