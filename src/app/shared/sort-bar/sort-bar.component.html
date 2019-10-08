@@ -1,21 +1,5 @@
 <div [style.width.%]="100"
     fxLayoutAlign="flex-end center">
-    <div>
-        <button *ngIf="order === 'ASCENDING'"
-            mat-icon-button
-            disabled
-            (click)="toggleOrder()"
-            aria-label="Sorting Direction">
-            <mat-icon>arrow_upward</mat-icon>
-        </button>
-        <button *ngIf="order === 'DESCENDING'"
-            mat-icon-button
-            disabled
-            (click)="toggleOrder()"
-            aria-label="Sorting Direction">
-            <mat-icon>arrow_downward</mat-icon>
-        </button>
-    </div>
     <mat-form-field>
         <mat-label>Sort By</mat-label>
         <mat-select [(ngModel)]="sort"
@@ -24,4 +8,20 @@
                 [value]="option.value">{{ option.display }}</mat-option>
         </mat-select>
     </mat-form-field>
+    <div>
+        <button mat-icon-button
+            [disabled]="sort === 'SHOW_ALL'"
+            [style.color]="order === 'ASCENDING' ? '#ffca28' : 'black'"
+            (click)="toggleOrder()"
+            aria-label="Sorting Direction">
+            <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button mat-icon-button
+            [disabled]="sort === 'SHOW_ALL'"
+            [style.color]="order === 'DESCENDING' ? '#ffca28' : 'black'"
+            (click)="toggleOrder()"
+            aria-label="Sorting Direction">
+            <mat-icon>arrow_downward</mat-icon>
+        </button>
+    </div>
 </div>
