@@ -4,7 +4,7 @@ import { AuthenticationService } from '@app/core';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from '@app/core/meta.service';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 import { UserService } from '@app/core/http/user/user.service';
@@ -34,8 +34,7 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
-        private userService: UserService,
-        private organizationQuery: OrganizationQuery
+        public snackBar: MatSnackBar
     ) { }
 
     ngOnInit() {
@@ -107,7 +106,18 @@ export class NavbarComponent implements OnInit {
 
         return this.auth.verifyWithCommunity()
             .subscribe(
-                (res) => res,
-                (err) => err)
+                (res) => {
+                    this.openSnackBar('You have successfully verified with this community.', 'OK');
+                },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
+                })
+    }
+
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        });
     }
 }
