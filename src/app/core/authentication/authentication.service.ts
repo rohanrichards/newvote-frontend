@@ -351,8 +351,8 @@ export class AuthenticationService {
         return this.httpClient
             .post(routes.communityVerify(), {})
             .pipe(
-                tap((res) => {
-                    this.authenticationStore.update(res)
+                tap((res: any) => {
+                    this.authenticationStore.update(res.organizations)
                 }),
                 map((res) => {
                     return res

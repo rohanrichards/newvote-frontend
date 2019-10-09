@@ -74,7 +74,12 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     doesMobileNumberExist() {
-        return toBoolean(this.getValue().mobileNumber);
+        const number = this.getValue().mobileNumber
+
+        if (number && number.length) {
+            return true;
+        }
+        return false;
     }
 
 }

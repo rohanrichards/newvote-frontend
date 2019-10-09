@@ -102,7 +102,7 @@ export class NavbarComponent implements OnInit {
 
     handleVerify() {
         if (!this.query.isUserVerified() || !this.query.doesMobileNumberExist()) {
-            return this.router.navigate(['/auth/verifiy'])
+            return this.router.navigate(['/auth/verify'], { replaceUrl: true })
         }
 
         return this.auth.verifyWithCommunity()
