@@ -45,7 +45,7 @@ const routes = {
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
-    communityVerify: () => `/users/verify-community`,
+    communityVerify: () => `/users/community-verify`,
     sso: () => '/auth/jwt',
     checkAuth: () => '/auth/check-status'
 }
