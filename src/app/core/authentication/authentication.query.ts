@@ -3,16 +3,20 @@ import { IUser, User } from "../models/user.model";
 import { AuthenticationStore } from "./authentication.store";
 import { Query, toBoolean } from "@datorama/akita";
 import { OrganizationQuery } from "../http/organization/organization.query";
-import { Observable } from "rxjs";
+import { Observable, forkJoin } from "rxjs";
 import { Organization } from "../models/organization.model";
 
+import { combineLatest } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
-    isCommunityVerified$ = this.select(user => {
-        return this.isUserPartOfOrganization(user)
-    });
+    isCommunityVerified$ = combineLatest(
+        this.select(),
+        this.organizationQuery.select(),
+        (user, organization) => {
+            return this.isUserPartOfOrganization(user, organization)
+        });
 
     constructor(
         protected store: AuthenticationStore,
@@ -54,16 +58,15 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserPartOfOrganization(user: any): boolean {
-        // if no user then the "user" is logged out, no need to do checks
-        if (!user) return true;
+    isUserPartOfOrganization(user: any, organization: any): boolean {
         if (!user.verified) return false;
-        if (!user.mobileNumber) return false;
+        // if (!user.mobileNumber) return false;
 
-        const org = this.organizationQuery.getValue();
-        return user.organizations.some((id: string) => {
-            return org._id === id
-        })
+        const exists = user.organizations.some((userOrganization: any) => {
+            if (typeof userOrganization === 'string') return organization._id === userOrganization;
+            return organization._id === userOrganization._id;
+        });
+        return exists;
     }
 
     isUserVerified() {

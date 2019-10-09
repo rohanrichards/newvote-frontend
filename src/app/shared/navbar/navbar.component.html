@@ -107,7 +107,7 @@
     </mat-toolbar> -->
 
     <mat-toolbar color="warn"
-        *ngIf="!verified && !hideVerify"
+        *ngIf="!verified && !hideVerify && loggedIn"
         class="community-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
         ngClass.lt-md="top-bar-height-sm">

@@ -10,7 +10,7 @@ const routes = {
     count: () => `/users/count`,
     // view: (c: UserContext) => `/users/${c.id}`,
     // create: (c: UserContext) => `/users`,
-    update: (c: UserContext) => `/users/${c.id}`,
+    // update: (c: UserContext) => `/users/${c.id}`,
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`
 };

@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit {
     hideVerify = false;
 
     verified: boolean;
+    loggedIn: boolean;
 
     constructor(
         private meta: MetaService,
@@ -38,6 +39,11 @@ export class NavbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.query.isLoggedIn$.subscribe(
+            (res) => this.loggedIn = res,
+            (err) => err
+        )
+
         this.query.isCommunityVerified$
             .subscribe((verified) => {
                 this.verified = verified;
@@ -99,7 +105,7 @@ export class NavbarComponent implements OnInit {
             return this.router.navigate(['/auth/verifiy'])
         }
 
-        return this.auth.verifyWithCommunity(this.organization._id)
+        return this.auth.verifyWithCommunity()
             .subscribe(
                 (res) => res,
                 (err) => err)

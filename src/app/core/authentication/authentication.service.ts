@@ -347,11 +347,13 @@ export class AuthenticationService {
             )
     }
 
-    verifyWithCommunity(id: string): Observable<any> {
+    verifyWithCommunity(): Observable<any> {
         return this.httpClient
-            .post(routes.communityVerify(), id)
+            .post(routes.communityVerify(), {})
             .pipe(
-                tap((res) => this.authenticationStore.update(res)),
+                tap((res) => {
+                    this.authenticationStore.update(res)
+                }),
                 map((res) => {
                     return res
                 })
