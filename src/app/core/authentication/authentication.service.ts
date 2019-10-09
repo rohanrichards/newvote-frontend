@@ -45,6 +45,7 @@ const routes = {
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
+    communityVerify: () => `/users/verify-community`,
     sso: () => '/auth/jwt',
     checkAuth: () => '/auth/check-status'
 }
@@ -62,7 +63,6 @@ export class AuthenticationService {
     private _org: Organization;
 
     // Only use if a user has a verified account and is visiting a new community
-    private communityVerified = true;
 
     constructor(
         private httpClient: HttpClient,
@@ -88,7 +88,6 @@ export class AuthenticationService {
         this.checkStatus()
             .subscribe(
                 (res) => {
-                    this.checkIfCommunityVerified(res.user)
                     return this.setCredentials(res, true)
                 },
                 (err) => {
@@ -111,7 +110,6 @@ export class AuthenticationService {
             .pipe(
                 tap((res) => this.authenticationStore.update(res.user)),
                 map((res) => {
-                    this.checkIfCommunityVerified(res.user)
                     this.setCredentials(res, context.remember)
                     return res
                 })
@@ -155,7 +153,7 @@ export class AuthenticationService {
         // Customize credentials invalidation here
         this.setCredentials()
         // reset community verified once no user is there (only shows if logged in)
-        this.communityVerified = true
+        // this.communityVerified = true
         this.cookieService.delete('credentials')
         this.authenticationStore.reset()
 
@@ -319,29 +317,6 @@ export class AuthenticationService {
         this.setCredentials(this._credentials, true)
     }
 
-    isCommunityVerified(): boolean {
-        return this.communityVerified
-    }
-
-    checkIfCommunityVerified(user?: any) {
-
-        const { organizations } = user
-        const isUserPartOfOrg = organizations.find((id: string) => {
-            return this._org._id === id
-        })
-
-        // community verification only for verified users
-        if (!user.verified) {
-            return false
-        }
-
-        if (!isUserPartOfOrg) {
-            return this.communityVerified = false
-        }
-
-        return this.communityVerified = true
-    }
-
     setVerified(credentials: Credentials) {
         // debugger;
         if (localStorage.getItem(credentialsKey)) {
@@ -366,6 +341,17 @@ export class AuthenticationService {
         return this.httpClient
             .post(routes.verify(), code)
             .pipe(
+                map((res) => {
+                    return res
+                })
+            )
+    }
+
+    verifyWithCommunity(id: string): Observable<any> {
+        return this.httpClient
+            .post(routes.communityVerify(), id)
+            .pipe(
+                tap((res) => this.authenticationStore.update(res)),
                 map((res) => {
                     return res
                 })

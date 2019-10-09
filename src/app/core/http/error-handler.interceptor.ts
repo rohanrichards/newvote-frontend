@@ -16,41 +16,41 @@ const log = new Logger('ErrorHandlerInterceptor');
  */
 @Injectable()
 export class ErrorHandlerInterceptor implements HttpInterceptor {
-	constructor(private router: Router, private inj: Injector) { }
+    constructor(private router: Router, private inj: Injector) { }
 
-	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-		return next.handle(request).pipe(catchError(error => this.errorHandler(error)));
-	}
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        return next.handle(request).pipe(catchError(error => this.errorHandler(error)));
+    }
 
-	// Customize the default error handler here if needed
-	private errorHandler(response: HttpEvent<any>): Observable<HttpEvent<any>> {
-		if (!environment.production) {
-			// Do something with the error
-			log.error('Request error', response);
-		}
+    // Customize the default error handler here if needed
+    private errorHandler(response: HttpEvent<any>): Observable<HttpEvent<any>> {
+        if (!environment.production) {
+            // Do something with the error
+            log.error('Request error', response);
+        }
 
-		// unauthorized
-		if (response instanceof HttpErrorResponse) {
-			const error = <HttpErrorResponse>response;
-			if (error.status === 401) {
-				log.error('User is not authenticated - please log in');
-				const auth = this.inj.get(AuthenticationService);
-				auth.logout();
-				this.router.navigate(['/auth/login'], { queryParams: { 'redirect': this.router.url } });
-			} else if (error.status === 403) {
-				log.error('User is not authorized');
-				if (error.error.role && error.error.role === 'user') {
-					log.error('User has guest role, verification required');
-					this.router.navigate(['/auth/verify'], { queryParams: { 'redirect': this.router.url } });
-				}
+        // unauthorized
+        if (response instanceof HttpErrorResponse) {
+            const error = <HttpErrorResponse>response;
+            if (error.status === 401) {
+                log.error('User is not authenticated - please log in');
+                const auth = this.inj.get(AuthenticationService);
+                auth.logout();
+                this.router.navigate(['/auth/login'], { queryParams: { 'redirect': this.router.url } });
+            } else if (error.status === 403) {
+                log.error('User is not authorized');
+                if (error.error.role && error.error.role === 'user') {
+                    log.error('User has guest role, verification required');
+                    this.router.navigate(['/auth/verify'], { queryParams: { 'redirect': this.router.url } });
+                }
 
-				if (error.error.notCommunityVerified) {
-					this.router.navigate(['/auth/login'], { queryParams: { 'redirect': this.router.url } });
-				}
-			}
-		}
+                if (error.error.notCommunityVerified) {
+                    this.router.navigate(['/auth/verify'], { queryParams: { 'redirect': this.router.url } });
+                }
+            }
+        }
 
-		throw response;
-	}
+        throw response;
+    }
 
 }

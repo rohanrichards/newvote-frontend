@@ -6,6 +6,10 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from '@app/core/meta.service';
 import { MatSidenav } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
+import { UserService } from '@app/core/http/user/user.service';
+import { take } from 'rxjs/operators';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
     selector: 'div[sticky-component]',
@@ -20,15 +24,24 @@ export class NavbarComponent implements OnInit {
     showSearch = false;
     hideVerify = false;
 
+    verified: boolean;
+
     constructor(
         private meta: MetaService,
         private titleService: Title,
+        private query: AuthenticationQuery,
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
+        private userService: UserService,
+        private organizationQuery: OrganizationQuery
     ) { }
 
     ngOnInit() {
+        this.query.isCommunityVerified$
+            .subscribe((verified) => {
+                this.verified = verified;
+            })
     }
 
     toggleSearch() {
@@ -68,10 +81,6 @@ export class NavbarComponent implements OnInit {
         }
     }
 
-    get isCommunityVerified(): boolean {
-        return this.auth.isCommunityVerified();
-    }
-
     get isMobile(): boolean {
         return this.media.isActive('xs') || this.media.isActive('sm');
     }
@@ -83,5 +92,16 @@ export class NavbarComponent implements OnInit {
 
     handleToggle() {
         this.sideNavRef.toggle();
+    }
+
+    handleVerify() {
+        if (!this.query.isUserVerified() || !this.query.doesMobileNumberExist()) {
+            return this.router.navigate(['/auth/verifiy'])
+        }
+
+        return this.auth.verifyWithCommunity(this.organization._id)
+            .subscribe(
+                (res) => res,
+                (err) => err)
     }
 }

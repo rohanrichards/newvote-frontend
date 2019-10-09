@@ -10,7 +10,7 @@ const routes = {
     count: () => `/users/count`,
     // view: (c: UserContext) => `/users/${c.id}`,
     // create: (c: UserContext) => `/users`,
-    // update: (c: UserContext) => `/users/${c.id}`,
+    update: (c: UserContext) => `/users/${c.id}`,
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`
 };
@@ -78,12 +78,12 @@ export class UserService {
     // }
 
     // update(context: UserContext): Observable<any> {
-    // 	return this.httpClient
-    // 		.put(routes.update(context), context.entity)
-    // 		.pipe(
-    // 			map((res: any) => res),
-    // 			catchError((e) => of({ error: e }))
-    // 		);
+    //     return this.httpClient
+    //         .put(routes.update(context), context.entity)
+    //         .pipe(
+    //             map((res: any) => res),
+    //             catchError((e) => of({ error: e }))
+    //         );
     // }
 
     patch(context: UserContext): Observable<any> {
