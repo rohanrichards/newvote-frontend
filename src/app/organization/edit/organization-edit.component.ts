@@ -312,7 +312,9 @@ export class OrganizationEditComponent implements OnInit {
                 this.openSnackBar('Succesfully updated', 'OK')
 
                 if (res.moderators.length) {
-                    this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                    setTimeout(() => {
+                        this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                    }, 3100)
                 }
 
                 this.location.back()
@@ -324,7 +326,7 @@ export class OrganizationEditComponent implements OnInit {
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
-            duration: 4000,
+            duration: 3000,
             horizontalPosition: 'center'
         })
     }
