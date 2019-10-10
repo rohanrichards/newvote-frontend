@@ -68,7 +68,7 @@ export class TopicListComponent implements OnInit {
         this.topicService.list({ orgs: [], params })
             .subscribe(
                 () => this.stateService.setLoadingState(AppState.complete),
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 

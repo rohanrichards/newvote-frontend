@@ -5,7 +5,7 @@
     <app-skeleton-panel *ngSwitchCase="'loading'"
         [hasVote]=true>
     </app-skeleton-panel>
-    <app-skeleton-panel *ngSwitchCase="'serverError'"
+    <app-skeleton-panel *ngSwitchCase="'error'"
         [hasVote]=true>
     </app-skeleton-panel>
     <mat-toolbar *ngSwitchCase="'complete'"
@@ -138,7 +138,7 @@
             </app-skeleton-wide-card>
         </div>
     </div>
-    <div *ngSwitchCase="'serverError'"
+    <div *ngSwitchCase="'error'"
         class="container"
         fxLayout="column"
         fxLayoutAlign="center center">
