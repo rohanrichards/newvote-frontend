@@ -308,8 +308,13 @@ export class OrganizationEditComponent implements OnInit {
 
         this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe(() => {
+            .subscribe((res) => {
                 this.openSnackBar('Succesfully updated', 'OK')
+
+                if (res.moderators.length) {
+                    this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                }
+
                 this.location.back()
             },
             (error) => {
