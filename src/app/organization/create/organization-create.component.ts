@@ -198,13 +198,17 @@ export class OrganizationCreateComponent implements OnInit {
         this.uploader.onCompleteAll = () => {
             this.organizationService.create({ entity: this.organization })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(t => {
-                    if (t.error) {
-                        this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
-                    } else {
-                        this.openSnackBar('Succesfully created', 'OK')
-                        this.router.navigate(['/organizations'])
+                .subscribe(res => {
+                    this.openSnackBar('Succesfully created', 'OK')
+
+                    if (res.moderators.length) {
+                        this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
                     }
+
+                    this.router.navigate(['/organizations'])
+                },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
         }
 
@@ -241,7 +245,7 @@ export class OrganizationCreateComponent implements OnInit {
         this.userInput.nativeElement.value = ''
     }
 
-    userRemoved() {
+    userRemoved(user: any) {
         this.owner = null
     }
 

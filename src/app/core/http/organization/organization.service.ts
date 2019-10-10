@@ -111,7 +111,7 @@ export class OrganizationService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
-                tap((res: Organization) => this.communityStore.add(res)),
+                tap((res: any) => this.communityStore.add(res.organization)),
                 map((res: any) => res),
                 catchError(handleError)
             )
