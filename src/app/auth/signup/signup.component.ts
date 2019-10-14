@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { environment } from '@env/environment';
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core';
 import { Organization } from '@app/core/models/organization.model';
 import { arrayExpression } from 'babel-types';
+import { ReCaptcha2Component } from 'ngx-captcha';
 
 const log = new Logger('Signup');
 
@@ -41,6 +42,8 @@ export class SignupComponent implements OnInit {
         });
     }
 
+    @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
+
     ngOnInit() {
         this.meta.updateTags(
             {
@@ -62,6 +65,7 @@ export class SignupComponent implements OnInit {
                 this.isLoading = false;
             }))
             .subscribe(credentials => {
+                this.resetCaptcha();
                 log.debug(`${credentials.user.username} successfully logged in`);
                 this.route.queryParams.subscribe(
                     params => this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true })
@@ -69,12 +73,18 @@ export class SignupComponent implements OnInit {
             }, (res: any) => {
                 log.debug(`Signup error: ${res}`);
                 this.error = res.error ? res.error : res;
+                this.resetCaptcha();
             });
     }
 
     redirect() {
         // window.location.href = this.org.authUrl;
         window.open(this.org.authUrl, '_self');
+    }
+
+
+    resetCaptcha(): void {
+        this.captchaElem.resetCaptcha();
     }
 
     private createForm() {
