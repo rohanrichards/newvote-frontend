@@ -117,16 +117,16 @@ export class IssueViewComponent implements OnInit {
 
         this.suggestions$.subscribe((res) => {
             if (!res.length) return false;
-            console.log(res, 'this is res')
             this.suggestions = res;
         })
     }
 
 
     subscribeToIssueStore(id: string) {
+
         this.issueQuery.getIssueWithTopic(id)
             .subscribe(
-                (issue: Issue) => {
+                (issue: any) => {
                     if (!issue) return issue;
                     this.issue = issue;
                     this.stateService.setLoadingState(AppState.complete);

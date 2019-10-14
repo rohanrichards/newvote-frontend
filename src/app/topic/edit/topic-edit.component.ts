@@ -33,6 +33,7 @@ export class TopicEditComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+    resetImage: any;
 
     constructor(
         private topicService: TopicService,
@@ -131,6 +132,7 @@ export class TopicEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false;
         this.imageUrl = this.topicForm.get('imageUrl').value;
+        this.resetImage = false;
     }
 
     onSave() {
@@ -147,6 +149,7 @@ export class TopicEditComponent implements OnInit {
                 merge(topic, <ITopic>this.topicForm.value);
                 const res = JSON.parse(response);
                 topic.imageUrl = res.secure_url;
+                this.resetImage = false;
                 this.updateWithApi(topic);
             }
         };
@@ -160,6 +163,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     updateWithApi(topic: any) {
+
+        if (this.resetImage) {
+            topic.imageUrl = this.imageUrl;
+        }
+
         this.topicService.update({ id: topic._id, entity: topic })
             .pipe(finalize(() => { this.isLoading = false; }))
             .subscribe(

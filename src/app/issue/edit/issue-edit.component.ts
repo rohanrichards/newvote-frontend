@@ -44,6 +44,8 @@ export class IssueEditComponent implements OnInit {
         imageUrl: new FormControl('', [Validators.required])
     });
 
+    resetImage: boolean = false;
+
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
@@ -161,13 +163,15 @@ export class IssueEditComponent implements OnInit {
 
     setDefaultImage() {
         const DEFAULT_IMAGE = 'assets/issue-default.png';
-        this.newImage = true;
+        this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
+        this.resetImage = true;
     }
 
     onResetImage() {
         this.newImage = false;
         this.imageUrl = this.issueForm.get('imageUrl').value;
+        this.resetImage = false;
     }
 
     onSave() {
@@ -184,6 +188,7 @@ export class IssueEditComponent implements OnInit {
                 merge(issue, <IIssue>this.issueForm.value);
                 const res = JSON.parse(response);
                 issue.imageUrl = res.secure_url;
+                this.resetImage = false;
                 this.updateWithApi(issue);
             }
         };
@@ -198,6 +203,11 @@ export class IssueEditComponent implements OnInit {
 
     updateWithApi(issue: any) {
         issue.topics = this.topics;
+
+        if (this.resetImage) {
+            issue.imageUrl = this.imageUrl;
+        }
+
         this.issueService.update({ id: issue._id, entity: issue })
             .pipe(finalize(() => { this.isLoading = false; }))
             .subscribe(
