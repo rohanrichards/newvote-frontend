@@ -198,12 +198,6 @@ export class ProposalEditComponent implements OnInit {
         this.imageUrl = this.proposalForm.get('imageUrl').value
     }
 
-    setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/proposal-default.png';
-        this.newImage = true;
-        this.imageUrl = DEFAULT_IMAGE;
-    }
-
     onSave() {
         const proposal = cloneDeep(this.proposal)
         merge(proposal, <IProposal>this.proposalForm.value)
