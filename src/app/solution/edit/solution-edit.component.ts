@@ -197,7 +197,7 @@ export class SolutionEditComponent implements OnInit {
 
     setDefaultImage() {
         const DEFAULT_IMAGE = 'assets/solution-default.png';
-        this.newImage = true;
+        this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
         this.resetImage = true;
     }

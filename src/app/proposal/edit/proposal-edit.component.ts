@@ -202,7 +202,7 @@ export class ProposalEditComponent implements OnInit {
 
     setDefaultImage() {
         const DEFAULT_IMAGE = 'assets/proposal-default.png';
-        this.newImage = true;
+        this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
         this.resetImage = true;
     }
