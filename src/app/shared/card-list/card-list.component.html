@@ -7,85 +7,41 @@
         <mat-card class="item-card"
             [ngClass]="{'soft-deleted': item.softDeleted}"
             routerLink="{{path}}/{{item._id}}">
-            <ng-container
-                *ngIf="hasDefaultImage(item.imageUrl); then withImage; else withoutImage">
-            </ng-container>
-            <ng-template #withImage>
-                <div mat-card-image
-                    class="image-container"
-                    [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
-                    [defaultImage]="handleImageUrl(item.imageUrl, true)"
-                    [lazyLoad]="handleImageUrl(item.imageUrl)">
-                    <div class="button-panel"
-                        *ngIf="auth.isModerator() || auth.isCreator(item)">
-                        <button color="accent"
-                            mat-icon-button
-                            (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item._id}}'>
-                            <mat-icon aria-label="Edit the content">edit
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            *ngIf="item.softDeleted"
-                            mat-icon-button
-                            (click)="onRestore(item, $event)">
-                            <mat-icon aria-label="Restore content">restore
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            *ngIf="!item.softDeleted"
-                            mat-icon-button
-                            (click)="onSoftDelete(item, $event)">
-                            <mat-icon aria-label="Remove content">delete
-                            </mat-icon>
-                        </button>
-                        <button *ngIf="auth.isAdmin()"
-                            color="warn"
-                            mat-icon-button
-                            (click)="onDelete(item, $event)">
-                            <mat-icon aria-label="Delete content forever">
-                                delete_forever</mat-icon>
-                        </button>
-                    </div>
+            <div mat-card-image
+                class="image-container"
+                [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
+                [defaultImage]="handleImageUrl(item.imageUrl, true)"
+                [lazyLoad]="handleImageUrl(item.imageUrl)">
+                <div class="button-panel"
+                    *ngIf="auth.isModerator() || auth.isCreator(item)">
+                    <button color="accent"
+                        mat-icon-button
+                        (click)="$event.stopPropagation()"
+                        routerLink='{{path}}/edit/{{item._id}}'>
+                        <mat-icon aria-label="Edit the content">edit</mat-icon>
+                    </button>
+                    <button color="accent"
+                        *ngIf="item.softDeleted"
+                        mat-icon-button
+                        (click)="onRestore(item, $event)">
+                        <mat-icon aria-label="Restore content">restore
+                        </mat-icon>
+                    </button>
+                    <button color="accent"
+                        *ngIf="!item.softDeleted"
+                        mat-icon-button
+                        (click)="onSoftDelete(item, $event)">
+                        <mat-icon aria-label="Remove content">delete</mat-icon>
+                    </button>
+                    <button *ngIf="auth.isAdmin()"
+                        color="warn"
+                        mat-icon-button
+                        (click)="onDelete(item, $event)">
+                        <mat-icon aria-label="Delete content forever">
+                            delete_forever</mat-icon>
+                    </button>
                 </div>
-            </ng-template>
-
-            <ng-template #withoutImage>
-                <div class="no-image-container">
-                    <div class="button-panel"
-                        *ngIf="auth.isModerator() || auth.isCreator(item)">
-                        <button color="accent"
-                            mat-icon-button
-                            (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item._id}}'>
-                            <mat-icon aria-label="Edit the content">edit
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            *ngIf="item.softDeleted"
-                            mat-icon-button
-                            (click)="onRestore(item, $event)">
-                            <mat-icon aria-label="Restore content">restore
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            *ngIf="!item.softDeleted"
-                            mat-icon-button
-                            (click)="onSoftDelete(item, $event)">
-                            <mat-icon aria-label="Remove content">delete
-                            </mat-icon>
-                        </button>
-                        <button *ngIf="auth.isAdmin()"
-                            color="warn"
-                            mat-icon-button
-                            (click)="onDelete(item, $event)">
-                            <mat-icon aria-label="Delete content forever">
-                                delete_forever</mat-icon>
-                        </button>
-                    </div>
-                </div>
-            </ng-template>
-
+            </div>
             <mat-card-content>
                 <div fxLayout="row">
                     <div *ngIf="item.type"
@@ -100,7 +56,7 @@
                         translate>
                         {{item.title}}
                         <mat-card-subtitle class="item-subtitle">
-                            <!-- <p *ngIf="showParent">This is a {{model}} for:
+                            <p *ngIf="showParent">This is a {{model}} for:
                                 <span
                                     *ngFor="let parent of item[parentPropName]; let i = index">
                                     <a (click)="$event.stopPropagation()"
@@ -108,7 +64,7 @@
                                     <span
                                         *ngIf="item[parentPropName].length > 1 && i !== item[parentPropName].length - 1">,&nbsp;</span>
                                 </span>
-                            </p> -->
+                            </p>
                             <p class="status"
                                 *ngIf="item && item.status && item.status != null">
                                 Suggestion
