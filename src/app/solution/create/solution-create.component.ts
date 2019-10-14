@@ -169,17 +169,16 @@ export class SolutionCreateComponent implements OnInit {
         };
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/solution-default.png';
             return this.solutionService.create({ entity: this.solution })
                 .pipe(finalize(() => { this.isLoading = false; }))
-                .subscribe(t => {
+                .subscribe(solution => {
 
                     if (this.suggestionTemplate) {
                         this.hideSuggestion();
                     }
 
                     this.openSnackBar('Succesfully created', 'OK');
-                    this.router.navigate([`/solutions/${t._id}`]);
+                    this.router.navigate([`/solutions/${solution.slug || solution._id}`]);
                 },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 );
@@ -193,9 +192,9 @@ export class SolutionCreateComponent implements OnInit {
                 this.solutionService.create({ entity: this.solution })
                     .pipe(finalize(() => { this.isLoading = false; }))
                     .subscribe(
-                        t => {
+                        solution => {
                             this.openSnackBar('Succesfully created', 'OK');
-                            this.router.navigate([`/solutions/${t._id}`]);
+                            this.router.navigate([`/solutions/${solution.slug || solution._id}`]);
                         },
                         (err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     );
