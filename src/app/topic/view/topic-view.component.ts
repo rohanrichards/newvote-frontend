@@ -58,13 +58,6 @@ export class TopicViewComponent implements OnInit {
 
         });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     subscribeToTopicStore(id: string) {

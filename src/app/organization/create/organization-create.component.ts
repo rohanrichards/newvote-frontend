@@ -129,13 +129,6 @@ export class OrganizationCreateComponent implements OnInit {
 
         this.setAuthtypeValidators();
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     setAuthtypeValidators() {

@@ -103,10 +103,6 @@ export class IssueCreateComponent implements OnInit {
 
         this.organizationService.get().subscribe(org => this.organization = org);
 
-        this.route.data.subscribe((res) => {
-            this.meta.updateRouteLevel(res.level);
-        })
-
         this.meta.updateTags(
             {
                 title: 'Create Issue',

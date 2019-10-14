@@ -97,14 +97,6 @@ export class SolutionListComponent implements OnInit {
 
         this.stateService.setLoadingState(AppState.loading)
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         this.meta.updateTags(
             {
                 title: 'All Solutions',

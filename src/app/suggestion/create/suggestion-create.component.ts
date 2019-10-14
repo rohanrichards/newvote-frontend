@@ -89,14 +89,6 @@ export class SuggestionCreateComponent implements OnInit {
         // 	}
         // });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         this.organizationService.get().subscribe(org => this.organization = org);
         this.isLoading = false;
 

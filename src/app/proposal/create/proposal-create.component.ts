@@ -68,14 +68,6 @@ export class ProposalCreateComponent implements OnInit {
                 description: 'Creating a new action on the NewVote platform.'
             });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         this.route.paramMap
             .pipe(
                 map((data) => {

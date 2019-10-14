@@ -53,13 +53,6 @@ export class SignupComponent implements OnInit {
             ? this.route.snapshot.params.id
             : '';
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     signup() {

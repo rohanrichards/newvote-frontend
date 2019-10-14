@@ -81,13 +81,6 @@ export class SuggestionListComponent implements OnInit {
                 err => err
             );
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     getSuggestions() {

@@ -99,10 +99,6 @@ export class IssueEditComponent implements OnInit {
             ]
         };
 
-        this.route.data.subscribe((res) => {
-            this.meta.updateRouteLevel(res.level);
-        })
-
         this.uploader = new FileUploader(uploaderOptions);
 
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {

@@ -151,13 +151,6 @@ export class OrganizationEditComponent implements OnInit {
             this.userService.list({}).subscribe(users => this.allUsers = users)
         }
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
 
         this.setAuthtypeValidators()
     }

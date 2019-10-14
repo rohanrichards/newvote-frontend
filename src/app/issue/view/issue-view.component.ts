@@ -107,10 +107,6 @@ export class IssueViewComponent implements OnInit {
             this.getTopics();
         });
 
-        this.route.data.subscribe((res) => {
-            this.meta.updateRouteLevel(res.level);
-        })
-
         this.getSuggestions();
     }
 

@@ -55,13 +55,6 @@ export class OrganizationListComponent implements OnInit {
                 description: 'The list of all available communities on the NewVote platform.'
             });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     fetchData(force?: boolean) {

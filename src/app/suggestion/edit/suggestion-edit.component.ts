@@ -75,13 +75,6 @@ export class SuggestionEditComponent implements OnInit {
                 )
         })
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     subscribeToSuggestionStore(id: string) {

@@ -81,14 +81,6 @@ export class ProposalEditComponent implements OnInit {
                 )
         })
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
             url: 'https://api.cloudinary.com/v1_1/newvote/upload',

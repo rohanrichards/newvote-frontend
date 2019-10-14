@@ -51,13 +51,6 @@ export class OrganizationViewComponent implements OnInit {
             this.getOrganization(ID);
         });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     getOrganization(id: string, forceUpdate?: boolean) {

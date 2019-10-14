@@ -50,14 +50,6 @@ export class ForgotComponent implements OnInit {
                 title: `Reset password`,
                 description: 'Forgot your password? No worries!'
             });
-
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     forgot() {

@@ -41,14 +41,6 @@ export class VerifyComponent implements OnInit {
                 title: `Verify account`,
                 description: 'The NewVote platform requires mobile verification'
             });
-
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     sendCode() {

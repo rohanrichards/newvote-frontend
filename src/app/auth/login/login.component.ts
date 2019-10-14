@@ -47,14 +47,6 @@ export class LoginComponent implements OnInit {
                 description: 'Fill in your account information to sign in.'
             });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         this.adminLogin = this.route.snapshot.queryParamMap.get('admin') ? true : false;
     }
 

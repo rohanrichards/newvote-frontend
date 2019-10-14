@@ -79,13 +79,6 @@ export class ProposalListComponent implements OnInit {
         this.subscribeToProposalStore();
         this.subscribeToSuggestionStore();
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
 

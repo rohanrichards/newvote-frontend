@@ -75,14 +75,6 @@ export class TopicCreateComponent implements OnInit {
             return { fileItem, form };
         };
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
-
         this.organizationService.get().subscribe(org => this.organization = org);
     }
 

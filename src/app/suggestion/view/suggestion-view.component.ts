@@ -64,13 +64,6 @@ export class SuggestionViewComponent implements OnInit {
             this.fetchData(ID);
         });
 
-        this.route.data
-            .pipe(
-                take(1)
-            )
-            .subscribe((res) => {
-                this.meta.updateRouteLevel(res.level);
-            })
     }
 
     subscribeToSuggestionStore(id: string) {
