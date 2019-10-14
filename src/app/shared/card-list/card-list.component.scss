@@ -1,142 +1,151 @@
 .mat-progress-spinner {
-	display: inline-block;
-	vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .message {
-	margin-left: 0.5em;
+    margin-left: 0.5em;
 }
 
 .item-card-row {
-	margin-bottom: 32px;
+    margin-bottom: 32px;
 }
 
 .item-card {
+    .no-image-container {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        margin-top: -1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 5px 5px 0px 0px;
+    }
 
-	.image-container {
-		// min-height: 200px;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: cover;
-	}
-	cursor: pointer;
+    .image-container {
+        // min-height: 200px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    cursor: pointer;
 }
 
 .error-card {
-	margin-bottom: 32px;
-	border: 1px solid red;
-	cursor: default;
+    margin-bottom: 32px;
+    border: 1px solid red;
+    cursor: default;
 }
 
 .empty-card {
-	cursor: default;
+    cursor: default;
 }
 
 .empty-card-wrap {
-	background-color: white;
-	padding: 1rem;
+    background-color: white;
+    padding: 1rem;
 }
 
 .empty-card-blank {
-	margin-top: 0.5rem;
-	margin-left: auto;
-	margin-right: auto;
-	min-height: 200px;
-	max-height: 350px;
-	width: 50%;
-	background-image: url("assets/logo-no-text.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
-	margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 200px;
+    max-height: 350px;
+    width: 50%;
+    background-image: url("assets/logo-no-text.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-bottom: 0.5rem;
 }
 
 .empty-title-container {
-	text-align: center;
+    text-align: center;
 }
 
 .status {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 .button-panel {
-	text-align: right;
-	background-color: rgba(0, 0, 0, 0.6);
-	border-top-right-radius: inherit;
-	border-top-left-radius: inherit;
+    text-align: right;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
 }
 
 .truncate-container {
-	max-width: 100%;
-	overflow: hidden;
+    max-width: 100%;
+    overflow: hidden;
 
-	.truncate {
-		display: inline-block;
-		max-width: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+    .truncate {
+        display: inline-block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 mat-card-actions {
-	padding: 16px 8px 8px;
-	margin-bottom: 0 !important;
+    padding: 16px 8px 8px;
+    margin-bottom: 0 !important;
 }
 
 .child-container {
-	margin-top: 32px;
+    margin-top: 32px;
 }
 
 .mini-proposal {
-	padding: 8px;
-	border-radius: 4px;
-	border: 1px solid rgba(0, 0, 0, 0.6);
-	margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    margin-bottom: 8px;
 
-	.point-area {
-		cursor: pointer;
-	}
-	.point-area:hover {
-		background-color: white;
-	}
+    .point-area {
+        cursor: pointer;
+    }
 
-	.likert-container {
-		margin: 0 !important;
-	}
+    .point-area:hover {
+        background-color: white;
+    }
 
-	.mini-proposal-image {
-		min-width: 88px;
-		min-height: 88px;
-		max-height: 88px;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: cover;
-		margin: 8px;
-		border-radius: 3px;
-	}
+    .likert-container {
+        margin: 0 !important;
+    }
 
-	.mat-title {
-		margin: 0px;
-		padding: 8px !important;
-	}
+    .mini-proposal-image {
+        min-width: 88px;
+        min-height: 88px;
+        max-height: 88px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 8px;
+        border-radius: 3px;
+    }
 
-	.buttons {
-		margin: 8px 8px 16px;
-	}
+    .mat-title {
+        margin: 0px;
+        padding: 8px !important;
+    }
+
+    .buttons {
+        margin: 8px 8px 16px;
+    }
 }
 
 .soft-deleted {
-	border: 2px solid red;
+    border: 2px solid red;
 }
 
 
 .suggestion-image-container {
-	padding: 0;
+    padding: 0;
 }
 
 .suggestion-image {
-	max-width: 75px;
-	height: auto;
-	object-fit: contain;
+    max-width: 75px;
+    height: auto;
+    object-fit: contain;
 }

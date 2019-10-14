@@ -166,41 +166,51 @@
         <div *ngIf="solution"
             fxFlex.gt-sm="690px"
             fxFlex.gt-md="800px">
-            <mat-toolbar color="primary"
-                fxLayoutAlign="center center"
-                [style.margin-bottom]="'1rem'">
-                <span class="mat-headline center-span"
-                    [style.margin-bottom]="'0'">Vote on Actions</span>
-            </mat-toolbar>
-            <app-card-list path="/proposals"
-                [items$]="proposals$"
-                model="Action"
-                [showChildren]="false"
-                [showParent]="true"
-                parentPath="/solutions"
-                parentPropName="solutions"
-                (restore)="admin.onRestore($event, 'Proposal')"
-                (softDelete)="admin.onSoftDelete($event, 'Proposal')"
-                (delete)="admin.onDelete($event, 'Proposal')"
-                (vote)="onVote($event, 'Proposal')">
-            </app-card-list>
-            <div>
-                <mat-toolbar color="primary"
-                    fxLayoutAlign="center center"
-                    [style.margin-bottom]="'1rem'">
-                    <h2 class="mat-headline center-text">Community Suggestions
-                    </h2>
-                </mat-toolbar>
-                <app-card-list path="/suggestions"
-                    [@fadeIn]=true
-                    [items$]=suggestions$
-                    model="Suggestion"
-                    (restore)="admin.onRestore($event, 'Suggestion')"
-                    (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
-                    (delete)="admin.onDelete($event, 'Suggestion')"
-                    (vote)="onVote($event, 'Suggestion')">
-                </app-card-list>
-            </div>
+
+            <mat-accordion [style.margin-bottom.rem]="1"
+                [style.display]="'block'"
+                [multi]="true">
+                <mat-expansion-panel class="accordion-header"
+                    [expanded]="proposals.length && proposals.length > 0">
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Vote on Actions
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/proposals"
+                        [items$]="proposals$"
+                        model="Action"
+                        [showChildren]="false"
+                        [showParent]="true"
+                        parentPath="/solutions"
+                        parentPropName="solutions"
+                        (restore)="admin.onRestore($event, 'Proposal')"
+                        (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                        (delete)="admin.onDelete($event, 'Proposal')"
+                        (vote)="onVote($event, 'Proposal')">
+                    </app-card-list>
+                </mat-expansion-panel>
+                <mat-expansion-panel class="accordion-header"
+                    [expanded]="!!suggestions.length && suggestions.length > 0">
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Community Suggestions
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/suggestions"
+                        [@fadeIn]=true
+                        [items$]=suggestions$
+                        model="Suggestion"
+                        (restore)="admin.onRestore($event, 'Suggestion')"
+                        (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                        (delete)="admin.onDelete($event, 'Suggestion')"
+                        (vote)="onVote($event, 'Suggestion')">
+                    </app-card-list>
+                </mat-expansion-panel>
+            </mat-accordion>
+
             <div *ngIf="auth.isVerified()">
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"

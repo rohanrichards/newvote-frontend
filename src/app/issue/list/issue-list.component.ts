@@ -89,7 +89,7 @@ export class IssueListComponent implements OnInit {
     topicParam: string; // filtered topics can be preselected via url param
 
     loadingState: string;
-    suggestions: any[];
+    suggestions: any[] = [];
     suggestions$: Observable<Suggestion[]>;
 
     constructor(
@@ -188,6 +188,11 @@ export class IssueListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'issue')
                 }),
             )
+
+        this.suggestions$.subscribe((res) => {
+            if (!res.length) return false;
+            this.suggestions = res;
+        })
     }
 
     subscribeToTopicStore() {
