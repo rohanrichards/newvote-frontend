@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
-import { AdminGuard } from '@app/core/authentication/admin.guard'
-import { OwnerGuard } from '@app/core/authentication/owner.guard'
 import { ModeratorGuard } from '@app/core/authentication/moderator.guard'
 
 import { extract } from '@app/core'

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
 import { AuthenticationGuard } from '@app/core/authentication/authentication.guard'
-import { OwnerGuard } from '@app/core/authentication/owner.guard'
 import { SuggestionCreatorGuard } from '@app/core/authentication/suggestion-creator.guard'
 
 import { extract } from '@app/core'

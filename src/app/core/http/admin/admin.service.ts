@@ -51,9 +51,9 @@ export class AdminService {
     getTitle(object: any, model: string): string {
 
         if (model === 'Issue' || model === 'Topic') {
-            return object.name;
+            return object.name
         }
-        return object.title;
+        return object.title
     }
 
     onDelete(object: EntityTypes, model: string, redirectRoute?: string) {
