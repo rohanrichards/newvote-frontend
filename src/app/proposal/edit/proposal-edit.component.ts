@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize } from 'rxjs/operators'
+import { map, startWith, finalize, take } from 'rxjs/operators'
 import { merge, assign, cloneDeep } from 'lodash'
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model'

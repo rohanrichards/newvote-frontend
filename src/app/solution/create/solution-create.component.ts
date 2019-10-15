@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize, delay } from 'rxjs/operators';
+import { map, startWith, finalize, delay, take } from 'rxjs/operators';
 
 import { ISolution } from '@app/core/models/solution.model';
 import { IIssue } from '@app/core/models/issue.model';

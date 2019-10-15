@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { map, startWith, finalize } from 'rxjs/operators';
+import { map, startWith, finalize, take } from 'rxjs/operators';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service';
 import { OrganizationService } from '@app/core/http/organization/organization.service';
@@ -204,7 +204,7 @@ export class OrganizationCreateComponent implements OnInit {
                         this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
                     } else {
                         this.openSnackBar('Succesfully created', 'OK');
-                        this.router.navigate([`/organizations`], { queryParams: { forceUpdate: true } });
+                        this.router.navigate([`/organizations`]);
                     }
                 });
         };

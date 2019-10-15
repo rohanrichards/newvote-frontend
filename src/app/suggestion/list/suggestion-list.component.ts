@@ -58,7 +58,8 @@ export class SuggestionListComponent implements OnInit {
         public snackBar: MatSnackBar,
         private meta: MetaService,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
@@ -79,6 +80,7 @@ export class SuggestionListComponent implements OnInit {
                 },
                 err => err
             );
+
     }
 
     getSuggestions() {

@@ -11,39 +11,39 @@ import { SuggestionCreateComponent } from './create/suggestion-create.component'
 import { SuggestionEditComponent } from './edit/suggestion-edit.component';
 
 const routes: Routes = [
-	{
-		path: '',
-		component: SuggestionListComponent,
-		data: { title: extract('All Suggestions') } // anyone can list
-	},
-	{
-		path: 'create',
-		component: SuggestionCreateComponent,
-		data: { title: extract('New Suggestion') },
-		canActivate: [AuthenticationGuard] // any authenticated users can create
-	},
-	{
-		path: 'create/:model/:id',
-		component: SuggestionCreateComponent,
-		data: { title: extract('New Suggestion') },
-		canActivate: [AuthenticationGuard]
-	},
-	{
-		path: 'edit/:id',
-		component: SuggestionEditComponent,
-		data: { title: extract('Edit Suggestion') },
-		canActivate: [SuggestionCreatorGuard]  // only the owner of the suggestion or the org can edit
-	},
-	{
-		path: ':id',
-		component: SuggestionViewComponent,
-		data: { title: extract('Suggestion') },
-	},
+    {
+        path: '',
+        component: SuggestionListComponent,
+        data: { title: extract('All Suggestions'), level: 'root' } // anyone can list
+    },
+    {
+        path: 'create',
+        component: SuggestionCreateComponent,
+        data: { title: extract('New Suggestion'), level: 'child' },
+        canActivate: [AuthenticationGuard] // any authenticated users can create
+    },
+    {
+        path: 'create/:model/:id',
+        component: SuggestionCreateComponent,
+        data: { title: extract('New Suggestion'), level: 'child' },
+        canActivate: [AuthenticationGuard]
+    },
+    {
+        path: 'edit/:id',
+        component: SuggestionEditComponent,
+        data: { title: extract('Edit Suggestion'), level: 'child' },
+        canActivate: [SuggestionCreatorGuard]  // only the owner of the suggestion or the org can edit
+    },
+    {
+        path: ':id',
+        component: SuggestionViewComponent,
+        data: { title: extract('Suggestion'), level: 'child' },
+    },
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-	providers: []
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    providers: []
 })
 export class SuggestionRoutingModule { }

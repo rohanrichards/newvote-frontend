@@ -5,7 +5,7 @@ import { MatAutocomplete, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { switchMap, startWith, finalize, debounceTime, filter, map, delay } from 'rxjs/operators';
+import { switchMap, startWith, finalize, debounceTime, filter, map, delay, take } from 'rxjs/operators';
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
 import { SearchService } from '@app/core/http/search/search.service';

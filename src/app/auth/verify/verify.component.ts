@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
@@ -41,7 +41,6 @@ export class VerifyComponent implements OnInit {
                 title: `Verify account`,
                 description: 'The NewVote platform requires mobile verification'
             });
-
     }
 
     sendCode() {
@@ -74,7 +73,7 @@ export class VerifyComponent implements OnInit {
                 // route out here
                 this.route.queryParams.subscribe(
                     params => {
-                        this.router.navigate([params.redirect || '/'], { replaceUrl: true });
+                        this.router.navigate([params.redirect || '/'], { replaceUrl: true, state: { login: true } });
                     }
                 );
             }, (res: any) => {
