@@ -2,10 +2,10 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
-import { Router, ActivatedRoute, NavigationStart } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { Observable, of } from 'rxjs'
-import { switchMap, startWith, finalize, debounceTime, filter, map, delay, take } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { finalize, map, delay } from 'rxjs/operators'
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { SearchService } from '@app/core/http/search/search.service'
@@ -59,10 +59,10 @@ export class SuggestionCreateComponent implements OnInit {
         private meta: MetaService
     ) {
         // this.filteredObjects = this.suggestionForm.get('parent').valueChanges
-        // 	.pipe(
-        // 		debounceTime(300),
-        // 		switchMap((search: string) => search ? this.searchService.all({ query: search }) : of([]))
-        // 	);
+        //     .pipe(
+        //         debounceTime(300),
+        //         switchMap((search: string) => search ? this.searchService.all({ query: search }) : of([]))
+        //     );
     }
 
     ngOnInit() {
@@ -74,21 +74,21 @@ export class SuggestionCreateComponent implements OnInit {
             })
 
         // this.route.paramMap.subscribe(params => {
-        // 	const ID = params.get('id');
-        // 	if (ID) {
-        // 		this.solutionService.view({ id: ID, orgs: [] })
-        // 			.pipe(finalize(() => { this.isLoading = false; }))
-        // 			.subscribe(solution => {
-        // 				if (solution) {
-        // 					this.solutions.push(solution);
-        // 				}
-        // 			});
-        // 	} else {
-        // 		this.isLoading = false;
-        // 	}
+        //     const ID = params.get('id');
+        //     if (ID) {
+        //         this.solutionService.view({ id: ID, orgs: [] })
+        //             .pipe(finalize(() => { this.isLoading = false; }))
+        //             .subscribe(solution => {
+        //                 if (solution) {
+        //                     this.solutions.push(solution);
+        //                 }
+        //             });
+        //     } else {
+        //         this.isLoading = false;
+        //     }
         // });
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
         this.isLoading = false
 
         // if there is a suggestion type
@@ -110,7 +110,7 @@ export class SuggestionCreateComponent implements OnInit {
                 delay(0)
             )
             .subscribe((routeData) => {
-                const { params, state } = routeData
+                const { state } = routeData
                 if (state._id || state.parentTitle || state.type) {
                     if (state._id) {
                         this.suggestionForm.patchValue({ parent: state._id })
@@ -128,7 +128,7 @@ export class SuggestionCreateComponent implements OnInit {
     onSave() {
         this.isLoading = true
 
-        this.suggestion = <Suggestion> this.suggestionForm.value
+        this.suggestion = this.suggestionForm.value as Suggestion
         this.suggestion.organizations = this.organization
         this.suggestion.media = this.mediaList
 
@@ -184,7 +184,7 @@ export class SuggestionCreateComponent implements OnInit {
         })
     }
 
-    parentRemoved(solution: any) {
+    parentRemoved() {
         this.selectedObject = null
         this.suggestionForm.get('parentType').setValue(null)
         this.parentInput.nativeElement.value = ''

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion } from '@app/core/models/suggestion.model'
 import { Vote } from '@app/core/models/vote.model'
 import { trigger } from '@angular/animations'
 import { fadeIn } from '@app/shared/animations/fade-animations'
@@ -86,7 +85,7 @@ export class SuggestionViewComponent implements OnInit {
                             description: suggestion.description
                         })
                 },
-                (err) => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
     }
 
@@ -97,7 +96,7 @@ export class SuggestionViewComponent implements OnInit {
         this.suggestionService.update({ id: this.suggestion._id, entity })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                (t) => this.openSnackBar('Succesfully updated', 'OK'),
+                () => this.openSnackBar('Succesfully updated', 'OK'),
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
@@ -113,7 +112,7 @@ export class SuggestionViewComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { finalize, take } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { TopicService } from '@app/core/http/topic/topic.service'
@@ -78,7 +76,7 @@ export class TopicViewComponent implements OnInit {
             }
         })
             .subscribe(
-                (issues: Issue[]) => this.issues = issues,
+                (issues: Issue[]) => { this.issues = issues },
                 (err) => err
             )
     }

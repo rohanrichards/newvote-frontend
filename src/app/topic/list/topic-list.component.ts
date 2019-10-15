@@ -6,11 +6,9 @@ import { TopicService } from '@app/core/http/topic/topic.service'
 import { MetaService } from '@app/core/meta.service'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
-import { assign } from 'lodash'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { Topic } from '@app/core/models/topic.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
-import { take } from 'rxjs/operators'
 
 @Component({
     selector: 'app-topic',
@@ -24,7 +22,7 @@ export class TopicListComponent implements OnInit {
     loadingState: string;
     headerTitle = 'Browse By Topic';
     headerText = 'Topics arrange the current issues into broader categories. \
-		Select a topic below to learn more about it and explore relevant issues being discussed.';
+        Select a topic below to learn more about it and explore relevant issues being discussed.';
 
     headerButtons = [{
         text: 'New Topic',
@@ -69,13 +67,13 @@ export class TopicListComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
         this.topicService.list({ orgs: [], params })
             .subscribe(
-                topics => this.stateService.setLoadingState(AppState.complete),
-                err => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.complete),
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
     }
 
     subscribeToTopicStore() {
         this.topicQuery.selectAll()
-            .subscribe((topics: Topic[]) => this.topics = topics)
+            .subscribe((topics: Topic[]) => { this.topics = topics })
     }
 }

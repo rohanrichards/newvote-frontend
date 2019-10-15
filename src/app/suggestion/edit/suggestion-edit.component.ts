@@ -4,8 +4,7 @@ import { Location } from '@angular/common'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { Observable, of } from 'rxjs'
-import { switchMap, startWith, finalize, debounceTime, take } from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { merge } from 'lodash'
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
@@ -93,7 +92,7 @@ export class SuggestionEditComponent implements OnInit {
     subscribeToOrganizationStore() {
         this.organizationQuery.select()
             .subscribe(
-                (organization: Organization) => this.organization = organization,
+                (organization: Organization) => { this.organization = organization },
                 (err) => err
             )
     }
@@ -124,7 +123,7 @@ export class SuggestionEditComponent implements OnInit {
         this.isLoading = true
 
         const suggestion = cloneDeep(this.suggestion)
-        merge(suggestion, <Suggestion> this.suggestionForm.value)
+        merge(suggestion, this.suggestionForm.value as Suggestion)
         suggestion.organizations = this.organization
         suggestion.media = this.mediaList
 

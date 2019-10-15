@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, delay, take } from 'rxjs/operators'
+import { map, startWith, finalize } from 'rxjs/operators'
 
 import { ISolution } from '@app/core/models/solution.model'
 import { IIssue } from '@app/core/models/issue.model'
@@ -119,9 +119,9 @@ export class SolutionCreateComponent implements OnInit {
         }
 
         this.issueService.list({})
-            .subscribe(issues => this.allIssues = issues)
+            .subscribe(issues => { this.allIssues = issues })
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
 
     }
 
@@ -156,7 +156,7 @@ export class SolutionCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.solution = <ISolution>this.solutionForm.value
+        this.solution = this.solutionForm.value as ISolution
         this.solution.issues = this.issues
         this.solution.organizations = this.organization
 
@@ -172,15 +172,16 @@ export class SolutionCreateComponent implements OnInit {
             // this.imageUrl = 'assets/solution-default.png';
             return this.solutionService.create({ entity: this.solution })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(t => {
+                .subscribe(
+                    (t) => {
 
-                    if (this.suggestionTemplate) {
-                        this.hideSuggestion()
-                    }
+                        if (this.suggestionTemplate) {
+                            this.hideSuggestion()
+                        }
 
-                    this.openSnackBar('Succesfully created', 'OK')
-                    this.router.navigate([`/solutions/${t._id}`])
-                },
+                        this.openSnackBar('Succesfully created', 'OK')
+                        this.router.navigate([`/solutions/${t._id}`])
+                    },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 )
         }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
-import { finalize, take } from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { MatSnackBar } from '@angular/material'
 
 import { ITopic } from '@app/core/models/topic.model'
@@ -75,7 +75,7 @@ export class TopicCreateComponent implements OnInit {
             return { fileItem, form }
         }
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     onFileChange(event: any) {
@@ -93,7 +93,7 @@ export class TopicCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.topic = <ITopic>this.topicForm.value
+        this.topic = this.topicForm.value as ITopic
         this.topic.organizations = this.organization
 
         this.uploader.onCompleteAll = () => {

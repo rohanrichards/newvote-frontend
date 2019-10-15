@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
-import { finalize, take } from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { MatSnackBar } from '@angular/material'
@@ -39,7 +39,6 @@ export class TopicEditComponent implements OnInit {
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
         public snackBar: MatSnackBar,
-        private router: Router,
         private location: Location,
         private meta: MetaService,
         private topicQuery: TopicQuery
@@ -88,7 +87,7 @@ export class TopicEditComponent implements OnInit {
             return { fileItem, form }
         }
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     subscribeToTopicStore(id: string) {
@@ -143,7 +142,7 @@ export class TopicEditComponent implements OnInit {
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
-                merge(topic, <ITopic>this.topicForm.value)
+                merge(topic, this.topicForm.value as ITopic)
                 const res = JSON.parse(response)
                 topic.imageUrl = res.secure_url
                 this.updateWithApi(topic)
@@ -153,7 +152,7 @@ export class TopicEditComponent implements OnInit {
         if (this.newImage) {
             this.uploader.uploadAll()
         } else {
-            merge(topic, <ITopic>this.topicForm.value)
+            merge(topic, this.topicForm.value as ITopic)
             this.updateWithApi(topic)
         }
     }
@@ -162,7 +161,7 @@ export class TopicEditComponent implements OnInit {
         this.topicService.update({ id: topic._id, entity: topic })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                (t) => {
+                () => {
                     this.openSnackBar('Succesfully updated', 'OK')
                     // this.router.navigate(['/issues']);
                     this.location.back()

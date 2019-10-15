@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SolutionService } from '@app/core/http/solution/solution.service'
@@ -21,13 +20,11 @@ import { AppState } from '@app/core/models/state.model'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { Suggestion } from '@app/core/models/suggestion.model'
 import { OrganizationService } from '@app/core'
-import { assign, cloneDeep } from 'lodash'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
-import { Proposal } from '@app/core/models/proposal.model'
 import { Observable } from 'rxjs'
 
 @Component({
@@ -72,7 +69,7 @@ export class SolutionViewComponent implements OnInit {
 
     ngOnInit() {
         this.organizationService.get()
-            .subscribe((org) => this.organization = org)
+            .subscribe((org) => { this.organization = org })
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -109,7 +106,7 @@ export class SolutionViewComponent implements OnInit {
                             image: solution.imageUrl
                         })
                 },
-                (err) => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
     }
 
@@ -166,7 +163,7 @@ export class SolutionViewComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
@@ -206,7 +203,7 @@ export class SolutionViewComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData
+        const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
         suggestion.parent = this.solution._id
@@ -214,12 +211,14 @@ export class SolutionViewComponent implements OnInit {
         suggestion.parentTitle = this.solution.title
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
-                this.openSnackBar('Succesfully created', 'OK')
-            },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
+            .subscribe(
+                () => {
+                    this.openSnackBar('Succesfully created', 'OK')
+                },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
+            )
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

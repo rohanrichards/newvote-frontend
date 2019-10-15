@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser'
 import {
-    Component, OnInit, Input, Output, EventEmitter,
+    Component, OnInit, Output, EventEmitter,
     ViewChild
 } from '@angular/core'
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router'
@@ -169,7 +169,7 @@ export class ShellComponent implements OnInit {
         const splitHostname = hostname.split('.')
         splitHostname[0] = 'app'
 
-        const newHostName = splitHostname.join('.')
+        // const newHostName = splitHostname.join('.')
         // window.location.href = `http://${newHostName}:${window.location.port}`;
         // window.open(`http://${newHostName}:${window.location.port}`, '_self');
         this.router.navigate(['/landing'])

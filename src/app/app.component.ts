@@ -1,9 +1,9 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core'
-import { Router, NavigationEnd, ActivatedRoute, Scroll } from '@angular/router'
+import { Component, OnInit, NgZone } from '@angular/core'
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { TranslateService } from '@ngx-translate/core'
-import { merge, Subscription, asyncScheduler } from 'rxjs'
-import { filter, map, mergeMap, tap, observeOn } from 'rxjs/operators'
+import { merge, asyncScheduler } from 'rxjs'
+import { filter, map, mergeMap, observeOn } from 'rxjs/operators'
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga'
 
 import { environment } from '@env/environment'

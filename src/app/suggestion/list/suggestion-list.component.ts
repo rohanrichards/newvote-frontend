@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { finalize, take } from 'rxjs/operators'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { MatSnackBar } from '@angular/material'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -17,8 +17,7 @@ import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
-import { Observable, combineLatest } from 'rxjs'
-import { assign } from 'lodash'
+import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 
@@ -38,8 +37,8 @@ export class SuggestionListComponent implements OnInit {
     isLoading: boolean;
     headerTitle = 'Make a new contribution';
     headerText = 'Suggestions are a way for you to contribute to the discussion. \
-		Start by checking if your idea already exists in the suggestion list below (vote on it to increase exposure). \
-		If your idea doesn\'t already exist, use the create button below, the community leader will be notified.';
+        Start by checking if your idea already exists in the suggestion list below (vote on it to increase exposure). \
+        If your idea doesn\'t already exist, use the create button below, the community leader will be notified.';
 
     headerButtons = [{
         text: 'New Suggestion',
@@ -99,13 +98,11 @@ export class SuggestionListComponent implements OnInit {
 
     fetchData() {
         const isModerator = this.auth.isModerator()
-        const isVerified = this.auth.isVerified()
-        let id
-
+        // let id;
         // Send user data so we can return only the users suggestions
-        if (this.auth.credentials && this.auth.credentials.user) {
-            id = this.auth.credentials.user._id
-        }
+        // if (this.auth.credentials && this.auth.credentials.user) {
+        //     id = this.auth.credentials.user._id
+        // }
 
         const options = {
             params: {
@@ -115,8 +112,8 @@ export class SuggestionListComponent implements OnInit {
 
         this.suggestionService.list(options)
             .subscribe(
-                (res) => this.stateService.setLoadingState(AppState.complete),
-                (err) => this.stateService.setLoadingState(AppState.error)
+                () => this.stateService.setLoadingState(AppState.complete),
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 
@@ -131,7 +128,7 @@ export class SuggestionListComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((res) => {
                 this.updateEntityVoteData(item, model, res.voteValue)
                 this.openSnackBar('Your vote was recorded', 'OK')
