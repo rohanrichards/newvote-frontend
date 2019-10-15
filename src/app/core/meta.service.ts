@@ -89,7 +89,7 @@ export class MetaService {
         this.meta.updateTag({ name: 'og:image', content: image })
         this.meta.updateTag({ name: 'description', content: description })
         this.meta.updateTag({ name: 'og:description', content: description })
-        window.prerenderReady = true
+        // window.prerenderReady = true
         console.log('set prerender ready')
     }
 

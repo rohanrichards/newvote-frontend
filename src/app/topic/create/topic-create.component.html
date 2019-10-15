@@ -1,55 +1,56 @@
 <app-loader [isLoading]="isLoading"
-	size="1.5"></app-loader>
+    size="1.5"></app-loader>
 
 <div class="container"
     fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
-		<form [formGroup]="topicForm"
-		    fxLayout="column"
-		    (ngSubmit)="onSave()"
-		    novalidate>
-			<mat-form-field>
-				<!-- {{topicForm.status}} -->
-				<input matInput
-				    placeholder="Enter a name for the topic"
-				    formControlName="name"
-				    required>
-				<mat-error *ngIf="topicForm.hasError('required', ['name'])">
-					Email is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="topicForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+            <mat-form-field>
+                <!-- {{topicForm.status}} -->
+                <input matInput
+                    placeholder="Enter a name for the topic"
+                    formControlName="name"
+                    required>
+                <mat-error *ngIf="topicForm.hasError('required', ['name'])">
+                    Email is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="description"></quill-editor>
-			</div>
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="description"></quill-editor>
+            </div>
 
-			<input type="file"
-			    id="fileupload"
-			    #fileInput
-			    ng2FileSelect
-			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
-			    formControlName="imageUrl"
-			    hidden
-			    autoComplete="off" />
+            <input type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange($event)"
+                formControlName="imageUrl"
+                hidden
+                autoComplete="off" />
 
-			<div class="image-select"
-			 fxLayout="column">
-				<button mat-flat-button
-				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
-				<div class="image-preview"
-				    *ngIf="imageUrl">
-					<img [src]="imageUrl" />
-				</div>
-				<mat-hint>Images look best at approximately 200x200 pixels</mat-hint>
-			</div>
+            <div class="image-select"
+                fxLayout="column">
+                <button mat-flat-button
+                    color="primary"
+                    (click)="fileInput.click()">Select Image</button>
+                <div class="image-preview"
+                    *ngIf="imageUrl">
+                    <img [src]="imageUrl" />
+                </div>
+                <mat-hint>Images look best at approximately 200x200 pixels
+                </mat-hint>
+            </div>
 
-			<button mat-flat-button
-			    type="submit"
-			    [disabled]="!topicForm.valid"
-			    color="primary">Create</button>
-		</form>
-	</mat-card>
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!topicForm.valid"
+                color="primary">Create</button>
+        </form>
+    </mat-card>
 </div>

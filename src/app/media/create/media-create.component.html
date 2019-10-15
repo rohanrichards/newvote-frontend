@@ -1,96 +1,96 @@
 <app-loader [isLoading]="isLoading"
- size="1.5"></app-loader>
+    size="1.5"></app-loader>
 
 <div class="container"
- fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	 fxFlex="100">
-		<form [formGroup]="mediaForm"
-		 fxLayout="column"
-		 (ngSubmit)="onSave()"
-		 novalidate>
+    fxLayoutAlign="center center">
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="mediaForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
 
-			<mat-form-field>
-				<!-- {{mediaForm.status}} -->
-				<input matInput
-				 placeholder="Enter the URL for the media"
-				 formControlName="url"
-				 required>
-				<mat-error *ngIf="mediaForm.hasError('required', ['url'])">
-					URL is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+            <mat-form-field>
+                <!-- {{mediaForm.status}} -->
+                <input matInput
+                    placeholder="Enter the URL for the media"
+                    formControlName="url"
+                    required>
+                <mat-error *ngIf="mediaForm.hasError('required', ['url'])">
+                    URL is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field>
-				<!-- {{mediaForm.status}} -->
-				<input matInput
-				 placeholder="Enter a name for the media"
-				 formControlName="title"
-				 required>
-				<mat-error *ngIf="mediaForm.hasError('required', ['title'])">
-					Title is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+            <mat-form-field>
+                <!-- {{mediaForm.status}} -->
+                <input matInput
+                    placeholder="Enter a name for the media"
+                    formControlName="title"
+                    required>
+                <mat-error *ngIf="mediaForm.hasError('required', ['title'])">
+                    Title is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field class="example-chip-list">
-				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let issue of issues"
-					 [selectable]="false"
-					 [removable]="true"
-					 (removed)="issueRemoved(issue)">
-						{{issue.name}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Linked issues..."
-					 #issueInput
-					 formControlName="issues"
-					 [matAutocomplete]="auto"
-					 [matChipInputFor]="chipList"
-					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					 [matChipInputAddOnBlur]="true"
-					 >
-				</mat-chip-list>
-				<mat-autocomplete #auto="matAutocomplete"
-				 (optionSelected)="issueSelected($event)">
-					<mat-option *ngFor="let issue of filteredIssues | async"
-					 [value]="issue">
-						{{issue.name}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #chipList>
+                    <mat-chip *ngFor="let issue of issues"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="issueRemoved(issue)">
+                        {{issue.name}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Linked issues..."
+                        #issueInput
+                        formControlName="issues"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="issueSelected($event)">
+                    <mat-option *ngFor="let issue of filteredIssues | async"
+                        [value]="issue">
+                        {{issue.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="description"></quill-editor>
-			</div>
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="description"></quill-editor>
+            </div>
 
-			<input type="file"
-			 id="fileupload"
-			 #fileInput
-			 ng2FileSelect
-			 [uploader]="uploader"
-			 (change)="onFileChange($event)"
-			 formControlName="image"
-			 hidden
-			 autoComplete="off" />
+            <input type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange($event)"
+                formControlName="image"
+                hidden
+                autoComplete="off" />
 
-			<div class="image-select"
-			 fxLayout="column">
-				<button mat-flat-button
-				 type="button"
-				 color="primary"
-				 (click)="fileInput.click()">Select Image</button>
-				<div class="image-preview"
-				 *ngIf="imageUrl">
-					<img [src]="imageUrl" />
+            <div class="image-select"
+                fxLayout="column">
+                <button mat-flat-button
+                    type="button"
+                    color="primary"
+                    (click)="fileInput.click()">Select Image</button>
+                <div class="image-preview"
+                    *ngIf="imageUrl">
+                    <img [src]="imageUrl" />
 
-				</div>
-				<mat-hint>Media images look best at approximately 300x300 pixels</mat-hint>
-			</div>
+                </div>
+                <mat-hint>Media images look best at approximately 300x300 pixels
+                </mat-hint>
+            </div>
 
-			<button mat-flat-button
-			 type="submit"
-			 [disabled]="!mediaForm.valid || issues.length === 0"
-			 color="primary">Create</button>
-		</form>
-	</mat-card>
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!mediaForm.valid || issues.length === 0"
+                color="primary">Create</button>
+        </form>
+    </mat-card>
 </div>

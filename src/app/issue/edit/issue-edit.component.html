@@ -1,96 +1,96 @@
 <app-loader [isLoading]="isLoading"
- size="1.5"></app-loader>
+    size="1.5"></app-loader>
 <div class="container"
- fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	 fxFlex="100">
-		<form [formGroup]="issueForm"
-		 fxLayout="column"
-		 (ngSubmit)="onSave()"
-		 novalidate>
-			<mat-form-field>
-				<!-- {{issueForm.status}} -->
-				<input matInput
-				 placeholder="Enter a name for the issue"
-				 formControlName="name"
-				 required>
-				<mat-error *ngIf="issueForm.hasError('required', ['name'])">
-					Email is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+    fxLayoutAlign="center center">
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="issueForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+            <mat-form-field>
+                <!-- {{issueForm.status}} -->
+                <input matInput
+                    placeholder="Enter a name for the issue"
+                    formControlName="name"
+                    required>
+                <mat-error *ngIf="issueForm.hasError('required', ['name'])">
+                    Email is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field class="example-chip-list">
-				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let topic of topics"
-					 [selectable]="false"
-					 [removable]="true"
-					 (removed)="topicRemoved(topic)">
-						{{topic.name}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Select a topic..."
-					 #topicInput
-					 formControlName="topics"
-					 [matAutocomplete]="auto"
-					 [matChipInputFor]="chipList"
-					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					 [matChipInputAddOnBlur]="true"
-					 >
-				</mat-chip-list>
-				<mat-autocomplete #auto="matAutocomplete"
-				 (optionSelected)="topicSelected($event)">
-					<mat-option *ngFor="let topic of filteredTopics | async"
-					 [value]="topic">
-						{{topic.name}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #chipList>
+                    <mat-chip *ngFor="let topic of topics"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="topicRemoved(topic)">
+                        {{topic.name}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select a topic..."
+                        #topicInput
+                        formControlName="topics"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="topicSelected($event)">
+                    <mat-option *ngFor="let topic of filteredTopics | async"
+                        [value]="topic">
+                        {{topic.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="description"></quill-editor>
-			</div>
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="description"></quill-editor>
+            </div>
 
-			<input type="file"
-			 id="fileupload"
-			 #fileInput
-			 ng2FileSelect
-			 [uploader]="uploader"
-			 (change)="onFileChange($event)"
-			 hidden
-			 autoComplete="off" />
+            <input type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange($event)"
+                hidden
+                autoComplete="off" />
 
-			<input matInput
-			 hidden
-			 placeholder="Enter a name for the issue"
-			 formControlName="imageUrl"
-			 required>
+            <input matInput
+                hidden
+                placeholder="Enter a name for the issue"
+                formControlName="imageUrl"
+                required>
 
-			<div class="image-select"
-			 fxLayout="column"
-			 fxFlex
-			 fxLayoutAlign="center center">
-				<div fxLayout="row">
-					<button mat-flat-button
-					 type="button"
-					 color="primary"
-					 (click)="fileInput.click()">Select Image</button>
+            <div class="image-select"
+                fxLayout="column"
+                fxFlex
+                fxLayoutAlign="center center">
+                <div fxLayout="row">
+                    <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="fileInput.click()">Select Image</button>
 
-					<button mat-flat-button
-					 type="button"
-					 color="primary"
-					 (click)="onResetImage()">Reset Image</button>
-				</div>
-				<div class="image-preview"
-				 *ngIf="imageUrl">
-					<img [src]="imageUrl" />
-				</div>
-				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
-			</div>
+                    <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="onResetImage()">Reset Image</button>
+                </div>
+                <div class="image-preview"
+                    *ngIf="imageUrl">
+                    <img [src]="imageUrl" />
+                </div>
+                <mat-hint>Images look best at approximately 1500x400 pixels
+                </mat-hint>
+            </div>
 
-			<button mat-flat-button
-			 type="submit"
-			 [disabled]="!issueForm.valid || isLoading"
-			 color="primary">Update</button>
-		</form>
-	</mat-card>
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!issueForm.valid || isLoading"
+                color="primary">Update</button>
+        </form>
+    </mat-card>
 </div>
