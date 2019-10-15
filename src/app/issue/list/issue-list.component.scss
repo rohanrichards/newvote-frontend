@@ -124,6 +124,32 @@ q {
     padding: 1rem;
 }
 
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        background: white;
+        padding-top: 1rem !important;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
+}
+
 @media only screen and (max-width: 600px) {
 
     .skeleton-card-list {
