@@ -14,7 +14,7 @@ export interface IIssue {
 }
 
 export class Issue implements IIssue {
-	public constructor(
+    public constructor(
 		public _id: string = '',
 		public name: string = '',
 		public imageUrl: string = '',
@@ -22,5 +22,5 @@ export class Issue implements IIssue {
 		public organizations: any = {},
 		public topics: Array<any> = [],
 		public softDeleted: boolean = false
-	) { }
+    ) { }
 }

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 
 @Component({
-	selector: 'app-skeleton-text-bar',
-	templateUrl: './skeleton-text-bar.component.html',
-	styleUrls: ['./skeleton-text-bar.component.scss']
+    selector: 'app-skeleton-text-bar',
+    templateUrl: './skeleton-text-bar.component.html',
+    styleUrls: ['./skeleton-text-bar.component.scss']
 })
 export class SkeletonTextBarComponent implements OnInit {
 

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 
 @Component({
-  selector: 'app-skeleton-wide-card',
-  templateUrl: './skeleton-wide-card.component.html',
-  styleUrls: ['./skeleton-wide-card.component.scss']
+    selector: 'app-skeleton-wide-card',
+    templateUrl: './skeleton-wide-card.component.html',
+    styleUrls: ['./skeleton-wide-card.component.scss']
 })
 export class SkeletonWideCardComponent implements OnInit {
 

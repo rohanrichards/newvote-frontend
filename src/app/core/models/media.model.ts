@@ -14,7 +14,7 @@ export interface IMedia {
 }
 
 export class Media implements IMedia {
-	public constructor(
+    public constructor(
 		public _id: string = '',
 		public url: string = '',
 		public title: string = '',
@@ -24,5 +24,5 @@ export class Media implements IMedia {
 		public organizations: any = {},
 		public softDeleted: boolean = false,
 		public issues: Array<any> = []
-	) { }
+    ) { }
 }

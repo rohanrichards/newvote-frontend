@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
 
 export interface IButtonTemplate {
 	text: string;
@@ -10,9 +10,9 @@ export interface IButtonTemplate {
 }
 
 @Component({
-	selector: 'app-header-bar',
-	templateUrl: './header-bar.component.html',
-	styleUrls: ['./header-bar.component.scss']
+    selector: 'app-header-bar',
+    templateUrl: './header-bar.component.html',
+    styleUrls: ['./header-bar.component.scss']
 })
 export class HeaderBarComponent implements OnInit {
 

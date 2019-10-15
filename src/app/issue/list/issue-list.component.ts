@@ -149,7 +149,7 @@ export class IssueListComponent implements OnInit {
 
     fetchData() {
         const isModerator = this.auth.isModerator()
-        const params = { showDeleted: isModerator ? true : '' };
+        const params = { showDeleted: isModerator ? true : '' }
 
         const issueObs: Observable<any[]> = this.issueService.list({ params })
         const topicObs: Observable<any[]> = this.topicService.list({ params })
@@ -258,9 +258,9 @@ export class IssueListComponent implements OnInit {
             .subscribe(t => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     openSnackBar(message: string, action: string) {

@@ -81,7 +81,7 @@ export class SuggestionEditComponent implements OnInit {
         this.suggestionQuery.selectEntity(id)
             .subscribe(
                 (suggestion) => {
-                    if (!suggestion) return false;
+                    if (!suggestion) return false
                     this.suggestion = suggestion
                     this.updateForm(suggestion)
                     this.updateTags(suggestion)
@@ -124,7 +124,7 @@ export class SuggestionEditComponent implements OnInit {
         this.isLoading = true
 
         const suggestion = cloneDeep(this.suggestion)
-        merge(suggestion, <Suggestion>this.suggestionForm.value)
+        merge(suggestion, <Suggestion> this.suggestionForm.value)
         suggestion.organizations = this.organization
         suggestion.media = this.mediaList
 
@@ -146,22 +146,22 @@ export class SuggestionEditComponent implements OnInit {
         })
     }
 
-    // imported data from query is read only, so need to copy / replace 
+    // imported data from query is read only, so need to copy / replace
     // array on each update
     mediaAdded(event: any) {
         if (event.value) {
-            let mediaList = [...this.mediaList, event.value];
-            this.mediaList = mediaList;
+            const mediaList = [...this.mediaList, event.value]
+            this.mediaList = mediaList
             this.mediaInput.nativeElement.value = ''
         }
     }
 
     mediaRemoved(media: any) {
-        let mediaList = [...this.mediaList];
+        const mediaList = [...this.mediaList]
         const index = mediaList.indexOf(media)
         if (index > -1) {
-            mediaList.splice(index, 1);
-            this.mediaList = mediaList;
+            mediaList.splice(index, 1)
+            this.mediaList = mediaList
         }
     }
 

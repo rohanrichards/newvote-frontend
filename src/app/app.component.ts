@@ -1,18 +1,17 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute, Scroll } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { merge, Subscription, asyncScheduler } from 'rxjs';
-import { filter, map, mergeMap, tap, observeOn } from 'rxjs/operators';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core'
+import { Router, NavigationEnd, ActivatedRoute, Scroll } from '@angular/router'
+import { Title } from '@angular/platform-browser'
+import { TranslateService } from '@ngx-translate/core'
+import { merge, Subscription, asyncScheduler } from 'rxjs'
+import { filter, map, mergeMap, tap, observeOn } from 'rxjs/operators'
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga'
 
-import { environment } from '@env/environment';
-import { Logger, I18nService, OrganizationService } from '@app/core';
-import { Organization } from './core/models/organization.model';
-import { MetaService } from './core/meta.service';
+import { environment } from '@env/environment'
+import { Logger, I18nService, OrganizationService } from '@app/core'
+import { Organization } from './core/models/organization.model'
+import { MetaService } from './core/meta.service'
 
-
-const log = new Logger('App');
+const log = new Logger('App')
 
 @Component({
     selector: 'app-root',
@@ -36,50 +35,50 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         // Setup logger
         if (environment.production) {
-            Logger.enableProductionMode();
+            Logger.enableProductionMode()
         }
 
-        log.debug('init');
+        log.debug('init')
 
-        this.angulartics2GoogleAnalytics.eventTrack(environment.version, { category: 'App initialized' });
+        this.angulartics2GoogleAnalytics.eventTrack(environment.version, { category: 'App initialized' })
 
         // Setup translations
-        this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages);
+        this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages)
 
-        const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
+        const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd))
 
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)
             .pipe(
                 map(() => {
-                    let route = this.activatedRoute;
+                    let route = this.activatedRoute
                     while (route.firstChild) {
-                        route = route.firstChild;
+                        route = route.firstChild
                     }
-                    return route;
+                    return route
                 }),
                 filter(route => route.outlet === 'primary'),
                 mergeMap(route => route.data),
                 observeOn(asyncScheduler)
             )
             .subscribe(event => {
-                const title = event['title'];
+                const title = event.title
                 if (title) {
-                    this.titleService.setTitle(this.translateService.instant(title));
+                    this.titleService.setTitle(this.translateService.instant(title))
                 }
 
-                const level = event['level'];
+                const level = event.level
                 if (level) {
-                    this.meta.updateRouteLevel(level);
+                    this.meta.updateRouteLevel(level)
                 }
-            });
+            })
 
         this.organizationService.get().subscribe((org: Organization) => {
             if (!org) {
                 // debugger;
-                this.router.navigate(['/landing']);
+                this.router.navigate(['/landing'])
             }
-        });
+        })
     }
 
 }

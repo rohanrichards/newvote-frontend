@@ -44,8 +44,7 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 
-import { NgxCaptchaModule } from 'ngx-captcha';
-
+import { NgxCaptchaModule } from 'ngx-captcha'
 
 @NgModule({
     imports: [

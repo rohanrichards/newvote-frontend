@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { Observable, of } from 'rxjs'
+import { map, catchError, tap } from 'rxjs/operators'
 
-import { ISolution, Solution } from '@app/core/models/solution.model';
-import { handleError } from '@app/core/http/errors';
-import { VoteService } from '../vote/vote.service';
-import { SolutionStore } from './solution.state';
-
+import { ISolution, Solution } from '@app/core/models/solution.model'
+import { handleError } from '@app/core/http/errors'
+import { VoteService } from '../vote/vote.service'
+import { SolutionStore } from './solution.state'
 
 const routes = {
-    list: (c: SolutionContext) => `/solutions`,
+    list: (c: SolutionContext) => '/solutions',
     view: (c: SolutionContext) => `/solutions/${c.id}`,
-    create: (c: SolutionContext) => `/solutions`,
+    create: (c: SolutionContext) => '/solutions',
     update: (c: SolutionContext) => `/solutions/${c.id}`,
     delete: (c: SolutionContext) => `/solutions/${c.id}`
-};
+}
 
 export interface SolutionContext {
     // The solution's category: 'dev', 'explicit'...
@@ -37,45 +36,45 @@ export class SolutionService {
 
     list(context: SolutionContext): Observable<any[]> {
         // create blank params object
-        let params = new HttpParams();
+        let params = new HttpParams()
 
         // if we have params provided in the context, replace with those
         if (context.params) {
             // context.params is assumed to have a format similar to
             // { topicId: [id], search: [search terms], ...}
-            params = new HttpParams({ fromObject: context.params });
+            params = new HttpParams({ fromObject: context.params })
         }
 
         return this.httpClient
             .get(routes.list(context), { params })
             .pipe(
                 tap((data: any) => {
-                    this.voteService.populateStore(data);
-                    this.solutionStore.add(data);
+                    this.voteService.populateStore(data)
+                    this.solutionStore.add(data)
                 }),
                 map((res: Array<any>) => res),
                 catchError(handleError),
-            );
+            )
     }
 
     view(context: SolutionContext): Observable<any> {
 
-        let params = new HttpParams();
+        let params = new HttpParams()
 
         if (context.params) {
-            params = new HttpParams({ fromObject: context.params });
+            params = new HttpParams({ fromObject: context.params })
         }
 
         return this.httpClient
             .get(routes.view(context), { params })
             .pipe(
                 tap((res: any) => {
-                    this.voteService.addEntityVote(res);
-                    this.solutionStore.add(res);
+                    this.voteService.addEntityVote(res)
+                    this.solutionStore.add(res)
                 }),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     create(context: SolutionContext): Observable<any> {
@@ -85,7 +84,7 @@ export class SolutionService {
                 tap((solution: Solution) => this.solutionStore.add(solution)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     update(context: SolutionContext): Observable<any> {
@@ -95,7 +94,7 @@ export class SolutionService {
                 tap((solution: Solution) => this.solutionStore.update(solution._id, solution)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     delete(context: SolutionContext): Observable<any> {
@@ -105,10 +104,10 @@ export class SolutionService {
                 tap((solution: Solution) => this.solutionStore.remove(solution._id)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     updateSolutionVote(id: string, solution: any) {
-        this.solutionStore.update(id, solution);
+        this.solutionStore.update(id, solution)
     }
 }

@@ -1,16 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
+import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { optimizeImage } from '@app/shared/helpers/cloudinary';
-import { MetaService } from '@app/core/meta.service';
-import { Observable } from 'rxjs';
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { optimizeImage } from '@app/shared/helpers/cloudinary'
+import { MetaService } from '@app/core/meta.service'
+import { Observable } from 'rxjs'
 
 @Component({
-	selector: 'app-card-list',
-	templateUrl: './card-list.component.html',
-	styleUrls: ['./card-list.component.scss']
+    selector: 'app-card-list',
+    templateUrl: './card-list.component.html',
+    styleUrls: ['./card-list.component.scss']
 })
 export class CardListComponent implements OnInit {
 
@@ -40,47 +40,46 @@ export class CardListComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.organizationName = this.meta.organization.name;
+	    this.organizationName = this.meta.organization.name
 	}
 
 	onDelete(item: any, event: any) {
-		event.stopPropagation();
-		this.delete.emit(item);
+	    event.stopPropagation()
+	    this.delete.emit(item)
 	}
 
 	onSoftDelete(item: any, event: any) {
-		event.stopPropagation();
-		this.softDelete.emit(item);
+	    event.stopPropagation()
+	    this.softDelete.emit(item)
 	}
 
 	onVote(event: any) {
-		this.vote.emit(event);
+	    this.vote.emit(event)
 	}
 
 	onChildVote(event: any) {
-		this.childVote.emit(event);
+	    this.childVote.emit(event)
 	}
 
-
 	onRestore(item: any, event: any) {
-		event.stopPropagation();
-		this.restore.emit(item);
+	    event.stopPropagation()
+	    this.restore.emit(item)
 	}
 
 	getSuggestionIcon(suggestionType: string, min?: boolean) {
-		const suggestionIcons = ['assets/solution-icon', 'assets/issue-icon', 'assets/action-icon'];
-		const iconType = ['solution', 'issue', 'action'];
+	    const suggestionIcons = ['assets/solution-icon', 'assets/issue-icon', 'assets/action-icon']
+	    const iconType = ['solution', 'issue', 'action']
 
-		if (min) {
-			const iconIndex = iconType.findIndex((item) => item === suggestionType);
-			return `${suggestionIcons[iconIndex]}-min.png`;
-		}
+	    if (min) {
+	        const iconIndex = iconType.findIndex((item) => item === suggestionType)
+	        return `${suggestionIcons[iconIndex]}-min.png`
+	    }
 
-		const iconIndex = iconType.findIndex((item) => item === suggestionType);
-		return `${suggestionIcons[iconIndex]}.png`;
+	    const iconIndex = iconType.findIndex((item) => item === suggestionType)
+	    return `${suggestionIcons[iconIndex]}.png`
 	}
 
 	trackByFn(index: any, item: any) {
-		return index; // or item.id
+	    return index // or item.id
 	  }
 }

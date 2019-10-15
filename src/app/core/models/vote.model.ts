@@ -9,10 +9,10 @@ export interface IVote {
 }
 
 export class Vote implements IVote {
-	public constructor(
+    public constructor(
 		public object: string = '',
 		public objectType: string = '',
 		public voteValue: number = 0,
 		public organizationId: string = ''
-	) { }
+    ) { }
 }

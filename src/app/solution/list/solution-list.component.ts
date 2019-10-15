@@ -108,7 +108,7 @@ export class SolutionListComponent implements OnInit {
 
     fetchData() {
         const isModerator = this.auth.isModerator()
-        const options = { 'showDeleted': isModerator ? true : '' }
+        const options = { showDeleted: isModerator ? true : '' }
 
         const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
         const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options })
@@ -182,9 +182,9 @@ export class SolutionListComponent implements OnInit {
             .subscribe(t => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

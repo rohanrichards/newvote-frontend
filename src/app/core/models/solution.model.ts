@@ -15,7 +15,7 @@ export interface ISolution {
 }
 
 export class Solution implements ISolution {
-	public constructor(
+    public constructor(
 		public _id: string = '',
 		public title: string = '',
 		public imageUrl: string = '',
@@ -26,5 +26,5 @@ export class Solution implements ISolution {
 		public votes: any = {},
 		public softDeleted: boolean = false,
 		public issues: Array<any> = []
-	) { }
+    ) { }
 }

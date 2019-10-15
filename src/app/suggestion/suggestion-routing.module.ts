@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AuthenticationGuard } from '@app/core/authentication/authentication.guard';
-import { OwnerGuard } from '@app/core/authentication/owner.guard';
-import { SuggestionCreatorGuard } from '@app/core/authentication/suggestion-creator.guard';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
+import { AuthenticationGuard } from '@app/core/authentication/authentication.guard'
+import { OwnerGuard } from '@app/core/authentication/owner.guard'
+import { SuggestionCreatorGuard } from '@app/core/authentication/suggestion-creator.guard'
 
-import { extract } from '@app/core';
-import { SuggestionListComponent } from './list/suggestion-list.component';
-import { SuggestionViewComponent } from './view/suggestion-view.component';
-import { SuggestionCreateComponent } from './create/suggestion-create.component';
-import { SuggestionEditComponent } from './edit/suggestion-edit.component';
+import { extract } from '@app/core'
+import { SuggestionListComponent } from './list/suggestion-list.component'
+import { SuggestionViewComponent } from './view/suggestion-view.component'
+import { SuggestionCreateComponent } from './create/suggestion-create.component'
+import { SuggestionEditComponent } from './edit/suggestion-edit.component'
 
 const routes: Routes = [
     {
@@ -32,14 +32,14 @@ const routes: Routes = [
         path: 'edit/:id',
         component: SuggestionEditComponent,
         data: { title: extract('Edit Suggestion'), level: 'child' },
-        canActivate: [SuggestionCreatorGuard]  // only the owner of the suggestion or the org can edit
+        canActivate: [SuggestionCreatorGuard] // only the owner of the suggestion or the org can edit
     },
     {
         path: ':id',
         component: SuggestionViewComponent,
         data: { title: extract('Suggestion'), level: 'child' },
     },
-];
+]
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],

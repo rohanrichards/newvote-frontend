@@ -9,11 +9,11 @@ export interface ITopic {
 }
 
 export class Topic implements ITopic {
-	public constructor(
+    public constructor(
 		public _id: string = '',
 		public name: string = '',
 		public imageUrl: string = '',
 		public description: string = '',
 		public organizations: any = {}
-	) { }
+    ) { }
 }

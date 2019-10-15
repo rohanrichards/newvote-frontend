@@ -142,7 +142,7 @@ export class ProposalEditComponent implements OnInit {
     subscribeToProposalStore(id: string) {
         this.proposalQuery.selectEntity(id)
             .subscribe((proposal: Proposal) => {
-                if (!proposal) return false;
+                if (!proposal) return false
                 this.proposal = proposal
                 this.updateForm(proposal)
                 this.updateTags(proposal)
@@ -200,7 +200,7 @@ export class ProposalEditComponent implements OnInit {
 
     onSave() {
         const proposal = cloneDeep(this.proposal)
-        merge(proposal, <IProposal>this.proposalForm.value)
+        merge(proposal, <IProposal> this.proposalForm.value)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {

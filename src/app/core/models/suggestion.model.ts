@@ -16,7 +16,7 @@ export interface ISuggestion {
 }
 
 export class Suggestion implements ISuggestion {
-	public constructor(
+    public constructor(
 		public _id: string = '',
 		public title: string = '',
 		public type: string = '',
@@ -28,5 +28,5 @@ export class Suggestion implements ISuggestion {
 		public parentTitle: string = '',
 		public parentType: string = '',
 		public softDeleted: boolean = false
-	) { }
+    ) { }
 }

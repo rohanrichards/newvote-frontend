@@ -133,15 +133,15 @@ export class OrganizationEditComponent implements OnInit {
 
     ngOnInit() {
         this.isLoading = true
-        this.subscribeToOrganizationStore();
+        this.subscribeToOrganizationStore()
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
             this.organizationService.view({ id: ID, orgs: [] })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe((
                     res: Organization) => res,
-                    (err) => err
-                );
+                (err) => err
+                )
         })
 
         this.uploader = new FileUploader(this.uploaderOptions)
@@ -151,7 +151,6 @@ export class OrganizationEditComponent implements OnInit {
             this.userService.list({}).subscribe(users => this.allUsers = users)
         }
 
-
         this.setAuthtypeValidators()
     }
 
@@ -159,18 +158,18 @@ export class OrganizationEditComponent implements OnInit {
         this.organizationQuery.select()
             .subscribe(
                 (organization: Organization) => {
-                    if (!organization) return false;
-                    this.organization = organization;
-                    this.updateForm(organization);
-                    this.updateTags(organization);
+                    if (!organization) return false
+                    this.organization = organization
+                    this.updateForm(organization)
+                    this.updateTags(organization)
                 },
                 (err) => err
             )
     }
 
     updateForm(storeOrganization: Organization) {
-        // copy store data to prevent readonly values from store 
-        const organization = cloneDeep(storeOrganization);
+        // copy store data to prevent readonly values from store
+        const organization = cloneDeep(storeOrganization)
 
         this.backgroundImage.src = organization.imageUrl
         this.iconImage.src = organization.iconUrl
@@ -299,9 +298,9 @@ export class OrganizationEditComponent implements OnInit {
     }
 
     updateWithApi() {
-        const organization = cloneDeep(this.organization);
+        const organization = cloneDeep(this.organization)
         // update this.org with form data and the owner manually
-        merge(organization, <Organization>this.organizationForm.value)
+        merge(organization, <Organization> this.organizationForm.value)
         organization.owner = this.owner
         organization.futureOwner = this.futureOwner
         organization.imageUrl = this.backgroundImage.src
@@ -313,9 +312,9 @@ export class OrganizationEditComponent implements OnInit {
                 this.openSnackBar('Succesfully updated', 'OK')
                 this.location.back()
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     openSnackBar(message: string, action: string) {
