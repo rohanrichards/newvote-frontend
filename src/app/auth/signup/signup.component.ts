@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MetaService } from '@app/core/meta.service';
 
 import { environment } from '@env/environment';
@@ -55,6 +55,7 @@ export class SignupComponent implements OnInit {
         this.verificationCode = this.route.snapshot.params.id
             ? this.route.snapshot.params.id
             : '';
+
     }
 
     signup() {
@@ -68,7 +69,7 @@ export class SignupComponent implements OnInit {
                 this.resetCaptcha();
                 log.debug(`${credentials.user.username} successfully logged in`);
                 this.route.queryParams.subscribe(
-                    params => this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true })
+                    params => this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true, state: { login: true } })
                 );
             }, (res: any) => {
                 log.debug(`Signup error: ${res}`);

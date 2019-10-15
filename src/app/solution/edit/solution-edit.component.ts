@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize } from 'rxjs/operators'
+import { map, startWith, finalize, take } from 'rxjs/operators'
 import { merge } from 'lodash'
 
 import { ISolution, Solution } from '@app/core/models/solution.model'
@@ -98,6 +98,7 @@ export class SolutionEditComponent implements OnInit {
                 }
             ]
         }
+
 
         this.uploader = new FileUploader(uploaderOptions)
 

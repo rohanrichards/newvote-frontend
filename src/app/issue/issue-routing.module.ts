@@ -11,29 +11,29 @@ import { IssueCreateComponent } from './create/issue-create.component';
 import { IssueEditComponent } from './edit/issue-edit.component';
 
 const routes: Routes = [
-	{ path: '', component: IssueListComponent, data: { title: extract('All Issues') } },
-	{
-		path: 'create',
-		component: IssueCreateComponent,
-		data: { title: extract('New Issue') },
-		canActivate: [ModeratorGuard]
-	},
-	{
-		path: 'edit/:id',
-		component: IssueEditComponent,
-		data: { title: extract('Edit Issue') },
-		canActivate: [ModeratorGuard]
-	},
-	{
-		path: ':id',
-		component: IssueViewComponent,
-		data: { title: extract('Issue') }
-	},
+    { path: '', component: IssueListComponent, data: { title: extract('All Issues'), level: 'root' } },
+    {
+        path: 'create',
+        component: IssueCreateComponent,
+        data: { title: extract('New Issue'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: 'edit/:id',
+        component: IssueEditComponent,
+        data: { title: extract('Edit Issue'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: ':id',
+        component: IssueViewComponent,
+        data: { title: extract('Issue'), level: 'child' }
+    },
 ];
 
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-	providers: []
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    providers: []
 })
 export class IssueRoutingModule { }
