@@ -50,7 +50,6 @@ export class OrganizationViewComponent implements OnInit {
             const ID = params.get('id');
             this.getOrganization(ID);
         });
-<<<<<<< HEAD
     }
 
     getOrganization(id: string, forceUpdate?: boolean) {
@@ -93,51 +92,6 @@ export class OrganizationViewComponent implements OnInit {
         });
     }
 
-=======
-
-    }
-
-    getOrganization(id: string, forceUpdate?: boolean) {
-        this.stateService.setLoadingState(AppState.loading);
-
-        this.organizationService.view({ id: id, orgs: [], forceUpdate })
-            .subscribe(
-                (organization: Organization) => {
-                    this.organization = organization;
-                    this.meta.updateTags(
-                        {
-                            title: `${organization.name} Community`,
-                            description: 'Viewing a community page.'
-                        });
-                    return this.stateService.setLoadingState(AppState.complete);
-
-                },
-                (error) => {
-                    return this.stateService.setLoadingState(AppState.serverError);
-                }
-            )
-    }
-
-    onDelete() {
-        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-            width: '250px',
-            data: {
-                title: `Delete Organization?`,
-                message: `Are you sure you want to delete ${this.organization.name}? This action cannot be undone.`
-            }
-        });
-
-        dialogRef.afterClosed().subscribe((confirm: boolean) => {
-            if (confirm) {
-                this.organizationService.delete({ id: this.organization._id }).subscribe(() => {
-                    this.openSnackBar('Succesfully deleted', 'OK');
-                    this.router.navigate(['/organizations'], { queryParams: { forceUpdate: true } });
-                });
-            }
-        });
-    }
-
->>>>>>> staging
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 4000,
