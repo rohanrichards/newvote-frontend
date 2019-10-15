@@ -7,20 +7,17 @@ import { Observable } from 'rxjs'
  */
 @Injectable()
 export class OganizationHeaderInterceptor implements HttpInterceptor {
-	_host: string;
-	_subdomain: string;
+    _host: string;
+    _subdomain: string;
 
-	constructor() {
-	}
-
-	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-	    this._host = document.location.host
-	    this._subdomain = this._host.split('.')[0]
-	    if (this._subdomain) {
-	        const req = request.clone({ setParams: { organization: this._subdomain } })
-	        return next.handle(req)
-	    } else {
-	        return next.handle(request)
-	    }
-	}
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this._host = document.location.host
+        this._subdomain = this._host.split('.')[0]
+        if (this._subdomain) {
+            const req = request.clone({ setParams: { organization: this._subdomain } })
+            return next.handle(req)
+        } else {
+            return next.handle(request)
+        }
+    }
 }

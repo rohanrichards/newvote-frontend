@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { Observable, of, forkJoin } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
 
@@ -72,7 +72,7 @@ export class SearchService {
 
         return forkJoin([topicObs, issueObs, solutionObs, proposalObs]).pipe(
             map((resultsArray: Array<any>) => {
-                return [].concat.apply([], resultsArray)
+                return [].concat([...resultsArray])
             })
         )
     }

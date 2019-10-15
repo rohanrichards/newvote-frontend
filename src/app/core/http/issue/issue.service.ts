@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http'
-import { Observable, of, throwError } from 'rxjs'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { IIssue, Issue } from '@app/core/models/issue.model'
@@ -8,9 +8,9 @@ import { handleError } from '@app/core/http/errors'
 import { IssueStore } from './issue.store'
 
 const routes = {
-    list: (c: IssueContext) => '/issues',
+    list: () => '/issues',
     view: (c: IssueContext) => `/issues/${c.id}`,
-    create: (c: IssueContext) => '/issues',
+    create: () => '/issues',
     update: (c: IssueContext) => `/issues/${c.id}`,
     delete: (c: IssueContext) => `/issues/${c.id}`
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { ISolution, Solution } from '@app/core/models/solution.model'
@@ -9,9 +9,9 @@ import { VoteService } from '../vote/vote.service'
 import { SolutionStore } from './solution.state'
 
 const routes = {
-    list: (c: SolutionContext) => '/solutions',
+    list: () => '/solutions',
     view: (c: SolutionContext) => `/solutions/${c.id}`,
-    create: (c: SolutionContext) => '/solutions',
+    create: () => '/solutions',
     update: (c: SolutionContext) => `/solutions/${c.id}`,
     delete: (c: SolutionContext) => `/solutions/${c.id}`
 }
@@ -46,7 +46,7 @@ export class SolutionService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((data: any) => {
                     this.voteService.populateStore(data)
@@ -79,7 +79,7 @@ export class SolutionService {
 
     create(context: SolutionContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((solution: Solution) => this.solutionStore.add(solution)),
                 map((res: any) => res),

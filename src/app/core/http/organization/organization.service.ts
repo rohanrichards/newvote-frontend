@@ -1,8 +1,7 @@
-import { Injectable, Inject } from '@angular/core'
-import { DOCUMENT } from '@angular/common'
+import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable, Subscriber, of, BehaviorSubject } from 'rxjs'
-import { map, finalize, catchError, tap } from 'rxjs/operators'
+import { Observable, BehaviorSubject } from 'rxjs'
+import { map, catchError, tap } from 'rxjs/operators'
 
 import { Organization } from '@app/core/models/organization.model'
 import { handleError } from '@app/core/http/errors'
@@ -10,9 +9,9 @@ import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
 
 const routes = {
-    list: (c: OrganizationContext) => '/organizations',
+    list: () => '/organizations',
     view: (c: OrganizationContext) => `/organizations/${c.id}`,
-    create: (c: OrganizationContext) => '/organizations',
+    create: () => '/organizations',
     update: (c: OrganizationContext) => `/organizations/${c.id}`,
     updateOwner: (c: OrganizationContext) => `/organizations/owner/${c.id}`,
     delete: (c: OrganizationContext) => `/organizations/${c.id}`
@@ -49,12 +48,15 @@ export class OrganizationService {
         // params = new HttpParams({ fromObject: paramObject });
 
         if (!this.$org) {
-            this.$org = <BehaviorSubject<any>> new BehaviorSubject({})
+            this.$org = new BehaviorSubject({}) as BehaviorSubject<any>
 
             this.httpClient
                 .get('/organizations/' + this._subdomain)
                 .pipe(
-                    catchError(handleError)
+                    catchError((err) => {
+                        this.$org.next(null)
+                        return handleError(err)
+                    })
                 ).subscribe(
                     (org: Organization) => {
                         this.communityStore.add(org)
@@ -62,9 +64,6 @@ export class OrganizationService {
                         this._org = org
                         this.$org.next(org)
                         this.joinWebSocketRoom(org.url)
-                    },
-                    (err) => {
-                        this.$org.next(null)
                     }
                 )
         }

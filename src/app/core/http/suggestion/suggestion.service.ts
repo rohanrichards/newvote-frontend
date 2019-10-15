@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http'
-import { Observable, of } from 'rxjs'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model'
@@ -9,9 +9,9 @@ import { VoteService } from '../vote/vote.service'
 import { SuggestionStore } from './suggestion.store'
 
 const routes = {
-    list: (c: SuggestionContext) => '/suggestions',
+    list: () => '/suggestions',
     view: (c: SuggestionContext) => `/suggestions/${c.id}`,
-    create: (c: SuggestionContext) => '/suggestions',
+    create: () => '/suggestions',
     update: (c: SuggestionContext) => `/suggestions/${c.id}`,
     delete: (c: SuggestionContext) => `/suggestions/${c.id}`
 }
@@ -43,7 +43,7 @@ export class SuggestionService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((data: Suggestion[]) => {
                     this.voteService.populateStore(data)
@@ -68,7 +68,7 @@ export class SuggestionService {
 
     create(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((res: Suggestion) => this.suggestionStore.add(res)),
                 map((res: any) => res),

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { ITopic, Topic } from '@app/core/models/topic.model'
@@ -8,9 +8,9 @@ import { handleError } from '@app/core/http/errors'
 import { TopicStore } from './topic.store'
 
 const routes = {
-    list: (c: TopicContext) => '/topics',
+    list: () => '/topics',
     view: (c: TopicContext) => `/topics/${c.id}`,
-    create: (c: TopicContext) => '/topics',
+    create: () => '/topics',
     update: (c: TopicContext) => `/topics/${c.id}`,
     delete: (c: TopicContext) => `/topics/${c.id}`
 }
@@ -44,7 +44,7 @@ export class TopicService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((topics: Topic[]) => this.topicStore.add(topics)),
                 map((res: Array<any>) => res),
@@ -65,7 +65,7 @@ export class TopicService {
 
     create(context: TopicContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((topic: Topic) => this.topicStore.add(topic)),
                 map((res: any) => res),

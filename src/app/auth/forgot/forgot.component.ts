@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
-import { finalize, take } from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { MetaService } from '@app/core/meta.service'
 
 import { environment } from '@env/environment'
-import { Logger, I18nService, AuthenticationService } from '@app/core'
+import { Logger, AuthenticationService } from '@app/core'
 
 const log = new Logger('Forgot')
 
@@ -28,7 +28,6 @@ export class ForgotComponent implements OnInit {
     constructor(private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private i18nService: I18nService,
         private authenticationService: AuthenticationService,
         private meta: MetaService
     ) {
@@ -59,7 +58,7 @@ export class ForgotComponent implements OnInit {
                 this.forgotForm.markAsPristine()
                 this.isLoading = false
             }))
-            .subscribe(credentials => {
+            .subscribe(() => {
                 // set state to show reset form
                 this.state = 'sent'
             }, (res: any) => {

@@ -8,9 +8,9 @@ import { MediaStore } from './media.store'
 import { VoteService } from '../vote/vote.service'
 
 const routes = {
-    list: (c: MediaContext) => '/media',
+    list: () => '/media',
     view: (c: MediaContext) => `/media/${c.id}`,
-    create: (c: MediaContext) => '/media',
+    create: () => '/media',
     update: (c: MediaContext) => `/media/${c.id}`,
     delete: (c: MediaContext) => `/media/${c.id}`,
     meta: (c: MediaContext) => `/meta/${c.uri}`

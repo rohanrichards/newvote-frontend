@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 
 enum AppState {
-	loading = 'loading',
-	loaded = 'loaded',
-	serverError = 'serverError',
-	error = 'error',
-	complete = 'complete'
+    loading = 'loading',
+    loaded = 'loaded',
+    serverError = 'serverError',
+    error = 'error',
+    complete = 'complete'
 }
 
 @Injectable({
@@ -14,20 +14,18 @@ enum AppState {
 })
 export class StateService {
 
-	_loadingState = new BehaviorSubject<AppState>(AppState.loading);
-	loadingState$ = this._loadingState.asObservable();
+    _loadingState = new BehaviorSubject<AppState>(AppState.loading);
+    loadingState$ = this._loadingState.asObservable();
 
-	constructor() { }
+    get loadingState() {
+        return this._loadingState.getValue()
+    }
 
-	get loadingState() {
-	    return this._loadingState.getValue()
-	}
+    set loadingState(state: string) {
+        this._loadingState.next(AppState[`${state}`])
+    }
 
-	set loadingState(state: string) {
-	    this._loadingState.next(AppState[`${state}`])
-	}
-
-	setLoadingState(state: string) {
-	    this.loadingState = state
-	}
+    setLoadingState(state: string) {
+        this.loadingState = state
+    }
 }

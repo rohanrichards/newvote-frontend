@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model'
@@ -9,9 +9,9 @@ import { VoteService } from '../vote/vote.service'
 import { ProposalStore } from './proposal.store'
 
 const routes = {
-    list: (c: ProposalContext) => '/proposals',
+    list: () => '/proposals',
     view: (c: ProposalContext) => `/proposals/${c.id}`,
-    create: (c: ProposalContext) => '/proposals',
+    create: () => '/proposals',
     update: (c: ProposalContext) => `/proposals/${c.id}`,
     delete: (c: ProposalContext) => `/proposals/${c.id}`
 }

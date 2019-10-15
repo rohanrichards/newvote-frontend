@@ -10,7 +10,7 @@ const log = new Logger('OwnerGuard')
 export class OwnerGuard implements CanActivate {
 
     constructor(private router: Router,
-		private authenticationService: AuthenticationService) { }
+        private authenticationService: AuthenticationService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         if (this.authenticationService.isOwner()) {

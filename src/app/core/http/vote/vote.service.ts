@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable, of } from 'rxjs'
-import { map, catchError, tap } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { map, catchError } from 'rxjs/operators'
 
 import { Vote } from '@app/core/models/vote.model'
 import { handleError } from '@app/core/http/errors'
-import { OrganizationListComponent } from '@app/organization/list/organization-list.component'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '../organization/organization.service'
 import { VoteStore } from './vote.store'
 import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
-import { SuggestionService } from '../suggestion/suggestion.service'
 
 const routes = {
-    list: (c: VoteContext) => '/votes',
+    list: () => '/votes',
     view: (c: VoteContext) => `/votes/${c.id}`,
-    create: (c: VoteContext) => '/votes',
+    create: () => '/votes',
     update: (c: VoteContext) => `/votes/${c.id}`,
     delete: (c: VoteContext) => `/votes/${c.id}`
 }
@@ -41,7 +39,7 @@ export class VoteService {
         private orgService: OrganizationService,
         private voteStore: VoteStore,
     ) {
-        this.orgService.get().subscribe(org => this._org = org)
+        this.orgService.get().subscribe(org => { this._org = org })
 
         this.socket.fromEvent('vote')
             .subscribe((vote: any) => {
@@ -61,7 +59,7 @@ export class VoteService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 map((res: Array<any>) => res),
                 catchError(handleError)
@@ -80,7 +78,7 @@ export class VoteService {
     create(context: VoteContext): Observable<any> {
         context.entity.organizationId = this._org._id
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 map((res: any) => res),
                 catchError(handleError)
@@ -109,18 +107,18 @@ export class VoteService {
     addEntityVote(data: any) {
         const entity = cloneDeep(data)
 
-        let votes = <any>[]
+        let votes = [] as any
         const vote = entity.votes
         vote._id = entity._id
 
         // if (entity.proposals) {
-        // 	const proposals = entity.proposals.slice().reduce((prev: any, curr: any) => {
-        // 		let pItems = prev || [];
-        // 		curr.votes._id = curr._id;
-        // 		return pItems.concat(curr.votes);
-        // 	}, []);
+        //     const proposals = entity.proposals.slice().reduce((prev: any, curr: any) => {
+        //         let pItems = prev || [];
+        //         curr.votes._id = curr._id;
+        //         return pItems.concat(curr.votes);
+        //     }, []);
 
-        // 	votes = votes.concat(proposals);
+        //     votes = votes.concat(proposals);
         // }
 
         votes = votes.concat(vote)
@@ -131,27 +129,27 @@ export class VoteService {
     populateStore(data: any) {
         // copy server object to remove references
         const serverData = cloneDeep(data)
-        let votes
-        // Reduce starts with an empty array [], and iterates through each
+
+        // Reduce starts with an empty array[], and iterates through each
         // item in the serverData array and appending voteMetaData Objects
 
         // If there is a proposal object, we concat those objects to the main array
         // resulting in an array of voteMetaData Objects composed from all different entity types
-        votes = serverData.reduce((previous: any, current: any) => {
+        const votes = serverData.reduce((previous: any, current: any) => {
             // either start with or reuse accumulated data
             let items = previous || []
 
             // if (current.proposals) {
-            // 	const proposals = current.proposals.slice().reduce((prev:any, curr:any) => {
-            // 		let pItems = prev || [];
-            // 		curr.votes._id = curr._id;
-            // 		return pItems.concat(curr.votes);
-            // 	}, []);
+            //     const proposals = current.proposals.slice().reduce((prev: any, curr: any) => {
+            //         let pItems = prev || [];
+            //         curr.votes._id = curr._id;
+            //         return pItems.concat(curr.votes);
+            //     }, []);
 
-            // 	items = items.concat(proposals);
+            //     items = items.concat(proposals);
             // }
 
-            // Entity types can have no vote meta data if newly created so apply here
+            //     Entity types can have no vote meta data if newly created so apply here
             current.votes._id = current._id
             items = items.concat(current.votes)
             return items

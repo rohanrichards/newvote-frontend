@@ -26,6 +26,7 @@
     "rules": {
         "@typescript-eslint/explicit-function-return-type": 0,
         "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/interface-name-prefix": 0,
         "accessor-pairs": "error",
         "array-bracket-spacing": ["error", "never"],
         "arrow-spacing": ["error", {

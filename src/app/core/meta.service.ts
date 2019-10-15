@@ -30,9 +30,9 @@ export class MetaService {
         this.appName = 'NewVote'
         this.appBarTitle = 'NewVote'
         this.appDescription = 'NewVote is a democracy app, and it’s all about you.\
-			Our mission is to rebuild the relationship between everyday people and \
-			their leaders, so that we all have confidence in our democracies and the \
-			decisions they make.'
+            Our mission is to rebuild the relationship between everyday people and \
+            their leaders, so that we all have confidence in our democracies and the \
+            decisions they make.'
 
         console.log('meta service setting default values')
         this.createTags()
@@ -65,7 +65,7 @@ export class MetaService {
 
     // provide no context to reset to app defaults (determined from organization)
     updateTags(context?: UpdateContext) {
-        let title, appBarTitle, description, image
+        let description
 
         // if no context at all reset to defaults and exit
         if (!context) {
@@ -77,11 +77,11 @@ export class MetaService {
             return
         }
 
-        title = context.title ? `${context.title} | ${this.appName || 'NewVote'}` : this.appName
-        appBarTitle = context.appBarTitle ? context.appBarTitle : (context.title ? context.title : this.appName)
+        const title = context.title ? `${context.title} | ${this.appName || 'NewVote'}` : this.appName
+        const appBarTitle = context.appBarTitle ? context.appBarTitle : (context.title ? context.title : this.appName)
         description = context.description ? context.description : this.appDescription
         description = description.replace(/<[^>]*>/g, '') // strip the html out
-        image = context.image ? context.image : this.appImage
+        const image = context.image ? context.image : this.appImage
 
         this.title.setTitle(title)
         this.appBarTitle = appBarTitle

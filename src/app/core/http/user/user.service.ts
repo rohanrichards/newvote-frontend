@@ -6,7 +6,7 @@ import { map, catchError } from 'rxjs/operators'
 import { IUser } from '@app/core/models/user.model'
 
 const routes = {
-    list: (c: UserContext) => '/users',
+    list: () => '/users',
     count: () => '/users/count',
     // view: (c: UserContext) => `/users/${c.id}`,
     // create: (c: UserContext) => `/users`,
@@ -27,7 +27,7 @@ export class UserService {
 
     constructor(private httpClient: HttpClient) { }
 
-    count(context: UserContext): Observable<any> {
+    count(): Observable<any> {
         return this.httpClient
             .get(routes.count())
             .pipe(
@@ -60,30 +60,30 @@ export class UserService {
     }
 
     // view(context: UserContext): Observable<any> {
-    // 	return this.httpClient
-    // 		.get(routes.view(context))
-    // 		.pipe(
-    // 			map((res: any) => res),
-    // 			catchError((e) => of({ error: e }))
-    // 		);
+    //     return this.httpClient
+    //         .get(routes.view(context))
+    //         .pipe(
+    //             map((res: any) => res),
+    //             catchError((e) => of({ error: e }))
+    //         );
     // }
 
     // create(context: UserContext): Observable<any> {
-    // 	return this.httpClient
-    // 		.post(routes.create(context), context.entity)
-    // 		.pipe(
-    // 			map((res: any) => res),
-    // 			catchError((e) => of({ error: e }))
-    // 		);
+    //     return this.httpClient
+    //         .post(routes.create(context), context.entity)
+    //         .pipe(
+    //             map((res: any) => res),
+    //             catchError((e) => of({ error: e }))
+    //         );
     // }
 
     // update(context: UserContext): Observable<any> {
-    // 	return this.httpClient
-    // 		.put(routes.update(context), context.entity)
-    // 		.pipe(
-    // 			map((res: any) => res),
-    // 			catchError((e) => of({ error: e }))
-    // 		);
+    //     return this.httpClient
+    //         .put(routes.update(context), context.entity)
+    //         .pipe(
+    //             map((res: any) => res),
+    //             catchError((e) => of({ error: e }))
+    //         );
     // }
 
     patch(context: UserContext): Observable<any> {
@@ -95,12 +95,12 @@ export class UserService {
             )
     }
     // delete(context: UserContext): Observable<any> {
-    // 	return this.httpClient
-    // 		.delete(routes.delete(context))
-    // 		.pipe(
-    // 			map((res: any) => res),
-    // 			catchError((e) => of({ error: e }))
-    // 		);
+    //     return this.httpClient
+    //         .delete(routes.delete(context))
+    //         .pipe(
+    //             map((res: any) => res),
+    //             catchError((e) => of({ error: e }))
+    //         );
     // }
 
 }

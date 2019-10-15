@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { QueryEntity } from '@datorama/akita'
 import { Proposal } from '@app/core/models/proposal.model'
 import { ProposalStore, ProposalState } from './proposal.store'
-import { SolutionQuery } from '../solution/solution.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Injectable()

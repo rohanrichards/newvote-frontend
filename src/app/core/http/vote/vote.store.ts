@@ -1,4 +1,4 @@
-import { EntityState, StoreConfig, Store, EntityStore } from '@datorama/akita'
+import { EntityState, StoreConfig, EntityStore } from '@datorama/akita'
 import { Injectable } from '@angular/core'
 
 export interface VoteMetaData {
