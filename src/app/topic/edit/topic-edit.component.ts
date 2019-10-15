@@ -33,6 +33,7 @@ export class TopicEditComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+    resetImage: boolean
 
     constructor(
         private topicService: TopicService,
@@ -131,6 +132,14 @@ export class TopicEditComponent implements OnInit {
         this.imageUrl = this.topicForm.get('imageUrl').value
     }
 
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/topic-default.png';
+        this.newImage = true;
+        this.newImage = false;
+        this.imageUrl = DEFAULT_IMAGE;
+        this.resetImage = true;
+    }
+
     onSave() {
         const topic = cloneDeep(this.topic)
         this.isLoading = true
@@ -158,6 +167,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     updateWithApi(topic: any) {
+
+        if (this.resetImage) {
+            topic.imageUrl = this.imageUrl;
+        }
+
         this.topicService.update({ id: topic._id, entity: topic })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(

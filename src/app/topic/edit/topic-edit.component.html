@@ -42,7 +42,11 @@
                 fxLayout="column"
                 fxFlex
                 fxLayoutAlign="center center">
-                <div fxLayout="row">
+                <div fxLayout="row"
+                    fxLayoutGap="8px"
+                    fxLayoutAlign="center center"
+                    [style.width.%]="100"
+                    [style.margin-bottom.rem]="0.5">
                     <button mat-flat-button
                         type="button"
                         color="primary"
@@ -50,7 +54,11 @@
                     <button mat-flat-button
                         type="button"
                         color="primary"
-                        (click)="onResetImage()">Reset Image</button>
+                        (click)="onResetImage()">Cancel Changes</button>
+                    <!-- <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="setDefaultImage()">Reset Image</button> -->
                 </div>
                 <div class="image-preview"
                     *ngIf="imageUrl">

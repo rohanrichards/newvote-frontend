@@ -48,6 +48,7 @@ export class SolutionEditComponent implements OnInit {
 
     @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    resetImage: boolean
 
     constructor(
         private solutionService: SolutionService,
@@ -191,6 +192,14 @@ export class SolutionEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.solutionForm.get('imageUrl').value
+        this.resetImage = false;
+    }
+
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/solution-default.png';
+        this.newImage = false;
+        this.imageUrl = DEFAULT_IMAGE;
+        this.resetImage = true;
     }
 
     onSave() {
@@ -206,6 +215,7 @@ export class SolutionEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 solution.imageUrl = res.secure_url
+                this.resetImage = false;
                 this.updateWithApi(solution)
             }
         }
@@ -220,6 +230,10 @@ export class SolutionEditComponent implements OnInit {
     updateWithApi(solution: any) {
         solution.organizations = this.organization
         solution.issues = this.issues
+
+        if (this.resetImage) {
+            solution.imageUrl = this.imageUrl;
+        }
 
         this.solutionService.update({ id: solution._id, entity: solution })
             .pipe(finalize(() => { this.isLoading = false }))
