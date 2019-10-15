@@ -120,7 +120,7 @@ export class TopicEditComponent implements OnInit {
             this.imageFile = file
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -143,7 +143,7 @@ export class TopicEditComponent implements OnInit {
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
-                merge(topic, <ITopic> this.topicForm.value)
+                merge(topic, <ITopic>this.topicForm.value)
                 const res = JSON.parse(response)
                 topic.imageUrl = res.secure_url
                 this.updateWithApi(topic)
@@ -153,7 +153,7 @@ export class TopicEditComponent implements OnInit {
         if (this.newImage) {
             this.uploader.uploadAll()
         } else {
-            merge(topic, <ITopic> this.topicForm.value)
+            merge(topic, <ITopic>this.topicForm.value)
             this.updateWithApi(topic)
         }
     }

@@ -144,7 +144,7 @@ export class SolutionCreateComponent implements OnInit {
             const reader = new FileReader()
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -156,7 +156,7 @@ export class SolutionCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.solution = <ISolution> this.solutionForm.value
+        this.solution = <ISolution>this.solutionForm.value
         this.solution.issues = this.issues
         this.solution.organizations = this.organization
 
@@ -181,7 +181,7 @@ export class SolutionCreateComponent implements OnInit {
                     this.openSnackBar('Succesfully created', 'OK')
                     this.router.navigate([`/solutions/${t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 )
         }
 

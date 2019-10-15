@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core'
-import { finalize, take } from 'rxjs/operators'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { IOrganization, Organization } from '@app/core/models/organization.model'
-import { Vote } from '@app/core/models/vote.model'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 
@@ -75,7 +72,7 @@ export class OrganizationListComponent implements OnInit {
                     this.organizations = organizations
                     return this.stateService.setLoadingState(AppState.complete)
                 },
-                (error) => {
+                () => {
                     return this.stateService.setLoadingState(AppState.serverError)
                 }
             )

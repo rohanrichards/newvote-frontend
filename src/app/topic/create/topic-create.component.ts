@@ -84,7 +84,7 @@ export class TopicCreateComponent implements OnInit {
             const reader = new FileReader()
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -93,7 +93,7 @@ export class TopicCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.topic = <ITopic> this.topicForm.value
+        this.topic = <ITopic>this.topicForm.value
         this.topic.organizations = this.organization
 
         this.uploader.onCompleteAll = () => {

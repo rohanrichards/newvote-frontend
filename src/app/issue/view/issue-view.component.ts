@@ -1,12 +1,8 @@
-import { Component, OnInit, ViewChild, forwardRef, Inject, AfterViewInit } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
-import { differenceWith, assign } from 'lodash'
-import { isEqual } from 'lodash'
-
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { TopicService } from '@app/core/http/topic/topic.service'
 import { IssueService } from '@app/core/http/issue/issue.service'
@@ -26,7 +22,6 @@ import { trigger } from '@angular/animations'
 import { fadeIn } from '@app/shared/animations/fade-animations'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
-import { ShellComponent } from '@app/shell/shell.component'
 import { Suggestion } from '@app/core/models/suggestion.model'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { OrganizationService } from '@app/core'
@@ -34,7 +29,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
-import { forkJoin, combineLatest, Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { MediaQuery } from '@app/core/http/media/media.query'
@@ -90,10 +85,11 @@ export class IssueViewComponent implements OnInit {
     ngOnInit() {
         this.organizationService.get()
             .subscribe(
-                (org) => this.organization = org,
-                (err) => err)
+                (org) => { this.organization = org },
+                (err) => err
+            )
 
-        this.stateService.loadingState$.subscribe((state) => this.loadingState = state)
+        this.stateService.loadingState$.subscribe((state) => { this.loadingState = state })
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
@@ -223,9 +219,7 @@ export class IssueViewComponent implements OnInit {
         })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                (mediaList: Array<Media>) => {
-                    // mediaList
-                },
+                () => { },
                 (err) => err
             )
     }
@@ -241,7 +235,7 @@ export class IssueViewComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
@@ -290,7 +284,7 @@ export class IssueViewComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData
+        const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
         suggestion.parent = this.issue._id
@@ -298,7 +292,7 @@ export class IssueViewComponent implements OnInit {
         suggestion.parentTitle = this.issue.name
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
+            .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
             (error) => {

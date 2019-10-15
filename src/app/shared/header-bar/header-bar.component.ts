@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 
 export interface IButtonTemplate {
-	text: string;
-	color: string;
-	routerLink: string;
-	params: any;
+    text: string;
+    color: string;
+    routerLink: string;
+    params: any;
 }
 
 @Component({
@@ -14,15 +14,13 @@ export interface IButtonTemplate {
     templateUrl: './header-bar.component.html',
     styleUrls: ['./header-bar.component.scss']
 })
-export class HeaderBarComponent implements OnInit {
+export class HeaderBarComponent {
 
-	@Input() headerTitle: string;
-	@Input() headerText: string;
-	@Input() buttons: Array<IButtonTemplate>;
-	@Input() object: any;
+    @Input() headerTitle: string;
+    @Input() headerText: string;
+    @Input() buttons: Array<IButtonTemplate>;
+    @Input() object: any;
 
-	constructor(public auth: AuthenticationService) { }
-
-	ngOnInit() { }
+    constructor(public auth: AuthenticationService) { }
 
 }

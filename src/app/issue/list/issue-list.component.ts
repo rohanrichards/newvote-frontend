@@ -5,10 +5,10 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
 
-import { finalize, startWith, map, take, filter, tap } from 'rxjs/operators'
+import { finalize, startWith, map, take } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
-import { IssueService, IssueContext } from '@app/core/http/issue/issue.service'
+import { IssueService } from '@app/core/http/issue/issue.service'
 import { TopicService } from '@app/core/http/topic/topic.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 
@@ -28,11 +28,9 @@ import { Suggestion } from '@app/core/models/suggestion.model'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { Vote } from '@app/core/models/vote.model'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
-import { assign } from 'lodash'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 
-import { cloneDeep } from 'lodash'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 
@@ -161,11 +159,7 @@ export class IssueListComponent implements OnInit {
             suggestions: suggestionObs
         })
             .subscribe(
-                results => {
-                    const { issues, topics, suggestions } = results
-
-                    // this.allTopics = topics;
-
+                () => {
                     if (this.topicParam) {
                         const topic = this._filter(this.topicParam)
                         if (topic.length) {
@@ -173,10 +167,10 @@ export class IssueListComponent implements OnInit {
                         }
                     }
 
-                    return this.stateService.setLoadingState(AppState.complete)
+                    this.stateService.setLoadingState(AppState.complete)
                 },
-                err => {
-                    return this.stateService.setLoadingState(AppState.serverError)
+                () => {
+                    this.stateService.setLoadingState(AppState.serverError)
                 }
             )
     }
@@ -251,11 +245,11 @@ export class IssueListComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData
+        const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
+            .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
             (error) => {
@@ -282,7 +276,7 @@ export class IssueListComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
@@ -337,6 +331,6 @@ export class IssueListComponent implements OnInit {
     }
 
     trackByFn(index: any, item: any) {
-        return index // or item.id
+        return index || item.id // or item.id
     }
 }

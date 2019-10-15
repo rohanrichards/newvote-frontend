@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from '@angular/core'
+import { Component, Inject } from '@angular/core'
 import { PlatformLocation, Location, DOCUMENT } from '@angular/common'
 
 import { ShareService } from '@ngx-share/core'
@@ -8,16 +8,14 @@ import { ShareService } from '@ngx-share/core'
     templateUrl: './share-buttons.component.html',
     styleUrls: ['./share-buttons.component.scss']
 })
-export class ShareButtonsComponent implements OnInit {
+export class ShareButtonsComponent {
 
     constructor(
-		@Inject(DOCUMENT) document: any,
-		public location: Location,
-		public platform: PlatformLocation,
-		public share: ShareService
+        @Inject(DOCUMENT) document: any,
+        public location: Location,
+        public platform: PlatformLocation,
+        public share: ShareService
     ) { }
-
-    ngOnInit() { }
 
     getUrl() {
         return document.location.href

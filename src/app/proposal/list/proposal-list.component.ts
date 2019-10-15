@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { finalize, take, filter, map } from 'rxjs/operators'
+import { finalize, take, map } from 'rxjs/operators'
 import { MatSnackBar } from '@angular/material'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -14,7 +14,6 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
-import { assign } from 'lodash'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ActivatedRoute } from '@angular/router'
@@ -32,7 +31,7 @@ export class ProposalListComponent implements OnInit {
     loadingState: string;
     headerTitle = 'Browse By Proposal';
     headerText = 'Proposals arrange the current proposals into broader categories. \
-		Select a proposal below to learn more about it and explore relevant proposals being discussed.';
+        Select a proposal below to learn more about it and explore relevant proposals being discussed.';
 
     headerButtons = [{
         text: 'New Proposal',
@@ -84,7 +83,7 @@ export class ProposalListComponent implements OnInit {
 
     subscribeToProposalStore() {
         this.proposalQuery.selectAll({})
-            .subscribe((proposals) => this.proposals = proposals)
+            .subscribe((proposals) => { this.proposals = proposals })
     }
 
     subscribeToSuggestionStore() {
@@ -94,7 +93,7 @@ export class ProposalListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'action')
                 }),
             )
-            .subscribe((suggestions) => this.suggestions = suggestions)
+            .subscribe((suggestions) => { this.suggestions = suggestions })
     }
 
     fetchData() {
@@ -105,8 +104,8 @@ export class ProposalListComponent implements OnInit {
         this.proposalService.list({ orgs: [], params })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                proposals => this.stateService.setLoadingState(AppState.complete),
-                error => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.complete),
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
 
         this.suggestionService.list({
@@ -134,7 +133,7 @@ export class ProposalListComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
 

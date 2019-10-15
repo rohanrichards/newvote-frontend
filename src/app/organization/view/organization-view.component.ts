@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { finalize, take } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
+import { MatDialog, MatDialogRef } from '@angular/material'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
-import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { IOrganization } from '@app/core/models/organization.model'
 import { Organization } from '@app/core/models/organization.model'
-import { Vote } from '@app/core/models/vote.model'
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
@@ -32,7 +28,6 @@ export class OrganizationViewComponent implements OnInit {
     constructor(
         private stateService: StateService,
         private organizationService: OrganizationService,
-        private voteService: VoteService,
         public auth: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
@@ -68,8 +63,8 @@ export class OrganizationViewComponent implements OnInit {
                     return this.stateService.setLoadingState(AppState.complete)
 
                 },
-                (error) => {
-                    return this.stateService.setLoadingState(AppState.serverError)
+                () => {
+                    this.stateService.setLoadingState(AppState.serverError)
                 }
             )
     }

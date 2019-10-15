@@ -101,7 +101,7 @@ export class IssueCreateComponent implements OnInit {
                 (err) => err
             )
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
 
         this.meta.updateTags(
             {
@@ -128,7 +128,7 @@ export class IssueCreateComponent implements OnInit {
     subscribeToTopicStore() {
         this.topicQuery.selectAll()
             .subscribe(
-                (topics: Topic[]) => this.allTopics = topics
+                (topics: Topic[]) => { this.allTopics = topics }
             )
     }
 
@@ -138,7 +138,7 @@ export class IssueCreateComponent implements OnInit {
             const reader = new FileReader()
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -149,7 +149,7 @@ export class IssueCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.issue = <IIssue> this.issueForm.value
+        this.issue = this.issueForm.value as IIssue
         this.issue.topics = this.topics
         this.issue.organizations = this.organization
 

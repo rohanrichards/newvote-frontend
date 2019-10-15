@@ -77,9 +77,9 @@ export class IssueEditComponent implements OnInit {
         })
 
         this.topicService.list({})
-            .subscribe(topics => this.allTopics = topics)
+            .subscribe(topics => { this.allTopics = topics })
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
 
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
@@ -152,7 +152,7 @@ export class IssueEditComponent implements OnInit {
             this.imageFile = file
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -175,7 +175,7 @@ export class IssueEditComponent implements OnInit {
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
-                merge(issue, <IIssue> this.issueForm.value)
+                merge(issue, this.issueForm.value as IIssue)
                 const res = JSON.parse(response)
                 issue.imageUrl = res.secure_url
                 this.updateWithApi(issue)
@@ -185,7 +185,7 @@ export class IssueEditComponent implements OnInit {
         if (this.newImage) {
             this.uploader.uploadAll()
         } else {
-            merge(issue, <IIssue> this.issueForm.value)
+            merge(issue, this.issueForm.value as IIssue)
             this.updateWithApi(issue)
         }
     }
@@ -230,9 +230,6 @@ export class IssueEditComponent implements OnInit {
         if (index >= 0) {
             this.topics.splice(index, 1)
         }
-    }
-
-    add(event: any) {
     }
 
     private _filter(value: any): ITopic[] {

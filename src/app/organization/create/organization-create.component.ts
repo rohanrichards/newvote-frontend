@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, take } from 'rxjs/operators'
+import { map, startWith, finalize } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
@@ -174,7 +174,7 @@ export class OrganizationCreateComponent implements OnInit {
                 // when the file is changed store the file name for later
                 this[field] = {
                     name: file.name,
-                    src: (<FileReader>pe.target).result
+                    src: (pe.target as FileReader).result
                 }
             }
 
@@ -241,7 +241,7 @@ export class OrganizationCreateComponent implements OnInit {
         this.userInput.nativeElement.value = ''
     }
 
-    userRemoved(user: any) {
+    userRemoved() {
         this.owner = null
     }
 

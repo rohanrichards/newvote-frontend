@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core'
+import { MatDialog } from '@angular/material'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { Router } from '@angular/router'
@@ -12,7 +11,7 @@ import { optimizeImage } from '../helpers/cloudinary'
     styleUrls: ['./grid-list.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class GridListComponent implements OnInit {
+export class GridListComponent {
 
     @Input() path: string;
     @Input() model: string;
@@ -36,10 +35,6 @@ export class GridListComponent implements OnInit {
         }
 
         return newItems
-    }
-
-    ngOnInit() {
-
     }
 
     onDelete(item: any, event: any) {
@@ -74,6 +69,6 @@ export class GridListComponent implements OnInit {
     }
 
     trackByFn(index: any, item: any) {
-        return index // or item.id
+        return index || item.id // or item.id
     }
 }

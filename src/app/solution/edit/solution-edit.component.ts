@@ -181,7 +181,7 @@ export class SolutionEditComponent implements OnInit {
             this.imageFile = file
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -195,7 +195,7 @@ export class SolutionEditComponent implements OnInit {
 
     onSave() {
         const solution = cloneDeep(this.solution)
-        merge(solution, <ISolution> this.solutionForm.value)
+        merge(solution, <ISolution>this.solutionForm.value)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {

@@ -1,18 +1,3 @@
-// EXAMPLE URL 'https://res.cloudinary.com/newvote/image/upload/v1557485661/yq3owxqczybbtjpuoaep.png';
-
-function createUrl(url: string, quality: string, dimensions: any) {
-    const removeHttps = url.slice().replace(/(^\w+:|^)\/\//, '')
-    const splitUrl = removeHttps.split('/')
-
-    const paramsArray = []
-
-    paramsArray.push(insertQualityParams(quality))
-    paramsArray.push(insertDimensionParams(dimensions))
-
-    splitUrl[4] = paramsArray.join(',')
-    return `https://${splitUrl.join('/')}`
-}
-
 // https://cloudinary.com/documentation/image_transformation_reference#quality_parameter
 
 function insertQualityParams(quality: string) {
@@ -42,7 +27,22 @@ function insertDimensionParams(dimensions: any) {
     return param + 'auto'
 }
 
-export function optimizeImage (url: string, isLowQuality?: boolean, child?: boolean) {
+// EXAMPLE URL 'https://res.cloudinary.com/newvote/image/upload/v1557485661/yq3owxqczybbtjpuoaep.png';
+
+function createUrl(url: string, quality: string, dimensions: any) {
+    const removeHttps = url.slice().replace(/(^\w+:|^)\/\//, '')
+    const splitUrl = removeHttps.split('/')
+
+    const paramsArray = []
+
+    paramsArray.push(insertQualityParams(quality))
+    paramsArray.push(insertDimensionParams(dimensions))
+
+    splitUrl[4] = paramsArray.join(',')
+    return `https://${splitUrl.join('/')}`
+}
+
+export function optimizeImage(url: string, isLowQuality?: boolean, child?: boolean) {
     if (!url) {
         return ''
     }

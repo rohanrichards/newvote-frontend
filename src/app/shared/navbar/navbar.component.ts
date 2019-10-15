@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { Organization } from '@app/core/models/organization.model'
 import { AuthenticationService } from '@app/core'
-import { Router, ActivatedRoute, RoutesRecognized } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
 import { MatSidenav } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
-import { filter, map, take } from 'rxjs/operators'
+import { map, take } from 'rxjs/operators'
 import { Location } from '@angular/common'
 
 @Component({

@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, switchMap, debounceTime, distinctUntilChanged, take } from 'rxjs/operators'
+import { map, startWith, finalize } from 'rxjs/operators'
 import { merge, cloneDeep } from 'lodash'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -148,7 +148,7 @@ export class OrganizationEditComponent implements OnInit {
         this.uploader.onBuildItemForm = this.buildItemForm()
 
         if (this.auth.isAdmin()) {
-            this.userService.list({}).subscribe(users => this.allUsers = users)
+            this.userService.list({}).subscribe(users => { this.allUsers = users })
         }
 
         this.setAuthtypeValidators()
@@ -251,7 +251,7 @@ export class OrganizationEditComponent implements OnInit {
                 const old = this[field].src
                 this[field] = {
                     name: file.name,
-                    src: (<FileReader>pe.target).result,
+                    src: (pe.target as FileReader).result,
                     new: true,
                     old: old
                 }
@@ -300,7 +300,7 @@ export class OrganizationEditComponent implements OnInit {
     updateWithApi() {
         const organization = cloneDeep(this.organization)
         // update this.org with form data and the owner manually
-        merge(organization, <Organization> this.organizationForm.value)
+        merge(organization, this.organizationForm.value as Organization)
         organization.owner = this.owner
         organization.futureOwner = this.futureOwner
         organization.imageUrl = this.backgroundImage.src
@@ -308,7 +308,7 @@ export class OrganizationEditComponent implements OnInit {
 
         this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe((t) => {
+            .subscribe(() => {
                 this.openSnackBar('Succesfully updated', 'OK')
                 this.location.back()
             },

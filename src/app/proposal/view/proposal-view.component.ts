@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take, filter } from 'rxjs/operators'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
+import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { IProposal } from '@app/core/models/proposal.model'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Vote } from '@app/core/models/vote.model'
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
@@ -24,7 +22,6 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
-import { assign } from 'lodash'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 
@@ -66,7 +63,7 @@ export class ProposalViewComponent implements OnInit {
 
     ngOnInit() {
         this.organizationService.get()
-            .subscribe((org) => this.organization = org)
+            .subscribe((org) => { this.organization = org })
 
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
@@ -79,7 +76,7 @@ export class ProposalViewComponent implements OnInit {
             this.subscribeToProposalStore(ID)
             this.subscribeToSuggestionStore(ID)
             this.getProposal(ID)
-            this.getSuggestions(ID)
+            this.getSuggestions()
         })
     }
 
@@ -103,7 +100,7 @@ export class ProposalViewComponent implements OnInit {
             })
     }
 
-    getSuggestions(id: string) {
+    getSuggestions() {
         const isModerator = this.auth.isModerator()
 
         this.suggestionService.list({
@@ -118,7 +115,7 @@ export class ProposalViewComponent implements OnInit {
             )
     }
 
-    getProposal(id: string, forceUpdate?: boolean) {
+    getProposal(id: string) {
         this.proposalService.view({ id: id, orgs: [] })
             .subscribe(
                 (proposal: Proposal) => {
@@ -130,7 +127,7 @@ export class ProposalViewComponent implements OnInit {
                             image: proposal.imageUrl
                         })
                 },
-                (error) => {
+                () => {
                     return this.stateService.setLoadingState(AppState.serverError)
                 }
             )
@@ -147,7 +144,7 @@ export class ProposalViewComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
@@ -187,7 +184,7 @@ export class ProposalViewComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData
+        const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
         suggestion.parent = this.proposal._id
@@ -195,7 +192,7 @@ export class ProposalViewComponent implements OnInit {
         suggestion.parentTitle = this.proposal.title
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
+            .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
             (error) => {

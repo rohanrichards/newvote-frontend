@@ -23,7 +23,6 @@ import { MatSnackBar } from '@angular/material'
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 
-import { assign } from 'lodash'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
@@ -111,20 +110,15 @@ export class HomeComponent implements OnInit {
                     this.userCount = count
                     this.stateService.setLoadingState(AppState.complete)
                 },
-                (err) => {
-                    return this.stateService.setLoadingState(AppState.serverError)
-                }
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
     }
 
     subscribeToOrgStore() {
-        const host = document.location.host
-        const subdomain = host.split('.')[0]
         this.organizationQuery.select()
             .subscribe((res) => {
                 this.org = res
             })
-
     }
 
     subscribeToIssueStore() {
@@ -186,7 +180,7 @@ export class HomeComponent implements OnInit {
         user.completedTour = true
         this.userService.patch({ id: user._id, entity: user })
             .subscribe(
-                (res) => {
+                () => {
                     this.auth.saveTourToLocalStorage()
                     this.openSnackBar('Tour Complete', 'OK')
                 },

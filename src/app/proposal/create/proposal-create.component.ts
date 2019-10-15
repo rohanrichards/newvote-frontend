@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, delay, take } from 'rxjs/operators'
+import { map, startWith, finalize } from 'rxjs/operators'
 
 import { IProposal } from '@app/core/models/proposal.model'
 import { ISolution } from '@app/core/models/solution.model'
@@ -86,7 +86,6 @@ export class ProposalCreateComponent implements OnInit {
                     return this.proposalForm.patchValue(suggestion)
                 }
 
-                const ID = params._id
                 if (params._id) {
                     this.populateSolution(params._id)
                 }
@@ -123,9 +122,9 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.solutionService.list({})
-            .subscribe(solutions => this.allSolutions = solutions)
+            .subscribe(solutions => { this.allSolutions = solutions })
 
-        this.organizationService.get().subscribe(org => this.organization = org)
+        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     populateSolution(ID: string) {
@@ -147,7 +146,7 @@ export class ProposalCreateComponent implements OnInit {
             const reader = new FileReader()
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -158,7 +157,7 @@ export class ProposalCreateComponent implements OnInit {
 
     onSave() {
         this.isLoading = true
-        this.proposal = <IProposal> this.proposalForm.value
+        this.proposal = this.proposalForm.value as IProposal
         this.proposal.solutions = this.solutions
         this.proposal.organizations = this.organization
 
