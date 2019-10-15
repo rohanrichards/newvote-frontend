@@ -42,6 +42,16 @@ export class CardListComponent implements OnInit {
         this.organizationName = this.meta.organization.name
     }
 
+    hasDefaultImage(url: string) {
+        const defaultImages = ['assets/solution-default.png', 'assets/action-default.png', 'assets/issue-default.png',];
+        const imageIndex = defaultImages.findIndex((item) => item === url);
+        if (imageIndex === -1) {
+            return true;
+        }
+
+        return false;
+    }
+
     onDelete(item: any, event: any) {
         event.stopPropagation()
         this.delete.emit(item)
