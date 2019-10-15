@@ -48,7 +48,7 @@ export class IssueService {
         }
 
         return this.httpClient
-            .get(routes.list(context), options)
+            .get(routes.list(), options)
             .pipe(
                 tap((issues: Issue[]) => this.issueStore.add(issues)),
                 map((res: Array<any>) => res),
@@ -68,7 +68,7 @@ export class IssueService {
 
     create(context: IssueContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((issue: Issue) => this.issueStore.add(issue)),
                 map((res: any) => res),

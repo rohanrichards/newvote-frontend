@@ -86,7 +86,7 @@ export class OrganizationService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((res: Organization[]) => this.communityStore.add(res)),
                 map((res: Array<any>) => res),
@@ -109,7 +109,7 @@ export class OrganizationService {
 
     create(context: OrganizationContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((res: Organization) => this.communityStore.add(res)),
                 map((res: any) => res),

@@ -48,12 +48,16 @@ export class AdminService {
         return services[entityIndex]
     }
 
-    getTitle(object: EntityTypes): string {
-        return object.title || object.name
+    getTitle(object: any, model: string): string {
+
+        if (model === 'Issue' || model === 'Topic') {
+            return object.name;
+        }
+        return object.title;
     }
 
     onDelete(object: EntityTypes, model: string, redirectRoute?: string) {
-        const title: string = this.getTitle(object)
+        const title: string = this.getTitle(object, model)
 
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '250px',
@@ -109,7 +113,7 @@ export class AdminService {
     }
 
     onSoftDelete(object: any, model: string, redirectRoute?: string) {
-        const title: string = this.getTitle(object)
+        const title: string = this.getTitle(object, model)
 
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '250px',
@@ -171,7 +175,7 @@ export class AdminService {
     }
 
     onRestore(object: any, model: string, redirectRoute?: string) {
-        const title: string = this.getTitle(object)
+        const title: string = this.getTitle(object, model)
 
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '250px',

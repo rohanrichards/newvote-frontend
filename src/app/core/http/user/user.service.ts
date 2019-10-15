@@ -52,7 +52,7 @@ export class UserService {
         }
 
         return this.httpClient
-            .get(routes.list(context), options)
+            .get(routes.list(), options)
             .pipe(
                 map((res: Array<any>) => res),
                 catchError((e) => of([{ error: e }]))

@@ -46,7 +46,7 @@ export class ProposalService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((data: Proposal[]) => {
                     this.voteService.populateStore(data)
@@ -72,7 +72,7 @@ export class ProposalService {
 
     create(context: ProposalContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((res: Proposal) => this.proposalStore.add(res)),
                 map((res: any) => res),

@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit {
         const getSolutions = this.solutionService.list({ params })
         const getProposals = this.proposalService.list({ params })
         const getIssues = this.issueService.list({ params })
-        const getUsers = this.userService.count({})
+        const getUsers = this.userService.count()
 
         forkJoin({
             solutions: getSolutions,

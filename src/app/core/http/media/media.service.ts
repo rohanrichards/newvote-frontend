@@ -45,7 +45,7 @@ export class MediaService {
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((res: Media[]) => {
                     this.voteService.populateStore(res)
@@ -71,7 +71,7 @@ export class MediaService {
 
     create(context: MediaContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((res: Media) => this.mediaStore.add(res)),
                 map((res: any) => res),
