@@ -17,9 +17,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
-import { Proposal } from '@app/core/models/proposal.model';
-import { Observable } from 'rxjs';
-import { Suggestion } from '@app/core/models/suggestion.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-proposal',
@@ -48,8 +46,6 @@ export class ProposalListComponent implements OnInit {
         role: 'user',
         params: { type: 'action' }
     }];
-    proposals$: Observable<Proposal[]>;
-    suggestions$: Observable<Suggestion[]>;
 
     constructor(
         private stateService: StateService,
@@ -62,7 +58,8 @@ export class ProposalListComponent implements OnInit {
         private proposalQuery: ProposalQuery,
         private suggestionQuery: SuggestionQuery,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
@@ -81,25 +78,22 @@ export class ProposalListComponent implements OnInit {
         this.fetchData();
         this.subscribeToProposalStore();
         this.subscribeToSuggestionStore();
+
     }
 
 
     subscribeToProposalStore() {
-        this.proposals$ = this.proposalQuery.selectAll({})
-
-        this.proposals$
+        this.proposalQuery.selectAll({})
             .subscribe((proposals) => this.proposals = proposals);
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.suggestions$
+        this.suggestionQuery.suggestions$
             .pipe(
                 map((suggestions) => {
                     return suggestions.filter((suggestion) => suggestion.type === 'action')
                 }),
             )
-
-        this.suggestions$
             .subscribe((suggestions) => this.suggestions = suggestions);
     }
 

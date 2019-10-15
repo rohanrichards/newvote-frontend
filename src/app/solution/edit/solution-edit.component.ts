@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize } from 'rxjs/operators'
+import { map, startWith, finalize, take } from 'rxjs/operators'
 import { merge } from 'lodash'
 
 import { ISolution, Solution } from '@app/core/models/solution.model'
@@ -149,7 +149,7 @@ export class SolutionEditComponent implements OnInit {
         this.solutionQuery.selectEntity(id)
             .subscribe(
                 (solution: Solution) => {
-                    if (!solution) return false;
+                    if (!solution) return false
                     this.solution = solution
                     this.updateForm(solution)
                     this.updateTags(solution)
@@ -192,19 +192,19 @@ export class SolutionEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.solutionForm.get('imageUrl').value
-        this.resetImage = false;
+        this.resetImage = false
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/solution-default.png';
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
+        const DEFAULT_IMAGE = 'assets/solution-default.png'
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
     }
 
     onSave() {
         const solution = cloneDeep(this.solution)
-        merge(solution, <ISolution>this.solutionForm.value)
+        merge(solution, <ISolution> this.solutionForm.value)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -214,8 +214,8 @@ export class SolutionEditComponent implements OnInit {
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
-                solution.imageUrl = res.secure_url;
-                this.resetImage = false;
+                solution.imageUrl = res.secure_url
+                this.resetImage = false
                 this.updateWithApi(solution)
             }
         }
@@ -232,7 +232,7 @@ export class SolutionEditComponent implements OnInit {
         solution.issues = this.issues
 
         if (this.resetImage) {
-            solution.imageUrl = this.imageUrl;
+            solution.imageUrl = this.imageUrl
         }
 
         this.solutionService.update({ id: solution._id, entity: solution })

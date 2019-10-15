@@ -10,6 +10,7 @@ import { assign } from 'lodash';
 import { TopicQuery } from '@app/core/http/topic/topic.query';
 import { Topic } from '@app/core/models/topic.model';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-topic',
@@ -54,6 +55,7 @@ export class TopicListComponent implements OnInit {
                 title: 'All Topics',
                 description: 'List all topics.'
             });
+
 
         this.fetchData();
     }

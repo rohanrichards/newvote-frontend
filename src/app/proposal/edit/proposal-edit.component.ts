@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize } from 'rxjs/operators'
+import { map, startWith, finalize, take } from 'rxjs/operators'
 import { merge, assign, cloneDeep } from 'lodash'
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model'
@@ -143,7 +143,7 @@ export class ProposalEditComponent implements OnInit {
     subscribeToProposalStore(id: string) {
         this.proposalQuery.selectEntity(id)
             .subscribe((proposal: Proposal) => {
-                if (!proposal) return false;
+                if (!proposal) return false
                 this.proposal = proposal
                 this.updateForm(proposal)
                 this.updateTags(proposal)
@@ -197,19 +197,19 @@ export class ProposalEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.proposalForm.get('imageUrl').value
-        this.resetImage = false;
+        this.resetImage = false
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/proposal-default.png';
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
+        const DEFAULT_IMAGE = 'assets/proposal-default.png'
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
     }
 
     onSave() {
         const proposal = cloneDeep(this.proposal)
-        merge(proposal, <IProposal>this.proposalForm.value)
+        merge(proposal, <IProposal> this.proposalForm.value)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -219,8 +219,8 @@ export class ProposalEditComponent implements OnInit {
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
-                proposal.imageUrl = res.secure_url;
-                this.resetImage = false;
+                proposal.imageUrl = res.secure_url
+                this.resetImage = false
                 this.updateWithApi(proposal)
             }
         }
@@ -237,7 +237,7 @@ export class ProposalEditComponent implements OnInit {
         proposal.solutions = this.solutions
 
         if (this.resetImage) {
-            proposal.imageUrl = this.imageUrl;
+            proposal.imageUrl = this.imageUrl
         }
 
         this.proposalService.update({ id: proposal._id, entity: proposal })

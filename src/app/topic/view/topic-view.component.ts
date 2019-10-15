@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
@@ -57,6 +57,7 @@ export class TopicViewComponent implements OnInit {
             this.getIssues();
 
         });
+
     }
 
     subscribeToTopicStore(id: string) {

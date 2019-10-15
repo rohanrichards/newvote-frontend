@@ -33,7 +33,7 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 export class SuggestionListComponent implements OnInit {
 
     loadingState: string;
-    suggestions: Array<Suggestion> = [];
+    suggestions: Array<Suggestion>;
     suggestions$: Observable<any>;
     isLoading: boolean;
     headerTitle = 'Make a new contribution';
@@ -58,7 +58,8 @@ export class SuggestionListComponent implements OnInit {
         public snackBar: MatSnackBar,
         private meta: MetaService,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
@@ -79,6 +80,7 @@ export class SuggestionListComponent implements OnInit {
                 },
                 err => err
             );
+
     }
 
     getSuggestions() {
@@ -91,14 +93,6 @@ export class SuggestionListComponent implements OnInit {
 
                 return entity.user._id === userId;
             }
-        })
-
-        this.suggestions$.subscribe((res) => {
-            if (!res) {
-                return false;
-            }
-
-            this.suggestions = res;
         })
     }
 

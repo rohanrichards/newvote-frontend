@@ -45,8 +45,8 @@ export class SolutionViewComponent implements OnInit {
     loadingState: string;
     handleImageUrl = optimizeImage;
     organization: any;
-    suggestions: any[] = [];
-    proposals: any[] = [];
+    suggestions: any[];
+    proposals: any[];
     proposals$: Observable<any>;
     suggestions$: Observable<any>;
 
@@ -149,20 +149,10 @@ export class SolutionViewComponent implements OnInit {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
         })
-
-        this.suggestions$.subscribe((res) => {
-            if (!res) return false;
-            this.suggestions = res;
-        })
     }
 
     subscribeToProposalStore(id: string) {
         this.proposals$ = this.proposalQuery.filterBySolutionId(id);
-
-        this.proposals$.subscribe((res) => {
-            if (res) return res;
-            this.proposals = res;
-        })
     }
 
     onVote(voteData: any, model: string) {
