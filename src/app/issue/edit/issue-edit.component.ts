@@ -18,6 +18,7 @@ import { MetaService } from '@app/core/meta.service'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { AppState } from '@app/core/models/state.model'
 import { StateService } from '@app/core/http/state/state.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -52,7 +53,7 @@ export class IssueEditComponent implements OnInit {
         private topicService: TopicService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
@@ -197,18 +198,11 @@ export class IssueEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading)
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/issues/${t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     topicSelected(event: any) {

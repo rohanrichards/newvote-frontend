@@ -15,6 +15,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-proposal',
@@ -50,10 +51,10 @@ export class ProposalCreateComponent implements OnInit {
         private proposalService: ProposalService,
         private solutionService: SolutionService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        private toast: ToastService
     ) {
         this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
             startWith(''),
@@ -179,10 +180,10 @@ export class ProposalCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/proposals/${t._id}`])
                     },
-                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
                 )
         }
@@ -201,9 +202,9 @@ export class ProposalCreateComponent implements OnInit {
                         }
 
                         if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } })
                         }
                     })
@@ -211,13 +212,6 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     solutionSelected(event: any) {

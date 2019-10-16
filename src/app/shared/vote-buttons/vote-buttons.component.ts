@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
-import { MatSnackBar } from '@angular/material'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { Observable } from 'rxjs'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-vote-buttons',
@@ -40,7 +40,7 @@ export class VoteButtonsComponent implements OnInit {
 
     constructor(
         private auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private votesQuery: VotesQuery
     ) { }
 
@@ -102,14 +102,7 @@ export class VoteButtonsComponent implements OnInit {
 
     voteToRevealMessage(event: any) {
         event.stopPropagation()
-        this.openSnackBar('You have to vote to reveal the result', 'OK')
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
+        this.toast.openSnackBar('You have to vote to reveal the result', 'OK')
     }
 
     votesWidthFor() {

@@ -13,6 +13,7 @@ import { UserService } from '@app/core/http/user/user.service'
 import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-organization',
@@ -98,7 +99,7 @@ export class OrganizationCreateComponent implements OnInit {
         private userService: UserService,
         private organizationService: OrganizationService,
         public auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService
@@ -200,9 +201,9 @@ export class OrganizationCreateComponent implements OnInit {
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(t => {
                     if (t.error) {
-                        this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                        this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                     } else {
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate(['/organizations'])
                     }
                 })
@@ -224,13 +225,6 @@ export class OrganizationCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     userSelected(event: any) {

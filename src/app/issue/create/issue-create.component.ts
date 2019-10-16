@@ -16,6 +16,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -51,7 +52,7 @@ export class IssueCreateComponent implements OnInit {
         private issueService: IssueService,
         private topicService: TopicService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private route: ActivatedRoute,
         private meta: MetaService,
@@ -171,11 +172,11 @@ export class IssueCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/issues/${t._id}`])
                     },
                     (err) => {
-                        this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
+                        this.toast.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     }
                 )
         }
@@ -189,9 +190,9 @@ export class IssueCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(t => {
                         if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } })
                         }
                     })
@@ -199,13 +200,6 @@ export class IssueCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     topicSelected(event: any) {

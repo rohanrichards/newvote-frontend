@@ -1,7 +1,7 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { finalize } from 'rxjs/operators'
@@ -16,6 +16,7 @@ import { Suggestion } from '@app/core/models/suggestion.model'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 import { cloneDeep } from 'lodash'
 
@@ -52,7 +53,7 @@ export class SuggestionEditComponent implements OnInit {
         private organizationService: OrganizationService,
         private searchService: SearchService,
         private location: Location,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
@@ -131,18 +132,11 @@ export class SuggestionEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/suggestions/${t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     // imported data from query is read only, so need to copy / replace

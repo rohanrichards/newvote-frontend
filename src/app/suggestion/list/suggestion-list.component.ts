@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { finalize, take } from 'rxjs/operators'
 import { ActivatedRoute } from '@angular/router'
-import { MatSnackBar } from '@angular/material'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
@@ -20,6 +19,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -55,7 +55,7 @@ export class SuggestionListComponent implements OnInit {
         private stateService: StateService,
         private voteService: VoteService,
         public auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private meta: MetaService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
@@ -131,23 +131,16 @@ export class SuggestionListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((res) => {
                 this.updateEntityVoteData(item, model, res.voteValue)
-                this.openSnackBar('Your vote was recorded', 'OK')
+                this.toast.openSnackBar('Your vote was recorded', 'OK')
             },
-            (error) => {
-                if (error.status === 401) {
-                    this.openSnackBar('You must be logged in to vote', 'OK')
-                } else {
-                    this.openSnackBar('There was an error recording your vote', 'OK')
+                (error) => {
+                    if (error.status === 401) {
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
+                    } else {
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
+                    }
                 }
-            }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

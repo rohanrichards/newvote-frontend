@@ -13,6 +13,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { Issue } from '@app/core/models/issue.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-topic',
@@ -33,7 +34,7 @@ export class TopicViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private meta: MetaService,
         private topicQuery: TopicQuery,
         private issueQuery: IssueQuery,
@@ -100,13 +101,6 @@ export class TopicViewComponent implements OnInit {
                 (res) => res,
                 (err) => err
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
 }

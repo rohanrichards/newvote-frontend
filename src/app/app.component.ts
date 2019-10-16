@@ -47,6 +47,14 @@ export class AppComponent implements OnInit {
 
         const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd))
 
+        // For AAF Logins we sometimes redirect the user - if the user is redirected
+        // display toast 
+        const redirectLogin = setTimeout(() => this.activatedRoute.snapshot.paramMap.get('redirectLogin'), 0);
+
+        if (redirectLogin) {
+            console.log('REDIRECT LOGIN')
+        }
+
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)
             .pipe(

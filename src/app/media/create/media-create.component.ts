@@ -15,6 +15,7 @@ import { IssueService } from '@app/core/http/issue/issue.service'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-media',
@@ -48,7 +49,7 @@ export class MediaCreateComponent implements OnInit {
         private mediaService: MediaService,
         private issueService: IssueService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private location: Location,
@@ -161,9 +162,9 @@ export class MediaCreateComponent implements OnInit {
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(t => {
                     if (t.error) {
-                        this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                        this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                     } else {
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.location.back()
                     }
                 })
@@ -184,9 +185,9 @@ export class MediaCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(t => {
                         if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.location.back()
                         }
                     })
@@ -194,13 +195,6 @@ export class MediaCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

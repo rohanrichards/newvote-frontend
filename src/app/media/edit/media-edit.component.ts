@@ -16,6 +16,7 @@ import { IssueService } from '@app/core/http/issue/issue.service'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-media',
@@ -52,7 +53,7 @@ export class MediaEditComponent implements OnInit {
         private issueService: IssueService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private location: Location,
         private meta: MetaService
@@ -190,19 +191,12 @@ export class MediaEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((t) => {
                 if (t.error) {
-                    this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                 } else {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.location.back()
                 }
             })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
-type ToastConfig = {
-    duration: number,
-    horizontalPosition: string,
-    veriticalPosition: string
-}
-
 const defaultConfig = {
     duration: 4000,
     horizontalPosition: 'right',

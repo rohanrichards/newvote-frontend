@@ -16,6 +16,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-organization',
@@ -121,7 +122,7 @@ export class OrganizationEditComponent implements OnInit {
         private organizationService: OrganizationService,
         public auth: AuthenticationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private location: Location,
         private meta: MetaService,
         private organizationQuery: OrganizationQuery
@@ -140,7 +141,7 @@ export class OrganizationEditComponent implements OnInit {
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe((
                     res: Organization) => res,
-                (err) => err
+                    (err) => err
                 )
         })
 
@@ -309,19 +310,12 @@ export class OrganizationEditComponent implements OnInit {
         this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(() => {
-                this.openSnackBar('Succesfully updated', 'OK')
+                this.toast.openSnackBar('Succesfully updated', 'OK')
                 this.location.back()
             },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'center'
-        })
+                (error) => {
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     ownerSelected(event: any) {
@@ -378,9 +372,9 @@ export class OrganizationEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((t) => {
                 if (t.error) {
-                    this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                 } else {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     // this.location.back();
                 }
             })
