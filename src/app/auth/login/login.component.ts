@@ -92,8 +92,10 @@ export class LoginComponent implements OnInit {
     }
 
     loginWithSSO() {
+        const redirect = this.route.snapshot.queryParamMap.get('redirect');
         let url
 
+        this.cookieService.set('redirect', redirect, null, '/', '.newvote.org')
         this.cookieService.set('orgUrl', this.org.url, null, '/', '.newvote.org')
         if (this.org.authEntityId) {
             url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
