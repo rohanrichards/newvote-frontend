@@ -1,7 +1,7 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'

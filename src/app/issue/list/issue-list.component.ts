@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
