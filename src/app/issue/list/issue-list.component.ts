@@ -252,9 +252,9 @@ export class IssueListComponent implements OnInit {
             .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     openSnackBar(message: string, action: string) {

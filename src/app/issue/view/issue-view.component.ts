@@ -105,6 +105,11 @@ export class IssueViewComponent implements OnInit {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
         })
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false;
+            this.suggestions = res;
+        })
     }
 
     subscribeToIssueStore(id: string) {
@@ -125,6 +130,11 @@ export class IssueViewComponent implements OnInit {
 
     subscribeToSolutionStore(issueId: string) {
         this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+
+        this.solutions$.subscribe((res) => {
+            if (!res) return false;
+            this.solutions = res;
+        })
     }
 
     subscribeToMediaStore(id: string) {
@@ -295,9 +305,9 @@ export class IssueViewComponent implements OnInit {
             .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     // Making a suggestion from issue - prepopulates the data so suggestion can be linked

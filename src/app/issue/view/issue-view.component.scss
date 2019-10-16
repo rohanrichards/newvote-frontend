@@ -103,6 +103,8 @@ q {
     text-align: center;
 }
 
+
+
 ::ng-deep {
     .mat-expansion-panel-header:hover {
         background-color: #0277bd;
@@ -114,13 +116,14 @@ q {
 
     .mat-expansion-panel-body {
         background: white;
-        padding-top: 1rem !important;
     }
 
     .mat-expansion-panel-content {
         background: white;
     }
 }
+
+
 
 @media only screen and (max-width: 400px) {
     .skeleton-media-card-wrap {
