@@ -170,7 +170,7 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/action-default.png';
+            this.proposal.imageUrl = 'assets/action-default.png';
             return this.proposalService.create({ entity: this.proposal })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -211,6 +211,11 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
+    }
+
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
     }
 
     openSnackBar(message: string, action: string) {

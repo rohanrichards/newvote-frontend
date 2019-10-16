@@ -28,6 +28,7 @@ export class TopicCreateComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+    userImageUpload: boolean
 
     constructor(
         private topicService: TopicService,
@@ -88,7 +89,14 @@ export class TopicCreateComponent implements OnInit {
             }
 
             reader.readAsDataURL(file)
+            this.userImageUpload = true;
         }
+    }
+
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+        this.topicForm.patchValue({ imageUrl: '' });
     }
 
     onSave() {

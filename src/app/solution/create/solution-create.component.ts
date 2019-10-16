@@ -154,6 +154,11 @@ export class SolutionCreateComponent implements OnInit {
         }
     }
 
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+    }
+
     onSave() {
         this.isLoading = true
         this.solution = this.solutionForm.value as ISolution
@@ -169,7 +174,7 @@ export class SolutionCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/solution-default.png';
+            this.solution.imageUrl = 'assets/solution-default.png';
             return this.solutionService.create({ entity: this.solution })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(

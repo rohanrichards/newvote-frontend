@@ -148,9 +148,8 @@ export class IssueCreateComponent implements OnInit {
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/issue-default.png';
         this.userImageUpload = false;
-        this.imageUrl = DEFAULT_IMAGE;
+        this.imageUrl = false;
     }
 
 
@@ -169,7 +168,7 @@ export class IssueCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/issue-default.png';
+            this.issue.imageUrl = 'assets/issue-default.png';
             return this.issueService.create({ entity: this.issue })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -187,6 +186,7 @@ export class IssueCreateComponent implements OnInit {
                 )
         }
 
+        console.log(this.issue, 'this is issue with image Upload')
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
