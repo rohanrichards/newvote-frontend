@@ -147,6 +147,13 @@ export class IssueCreateComponent implements OnInit {
         }
     }
 
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/issue-default.png';
+        this.userImageUpload = false;
+        this.imageUrl = DEFAULT_IMAGE;
+    }
+
+
     onSave() {
         this.isLoading = true
         this.issue = this.issueForm.value as IIssue
