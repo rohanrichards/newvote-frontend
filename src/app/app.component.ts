@@ -10,6 +10,7 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, OrganizationService } from '@app/core'
 import { Organization } from './core/models/organization.model'
 import { MetaService } from './core/meta.service'
+import { ToastService } from './core/toast/toast.service'
 
 const log = new Logger('App')
 
@@ -30,7 +31,9 @@ export class AppComponent implements OnInit {
         private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
         private i18nService: I18nService,
         private organizationService: OrganizationService,
-        private meta: MetaService) { }
+        private meta: MetaService,
+        private toast: ToastService) { }
+
 
     ngOnInit() {
         // Setup logger
@@ -52,7 +55,7 @@ export class AppComponent implements OnInit {
         const redirectLogin = setTimeout(() => this.activatedRoute.snapshot.paramMap.get('redirectLogin'), 0);
 
         if (redirectLogin) {
-            console.log('REDIRECT LOGIN')
+            this.toast.openSnackBar('You have successfully logged in. Now you can vote on your issue', 'OK');
         }
 
         // Change page title on navigation or language change, based on route data
