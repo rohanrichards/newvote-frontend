@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { finalize } from 'rxjs/operators'
+import { finalize, take } from 'rxjs/operators'
 import { MetaService } from '@app/core/meta.service'
 
 import { environment } from '@env/environment'
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CookieService } from 'ngx-cookie-service'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
 
 const log = new Logger('Login')
 
@@ -32,7 +36,11 @@ export class LoginComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private meta: MetaService,
         private organizationService: OrganizationService,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private solutionService: SolutionService,
+        private proposalService: ProposalService,
+        private suggestionService: SuggestionService,
+        private voteQuery: VotesQuery
     ) {
         this.createForm()
         this.organizationService.get().subscribe(org => {
@@ -59,6 +67,45 @@ export class LoginComponent implements OnInit {
                 this.isLoading = false
             }))
             .subscribe(credentials => {
+
+                // If a user logs in after making a vote request, we take vote info from the response object
+
+                if (credentials.voted) {
+
+                    const vote = credentials.voted;
+                    const { objectType, object } = credentials.voted;
+
+                    this.voteQuery.selectEntity(object)
+                        .pipe(
+                            take(1)
+                        )
+                        .subscribe(
+                            (storeVote) => {
+
+                                const updatedEntity = {
+                                    votes: {
+                                        ...storeVote,
+                                        currentUser: vote
+                                    }
+                                }
+
+                                if (objectType === 'Solution') {
+                                    this.solutionService.updateSolutionVote(object, updatedEntity)
+                                }
+
+                                if (objectType === 'Proposal') {
+                                    this.proposalService.updateProposalVote(object, updatedEntity)
+                                }
+
+                                if (objectType === 'Suggestion') {
+                                    this.suggestionService.updateSuggestionVote(object, updatedEntity)
+                                }
+                            },
+                            (err) => err
+                        )
+                }
+
+                // handle user if they have created 
                 log.debug(`${credentials.user.email} successfully logged in`)
                 this.route.queryParams.subscribe(
                     params => {
