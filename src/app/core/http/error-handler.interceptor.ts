@@ -32,6 +32,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         // unauthorized
         if (response instanceof HttpErrorResponse) {
             const error = response
+
             if (error.status === 401) {
                 log.error('User is not authenticated - please log in')
                 const auth = this.inj.get(AuthenticationService)

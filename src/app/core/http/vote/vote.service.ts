@@ -10,6 +10,7 @@ import { OrganizationService } from '../organization/organization.service'
 import { VoteStore } from './vote.store'
 import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
+import { CookieService } from 'ngx-cookie-service'
 
 const routes = {
     list: () => '/votes',
@@ -38,6 +39,7 @@ export class VoteService {
         private httpClient: HttpClient,
         private orgService: OrganizationService,
         private voteStore: VoteStore,
+        private cookieService: CookieService
     ) {
         this.orgService.get().subscribe(org => { this._org = org })
 
@@ -81,7 +83,21 @@ export class VoteService {
             .post(routes.create(), context.entity)
             .pipe(
                 map((res: any) => res),
-                catchError(handleError)
+                catchError((err: any) => {
+
+                    // catch the error and if it was due to not being logged in create a vote cookie to update
+                    // on next login
+                    if (err.status === 401) {
+                        // remove cookie if it exists, only want one vote
+                        if (this.cookieService.get('vote')) {
+                            this.cookieService.delete('vote');
+                        }
+                        const vote = JSON.stringify(context.entity);
+                        this.cookieService.set('vote', vote, null, '/', '.newvote.org')
+                    }
+
+                    return handleError(err);
+                })
             )
     }
 
