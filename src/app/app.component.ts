@@ -2,8 +2,8 @@ import { Component, OnInit, NgZone } from '@angular/core'
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { TranslateService } from '@ngx-translate/core'
-import { merge, asyncScheduler } from 'rxjs'
-import { filter, map, mergeMap, observeOn } from 'rxjs/operators'
+import { merge, asyncScheduler, timer } from 'rxjs'
+import { filter, map, mergeMap, observeOn, takeUntil } from 'rxjs/operators'
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga'
 
 import { environment } from '@env/environment'
@@ -11,6 +11,7 @@ import { Logger, I18nService, OrganizationService } from '@app/core'
 import { Organization } from './core/models/organization.model'
 import { MetaService } from './core/meta.service'
 import { ToastService } from './core/toast/toast.service'
+import { AuthenticationQuery } from './core/authentication/authentication.query'
 
 const log = new Logger('App')
 
@@ -32,7 +33,8 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private toast: ToastService) { }
+        private toast: ToastService,
+        private authQuery: AuthenticationQuery) { }
 
 
     ngOnInit() {
@@ -52,11 +54,16 @@ export class AppComponent implements OnInit {
 
         // For AAF Logins we sometimes redirect the user - if the user is redirected
         // display toast 
-        const redirectLogin = setTimeout(() => this.activatedRoute.snapshot.paramMap.get('redirectLogin'), 0);
-
-        if (redirectLogin) {
-            this.toast.openSnackBar('You have successfully logged in. Now you can vote on your issue', 'OK');
-        }
+        this.activatedRoute.queryParams
+            .pipe(
+                observeOn(asyncScheduler),
+                takeUntil(timer(5000))
+            )
+            .subscribe((res) => {
+                if (res.redirectLogin && this.authQuery.isLoggedIn()) {
+                    this.toast.openSnackBar('You have successfully logged in. Now you can vote on your issue', 'OK');
+                }
+            })
 
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)
