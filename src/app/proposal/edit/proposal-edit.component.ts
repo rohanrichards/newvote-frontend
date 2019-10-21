@@ -45,6 +45,7 @@ export class ProposalEditComponent implements OnInit {
         imageUrl: new FormControl('', [Validators.required])
     });
 
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
     resetImage: boolean
@@ -199,6 +200,7 @@ export class ProposalEditComponent implements OnInit {
         this.newImage = false
         this.imageUrl = this.proposalForm.get('imageUrl').value
         this.resetImage = false;
+        this.fileInput.nativeElement.value = null;
     }
 
     setDefaultImage() {
@@ -206,6 +208,7 @@ export class ProposalEditComponent implements OnInit {
         this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
         this.resetImage = true;
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {

@@ -42,6 +42,8 @@ export class SolutionCreateComponent implements OnInit {
 
     @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
+
     suggestionTemplate: any;
 
     constructor(
@@ -157,6 +159,7 @@ export class SolutionCreateComponent implements OnInit {
     setDefaultImage() {
         this.userImageUpload = false;
         this.imageUrl = false;
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {

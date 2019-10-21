@@ -43,10 +43,11 @@ export class IssueEditComponent implements OnInit {
         topics: new FormControl(''),
         imageUrl: new FormControl('', [Validators.required])
     });
+    resetImage: boolean
 
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
-    resetImage: boolean
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private issueService: IssueService,
@@ -171,6 +172,7 @@ export class IssueEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.issueForm.get('imageUrl').value
+        this.fileInput.nativeElement.value = null;
     }
 
     setDefaultImage() {
@@ -178,6 +180,8 @@ export class IssueEditComponent implements OnInit {
         this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
         this.resetImage = true;
+        // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {

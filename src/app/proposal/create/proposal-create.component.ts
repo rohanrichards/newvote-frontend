@@ -29,7 +29,7 @@ export class ProposalCreateComponent implements OnInit {
     organization: Organization;
     filteredSolutions: Observable<ISolution[]>;
     separatorKeysCodes: number[] = [ENTER, COMMA];
-    isLoading = true;
+    isLoading = false;
     imageUrl: any;
     uploader: FileUploader;
     userImageUpload: boolean;
@@ -43,6 +43,8 @@ export class ProposalCreateComponent implements OnInit {
 
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
+
     suggestionTemplate: any;
 
     constructor(
@@ -61,7 +63,7 @@ export class ProposalCreateComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isLoading = true
+        // this.isLoading = true
         this.meta.updateTags(
             {
                 title: 'Create Action',
@@ -216,6 +218,7 @@ export class ProposalCreateComponent implements OnInit {
     setDefaultImage() {
         this.userImageUpload = false;
         this.imageUrl = false;
+        this.fileInput.nativeElement.value = null;
     }
 
     openSnackBar(message: string, action: string) {

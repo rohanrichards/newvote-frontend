@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize, delay } from 'rxjs/operators'
 
@@ -44,6 +44,7 @@ export class IssueCreateComponent implements OnInit {
     suggestionTemplate: any;
 
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
@@ -150,6 +151,8 @@ export class IssueCreateComponent implements OnInit {
     setDefaultImage() {
         this.userImageUpload = false;
         this.imageUrl = false;
+        // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
+        this.fileInput.nativeElement.value = null;
     }
 
 
@@ -186,7 +189,6 @@ export class IssueCreateComponent implements OnInit {
                 )
         }
 
-        console.log(this.issue, 'this is issue with image Upload')
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)

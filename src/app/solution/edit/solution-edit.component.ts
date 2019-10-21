@@ -48,6 +48,7 @@ export class SolutionEditComponent implements OnInit {
 
     @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     resetImage: boolean
 
     constructor(
@@ -193,6 +194,7 @@ export class SolutionEditComponent implements OnInit {
         this.newImage = false
         this.imageUrl = this.solutionForm.get('imageUrl').value
         this.resetImage = false;
+        this.fileInput.nativeElement.value = null;
     }
 
     setDefaultImage() {
@@ -200,6 +202,7 @@ export class SolutionEditComponent implements OnInit {
         this.newImage = false;
         this.imageUrl = DEFAULT_IMAGE;
         this.resetImage = true;
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {
