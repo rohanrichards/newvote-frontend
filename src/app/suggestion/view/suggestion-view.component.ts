@@ -63,16 +63,36 @@ export class SuggestionViewComponent implements OnInit {
             this.subscribeToSuggestionStore(ID);
             this.fetchData(ID);
         });
-
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.selectEntity(id)
-            .subscribe((suggestion: Suggestion) => {
-                if (!suggestion) return false;
-                this.suggestion = suggestion;
-                this.stateService.setLoadingState(AppState.complete);
+        // Need to handle both instances whether a link is via _id or slug
+        // old entities will have no slug until updated
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            this.suggestionQuery.selectEntity(id)
+                .subscribe((suggestion: Suggestion) => {
+                    if (!suggestion) return false;
+                    this.suggestion = suggestion;
+                    this.stateService.setLoadingState(AppState.complete);
+                })
+        } else {
+            // this.suggestionQuery.selectEntity((entity: Suggestion) => entity.slug === id)
+            //     .subscribe((res) => {
+            //         console.log(res, 'this is res');
+
+            //     })
+
+            this.suggestionQuery.selectAll({
+                filterBy: (entity) => entity.slug === id
             })
+                .subscribe((res) => {
+                    if (!res.length) return false;
+                    this.suggestion = res[0];
+                    this.stateService.setLoadingState(AppState.complete);
+                })
+        }
+
+
     }
 
     fetchData(id: string) {

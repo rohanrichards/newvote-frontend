@@ -54,7 +54,6 @@ export class OrganizationListComponent implements OnInit {
                 title: 'All Communities',
                 description: 'The list of all available communities on the NewVote platform.'
             });
-
     }
 
     fetchData(force?: boolean) {
@@ -63,7 +62,6 @@ export class OrganizationListComponent implements OnInit {
 
         this.organizationService.list({
             orgs: [],
-            forceUpdate: force,
             params: {
                 'showDeleted': isAdmin ? 'true' : '',
                 'showPrivate': isAdmin ? 'true' : ''

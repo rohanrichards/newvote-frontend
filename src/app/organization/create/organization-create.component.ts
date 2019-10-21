@@ -128,7 +128,6 @@ export class OrganizationCreateComponent implements OnInit {
             });
 
         this.setAuthtypeValidators();
-
     }
 
     setAuthtypeValidators() {

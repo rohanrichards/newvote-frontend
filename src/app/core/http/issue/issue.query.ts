@@ -25,17 +25,34 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
         super(store);
     }
 
-    getIssueWithTopic(issueId: string) {
+    getIssueWithTopic(issueId: string, slug?: boolean) {
+
+        let issueSearch;
+
+        if (slug) {
+            issueSearch = this.selectAll({
+                filterBy: (entity: Issue) => entity.slug === issueId
+            })
+        } else {
+            issueSearch = this.selectEntity(issueId);
+        }
+
         return combineQueries(
             [
-                this.selectEntity(issueId),
+                issueSearch,
                 this.topicQuery.selectAll()
             ]
         )
             .pipe(
                 map((results) => {
                     let [storeIssue, topics] = results;
-                    const issue = cloneDeep(storeIssue);
+                    let issue;
+
+                    if (slug) {
+                        issue = cloneDeep(storeIssue[0]);
+                    } else {
+                        issue = cloneDeep(storeIssue);
+                    }
 
                     if (!issue) {
                         return false;
@@ -45,7 +62,7 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
                         return issue;
                     }
 
-                    const populateIssueTopics = issue.topics.map((issueTopic) => {
+                    const populateIssueTopics = issue.topics.map((issueTopic: any) => {
                         return topics.find((topic) => {
                             if (typeof issueTopic === 'string') {
                                 return issueTopic === topic._id;
