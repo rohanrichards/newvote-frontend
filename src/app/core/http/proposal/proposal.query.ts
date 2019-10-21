@@ -41,7 +41,7 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
                                 return solution === id;
                             }
 
-                            return solution.__id === id;
+                            return solution._id === id;
                         })
                     }
                     )

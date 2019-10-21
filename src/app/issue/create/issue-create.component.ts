@@ -96,6 +96,12 @@ export class IssueCreateComponent implements OnInit {
             return { fileItem, form }
         }
 
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
+
         this.topicService.list({})
             .subscribe(
                 res => res,

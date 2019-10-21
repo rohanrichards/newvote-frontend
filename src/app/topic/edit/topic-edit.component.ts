@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
 import { finalize } from 'rxjs/operators'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { MatSnackBar } from '@angular/material'
 import { merge, cloneDeep } from 'lodash'
 
@@ -76,7 +76,11 @@ export class TopicEditComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
-
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
             form.append('upload_preset', 'qhf7z3qa')
