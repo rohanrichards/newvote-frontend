@@ -8,7 +8,7 @@
             [ngClass]="{'soft-deleted': item.softDeleted}"
             routerLink="{{path}}/{{item.slug || item._id}}">
             <ng-container
-                *ngIf="hasDefaultImage(item.imageUrl); then withImage; else withoutImage">
+                *ngIf="hasDefaultImage(item.imageUrl); then withImage; else noImage">
             </ng-container>
             <ng-template #withImage>
                 <div mat-card-image
