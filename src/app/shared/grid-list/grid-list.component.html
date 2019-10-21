@@ -52,7 +52,7 @@
                             matTooltip="Edit the item"
                             mat-icon-button
                             (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+                            routerLink='{{path}}/edit/{{item._id}}'>
                             <mat-icon aria-label="Edit the content">edit
                             </mat-icon>
                         </button>
@@ -87,7 +87,7 @@
                             matTooltip="Edit the item"
                             mat-icon-button
                             (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+                            routerLink='{{path}}/edit/{{item._id}}'>
                             <mat-icon aria-label="Edit the content">edit
                             </mat-icon>
                         </button>

@@ -174,15 +174,16 @@ export class ProposalCreateComponent implements OnInit {
             return this.proposalService.create({ entity: this.proposal })
                 .pipe(finalize(() => { this.isLoading = false; }))
                 .subscribe(
-                    proposal => {
+                    t => {
                         if (this.suggestionTemplate) {
                             this.hideSuggestion();
                         }
 
                         this.openSnackBar('Succesfully created', 'OK');
-                        this.router.navigate([`/proposals/${proposal.slug || proposal._id}`]);
+                        this.router.navigate([`/proposals/${t._id}`]);
                     },
                     (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+
                 );
         }
 
@@ -193,18 +194,19 @@ export class ProposalCreateComponent implements OnInit {
 
                 this.proposalService.create({ entity: this.proposal })
                     .pipe(finalize(() => { this.isLoading = false; }))
-                    .subscribe(
-                        (proposal) => {
+                    .subscribe(t => {
 
-                            if (this.suggestionTemplate) {
-                                this.hideSuggestion();
-                            }
+                        if (this.suggestionTemplate) {
+                            this.hideSuggestion();
+                        }
 
+                        if (t.error) {
+                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK');
+                        } else {
                             this.openSnackBar('Succesfully created', 'OK');
-                            this.router.navigate([`/solutions/${proposal.slug || proposal._id}`]);
-                        },
-                        error => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                    );
+                            this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } });
+                        }
+                    });
             }
         };
 
