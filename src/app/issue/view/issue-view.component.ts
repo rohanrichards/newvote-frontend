@@ -107,8 +107,8 @@ export class IssueViewComponent implements OnInit {
         })
 
         this.suggestions$.subscribe((res) => {
-            if (!res) return false;
-            this.suggestions = res;
+            if (!res) return false
+            this.suggestions = res
         })
     }
 
@@ -132,8 +132,9 @@ export class IssueViewComponent implements OnInit {
         this.solutions$ = this.solutionQuery.selectSolutions(issueId)
 
         this.solutions$.subscribe((res) => {
-            if (!res) return false;
-            this.solutions = res;
+            if (!res.length) return false
+            this.solutions = res
+            this.stateService.setLoadingState(AppState.complete)
         })
     }
 
@@ -305,9 +306,9 @@ export class IssueViewComponent implements OnInit {
             .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     // Making a suggestion from issue - prepopulates the data so suggestion can be linked
