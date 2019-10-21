@@ -135,29 +135,14 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        // Need to handle both instances whether a link is via _id or slug
-        // old entities will have no slug until updated
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            this.solutionQuery.selectEntity(id)
-                .subscribe((solution: Solution) => {
-                    if (!solution) return false;
-                    this.solution = solution;
-                    this.subscribeToProposalStore(solution._id);
-                    this.subscribeToSuggestionStore(solution._id);
-                    this.stateService.setLoadingState(AppState.complete);
-                })
-        } else {
-            this.solutionQuery.selectAll({
-                filterBy: (entity) => entity.slug === id
+        this.solutionQuery.getSolutionWithSlug(id)
+            .subscribe((solutions: Solution[]) => {
+                if (!solutions.length) return false;
+                this.solution = solutions[0];
+                this.subscribeToProposalStore(solutions[0]._id);
+                this.subscribeToSuggestionStore(solutions[0]._id);
+                this.stateService.setLoadingState(AppState.complete);
             })
-                .subscribe((solutions: Solution[]) => {
-                    if (!solutions.length) return false;
-                    this.solution = solutions[0];
-                    this.subscribeToProposalStore(solutions[0]._id);
-                    this.subscribeToSuggestionStore(solutions[0]._id);
-                    this.stateService.setLoadingState(AppState.complete);
-                })
-        }
     }
 
     subscribeToSuggestionStore(id: string) {

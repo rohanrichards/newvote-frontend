@@ -78,13 +78,13 @@ export class SuggestionEditComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.selectEntity(id)
+        this.suggestionQuery.getSuggestionWithSlug(id)
             .subscribe(
-                (suggestion) => {
-                    if (!suggestion) return false;
-                    this.suggestion = suggestion
-                    this.updateForm(suggestion)
-                    this.updateTags(suggestion)
+                (suggestion: Suggestion[]) => {
+                    if (!suggestion.length) return false;
+                    this.suggestion = suggestion[0]
+                    this.updateForm(suggestion[0])
+                    this.updateTags(suggestion[0])
                 },
                 (err) => err
             )

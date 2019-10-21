@@ -33,6 +33,13 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         super(store);
     }
 
+    getSolutionWithSlug(id: string) {
+        let isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Solution) => isObjectId ? entity._id === id : entity.slug === id
+        });
+    }
+
     selectSolutions(issueId?: string) {
         return combineQueries(
             [
@@ -76,36 +83,6 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
                             votes: solution.votes
                         }
                     })
-                })
-            )
-    }
-
-    selectOneSolution(id: string) {
-        return combineQueries(
-            [
-                this.selectEntity(id),
-                this.proposalQuery.proposals$,
-            ]
-        )
-            .pipe(
-                map((results) => {
-                    let [solution, proposals] = results;
-
-                    const solutionProposals = proposals.filter((proposal: Proposal) => {
-                        return proposal.solutions.some((pSolution: any) => {
-                            if (typeof pSolution === 'string') {
-                                return solution._id === pSolution;
-                            }
-
-                            return solution._id === pSolution._id;
-                        })
-                    })
-
-                    return {
-                        ...solution,
-                        proposals: solutionProposals,
-                        votes: solution.votes
-                    }
                 })
             )
     }

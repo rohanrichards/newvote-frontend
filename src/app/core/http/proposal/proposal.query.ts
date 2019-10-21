@@ -4,6 +4,7 @@ import { Proposal } from "@app/core/models/proposal.model";
 import { ProposalStore, ProposalState } from "./proposal.store";
 import { SolutionQuery } from "../solution/solution.query";
 import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
@@ -24,6 +25,12 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         super(store);
     }
 
+    getProposalWithSlug(id: string) {
+        let isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Proposal) => isObjectId ? entity._id === id : entity.slug === id
+        });
+    }
 
     filterBySolutionId(id: string) {
         return this.selectAll({

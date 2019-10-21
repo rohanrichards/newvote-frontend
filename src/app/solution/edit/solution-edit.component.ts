@@ -146,13 +146,13 @@ export class SolutionEditComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.selectEntity(id)
+        this.solutionQuery.getSolutionWithSlug(id)
             .subscribe(
-                (solution: Solution) => {
-                    if (!solution) return false;
-                    this.solution = solution
-                    this.updateForm(solution)
-                    this.updateTags(solution)
+                (solution: Solution[]) => {
+                    if (!solution.length) return false;
+                    this.solution = solution[0]
+                    this.updateForm(solution[0])
+                    this.updateTags(solution[0])
                 }
             )
     }
