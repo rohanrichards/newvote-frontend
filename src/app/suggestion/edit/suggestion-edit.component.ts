@@ -133,7 +133,7 @@ export class SuggestionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/suggestions/${t._id}`])
+                    this.router.navigate([`/suggestions/${t.slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )

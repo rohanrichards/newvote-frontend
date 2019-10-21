@@ -98,13 +98,8 @@ export class IssueViewComponent implements OnInit {
 
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id');
-            this.subscribeToIssueStore(ID);
-            this.subscribeToSuggestionStore(ID);
-            this.subscribeToSolutionStore(ID);
-            this.subscribeToMediaStore(ID);
             this.fetchData(ID);
-            this.getMedia(ID);
-            this.getTopics();
+            this.subscribeToIssueStore(ID);
         });
 
         this.getSuggestions();
@@ -118,11 +113,23 @@ export class IssueViewComponent implements OnInit {
 
 
     subscribeToIssueStore(id: string) {
-        this.issueQuery.getIssueWithTopic(id)
+        let issueQuery;
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            issueQuery = this.issueQuery.getIssueWithTopic(id)
+
+        } else {
+            issueQuery = this.issueQuery.getIssueWithTopic(id, true)
+        }
+        issueQuery
             .subscribe(
                 (issue: Issue) => {
                     if (!issue) return issue;
                     this.issue = issue;
+                    this.subscribeToSuggestionStore(issue._id);
+                    this.subscribeToSolutionStore(issue._id);
+                    this.subscribeToMediaStore(issue._id);
+                    this.getMedia(issue._id);
+                    this.getTopics();
                     this.stateService.setLoadingState(AppState.complete);
                 },
                 (err) => console.log(err))
@@ -164,7 +171,6 @@ export class IssueViewComponent implements OnInit {
         const isOwner = this.auth.isOwner();
 
         this.suggestionService.list({
-            forceUpdate: true,
             params: {
                 'showDeleted': isOwner ? true : ''
             }
