@@ -180,6 +180,7 @@ export class IssueViewComponent implements OnInit {
         const isOwner = this.auth.isOwner()
 
         this.suggestionService.list({
+            forceUpdate: true,
             params: {
                 showDeleted: isOwner ? true : ''
             }
