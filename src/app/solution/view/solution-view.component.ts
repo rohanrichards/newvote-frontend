@@ -83,7 +83,9 @@ export class SolutionViewComponent implements OnInit {
             const ID = params.get('id');
             this.getSolution(ID);
             this.getProposals();
+            this.subscribeToSuggestionStore(ID);
             this.subscribeToSolutionStore(ID);
+            this.subscribeToProposalStore(ID);
         });
 
         this.getSuggestions();
@@ -135,14 +137,20 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.getSolutionWithSlug(id)
+       this.solutionQuery.getSolutionWithSlug(id)
             .subscribe((solutions: Solution[]) => {
                 if (!solutions.length) return false;
                 this.solution = solutions[0];
                 this.subscribeToProposalStore(solutions[0]._id);
                 this.subscribeToSuggestionStore(solutions[0]._id);
-                this.stateService.setLoadingState(AppState.complete);
-            })
+        }
+                       
+        this.solutionQuery.selectEntity(id)
+              .subscribe((solution: Solution) => {
+                  if (!solution) return false;
+                  this.solution = solution;
+                  this.stateService.setLoadingState(AppState.complete);
+              })         
     }
 
     subscribeToSuggestionStore(id: string) {

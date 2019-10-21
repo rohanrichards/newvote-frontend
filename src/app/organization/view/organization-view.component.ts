@@ -50,6 +50,7 @@ export class OrganizationViewComponent implements OnInit {
             const ID = params.get('id');
             this.getOrganization(ID);
         });
+
     }
 
     getOrganization(id: string, forceUpdate?: boolean) {
@@ -86,7 +87,7 @@ export class OrganizationViewComponent implements OnInit {
             if (confirm) {
                 this.organizationService.delete({ id: this.organization._id }).subscribe(() => {
                     this.openSnackBar('Succesfully deleted', 'OK');
-                    this.router.navigate(['/organizations']);
+                    this.router.navigate(['/organizations'], { queryParams: { forceUpdate: true } });
                 });
             }
         });
