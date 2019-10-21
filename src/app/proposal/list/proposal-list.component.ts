@@ -110,6 +110,7 @@ export class ProposalListComponent implements OnInit {
             );
 
         this.suggestionService.list({
+            forceUpdate: true,
             params: {
                 'showDeleted': isModerator ? true : '',
                 'type': 'solution',

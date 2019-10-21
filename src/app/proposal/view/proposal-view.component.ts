@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize, take, filter, map } from 'rxjs/operators';
+import { finalize, take, filter } from 'rxjs/operators';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material';
@@ -27,7 +27,6 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
 import { assign } from 'lodash';
 import { VotesQuery } from '@app/core/http/vote/vote.query';
 import { AdminService } from '@app/core/http/admin/admin.service';
-import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-proposal',
@@ -46,7 +45,6 @@ export class ProposalViewComponent implements OnInit {
     handleImageUrl = optimizeImage;
     organization: any;
     suggestions: any[];
-    suggestions$: Observable<Suggestion[]>;
 
     constructor(
         private organizationService: OrganizationService,
@@ -79,48 +77,37 @@ export class ProposalViewComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id');
             this.subscribeToProposalStore(ID);
+            this.subscribeToSuggestionStore(ID);
             this.getProposal(ID);
             this.getSuggestions(ID);
         });
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestions$ = this.suggestionQuery.suggestions$
+        this.suggestionQuery.suggestions$
             .pipe(
-                map((entity: any) => {
-                    return entity.filter((suggestion: any) => {
-                        return suggestion.parent === id;
-                    })
-                })
+                filter((entity: any) => entity.parent === id)
             )
+            .subscribe((suggestions: Suggestion[]) => {
+                this.suggestions = suggestions;
+            })
+
     }
 
     subscribeToProposalStore(id: string) {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            this.proposalQuery.selectEntity(id)
-                .subscribe((proposal: Proposal) => {
-                    if (!proposal) return false;
-                    this.proposal = proposal;
-                    this.subscribeToSuggestionStore(proposal._id);
-                    return this.stateService.setLoadingState(AppState.complete);
-                })
-        } else {
-            this.proposalQuery.selectAll({
-                filterBy: (entity) => entity.slug === id
+        this.proposalQuery.selectEntity(id)
+            .subscribe((proposal: Proposal) => {
+                if (!proposal) return false;
+                this.proposal = proposal;
+                return this.stateService.setLoadingState(AppState.complete);
             })
-                .subscribe((proposals: Proposal[]) => {
-                    if (!proposals.length) return false;
-                    this.proposal = proposals[0]
-                    this.subscribeToSuggestionStore(proposals[0]._id);
-                    return this.stateService.setLoadingState(AppState.complete);
-                })
-        }
     }
 
     getSuggestions(id: string) {
         const isModerator = this.auth.isModerator();
 
         this.suggestionService.list({
+            forceUpdate: true,
             params: {
                 'showDeleted': isModerator ? true : ''
             }
