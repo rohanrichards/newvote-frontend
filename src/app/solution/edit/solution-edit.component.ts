@@ -227,7 +227,7 @@ export class SolutionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/solutions/${t.slug || t._id}`])
+                    this.router.navigate([`/solutions/${t._id}`], { queryParams: { forceUpdate: true } })
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )

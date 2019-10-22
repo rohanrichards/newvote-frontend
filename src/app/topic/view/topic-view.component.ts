@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize, take } from 'rxjs/operators';
@@ -53,32 +52,22 @@ export class TopicViewComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id');
             this.subscribeToTopicStore(ID);
+            this.subscribeToIssueStore(ID)
             this.getTopic(ID);
             this.getIssues();
+
         });
 
     }
 
     subscribeToTopicStore(id: string) {
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            this.topicQuery.selectEntity(id)
-                .subscribe((topic: Topic) => {
-                    if (!topic) return false;
-                    this.topic = topic
-                    this.subscribeToIssueStore(topic._id);
-                })
-        } else {
-            this.topicQuery.selectAll({
-                filterBy: (entity) => entity.slug === id
-            })
-                .subscribe((topics: Topic[]) => {
-                    if (!topics) return false;
-                    this.topic = topics[0]
-                    this.subscribeToIssueStore(topics[0]._id);
-                })
-        }
-    }
+        this.topicQuery.selectEntity(id)
+            .subscribe((topic: Topic) => {
+                if (!topic) return false;
+                this.topic = topic
 
+            })
+    }
 
     subscribeToIssueStore(id: string) {
         this.issueQuery.selectAll({

@@ -83,7 +83,9 @@ export class SolutionViewComponent implements OnInit {
             const ID = params.get('id');
             this.getSolution(ID);
             this.getProposals();
+            this.subscribeToSuggestionStore(ID);
             this.subscribeToSolutionStore(ID);
+            this.subscribeToProposalStore(ID);
         });
 
         this.getSuggestions();

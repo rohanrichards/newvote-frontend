@@ -60,8 +60,7 @@ export class GridListComponent implements OnInit {
     handleUrl(item: any) {
 
         if (this.model !== 'Organization') {
-            if (!item.slug) return this.router.navigate([`/${this.path}/${item._id}`]);
-            return this.router.navigate([`/${this.path}/${item.slug || item._id}`]);
+            return this.router.navigate([`/${this.path}/${item._id}`]);
         }
 
         const { hostname } = window.location;
