@@ -21,8 +21,8 @@ export class TopicListComponent implements OnInit {
     isLoading: boolean;
     loadingState: string;
     headerTitle = 'Browse By Topic';
-    headerText = 'Topics arrange the current issues into broader categories. \
-        Select a topic below to learn more about it and explore relevant issues being discussed.';
+    headerText = 'Topics arrange the current issues into broader categories.' +
+        'Select a topic below to learn more about it and explore relevant issues being discussed.';
 
     headerButtons = [{
         text: 'New Topic',
