@@ -4,6 +4,7 @@ import { AuthenticationStore } from './authentication.store'
 import { Query, toBoolean } from '@datorama/akita'
 import { OrganizationQuery } from '../http/organization/organization.query'
 import { combineLatest } from 'rxjs/operators'
+import { Organization } from '../models/organization.model'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
@@ -11,9 +12,9 @@ export class AuthenticationQuery extends Query<IUser> {
     isCommunityVerified$ = combineLatest(
         this.select(),
         this.organizationQuery.select(),
-        (user, organization) => {
-            return this.isUserPartOfOrganization(user, organization)
-        });
+        (user: IUser, organization: Organization) => {
+            return this.isUserPartOfOrganization(user, organization) as boolean
+        })
 
     constructor(
         protected store: AuthenticationStore,
@@ -24,6 +25,10 @@ export class AuthenticationQuery extends Query<IUser> {
 
     isLoggedIn() {
         return !!this.getValue()._id
+    }
+
+    isCommunityVerified() {
+        return toBoolean(this.isCommunityVerified$)
     }
 
     isOwner() {
@@ -55,7 +60,7 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserPartOfOrganization(user: any, organization: any): boolean {
+    isUserPartOfOrganization(user: IUser, organization: Organization) {
         if (!user.verified) return false
         // if (!user.mobileNumber) return false;
 
@@ -63,7 +68,7 @@ export class AuthenticationQuery extends Query<IUser> {
             if (typeof userOrganization === 'string') return organization._id === userOrganization
             return organization._id === userOrganization._id
         })
-        return exists
+        return exists as boolean
     }
 
     isUserVerified() {

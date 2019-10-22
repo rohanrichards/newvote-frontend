@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
     showSearch = false;
     hideVerify = false;
 
-    verified: boolean;
+    verified: unknown;
     loggedIn: boolean;
     routeLevel: string;
 
@@ -49,10 +49,7 @@ export class NavbarComponent implements OnInit {
                 this.routeLevel = res
             })
 
-        this.query.isCommunityVerified$
-            .subscribe((verified: any) => {
-                this.verified = verified
-            })
+        this.verified = this.query.isCommunityVerified$
     }
 
     toggleSearch() {
