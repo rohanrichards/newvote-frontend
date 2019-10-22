@@ -96,7 +96,10 @@
                         color="primary"
                         type="submit"
                         [disabled]="loginForm.invalid || isLoading">
-                        <span translate>Login</span>
+                        <span *ngIf="isCommunityVerified"
+                            translate>Login</span>
+                        <span *ngIf="!isCommunityVerified"
+                            translate>Verify with Community</span>
                     </button>
                 </div>
             </form>

@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { StoreConfig, Store } from "@datorama/akita";
-import { IUser } from "../models/user.model";
+import { Injectable } from '@angular/core'
+import { StoreConfig, Store } from '@datorama/akita'
+import { IUser } from '../models/user.model'
 
 export function createInitialState(): IUser {
     return {
@@ -24,6 +24,6 @@ export function createInitialState(): IUser {
 @StoreConfig({ name: 'auth', resettable: true })
 export class AuthenticationStore extends Store<IUser> {
     constructor() {
-        super(createInitialState());
+        super(createInitialState())
     }
 }

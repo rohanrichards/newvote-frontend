@@ -45,7 +45,7 @@ const routes = {
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
-    communityVerify: () => `/users/community-verify`,
+    communityVerify: () => '/users/community-verify',
     sso: () => '/auth/jwt',
     checkAuth: () => '/auth/check-status'
 }
@@ -75,7 +75,7 @@ export class AuthenticationService {
             localStorage.getItem(credentialsKey) ||
             cookieService.get(credentialsKey)
         if (savedCredentials) {
-            const creds: Credentials = <Credentials>JSON.parse(savedCredentials)
+            const creds: Credentials = JSON.parse(savedCredentials) as Credentials
             this.setCredentials(creds, true)
             this.authenticationStore.update(creds.user)
             if (this.isTokenExpired()) {
@@ -83,7 +83,7 @@ export class AuthenticationService {
             }
         }
 
-        this.organizationService.get().subscribe(org => this._org = org)
+        this.organizationService.get().subscribe(org => { this._org = org })
 
         this.checkStatus()
             .subscribe(
@@ -100,10 +100,10 @@ export class AuthenticationService {
     }
 
     /**
-	 * Authenticates the user.
-	 * @param context The login parameters.
-	 * @return The user credentials.
-	 */
+     * Authenticates the user.
+     * @param context The login parameters.
+     * @return The user credentials.
+     */
     login(context: LoginContext): Observable<Credentials> {
         return this.httpClient
             .post<Credentials>(routes.signin(), context)
@@ -128,10 +128,10 @@ export class AuthenticationService {
     }
 
     /**
-	 * Creates a new user.
-	 * @param context The signup parameters.
-	 * @return The user credentials.
-	 */
+     * Creates a new user.
+     * @param context The signup parameters.
+     * @return The user credentials.
+     */
     signup(context: LoginContext, verificationCode?: string): Observable<Credentials> {
         context.organizations = [this.organizationService.org]
         return this.httpClient
@@ -146,9 +146,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * Logs out the user and clear credentials.
-	 * @return True if the user was logged out successfully.
-	 */
+     * Logs out the user and clear credentials.
+     * @return True if the user was logged out successfully.
+     */
     logout(): Observable<boolean> {
         // Customize credentials invalidation here
         this.setCredentials()
@@ -161,9 +161,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * Sends an email to the provided address with password reset instructions.
-	 * @return True if the e-mail was sent successfully.
-	 */
+     * Sends an email to the provided address with password reset instructions.
+     * @return True if the e-mail was sent successfully.
+     */
     forgot(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
         return this.httpClient
@@ -171,9 +171,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * Resets the users password combined with a provided token.
-	 * @return True if the password was reset successfully.
-	 */
+     * Resets the users password combined with a provided token.
+     * @return True if the password was reset successfully.
+     */
     reset(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
         return this.httpClient
@@ -185,9 +185,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * Checks is the user is authenticated.
-	 * @return True if the user is authenticated.
-	 */
+     * Checks is the user is authenticated.
+     * @return True if the user is authenticated.
+     */
     isAuthenticated(): boolean {
         return !!this._credentials && !this.isTokenExpired()
     }
@@ -205,9 +205,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * Checks is the user is an admin.
-	 * @return True if the user is an admin.
-	 */
+     * Checks is the user is an admin.
+     * @return True if the user is an admin.
+     */
     isAdmin(): boolean {
         if (this._credentials) {
             return includes(this._credentials.user.roles, 'admin')
@@ -217,9 +217,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * owner implies admin or organization owner
-	 * @return True if the user is an admin.
-	 */
+     * owner implies admin or organization owner
+     * @return True if the user is an admin.
+     */
     isOwner(): boolean {
         if (this._credentials) {
             // admin owns everything
@@ -239,10 +239,10 @@ export class AuthenticationService {
     }
 
     /**
-	 * moderators are on the list of org moderators
-	 * also allows through admins or owners
-	 * @return True if the user is moderator.
-	 */
+     * moderators are on the list of org moderators
+     * also allows through admins or owners
+     * @return True if the user is moderator.
+     */
     isModerator(): boolean {
         // debugger;
 
@@ -269,9 +269,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * check if content is owned by current user
-	 * @return True if the user is an admin.
-	 */
+     * check if content is owned by current user
+     * @return True if the user is an admin.
+     */
     isCreator(object?: any): boolean {
         if (!object) {
             return false
@@ -297,9 +297,9 @@ export class AuthenticationService {
     }
 
     /**
-	 * check if current user has completed verification
-	 * @return True if the user is verified.
-	 */
+     * check if current user has completed verification
+     * @return True if the user is verified.
+     */
     isVerified(): boolean {
         // debugger;
         if (this._credentials) {
@@ -361,20 +361,20 @@ export class AuthenticationService {
     }
 
     /**
-	 * Gets the user credentials.
-	 * @return The user credentials or null if the user is not authenticated.
-	 */
+     * Gets the user credentials.
+     * @return The user credentials or null if the user is not authenticated.
+     */
     get credentials(): Credentials | null {
         return this._credentials
     }
 
     /**
-	 * Sets the user credentials.
-	 * The credentials may be persisted across sessions by setting the `remember` parameter to true.
-	 * Otherwise, the credentials are only persisted for the current session.
-	 * @param credentials The user credentials.
-	 * @param remember True to remember credentials across sessions.
-	 */
+     * Sets the user credentials.
+     * The credentials may be persisted across sessions by setting the `remember` parameter to true.
+     * Otherwise, the credentials are only persisted for the current session.
+     * @param credentials The user credentials.
+     * @param remember True to remember credentials across sessions.
+     */
     private setCredentials(credentials?: Credentials, remember?: boolean) {
         this._credentials = credentials || null
         if (credentials) {

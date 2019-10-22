@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core'
+import { MatDialog } from '@angular/material'
 
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { Router } from '@angular/router';
-import { optimizeImage } from '../helpers/cloudinary';
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { Router } from '@angular/router'
+import { optimizeImage } from '../helpers/cloudinary'
 
 @Component({
     selector: 'app-grid-list',
@@ -12,12 +11,12 @@ import { optimizeImage } from '../helpers/cloudinary';
     styleUrls: ['./grid-list.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class GridListComponent implements OnInit {
+export class GridListComponent {
 
     @Input() path: string;
     @Input() model: string;
     @Input() items: Array<any>;
-    @Input() itemLimit: Number;
+    @Input() itemLimit: number;
     @Input() titleCard: boolean;
     @Output() delete = new EventEmitter();
     @Output() softDelete = new EventEmitter();
@@ -27,53 +26,49 @@ export class GridListComponent implements OnInit {
     constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
 
     getItems() {
-        let newItems = this.items.slice();
+        let newItems = this.items.slice()
 
         if (this.itemLimit) {
             newItems = newItems
-                .filter((item: any, index: Number) => index < this.itemLimit)
-                .sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore);
+                .filter((item: any, index: number) => index < this.itemLimit)
+                .sort((a: any, b: any) => b.solutionMetaData.totalTrendingScore - a.solutionMetaData.totalTrendingScore)
         }
 
-        return newItems;
-    }
-
-    ngOnInit() {
-
+        return newItems
     }
 
     onDelete(item: any, event: any) {
-        event.stopPropagation();
-        this.delete.emit(item);
+        event.stopPropagation()
+        this.delete.emit(item)
     }
 
     onSoftDelete(item: any, event: any) {
-        event.stopPropagation();
-        this.softDelete.emit(item);
+        event.stopPropagation()
+        this.softDelete.emit(item)
     }
 
     onRestore(item: any, event: any) {
-        event.stopPropagation();
-        this.restore.emit(item);
+        event.stopPropagation()
+        this.restore.emit(item)
     }
 
     handleUrl(item: any) {
 
         if (this.model !== 'Organization') {
-            return this.router.navigate([`/${this.path}/${item._id}`]);
+            return this.router.navigate([`/${this.path}/${item._id}`])
         }
 
-        const { hostname } = window.location;
+        const { hostname } = window.location
 
         // separate the current hostname into subdomain and main site
-        const splitHostname = hostname.split('.');
-        splitHostname[0] = item.url;
+        const splitHostname = hostname.split('.')
+        splitHostname[0] = item.url
 
-        const newHostName = splitHostname.join('.');
-        window.location.href = `http://${newHostName}:${window.location.port}`;
+        const newHostName = splitHostname.join('.')
+        window.location.href = `http://${newHostName}:${window.location.port}`
     }
 
     trackByFn(index: any, item: any) {
-        return index; // or item.id
+        return index || item.id // or item.id
     }
 }

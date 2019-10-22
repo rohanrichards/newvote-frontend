@@ -1,12 +1,9 @@
-import { Injectable } from "@angular/core";
-import { IUser, User } from "../models/user.model";
-import { AuthenticationStore } from "./authentication.store";
-import { Query, toBoolean } from "@datorama/akita";
-import { OrganizationQuery } from "../http/organization/organization.query";
-import { Observable, forkJoin } from "rxjs";
-import { Organization } from "../models/organization.model";
-
-import { combineLatest } from 'rxjs';
+import { Injectable } from '@angular/core'
+import { IUser } from '../models/user.model'
+import { AuthenticationStore } from './authentication.store'
+import { Query, toBoolean } from '@datorama/akita'
+import { OrganizationQuery } from '../http/organization/organization.query'
+import { combineLatest } from 'rxjs/operators'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
@@ -22,64 +19,64 @@ export class AuthenticationQuery extends Query<IUser> {
         protected store: AuthenticationStore,
         private organizationQuery: OrganizationQuery
     ) {
-        super(store);
+        super(store)
     }
 
     isLoggedIn() {
-        return !!this.getValue()._id;
+        return !!this.getValue()._id
     }
 
     isOwner() {
-        const user = this.getValue();
-        const organization = this.organizationQuery.getValue();
+        const user = this.getValue()
+        const organization = this.organizationQuery.getValue()
 
         const organizationOwner = (organization.owner && organization.owner._id) && organization.owner._id === user._id
         return !!this.getValue().roles.includes('admin') || !!organizationOwner
     }
 
     isModerator() {
-        const organization = this.organizationQuery.getValue();
+        const organization = this.organizationQuery.getValue()
 
         if (this.isOwner()) {
-            return true;
+            return true
         }
 
         if (!organization.moderators.length) {
-            return false;
+            return false
         }
 
         return organization.moderators.some((moderator: any) => {
-            const userId = this.getValue()._id;
+            const userId = this.getValue()._id
             if (typeof moderator === 'string') {
-                return moderator === userId;
+                return moderator === userId
             }
 
-            return moderator._id === userId;
+            return moderator._id === userId
         })
     }
 
     isUserPartOfOrganization(user: any, organization: any): boolean {
-        if (!user.verified) return false;
+        if (!user.verified) return false
         // if (!user.mobileNumber) return false;
 
         const exists = user.organizations.some((userOrganization: any) => {
-            if (typeof userOrganization === 'string') return organization._id === userOrganization;
-            return organization._id === userOrganization._id;
-        });
-        return exists;
+            if (typeof userOrganization === 'string') return organization._id === userOrganization
+            return organization._id === userOrganization._id
+        })
+        return exists
     }
 
     isUserVerified() {
-        return toBoolean(this.getValue().verified);
+        return toBoolean(this.getValue().verified)
     }
 
     doesMobileNumberExist() {
         const number = this.getValue().mobileNumber
 
         if (number && number.length) {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
 }

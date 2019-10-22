@@ -3,11 +3,20 @@
         class="sticky-toolbar"
         ngClass.gt-sm="with-sidenav"
         fxLayout="row wrap">
-        <button class="menu-button"
-            mat-icon-button
-            (click)="handleToggle()">
-            <mat-icon>menu</mat-icon>
-        </button>
+        <ng-template [ngIf]="routeLevel !== 'child'"
+            [ngIfElse]="childPage">
+            <button class="menu-button"
+                mat-icon-button
+                (click)="handleToggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </ng-template>
+        <ng-template #childPage>
+            <button mat-icon-button
+                (click)="handleBackClick()">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </button>
+        </ng-template>
         <span class="toolbar-title">{{title}}</span>
         <div fxFlex></div>
         <button mat-icon-button
@@ -91,7 +100,8 @@
         [isVisible]="showSearch"
         (closeSearch)="toggleSearch()"></app-search-bar>
 
-    <!-- <mat-toolbar color="warn"
+    <!--
+    <mat-toolbar color="warn"
         *ngIf="showVerify"
         class="sticky-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
@@ -120,5 +130,6 @@
             (click)="hideVerify = true">
             <mat-icon>close</mat-icon>
         </button>
+    </mat-toolbar>
     </mat-toolbar>
 </div>

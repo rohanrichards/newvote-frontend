@@ -14,7 +14,7 @@ export interface IOrganization {
     futureOwner?: string;
     newLeaderEmail?: string;
     softDeleted: boolean;
-    authType: Number;
+    authType: number;
     authUrl: string;
     authEntityId: string;
     privateOrg: boolean;
@@ -37,7 +37,7 @@ export class Organization implements IOrganization {
         public futureOwner: any = {},
         public newLeaderEmail: string = '',
         public softDeleted: boolean = false,
-        public authType: Number = 0,
+        public authType: number = 0,
         public authUrl: string = '',
         public authEntityId: string = '',
         public privateOrg: boolean = false,

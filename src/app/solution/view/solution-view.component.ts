@@ -1,34 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { finalize, take } from 'rxjs/operators';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
-import { MatSnackBar } from '@angular/material';
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { VoteService } from '@app/core/http/vote/vote.service';
-import { MetaService } from '@app/core/meta.service';
+import { Component, OnInit } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import { finalize, take } from 'rxjs/operators'
+import { MatDialog } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { VoteService } from '@app/core/http/vote/vote.service'
+import { MetaService } from '@app/core/meta.service'
 
-import { Solution } from '@app/core/models/solution.model';
-import { Vote } from '@app/core/models/vote.model';
-import { ProposalService } from '@app/core/http/proposal/proposal.service';
+import { Solution } from '@app/core/models/solution.model'
+import { Vote } from '@app/core/models/vote.model'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
 
-import { optimizeImage } from '@app/shared/helpers/cloudinary';
-import { trigger } from '@angular/animations';
-import { fadeIn } from '@app/shared/animations/fade-animations';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { Suggestion } from '@app/core/models/suggestion.model';
-import { OrganizationService } from '@app/core';
-import { assign, cloneDeep } from 'lodash';
-import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
-import { SolutionQuery } from '@app/core/http/solution/solution.query';
-import { VotesQuery } from '@app/core/http/vote/vote.query';
-import { AdminService } from '@app/core/http/admin/admin.service';
-import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
-import { Proposal } from '@app/core/models/proposal.model';
-import { Observable } from 'rxjs';
+import { optimizeImage } from '@app/shared/helpers/cloudinary'
+import { trigger } from '@angular/animations'
+import { fadeIn } from '@app/shared/animations/fade-animations'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { Suggestion } from '@app/core/models/suggestion.model'
+import { OrganizationService } from '@app/core'
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
+import { SolutionQuery } from '@app/core/http/solution/solution.query'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
+import { Observable } from 'rxjs'
 
 @Component({
     selector: 'app-solution',
@@ -72,28 +69,28 @@ export class SolutionViewComponent implements OnInit {
 
     ngOnInit() {
         this.organizationService.get()
-            .subscribe((org) => this.organization = org);
+            .subscribe((org) => { this.organization = org })
         this.stateService.loadingState$.subscribe((state: string) => {
-            this.loadingState = state;
-        });
+            this.loadingState = state
+        })
 
-        this.stateService.setLoadingState(AppState.loading);
+        this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id');
-            this.getSolution(ID);
-            this.getProposals();
-            this.subscribeToSuggestionStore(ID);
-            this.subscribeToSolutionStore(ID);
-            this.subscribeToProposalStore(ID);
-        });
+            const ID = params.get('id')
+            this.getSolution(ID)
+            this.getProposals()
+            this.subscribeToSuggestionStore(ID)
+            this.subscribeToSolutionStore(ID)
+            this.subscribeToProposalStore(ID)
+        })
 
-        this.getSuggestions();
+        this.getSuggestions()
     }
 
     getSolution(id: string) {
-        const isModerator = this.auth.isModerator();
-        const options = { 'showDeleted': isModerator ? true : '' };
+        const isModerator = this.auth.isModerator()
+        const options = { showDeleted: isModerator ? true : '' }
 
         this.solutionService.view({
             id: id,
@@ -107,10 +104,10 @@ export class SolutionViewComponent implements OnInit {
                             appBarTitle: 'View Solution',
                             description: solution.description,
                             image: solution.imageUrl
-                        });
+                        })
                 },
-                (err) => this.stateService.setLoadingState(AppState.serverError)
-            );
+                () => this.stateService.setLoadingState(AppState.serverError)
+            )
     }
 
     getProposals() {
@@ -122,12 +119,12 @@ export class SolutionViewComponent implements OnInit {
     }
 
     getSuggestions() {
-        const isModerator = this.auth.isModerator();
+        const isModerator = this.auth.isModerator()
 
         this.suggestionService.list({
             forceUpdate: true,
             params: {
-                'showDeleted': isModerator ? true : ''
+                showDeleted: isModerator ? true : ''
             }
         })
             .subscribe(
@@ -139,9 +136,9 @@ export class SolutionViewComponent implements OnInit {
     subscribeToSolutionStore(id: string) {
         this.solutionQuery.selectEntity(id)
             .subscribe((solution: Solution) => {
-                if (!solution) return false;
-                this.solution = solution;
-                this.stateService.setLoadingState(AppState.complete);
+                if (!solution) return false
+                this.solution = solution
+                this.stateService.setLoadingState(AppState.complete)
             })
     }
 
@@ -152,45 +149,45 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposals$ = this.proposalQuery.filterBySolutionId(id);
+        this.proposals$ = this.proposalQuery.filterBySolutionId(id)
     }
 
     onVote(voteData: any, model: string) {
-        this.isLoading = true;
-        const { item, voteValue } = voteData;
-        const vote = new Vote(item._id, model, voteValue);
-        const existingVote = item.votes.currentUser;
+        this.isLoading = true
+        const { item, voteValue } = voteData
+        const vote = new Vote(item._id, model, voteValue)
+        const existingVote = item.votes.currentUser
 
         if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue);
-                    this.openSnackBar('Your vote was recorded', 'OK');
+                    this.updateEntityVoteData(item, model, res.voteValue)
+                    this.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK');
+                        this.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK');
+                        this.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
-            );
+            )
     }
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 4000,
             horizontalPosition: 'right'
-        });
+        })
     }
 
     populateSuggestion() {
-        const { _id, title } = this.solution;
+        const { _id, title } = this.solution
         const suggestionParentInfo = {
             _id,
             parentTitle: title,
@@ -206,20 +203,22 @@ export class SolutionViewComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData;
-        suggestion.organizations = this.organization;
+        const suggestion = formData as Suggestion
+        suggestion.organizations = this.organization
 
-        suggestion.parent = this.solution._id;
-        suggestion.parentType = 'Solution';
-        suggestion.parentTitle = this.solution.title;
+        suggestion.parent = this.solution._id
+        suggestion.parentType = 'Solution'
+        suggestion.parentTitle = this.solution.title
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
-                this.openSnackBar('Succesfully created', 'OK');
-            },
+            .subscribe(
+                () => {
+                    this.openSnackBar('Succesfully created', 'OK')
+                },
                 (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-                })
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
+            )
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {
@@ -238,18 +237,18 @@ export class SolutionViewComponent implements OnInit {
                                 voteValue: voteValue === 0 ? false : voteValue
                             }
                         }
-                    };
-
-                    if (model === "Solution") {
-                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
                     }
 
-                    if (model === "Proposal") {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+                    if (model === 'Solution') {
+                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity)
                     }
 
-                    if (model === "Suggestion") {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+                    if (model === 'Proposal') {
+                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
+                    }
+
+                    if (model === 'Suggestion') {
+                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
                     }
                 },
                 (err) => err
@@ -258,4 +257,3 @@ export class SolutionViewComponent implements OnInit {
     }
 
 }
-
