@@ -3,59 +3,70 @@
 
 <div class="container"
     fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
-		<form
-		    [formGroup]="suggestionForm"
-		    fxLayout="column"
-		    (ngSubmit)="onSave()"
-			novalidate>
-			
-			<div *ngIf="suggestionForm.value.parent" fxLayout="row" fxLayoutGap="12px">
-				<mat-form-field fxFlex="2 1 50%">
-					<mat-label>Parent Name</mat-label>
-					<input matInput placeholder="Parent Field" formControlName="parentTitle" readonly>
-				</mat-form-field>
-				
-				<mat-form-field fxFlex="1 1 50%">
-					<mat-label>Parent Type</mat-label>
-					<input matInput placeholder="Parent Type" formControlName="parentType" readonly>
-				</mat-form-field>
-			</div>
-			<ng-container>
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="suggestionForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
 
-				<mat-form-field>
-					<input matInput
-					    placeholder="Suggestion title"
-					    formControlName="title"
-					    required>
-					<mat-error *ngIf="suggestionForm.hasError('required', ['title'])">
-						Title is <strong>required</strong>
-					</mat-error>
-				</mat-form-field>
+            <div *ngIf="suggestionForm.value.parent"
+                fxLayout="row"
+                fxLayoutGap="12px">
+                <mat-form-field fxFlex="2 1 50%">
+                    <mat-label>Parent Name</mat-label>
+                    <input matInput
+                        placeholder="Parent Field"
+                        formControlName="parentTitle"
+                        readonly>
+                </mat-form-field>
 
-				<mat-form-field *ngIf="!suggestionForm.value.parent">
-					<mat-label>Suggestion Type</mat-label>
-					<mat-select formControlName="type" required>
-						<mat-option value="issue">
-							Issue
-						</mat-option>
-						<mat-option value="solution">
-							Solution
-						</mat-option>
-						<mat-option value="action">
-							Action
-						</mat-option>
-					</mat-select>
-				</mat-form-field>
+                <mat-form-field fxFlex="1 1 50%">
+                    <mat-label>Parent Type</mat-label>
+                    <input matInput
+                        placeholder="Parent Type"
+                        formControlName="parentType"
+                        readonly>
+                </mat-form-field>
+            </div>
+            <ng-container>
 
-				<span class='group-label'>Suggestion Details</span>
-				<span class="mat-caption group-label">Hint: Please provide a general introduction to your contribution. Aim for 250 words max.</span>
-				<div class="quill-editor-container cf">
-					<quill-editor formControlName="description"></quill-editor>
-				</div>
+                <mat-form-field>
+                    <input matInput
+                        placeholder="Suggestion title"
+                        formControlName="title"
+                        required>
+                    <mat-error
+                        *ngIf="suggestionForm.hasError('required', ['title'])">
+                        Title is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
 
-				<!-- <ng-container>
+                <mat-form-field *ngIf="!suggestionForm.value.parent">
+                    <mat-label>Suggestion Type</mat-label>
+                    <mat-select formControlName="type"
+                        required>
+                        <mat-option value="issue">
+                            Issue
+                        </mat-option>
+                        <mat-option value="solution">
+                            Solution
+                        </mat-option>
+                        <mat-option value="action">
+                            Action
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <span class='group-label'>Suggestion Details</span>
+                <span class="mat-caption group-label">Hint: Please provide a
+                    general introduction to your contribution. Aim for 250 words
+                    max.</span>
+                <div class="quill-editor-container cf">
+                    <quill-editor formControlName="description"></quill-editor>
+                </div>
+
+                <!-- <ng-container>
 					<span class='group-label'>Starting Statements</span>
 					<span class="mat-caption group-label">Hint: Try to provide 10 statements about your suggestion. These should feature diverse perspectives about the Issue. These statements are going to be used to seed the conversations in the integrated Pol.is platform.</span>
 					<div class="quill-editor-container cf">
@@ -63,35 +74,40 @@
 					</div>
 				</ng-container> -->
 
-				<span class='group-label'>Add links (Optional)</span>
-				<span class="mat-caption group-label">Hint: At least five third-party media sources (articles, videos, podcast or memes) that relate to the Issue.</span>
-				<mat-form-field class="example-chip-list">
-					<mat-chip-list #mediaChipList>
-						<mat-chip *ngFor="let media of mediaList"
-						    [selectable]="false"
-						    [removable]="true"
-						    (removed)="mediaRemoved(media)">
-							{{media}}
-							<mat-icon matChipRemove>cancel</mat-icon>
-						</mat-chip>
-						<input placeholder="Add related media..."
-						    #mediaInput
-						    [matChipInputFor]="mediaChipList"
-						    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-						    [matChipInputAddOnBlur]="false"
-						    (matChipInputTokenEnd)="mediaAdded($event)">
-					</mat-chip-list>
-				</mat-form-field>
+                <span class='group-label'>Add links (Optional)</span>
+                <span class="mat-caption group-label">Hint: At least five
+                    third-party media sources (articles, videos, podcast or
+                    memes) that relate to the Issue.</span>
+                <mat-form-field class="example-chip-list">
+                    <mat-chip-list #mediaChipList>
+                        <mat-chip *ngFor="let media of mediaList"
+                            [selectable]="false"
+                            [removable]="true"
+                            (removed)="mediaRemoved(media)">
+                            {{media}}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input placeholder="Add related media..."
+                            #mediaInput
+                            [matChipInputFor]="mediaChipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="false"
+                            (matChipInputTokenEnd)="mediaAdded($event)">
+                    </mat-chip-list>
+                </mat-form-field>
 
-				<span class="mat-caption group-label">This information will be sent to the editor of UQ Votes for their consideration to add to the site. Don't worry, unless you plan on offending others, your contribution will be posted.</span>
-				<div>
-					<button mat-flat-button
-					    fxFlex
-					    type="submit"
-					    [disabled]="!suggestionForm.valid"
-					    color="primary">Update</button>
-				</div>
-			</ng-container>
-		</form>
-	</mat-card>
+                <span class="mat-caption group-label">This information will be
+                    sent to the editor of UQ Votes for their consideration to
+                    add to the site. Don't worry, unless you plan on offending
+                    others, your contribution will be posted.</span>
+                <div>
+                    <button mat-flat-button
+                        fxFlex
+                        type="submit"
+                        [disabled]="!suggestionForm.valid"
+                        color="primary">Update</button>
+                </div>
+            </ng-container>
+        </form>
+    </mat-card>
 </div>

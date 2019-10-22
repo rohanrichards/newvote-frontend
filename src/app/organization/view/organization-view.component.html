@@ -4,65 +4,67 @@
 <mat-toolbar color="primary"
     class="header-info-panel"
     *ngIf="organization">
-	<div class="image-container"
-	    fxLayout="column"
-		[defaultImage]="handleImageUrl(organization.imageUrl, true)"
-		[lazyLoad]="handleImageUrl(organization.imageUrl)">
-		<div class="admin-panel"
-		    *ngIf="auth.isOwner(organization)"
-		    fxLayout="column"
-		    fxLayoutAlign="center end">
-			<div class="button-panel">
-				<button mat-icon-button
-				    matTooltip="Add a new Organization"
-				    color="accent"
-				    routerLink="/organizations/create">
-    					<mat-icon aria-label="Add a new organization">playlist_add</mat-icon>
-  					</button>
-				<button mat-icon-button
-				    matTooltip="Edit this Organization"
-				    color="accent"
-				    routerLink="/organizations/edit/{{organization._id}}">
-    					<mat-icon aria-label="Edit the organization">edit</mat-icon>
-  					</button>
-				<button mat-icon-button
-				    matTooltip="Delete this Organization"
-				    color="warn"
-				    (click)="onDelete()">
-    					<mat-icon aria-label="Delete the organization forever">delete_forever</mat-icon>
-  					</button>
-			</div>
-		</div>
-		<div fxLayout="row"
-		    fxFlex></div>
-		<!-- <div fxLayout="column"
+    <div class="image-container"
+        fxLayout="column"
+        [defaultImage]="handleImageUrl(organization.imageUrl, true)"
+        [lazyLoad]="handleImageUrl(organization.imageUrl)">
+        <div class="admin-panel"
+            *ngIf="auth.isOwner(organization)"
+            fxLayout="column"
+            fxLayoutAlign="center end">
+            <div class="button-panel">
+                <button mat-icon-button
+                    matTooltip="Add a new Organization"
+                    color="accent"
+                    routerLink="/organizations/create">
+                    <mat-icon aria-label="Add a new organization">playlist_add
+                    </mat-icon>
+                </button>
+                <button mat-icon-button
+                    matTooltip="Edit this Organization"
+                    color="accent"
+                    routerLink="/organizations/edit/{{organization._id}}">
+                    <mat-icon aria-label="Edit the organization">edit</mat-icon>
+                </button>
+                <button mat-icon-button
+                    matTooltip="Delete this Organization"
+                    color="warn"
+                    (click)="onDelete()">
+                    <mat-icon aria-label="Delete the organization forever">
+                        delete_forever</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div fxLayout="row"
+            fxFlex></div>
+        <!-- <div fxLayout="column"
 		    fxLayoutAlign="start start">
 		</div> -->
-		<div fxLayout="row wrap"
-		    fxLayoutAlign="center center">
-			<div fxFlex.gt-sm="690px"
-			    fxFlex.gt-md="800px">
-				<app-share-buttons></app-share-buttons>
-			</div>
-		</div>
-	</div>
-	<div fxLayout="row wrap"
-	    fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
-		    fxFlex.gt-md="800px">
-			<div class="mat-display-1"
-			    translate>{{organization.title}}</div>
-			<app-topic-tags [topics]="organization.topics"></app-topic-tags>
-			<app-more-less [displayText]="organization.description"
-			    maxHeight="200">
-			</app-more-less>
-			<div class="buttons">
-			    <app-vote-buttons [item]="organization"
-				    (vote)=onVote($event)>
-				</app-vote-buttons>
-			</div>
-		</div>
-	</div>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <app-share-buttons></app-share-buttons>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row wrap"
+        fxLayoutAlign="center center">
+        <div fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px">
+            <div class="mat-display-1"
+                translate>{{organization.title}}</div>
+            <app-topic-tags [topics]="organization.topics"></app-topic-tags>
+            <app-more-less [displayText]="organization.description"
+                maxHeight="200">
+            </app-more-less>
+            <div class="buttons">
+                <app-vote-buttons [item]="organization"
+                    (vote)=onVote($event)>
+                </app-vote-buttons>
+            </div>
+        </div>
+    </div>
 
 </mat-toolbar>
 
@@ -70,14 +72,14 @@
     *ngIf="organization"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<!-- <span class="mat-headline">Vote on Organizations</span>
+    <div fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px">
+        <!-- <span class="mat-headline">Vote on Organizations</span>
 		<app-card-list path="/organizations"
 		    [items]="organization.organizations"
 		    model="Organization"
 		    [showChildren]="false"
 		    (delete)="onDeleteOrganization()"
 		    (vote)="onVote($event)"></app-card-list> -->
-	</div>
+    </div>
 </div>

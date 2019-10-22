@@ -2,6 +2,6 @@
 // fill in the required environment variables
 
 export default {
-	'npm_package_version': '1.0.0',
-	'recaptchaSitekey': 'RECAPTCHA_SITE_KEY'
-};
+    npm_package_version: '1.0.0',
+    recaptchaSitekey: 'RECAPTCHA_SITE_KEY'
+}

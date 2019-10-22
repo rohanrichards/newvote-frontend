@@ -5,4 +5,3 @@ export const enum AppState {
     error = 'error',
     complete = 'complete'
 }
-

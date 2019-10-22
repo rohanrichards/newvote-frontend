@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core'
-import { finalize, take, filter, map } from 'rxjs/operators'
+import { finalize, take, map } from 'rxjs/operators'
 import { Router, ActivatedRoute } from '@angular/router'
 import { MatSnackBar } from '@angular/material'
-import { differenceWith } from 'lodash'
-import { isEqual, assign } from 'lodash'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SolutionService } from '@app/core/http/solution/solution.service'
@@ -25,7 +23,6 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { forkJoin, Observable } from 'rxjs'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
-import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
@@ -89,7 +86,7 @@ export class SolutionListComponent implements OnInit {
         this.subscribeToSolutionStore()
 
         this.organizationService.get()
-            .subscribe((org) => this.organization = org)
+            .subscribe((org) => { this.organization = org })
 
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
@@ -108,7 +105,7 @@ export class SolutionListComponent implements OnInit {
 
     fetchData() {
         const isModerator = this.auth.isModerator()
-        const options = { 'showDeleted': isModerator ? true : '' }
+        const options = { showDeleted: isModerator ? true : '' }
 
         const suggestionObs: Observable<Suggestion[]> = this.suggestionService.list({ params: options })
         const proposalObs: Observable<Proposal[]> = this.proposalService.list({ params: options })
@@ -120,8 +117,8 @@ export class SolutionListComponent implements OnInit {
             solutionObs
         ])
             .subscribe(
-                response => this.stateService.setLoadingState(AppState.complete),
-                err => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.complete),
+                () => this.stateService.setLoadingState(AppState.serverError)
             )
     }
 
@@ -150,7 +147,7 @@ export class SolutionListComponent implements OnInit {
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
@@ -175,16 +172,18 @@ export class SolutionListComponent implements OnInit {
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData
+        const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
-                this.openSnackBar('Succesfully created', 'OK')
-            },
+            .subscribe(
+                () => {
+                    this.openSnackBar('Succesfully created', 'OK')
+                },
                 (error) => {
                     this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+                }
+            )
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

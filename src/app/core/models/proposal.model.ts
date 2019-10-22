@@ -11,7 +11,6 @@ export interface IProposal {
     organizations: any;
     softDeleted: boolean;
     suggestionTemplate?: string;
-    slug: string;
 }
 
 export class Proposal implements IProposal {
@@ -24,7 +23,6 @@ export class Proposal implements IProposal {
         public organizations: any = {},
         public votes: any = {},
         public softDeleted: boolean = false,
-        public solutions: any = [],
-        public slug: string = '',
+        public solutions: any = []
     ) { }
 }

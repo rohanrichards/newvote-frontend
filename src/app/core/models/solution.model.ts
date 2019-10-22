@@ -12,7 +12,6 @@ export interface ISolution {
     organizations: any;
     softDeleted: boolean;
     suggestionTemplate?: string;
-    slug: string;
 }
 
 export class Solution implements ISolution {
@@ -26,7 +25,6 @@ export class Solution implements ISolution {
         public organizations: any = {},
         public votes: any = {},
         public softDeleted: boolean = false,
-        public issues: Array<any> = [],
-        public slug: string = '',
+        public issues: Array<any> = []
     ) { }
 }

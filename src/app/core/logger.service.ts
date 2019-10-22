@@ -65,7 +65,7 @@ export class Logger {
    * Sets logging level to LogLevel.Warning.
    */
   static enableProductionMode() {
-    Logger.level = LogLevel.Warning;
+      Logger.level = LogLevel.Warning
   }
 
   constructor(private source?: string) { }
@@ -75,7 +75,7 @@ export class Logger {
    * Works the same as console.log().
    */
   debug(...objects: any[]) {
-    this.log(console.log, LogLevel.Debug, objects);
+      this.log(console.log, LogLevel.Debug, objects)
   }
 
   /**
@@ -83,7 +83,7 @@ export class Logger {
    * Works the same as console.log().
    */
   info(...objects: any[]) {
-    this.log(console.info, LogLevel.Info, objects);
+      this.log(console.info, LogLevel.Info, objects)
   }
 
   /**
@@ -91,7 +91,7 @@ export class Logger {
    * Works the same as console.log().
    */
   warn(...objects: any[]) {
-    this.log(console.warn, LogLevel.Warning, objects);
+      this.log(console.warn, LogLevel.Warning, objects)
   }
 
   /**
@@ -99,15 +99,15 @@ export class Logger {
    * Works the same as console.log().
    */
   error(...objects: any[]) {
-    this.log(console.error, LogLevel.Error, objects);
+      this.log(console.error, LogLevel.Error, objects)
   }
 
   private log(func: Function, level: LogLevel, objects: any[]) {
-    if (level <= Logger.level) {
-      const log = this.source ? ['[' + this.source + ']'].concat(objects) : objects;
-      func.apply(console, log);
-      Logger.outputs.forEach((output) => output.apply(output, [this.source, level].concat(objects)));
-    }
+      if (level <= Logger.level) {
+          const log = this.source ? ['[' + this.source + ']'].concat(objects) : objects
+          func.apply(console, log)
+          Logger.outputs.forEach((output) => output.apply(output, [this.source, level].concat(objects)))
+      }
   }
 
 }

@@ -1,25 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { finalize, take } from 'rxjs/operators';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
-import { MatSnackBar } from '@angular/material';
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { VoteService } from '@app/core/http/vote/vote.service';
-import { MetaService } from '@app/core/meta.service';
+import { Component, OnInit } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import { finalize, take } from 'rxjs/operators'
+import { MatDialog } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { VoteService } from '@app/core/http/vote/vote.service'
+import { MetaService } from '@app/core/meta.service'
 
-import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
-import { Vote } from '@app/core/models/vote.model';
-import { trigger } from '@angular/animations';
-import { fadeIn } from '@app/shared/animations/fade-animations';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { VotesQuery } from '@app/core/http/vote/vote.query';
-import { AdminService } from '@app/core/http/admin/admin.service';
-import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
+import { Suggestion } from '@app/core/models/suggestion.model'
+import { Vote } from '@app/core/models/vote.model'
+import { trigger } from '@angular/animations'
+import { fadeIn } from '@app/shared/animations/fade-animations'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
-import { assign } from 'lodash';
+import { assign } from 'lodash'
 
 @Component({
     selector: 'app-suggestion',
@@ -53,46 +52,26 @@ export class SuggestionViewComponent implements OnInit {
 
     ngOnInit() {
         this.stateService.loadingState$.subscribe((state: string) => {
-            this.loadingState = state;
-        });
+            this.loadingState = state
+        })
 
-        this.stateService.setLoadingState(AppState.loading);
+        this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id');
-            this.subscribeToSuggestionStore(ID);
-            this.fetchData(ID);
-        });
+            const ID = params.get('id')
+            this.subscribeToSuggestionStore(ID)
+            this.fetchData(ID)
+        })
+
     }
 
     subscribeToSuggestionStore(id: string) {
-        // Need to handle both instances whether a link is via _id or slug
-        // old entities will have no slug until updated
-        if (id.match(/^[0-9a-fA-F]{24}$/)) {
-            this.suggestionQuery.selectEntity(id)
-                .subscribe((suggestion: Suggestion) => {
-                    if (!suggestion) return false;
-                    this.suggestion = suggestion;
-                    this.stateService.setLoadingState(AppState.complete);
-                })
-        } else {
-            // this.suggestionQuery.selectEntity((entity: Suggestion) => entity.slug === id)
-            //     .subscribe((res) => {
-            //         console.log(res, 'this is res');
-
-            //     })
-
-            this.suggestionQuery.selectAll({
-                filterBy: (entity) => entity.slug === id
+        this.suggestionQuery.selectEntity(id)
+            .subscribe((suggestion: Suggestion) => {
+                if (!suggestion) return false
+                this.suggestion = suggestion
+                this.stateService.setLoadingState(AppState.complete)
             })
-                .subscribe((res) => {
-                    if (!res.length) return false;
-                    this.suggestion = res[0];
-                    this.stateService.setLoadingState(AppState.complete);
-                })
-        }
-
-
     }
 
     fetchData(id: string) {
@@ -104,64 +83,64 @@ export class SuggestionViewComponent implements OnInit {
                             title: `${suggestion.title}`,
                             appBarTitle: 'View Suggestion',
                             description: suggestion.description
-                        });
+                        })
                 },
-                (err) => this.stateService.setLoadingState(AppState.serverError)
-            );
+                () => this.stateService.setLoadingState(AppState.serverError)
+            )
     }
 
     updateSuggestion(status: number) {
-        this.isLoading = true;
+        this.isLoading = true
 
         const entity = assign({}, this.suggestion, { status })
         this.suggestionService.update({ id: this.suggestion._id, entity })
-            .pipe(finalize(() => { this.isLoading = false; }))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                (t) => this.openSnackBar('Succesfully updated', 'OK'),
+                () => this.openSnackBar('Succesfully updated', 'OK'),
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            );
+            )
     }
 
     onVote(voteData: any, model: string) {
-        this.isLoading = true;
-        const { item, voteValue } = voteData;
-        const vote = new Vote(item._id, 'Suggestion', voteValue);
-        const existingVote = item.votes.currentUser;
+        this.isLoading = true
+        const { item, voteValue } = voteData
+        const vote = new Vote(item._id, 'Suggestion', voteValue)
+        const existingVote = item.votes.currentUser
 
         if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue);
-                    this.openSnackBar('Your vote was recorded', 'OK');
+                    this.updateEntityVoteData(item, model, res.voteValue)
+                    this.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK');
+                        this.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK');
+                        this.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 },
-            );
+            )
     }
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 4000,
             horizontalPosition: 'right'
-        });
+        })
     }
 
     convertSuggestion() {
-        let suggestionType = this.suggestion.type || this.suggestion.parentType;
+        let suggestionType = this.suggestion.type || this.suggestion.parentType
         if (suggestionType === 'action') {
-            suggestionType = 'proposal';
+            suggestionType = 'proposal'
         }
-        const url = `/${suggestionType}s/create`;
+        const url = `/${suggestionType}s/create`
 
         this.router.navigateByUrl(url, {
             state: {
@@ -186,10 +165,10 @@ export class SuggestionViewComponent implements OnInit {
                                 voteValue: voteValue === 0 ? false : voteValue
                             }
                         }
-                    };
+                    }
 
-                    if (model === "Suggestion") {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+                    if (model === 'Suggestion') {
+                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
                     }
                 },
                 (err) => err

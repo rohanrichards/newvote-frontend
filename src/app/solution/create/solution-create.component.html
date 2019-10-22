@@ -3,85 +3,87 @@
 
 <div class="container"
     fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	    fxFlex="100">
-		<form [formGroup]="solutionForm"
-		    fxLayout="column"
-		    (ngSubmit)="onSave()"
-		    novalidate>
-			<mat-form-field>
-				<!-- {{solutionForm.status}} -->
-				<input matInput
-				    placeholder="Enter a name for the solution"
-				    formControlName="title"
-				    required>
-				<mat-error *ngIf="solutionForm.hasError('required', ['title'])">
-					Title is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="solutionForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+            <mat-form-field>
+                <!-- {{solutionForm.status}} -->
+                <input matInput
+                    placeholder="Enter a name for the solution"
+                    formControlName="title"
+                    required>
+                <mat-error *ngIf="solutionForm.hasError('required', ['title'])">
+                    Title is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field class="example-chip-list">
-				<mat-chip-list #chipList>
-					<mat-chip *ngFor="let issue of issues"
-					    [selectable]="false"
-					    [removable]="true"
-					    (removed)="issueRemoved(issue)">
-						{{issue.name}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Select an issue..."
-					    #issueInput
-					    formControlName="issues"
-					    [matAutocomplete]="auto"
-					    [matChipInputFor]="chipList"
-					    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					    [matChipInputAddOnBlur]="true"
-					    >
-				</mat-chip-list>
-				<mat-autocomplete #auto="matAutocomplete"
-				    (optionSelected)="issueSelected($event)">
-					<mat-option *ngFor="let issue of filteredIssues | async"
-					    [value]="issue">
-						{{issue.name}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #chipList>
+                    <mat-chip *ngFor="let issue of issues"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="issueRemoved(issue)">
+                        {{issue.name}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select an issue..."
+                        #issueInput
+                        formControlName="issues"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="issueSelected($event)">
+                    <mat-option *ngFor="let issue of filteredIssues | async"
+                        [value]="issue">
+                        {{issue.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="description"></quill-editor>
-			</div>
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="description"></quill-editor>
+            </div>
 
-			<input type="file"
-			    id="fileupload"
-			    #fileInput
-			    ng2FileSelect
-			    [uploader]="uploader"
-			    (change)="onFileChange($event)"
-			    formControlName="imageUrl"
-			    hidden
-			    autoComplete="off" />
+            <input type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange($event)"
+                formControlName="imageUrl"
+                hidden
+                autoComplete="off" />
 
-			<div class="image-select"
-			 fxLayout="column">
-				<div>
-					<mat-hint>Optional: Change default image</mat-hint>
-				</div>
-				<button mat-flat-button
-					type="button"
-				    color="primary"
-				    (click)="fileInput.click()">Select Image</button>
-				<div class="image-preview"
-				   	>
-					<img *ngIf="imageUrl" [src]="imageUrl" />
-					<img class="image-wrap" *ngIf="!imageUrl" src="assets/solution-default.png"  />
-				</div>
-				<mat-hint>Images look best at approximately 1500x400 pixels</mat-hint>
-			</div>
+            <div class="image-select"
+                fxLayout="column">
+                <div>
+                    <mat-hint>Optional: Change default image</mat-hint>
+                </div>
+                <button mat-flat-button
+                    type="button"
+                    color="primary"
+                    (click)="fileInput.click()">Select Image</button>
+                <div class="image-preview">
+                    <img *ngIf="imageUrl"
+                        [src]="imageUrl" />
+                    <img class="image-wrap"
+                        *ngIf="!imageUrl"
+                        src="assets/solution-default.png" />
+                </div>
+                <mat-hint>Images look best at approximately 1500x400 pixels
+                </mat-hint>
+            </div>
 
-			<button mat-flat-button
-			    type="submit"
-			    [disabled]="!solutionForm.valid"
-			    color="primary">Create</button>
-		</form>
-	</mat-card>
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!solutionForm.valid"
+                color="primary">Create</button>
+        </form>
+    </mat-card>
 </div>

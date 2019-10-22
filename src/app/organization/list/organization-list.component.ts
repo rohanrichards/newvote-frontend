@@ -1,16 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { finalize, take } from 'rxjs/operators';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { OrganizationService } from '@app/core/http/organization/organization.service';
-import { VoteService } from '@app/core/http/vote/vote.service';
-import { MetaService } from '@app/core/meta.service';
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { OrganizationService } from '@app/core/http/organization/organization.service'
+import { VoteService } from '@app/core/http/vote/vote.service'
+import { MetaService } from '@app/core/meta.service'
 
-import { IOrganization, Organization } from '@app/core/models/organization.model';
-import { Vote } from '@app/core/models/vote.model';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
 
 @Component({
     selector: 'app-organization',
@@ -29,6 +26,7 @@ export class OrganizationListComponent implements OnInit {
         routerLink: '/communities/create',
         role: 'admin'
     }];
+
     loadingState: string;
 
     constructor(
@@ -42,66 +40,68 @@ export class OrganizationListComponent implements OnInit {
 
     ngOnInit() {
         this.stateService.loadingState$.subscribe((state: string) => {
-            this.loadingState = state;
-        });
+            this.loadingState = state
+        })
 
         this.route.queryParamMap.subscribe(params => {
-            const force: boolean = !!params.get('forceUpdate');
-            this.fetchData(force);
-        });
+            const force = !!params.get('forceUpdate')
+            this.fetchData(force)
+        })
         this.meta.updateTags(
             {
                 title: 'All Communities',
                 description: 'The list of all available communities on the NewVote platform.'
-            });
+            })
+
     }
 
     fetchData(force?: boolean) {
-        const isAdmin = this.auth.isAdmin();
-        this.stateService.setLoadingState(AppState.loading);
+        const isAdmin = this.auth.isAdmin()
+        this.stateService.setLoadingState(AppState.loading)
 
         this.organizationService.list({
             orgs: [],
+            forceUpdate: force,
             params: {
-                'showDeleted': isAdmin ? 'true' : '',
-                'showPrivate': isAdmin ? 'true' : ''
+                showDeleted: isAdmin ? 'true' : '',
+                showPrivate: isAdmin ? 'true' : ''
             }
         })
             .subscribe(
                 organizations => {
-                    this.organizations = organizations;
-                    return this.stateService.setLoadingState(AppState.complete);
+                    this.organizations = organizations
+                    return this.stateService.setLoadingState(AppState.complete)
                 },
-                (error) => {
-                    return this.stateService.setLoadingState(AppState.serverError);
+                () => {
+                    return this.stateService.setLoadingState(AppState.serverError)
                 }
-            );
+            )
     }
 
     onDelete(event: any) {
         this.organizationService.delete({ id: event._id }).subscribe(() => {
-            this.fetchData(true);
-        });
+            this.fetchData(true)
+        })
     }
 
     onSoftDelete(event: any) {
         if (!this.auth.isOwner()) {
-            return false;
+            return false
         }
-        event.softDeleted = true;
+        event.softDeleted = true
         this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
-            this.fetchData(true);
-        });
+            this.fetchData(true)
+        })
     }
 
     onRestore(event: any) {
         if (!this.auth.isOwner()) {
-            return false;
+            return false
         }
-        event.softDeleted = false;
+        event.softDeleted = false
         this.organizationService.update({ id: event._id, entity: event }).subscribe(() => {
-            this.fetchData(true);
-        });
+            this.fetchData(true)
+        })
     }
 
 }

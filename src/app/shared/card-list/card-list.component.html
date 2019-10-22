@@ -6,7 +6,7 @@
         *ngFor="let item of items$ | async; trackBy: trackByFn">
         <mat-card class="item-card"
             [ngClass]="{'soft-deleted': item.softDeleted}"
-            routerLink="{{path}}/{{item.slug || item._id}}">
+            routerLink="{{path}}/{{item._id}}">
             <div mat-card-image
                 class="image-container"
                 [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
@@ -17,7 +17,7 @@
                     <button color="accent"
                         mat-icon-button
                         (click)="$event.stopPropagation()"
-                        routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+                        routerLink='{{path}}/edit/{{item._id}}'>
                         <mat-icon aria-label="Edit the content">edit</mat-icon>
                     </button>
                     <button color="accent"
@@ -60,7 +60,7 @@
                                 <span
                                     *ngFor="let parent of item[parentPropName]; let i = index">
                                     <a (click)="$event.stopPropagation()"
-                                        routerLink="{{parentPath}}/{{parent.slug || parent._id}}">{{parent.title || parent.name}}</a>
+                                        routerLink="{{parentPath}}/{{parent._id}}">{{parent.title || parent.name}}</a>
                                     <span
                                         *ngIf="item[parentPropName].length > 1 && i !== item[parentPropName].length - 1">,&nbsp;</span>
                                 </span>
@@ -85,7 +85,7 @@
                 class="child-container">
                 <span class="mat-card-title">{{childName}}</span>
                 <div *ngFor="let child of item[childPath];trackBy: trackByFn"
-                    routerLink="/{{childPath}}/{{child.slug || child._id}}">
+                    routerLink="/{{childPath}}/{{child._id}}">
                     <div class='mini-proposal'
                         [ngClass]="{'soft-deleted': child.softDeleted}">
                         <div fxLayout="column"

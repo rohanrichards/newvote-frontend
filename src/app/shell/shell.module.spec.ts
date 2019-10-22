@@ -1,13 +1,13 @@
-import { ShellModule } from './shell.module';
+import { ShellModule } from './shell.module'
 
 describe('ShellModule', () => {
-  let shellModule: ShellModule;
+    let shellModule: ShellModule
 
-  beforeEach(() => {
-    shellModule = new ShellModule();
-  });
+    beforeEach(() => {
+        shellModule = new ShellModule()
+    })
 
-  it('should create an instance', () => {
-    expect(shellModule).toBeTruthy();
-  });
-});
+    it('should create an instance', () => {
+        expect(shellModule).toBeTruthy()
+    })
+})

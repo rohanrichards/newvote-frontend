@@ -6,7 +6,6 @@ export interface ITopic {
     user?: any;
     created?: Date;
     organizations: any;
-    slug: string;
 }
 
 export class Topic implements ITopic {
@@ -15,7 +14,6 @@ export class Topic implements ITopic {
         public name: string = '',
         public imageUrl: string = '',
         public description: string = '',
-        public organizations: any = {},
-        public slug: string = '',
+        public organizations: any = {}
     ) { }
 }
