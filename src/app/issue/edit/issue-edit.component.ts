@@ -120,7 +120,7 @@ export class IssueEditComponent implements OnInit {
             issueQuery = this.issueQuery.getIssueWithTopic(id)
 
         } else {
-            issueQuery = this.issueQuery.getIssueWithTopic(id, true)
+            issueQuery = this.issueQuery.getIssueWithTopic(id)
         }
 
         issueQuery.subscribe((issue: Issue) => {
