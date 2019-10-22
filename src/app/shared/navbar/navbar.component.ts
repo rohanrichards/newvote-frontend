@@ -49,7 +49,13 @@ export class NavbarComponent implements OnInit {
                 this.routeLevel = res
             })
 
-        this.verified = this.query.isCommunityVerified$
+        this.query.isCommunityVerified()
+            .subscribe((res) => {
+                console.log(res, 'is verified?')
+                console.log(this.loggedIn, 'are they logged in?')
+                console.log(this.hideVerify, 'hiding verify?')
+                this.verified = res
+            })
     }
 
     toggleSearch() {
@@ -135,6 +141,7 @@ export class NavbarComponent implements OnInit {
                     this.openSnackBar('You have successfully verified with this community.', 'OK')
                 },
                 (error) => {
+                    console.log(error, 'this is error')
                     this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
     }

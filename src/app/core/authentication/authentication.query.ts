@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core'
 import { IUser } from '../models/user.model'
 import { AuthenticationStore } from './authentication.store'
-import { Query, toBoolean } from '@datorama/akita'
+import { Query, toBoolean, combineQueries } from '@datorama/akita'
 import { OrganizationQuery } from '../http/organization/organization.query'
-import { combineLatest } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 import { Organization } from '../models/organization.model'
+import { Observable } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
-    isCommunityVerified$ = combineLatest(
-        this.select(),
-        this.organizationQuery.select(),
-        (user: IUser, organization: Organization) => {
-            return this.isUserPartOfOrganization(user, organization) as boolean
-        })
+    isCommunityVerified$: Observable<any>;
 
     constructor(
         protected store: AuthenticationStore,
@@ -28,7 +24,14 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     isCommunityVerified() {
-        return toBoolean(this.isCommunityVerified$)
+        return combineQueries([
+            this.select(),
+            this.organizationQuery.select()
+        ]).pipe(
+            map(([user, organization]) => {
+                return this.isUserPartOfOrganization(user, organization)
+            })
+        )
     }
 
     isOwner() {
@@ -68,7 +71,7 @@ export class AuthenticationQuery extends Query<IUser> {
             if (typeof userOrganization === 'string') return organization._id === userOrganization
             return organization._id === userOrganization._id
         })
-        return exists as boolean
+        return exists
     }
 
     isUserVerified() {
