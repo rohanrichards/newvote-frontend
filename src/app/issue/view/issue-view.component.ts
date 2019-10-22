@@ -94,6 +94,7 @@ export class IssueViewComponent implements OnInit {
 
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
+            this.fetchData(ID)
             this.subscribeToIssueStore(ID)
         })
 
@@ -116,7 +117,7 @@ export class IssueViewComponent implements OnInit {
                     this.subscribeToSuggestionStore(issue._id)
                     this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
-                    this.fetchData(issue._id)
+                    this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
                 (err) => console.log(err))
@@ -135,7 +136,6 @@ export class IssueViewComponent implements OnInit {
 
     fetchData(id: string) {
         this.getIssue(id)
-        this.getMedia(id)
         this.getProposals()
         this.getSolutions()
         this.getSuggestions()
@@ -295,9 +295,9 @@ export class IssueViewComponent implements OnInit {
             .subscribe(() => {
                 this.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     // Making a suggestion from issue - prepopulates the data so suggestion can be linked
