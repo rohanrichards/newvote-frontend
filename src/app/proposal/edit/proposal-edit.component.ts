@@ -5,8 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
-import { map, startWith, finalize, take } from 'rxjs/operators'
-import { merge, assign, cloneDeep } from 'lodash'
+import { map, startWith, finalize } from 'rxjs/operators'
+import { merge, cloneDeep } from 'lodash'
 
 import { IProposal, Proposal } from '@app/core/models/proposal.model'
 import { ISolution, Solution } from '@app/core/models/solution.model'
@@ -142,7 +142,7 @@ export class ProposalEditComponent implements OnInit {
     subscribeToProposalStore(id: string) {
         this.proposalQuery.selectEntity(id)
             .subscribe((proposal: Proposal) => {
-                if (!proposal) return false;
+                if (!proposal) return false
                 this.proposal = proposal
                 this.updateForm(proposal)
                 this.updateTags(proposal)
@@ -186,7 +186,7 @@ export class ProposalEditComponent implements OnInit {
             this.imageFile = file
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -200,7 +200,7 @@ export class ProposalEditComponent implements OnInit {
 
     onSave() {
         const proposal = cloneDeep(this.proposal)
-        merge(proposal, <IProposal>this.proposalForm.value)
+        merge(proposal, this.proposalForm.value as IProposal)
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -263,9 +263,6 @@ export class ProposalEditComponent implements OnInit {
         if (index >= 0) {
             this.solutions.splice(index, 1)
         }
-    }
-
-    add(event: any) {
     }
 
     private _filter(value: any): ISolution[] {

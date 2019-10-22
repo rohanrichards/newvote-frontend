@@ -1,28 +1,27 @@
-import { Injectable } from "@angular/core";
-import { QueryEntity, combineQueries } from "@datorama/akita";
-import { IssueState, IssueStore } from "./issue.store";
-import { Issue } from "@app/core/models/issue.model";
-import { TopicQuery } from "../topic/topic.query";
-import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core'
+import { QueryEntity, combineQueries } from '@datorama/akita'
+import { IssueState, IssueStore } from './issue.store'
+import { Issue } from '@app/core/models/issue.model'
+import { TopicQuery } from '../topic/topic.query'
+import { map } from 'rxjs/operators'
 
-import { cloneDeep } from 'lodash';
-import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
+import { cloneDeep } from 'lodash'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Injectable()
 export class IssueQuery extends QueryEntity<IssueState, Issue> {
     issues$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isModerator()) {
-                return true;
+                return true
             }
 
-            return !entity.softDeleted;
+            return !entity.softDeleted
         }
     })
 
-
     constructor(protected store: IssueStore, private topicQuery: TopicQuery, private auth: AuthenticationQuery) {
-        super(store);
+        super(store)
     }
 
     getIssueWithTopic(issueId: string) {
@@ -34,29 +33,29 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
         )
             .pipe(
                 map((results) => {
-                    let [storeIssue, topics] = results;
-                    const issue = cloneDeep(storeIssue);
+                    const [storeIssue, topics] = results
+                    const issue = cloneDeep(storeIssue)
 
                     if (!issue) {
-                        return false;
+                        return false
                     }
 
                     if (!topics.length) {
-                        return issue;
+                        return issue
                     }
 
                     const populateIssueTopics = issue.topics.map((issueTopic) => {
                         return topics.find((topic) => {
                             if (typeof issueTopic === 'string') {
-                                return issueTopic === topic._id;
+                                return issueTopic === topic._id
                             }
 
-                            return topic._id === issueTopic._id;
+                            return topic._id === issueTopic._id
                         })
                     })
 
-                    issue.topics = populateIssueTopics;
-                    return issue;
+                    issue.topics = populateIssueTopics
+                    return issue
                 })
             )
     }

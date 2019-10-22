@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { Observable } from 'rxjs'
+import { map, catchError, tap } from 'rxjs/operators'
 
-import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model';
-import { handleError } from '@app/core/http/errors';
-import { VoteService } from '../vote/vote.service';
-import { SuggestionStore } from './suggestion.store';
+import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model'
+import { handleError } from '@app/core/http/errors'
+import { VoteService } from '../vote/vote.service'
+import { SuggestionStore } from './suggestion.store'
 
 const routes = {
-    list: (c: SuggestionContext) => `/suggestions`,
+    list: () => '/suggestions',
     view: (c: SuggestionContext) => `/suggestions/${c.id}`,
-    create: (c: SuggestionContext) => `/suggestions`,
+    create: () => '/suggestions',
     update: (c: SuggestionContext) => `/suggestions/${c.id}`,
     delete: (c: SuggestionContext) => `/suggestions/${c.id}`
-};
+}
 
 export interface SuggestionContext {
     id?: string; // id of object to find/modify
@@ -33,24 +33,24 @@ export class SuggestionService {
 
     list(context: SuggestionContext): Observable<any> {
         // create blank params object
-        let params = new HttpParams();
+        let params = new HttpParams()
 
         // if we have params provided in the context, replace with those
         if (context.params) {
             // context.params is assumed to have a format similar to
             // { topicId: [id], search: [search terms], ...}
-            params = new HttpParams({ fromObject: context.params });
+            params = new HttpParams({ fromObject: context.params })
         }
 
         return this.httpClient
-            .get(routes.list(context), { params })
+            .get(routes.list(), { params })
             .pipe(
                 tap((data: Suggestion[]) => {
-                    this.voteService.populateStore(data);
-                    this.suggestionStore.add(data);
+                    this.voteService.populateStore(data)
+                    this.suggestionStore.add(data)
                 }),
                 catchError(handleError)
-            );
+            )
     }
 
     view(context: SuggestionContext): Observable<any> {
@@ -58,22 +58,22 @@ export class SuggestionService {
             .get(routes.view(context))
             .pipe(
                 tap((res: Suggestion) => {
-                    this.voteService.addEntityVote(res);
-                    this.suggestionStore.add(res);
+                    this.voteService.addEntityVote(res)
+                    this.suggestionStore.add(res)
                 }),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     create(context: SuggestionContext): Observable<any> {
         return this.httpClient
-            .post(routes.create(context), context.entity)
+            .post(routes.create(), context.entity)
             .pipe(
                 tap((res: Suggestion) => this.suggestionStore.add(res)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     update(context: SuggestionContext): Observable<any> {
@@ -83,7 +83,7 @@ export class SuggestionService {
                 tap((res: Suggestion) => this.suggestionStore.update(res._id, res)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     delete(context: SuggestionContext): Observable<any> {
@@ -93,14 +93,14 @@ export class SuggestionService {
                 tap((res: any) => this.suggestionStore.remove(res._id)),
                 map((res: any) => res),
                 catchError(handleError)
-            );
+            )
     }
 
     populateStoreMetaData(serverData: any) {
-        this.voteService.populateStore(serverData);
+        this.voteService.populateStore(serverData)
     }
 
     updateSuggestionVote(id: string, suggestion: any) {
-        this.suggestionStore.update(id, suggestion);
+        this.suggestionStore.update(id, suggestion)
     }
 }

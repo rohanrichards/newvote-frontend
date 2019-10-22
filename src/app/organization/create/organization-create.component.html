@@ -1,212 +1,225 @@
 <app-loader [isLoading]="isLoading"
- size="1.5"></app-loader>
+    size="1.5"></app-loader>
 
 <div class="container"
- fxLayoutAlign="center center">
-	<mat-card fxFlex.gt-sm="60"
-	 fxFlex="100">
-		<form [formGroup]="organizationForm"
-		 fxLayout="column"
-		 (ngSubmit)="onSave()"
-		 novalidate>
-			<mat-form-field>
-				<!-- {{organizationForm.status}} -->
-				<input matInput
-				 placeholder="Enter a name for the community (properly formatted e.g UQ Union)"
-				 formControlName="name"
-				 required>
-				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
-					The name is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+    fxLayoutAlign="center center">
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="organizationForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+            <mat-form-field>
+                <!-- {{organizationForm.status}} -->
+                <input matInput
+                    placeholder="Enter a name for the community (properly formatted e.g UQ Union)"
+                    formControlName="name"
+                    required>
+                <mat-error
+                    *ngIf="organizationForm.hasError('required', ['name'])">
+                    The name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field>
-				<input matInput
-				 placeholder="Enter a short description or tag-line for the community (e.g A new way to vote!)"
-				 formControlName="description"
-				 required>
-				<mat-error *ngIf="organizationForm.hasError('required', ['name'])">
-					The description is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+            <mat-form-field>
+                <input matInput
+                    placeholder="Enter a short description or tag-line for the community (e.g A new way to vote!)"
+                    formControlName="description"
+                    required>
+                <mat-error
+                    *ngIf="organizationForm.hasError('required', ['name'])">
+                    The description is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<div class="quill-editor-container cf">
-				<quill-editor formControlName="longDescription"
-				 placeholder="Enter a longer description for your community"></quill-editor>
-			</div>
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="longDescription"
+                    placeholder="Enter a longer description for your community">
+                </quill-editor>
+            </div>
 
-			<mat-form-field>
-				<!-- {{organizationForm.status}} -->
-				<input matInput
-				 placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
-				 formControlName="url"
-				 required>
-				<mat-error *ngIf="organizationForm.hasError('required', ['url'])">
-					The URL is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+            <mat-form-field>
+                <!-- {{organizationForm.status}} -->
+                <input matInput
+                    placeholder="Enter the URL (lowercase, words separated by dashes e.g uq-union)"
+                    formControlName="url"
+                    required>
+                <mat-error
+                    *ngIf="organizationForm.hasError('required', ['url'])">
+                    The URL is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-			<mat-form-field>
-				<input matInput
-				 type="url"
-				 placeholder="(optional) URL to your organization"
-				 formControlName="organizationUrl">
-			</mat-form-field>
+            <mat-form-field>
+                <input matInput
+                    type="url"
+                    placeholder="(optional) URL to your organization"
+                    formControlName="organizationUrl">
+            </mat-form-field>
 
-			<mat-form-field
-			*ngIf="auth.isAdmin()">
-				<mat-label>Authentication Type</mat-label>
-				<mat-select formControlName="authType"
-				 required>
-					<mat-option [value]="0">
-						Local (email/password)
-					</mat-option>
-					<mat-option [value]="1">
-						UQ AAF
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
+            <mat-form-field *ngIf="auth.isAdmin()">
+                <mat-label>Authentication Type</mat-label>
+                <mat-select formControlName="authType"
+                    required>
+                    <mat-option [value]="0">
+                        Local (email/password)
+                    </mat-option>
+                    <mat-option [value]="1">
+                        UQ AAF
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
-				<input matInput
-				 type="url"
-				 placeholder="The redirect URL to use for AAF authentication"
-				 formControlName="authUrl"
-				 required>
-			</mat-form-field>
+            <mat-form-field
+                *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+                <input matInput
+                    type="url"
+                    placeholder="The redirect URL to use for AAF authentication"
+                    formControlName="authUrl"
+                    required>
+            </mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
-				<input matInput
-				 type="text"
-				 placeholder="Enter the Entity ID for AAF authentication"
-				 formControlName="authEntityId"
-				 required>
-			</mat-form-field>
+            <mat-form-field
+                *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+                <input matInput
+                    type="text"
+                    placeholder="Enter the Entity ID for AAF authentication"
+                    formControlName="authEntityId"
+                    required>
+            </mat-form-field>
 
-			<div class="vote-section" formArrayName="voteRoles" *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
-				<mat-label>Permit Voting Roles</mat-label>
-				<section class="vote-container" fxLayoutAlign="space-evenly center">
-					<div *ngFor="let item of organizationForm.get('voteRoles').controls; let i = index;">
-						<div [formGroupName]="i">
-							<mat-checkbox formControlName="active">{{ checkboxOptions[i] }}</mat-checkbox>
-						</div>
-					</div>
-				</section>
-			</div>
+            <div class="vote-section"
+                formArrayName="voteRoles"
+                *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+                <mat-label>Permit Voting Roles</mat-label>
+                <section class="vote-container"
+                    fxLayoutAlign="space-evenly center">
+                    <div
+                        *ngFor="let item of organizationForm.get('voteRoles').controls; let i = index;">
+                        <div [formGroupName]="i">
+                            <mat-checkbox formControlName="active">
+                                {{ checkboxOptions[i] }}</mat-checkbox>
+                        </div>
+                    </div>
+                </section>
+            </div>
 
-			<mat-form-field>
-				<mat-label>Public / Private Organization</mat-label>
-				<mat-select formControlName="privateOrg" 
-				 required>
-					<mat-option [value]="false">
-						Public
-					</mat-option>
-					<mat-option [value]="true">
-						Private
-					</mat-option>
-				</mat-select>
-				<mat-hint>By setting organization to private it will be hidden from NewVotes community lists.</mat-hint>
-			</mat-form-field>
+            <mat-form-field>
+                <mat-label>Public / Private Organization</mat-label>
+                <mat-select formControlName="privateOrg"
+                    required>
+                    <mat-option [value]="false">
+                        Public
+                    </mat-option>
+                    <mat-option [value]="true">
+                        Private
+                    </mat-option>
+                </mat-select>
+                <mat-hint>By setting organization to private it will be hidden
+                    from NewVotes community lists.</mat-hint>
+            </mat-form-field>
 
-			<mat-form-field class="example-chip-list"
-			 *ngIf="auth.isAdmin()">
-				<mat-chip-list #chipList>
-					<mat-chip *ngIf="owner"
-					 [selectable]="false"
-					 [removable]="true"
-					 (removed)="userRemoved(owner)">
-						{{owner.firstName}} {{owner.lastName}} {{owner.email}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Select Community Owner"
-					 #userInput
-					 type="text"
-					 formControlName="owner"
-					 [matAutocomplete]="auto"
-					 [matChipInputFor]="chipList"
-					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					 [matChipInputAddOnBlur]="true"
-					 [readonly]="owner"
-					 (input)="handleChange(userInput.value)">
-				</mat-chip-list>
-				<mat-hint color="primary">If user does not appear in dropdown. Enter email to invite to community.</mat-hint>
-				<mat-autocomplete #auto="matAutocomplete"
-				 (optionSelected)="userSelected($event)">
-					<mat-option *ngFor="let user of filteredUsers | async"
-					 [value]="user">
-						{{user.firstName}} {{user.lastName}} {{user.email}}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
+            <mat-form-field class="example-chip-list"
+                *ngIf="auth.isAdmin()">
+                <mat-chip-list #chipList>
+                    <mat-chip *ngIf="owner"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="userRemoved(owner)">
+                        {{owner.firstName}} {{owner.lastName}} {{owner.email}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select Community Owner"
+                        #userInput
+                        type="text"
+                        formControlName="owner"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true"
+                        [readonly]="owner"
+                        (input)="handleChange(userInput.value)">
+                </mat-chip-list>
+                <mat-hint color="primary">If user does not appear in dropdown.
+                    Enter email to invite to community.</mat-hint>
+                <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="userSelected($event)">
+                    <mat-option *ngFor="let user of filteredUsers | async"
+                        [value]="user">
+                        {{user.firstName}} {{user.lastName}} {{user.email}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
 
-			<mat-form-field class="example-chip-list"
-			 *ngIf="auth.isOwner()">
-				<mat-chip-list #modChipList>
-					<mat-chip *ngFor="let mod of organizationForm.value.moderators"
-					 [selectable]="false"
-					 [removable]="true"
-					 (removed)="moderatorRemoved(mod)">
-						{{mod}}
-						<mat-icon matChipRemove>cancel</mat-icon>
-					</mat-chip>
-					<input placeholder="Select Community Moderators"
-					 #moderatorInput
-					 formControlName="moderatorsControl"
-					 [matChipInputFor]="modChipList"
-					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					 [matChipInputAddOnBlur]="true"
-					 (matChipInputTokenEnd)="moderatorSelected($event)">
-				</mat-chip-list>
-			</mat-form-field>
+            <mat-form-field class="example-chip-list"
+                *ngIf="auth.isOwner()">
+                <mat-chip-list #modChipList>
+                    <mat-chip
+                        *ngFor="let mod of organizationForm.value.moderators"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="moderatorRemoved(mod)">
+                        {{mod}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select Community Moderators"
+                        #moderatorInput
+                        formControlName="moderatorsControl"
+                        [matChipInputFor]="modChipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="moderatorSelected($event)">
+                </mat-chip-list>
+            </mat-form-field>
 
-			<span>Home Page Background Image</span>
-			<input type="file"
-			 id="imageFileInput"
-			 #imageFileInput
-			 ng2FileSelect
-			 [uploader]="uploader"
-			 (change)="onFileChange('backgroundImage', $event)"
-			 formControlName="imageUrl"
-			 hidden
-			 autoComplete="off" />
+            <span>Home Page Background Image</span>
+            <input type="file"
+                id="imageFileInput"
+                #imageFileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange('backgroundImage', $event)"
+                formControlName="imageUrl"
+                hidden
+                autoComplete="off" />
 
-			<div class="image-select">
-				<button mat-flat-button
-				 type="button"
-				 color="primary"
-				 (click)="imageFileInput.click()">Select Image</button>
-				<div class="image-preview"
-				 *ngIf="backgroundImage">
-					<img [src]="backgroundImage.src" />
-				</div>
-			</div>
+            <div class="image-select">
+                <button mat-flat-button
+                    type="button"
+                    color="primary"
+                    (click)="imageFileInput.click()">Select Image</button>
+                <div class="image-preview"
+                    *ngIf="backgroundImage">
+                    <img [src]="backgroundImage.src" />
+                </div>
+            </div>
 
-			<span>Community Icon</span>
-			<input type="file"
-			 id="iconFileInput"
-			 #iconFileInput
-			 ng2FileSelect
-			 [uploader]="uploader"
-			 (change)="onFileChange('iconImage', $event)"
-			 formControlName="iconUrl"
-			 hidden
-			 autoComplete="off" />
+            <span>Community Icon</span>
+            <input type="file"
+                id="iconFileInput"
+                #iconFileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange('iconImage', $event)"
+                formControlName="iconUrl"
+                hidden
+                autoComplete="off" />
 
-			<div class="image-select">
-				<button mat-flat-button
-				 type="button"
-				 color="primary"
-				 (click)="iconFileInput.click()">Select Image</button>
-				<div class="image-preview"
-				 *ngIf="iconImage">
-					<img [src]="iconImage.src" />
-				</div>
-			</div>
+            <div class="image-select">
+                <button mat-flat-button
+                    type="button"
+                    color="primary"
+                    (click)="iconFileInput.click()">Select Image</button>
+                <div class="image-preview"
+                    *ngIf="iconImage">
+                    <img [src]="iconImage.src" />
+                </div>
+            </div>
 
-			<button mat-flat-button
-			 type="submit"
-			 [disabled]="!organizationForm.valid || isLoading "
-			 color="primary">Create</button>
-		</form>
-	</mat-card>
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!organizationForm.valid || isLoading "
+                color="primary">Create</button>
+        </form>
+    </mat-card>
 </div>

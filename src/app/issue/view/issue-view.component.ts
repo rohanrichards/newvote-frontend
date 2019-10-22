@@ -1,43 +1,38 @@
-import { Component, OnInit, ViewChild, forwardRef, Inject, AfterViewInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { finalize, take } from 'rxjs/operators';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component';
-import { MatSnackBar } from '@angular/material';
-import { differenceWith, assign } from 'lodash';
-import { isEqual } from 'lodash';
+import { Component, OnInit } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import { finalize, take } from 'rxjs/operators'
+import { MatDialog } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { TopicService } from '@app/core/http/topic/topic.service'
+import { IssueService } from '@app/core/http/issue/issue.service'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { MediaService } from '@app/core/http/media/media.service'
+import { VoteService } from '@app/core/http/vote/vote.service'
+import { MetaService } from '@app/core/meta.service'
 
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { TopicService } from '@app/core/http/topic/topic.service';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { MediaService } from '@app/core/http/media/media.service';
-import { VoteService } from '@app/core/http/vote/vote.service';
-import { MetaService } from '@app/core/meta.service';
+import { IIssue, Issue } from '@app/core/models/issue.model'
+import { Solution } from '@app/core/models/solution.model'
+import { Media } from '@app/core/models/media.model'
+import { Vote } from '@app/core/models/vote.model'
 
-import { IIssue, Issue } from '@app/core/models/issue.model';
-import { Solution } from '@app/core/models/solution.model';
-import { Media } from '@app/core/models/media.model';
-import { Vote } from '@app/core/models/vote.model';
+import { optimizeImage } from '@app/shared/helpers/cloudinary'
 
-import { optimizeImage } from '@app/shared/helpers/cloudinary';
-
-import { trigger } from '@angular/animations';
-import { fadeIn } from '@app/shared/animations/fade-animations';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { ShellComponent } from '@app/shell/shell.component';
-import { Suggestion } from '@app/core/models/suggestion.model';
-import { SuggestionService } from '@app/core/http/suggestion/suggestion.service';
-import { OrganizationService } from '@app/core';
-import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query';
-import { IssueQuery } from '@app/core/http/issue/issue.query';
-import { SolutionQuery } from '@app/core/http/solution/solution.query';
-import { ProposalService } from '@app/core/http/proposal/proposal.service';
-import { forkJoin, combineLatest, Observable, of } from 'rxjs';
-import { VotesQuery } from '@app/core/http/vote/vote.query';
-import { AdminService } from '@app/core/http/admin/admin.service';
-import { MediaQuery } from '@app/core/http/media/media.query';
+import { trigger } from '@angular/animations'
+import { fadeIn } from '@app/shared/animations/fade-animations'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { Suggestion } from '@app/core/models/suggestion.model'
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { OrganizationService } from '@app/core'
+import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
+import { IssueQuery } from '@app/core/http/issue/issue.query'
+import { SolutionQuery } from '@app/core/http/solution/solution.query'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { Observable } from 'rxjs'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
+import { MediaQuery } from '@app/core/http/media/media.query'
 
 @Component({
     selector: 'app-issue',
@@ -90,24 +85,25 @@ export class IssueViewComponent implements OnInit {
     ngOnInit() {
         this.organizationService.get()
             .subscribe(
-                (org) => this.organization = org,
-                (err) => err);
+                (org) => { this.organization = org },
+                (err) => err
+            )
 
-        this.stateService.loadingState$.subscribe((state) => this.loadingState = state);
-        this.stateService.setLoadingState(AppState.loading);
+        this.stateService.loadingState$.subscribe((state) => { this.loadingState = state })
+        this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id');
-            this.subscribeToIssueStore(ID);
-            this.subscribeToSuggestionStore(ID);
-            this.subscribeToSolutionStore(ID);
-            this.subscribeToMediaStore(ID);
-            this.fetchData(ID);
-            this.getMedia(ID);
-            this.getTopics();
-        });
+            const ID = params.get('id')
+            this.subscribeToIssueStore(ID)
+            this.subscribeToSuggestionStore(ID)
+            this.subscribeToSolutionStore(ID)
+            this.subscribeToMediaStore(ID)
+            this.fetchData(ID)
+            this.getMedia(ID)
+            this.getTopics()
+        })
 
-        this.getSuggestions();
+        this.getSuggestions()
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -116,57 +112,56 @@ export class IssueViewComponent implements OnInit {
         })
     }
 
-
     subscribeToIssueStore(id: string) {
         this.issueQuery.getIssueWithTopic(id)
             .subscribe(
                 (issue: Issue) => {
-                    if (!issue) return issue;
-                    this.issue = issue;
-                    this.stateService.setLoadingState(AppState.complete);
+                    if (!issue) return issue
+                    this.issue = issue
+                    this.stateService.setLoadingState(AppState.complete)
                 },
                 (err) => console.log(err))
     }
 
     subscribeToSolutionStore(issueId: string) {
-        this.solutions$ = this.solutionQuery.selectSolutions(issueId);
+        this.solutions$ = this.solutionQuery.selectSolutions(issueId)
     }
 
     subscribeToMediaStore(id: string) {
         this.mediaQuery.selectIssueMedia(id)
             .subscribe((media: Media[]) => {
-                this.media = media;
+                this.media = media
             })
     }
 
     fetchData(id: string) {
-        this.getIssue(id);
-        this.getProposals();
-        this.getSolutions();
-        this.getSuggestions();
-        this.getTopics();
+        this.getIssue(id)
+        this.getProposals()
+        this.getSolutions()
+        this.getSuggestions()
+        this.getTopics()
     }
 
     getTopics() {
-        const isOwner = this.auth.isOwner();
+        const isOwner = this.auth.isOwner()
         const params = {
-            'showDeleted': isOwner ? true : ''
+            showDeleted: isOwner ? true : ''
         }
 
         this.topicService.list({ orgs: [], params })
             .subscribe(
                 res => res,
                 err => err
-            );
+            )
     }
 
     getSuggestions() {
-        const isOwner = this.auth.isOwner();
+        const isOwner = this.auth.isOwner()
 
         this.suggestionService.list({
             forceUpdate: true,
             params: {
-                'showDeleted': isOwner ? true : ''
+                showDeleted: isOwner ? true : ''
             }
         })
             .subscribe(
@@ -185,15 +180,15 @@ export class IssueViewComponent implements OnInit {
                             appBarTitle: 'View Issue',
                             description: issue.description || '',
                             image: issue.imageUrl || ''
-                        });
+                        })
                 },
                 (err) => err
             )
     }
 
     getSolutions() {
-        const isOwner = this.auth.isOwner();
-        const params = { 'showDeleted': isOwner ? true : '' };
+        const isOwner = this.auth.isOwner()
+        const params = { showDeleted: isOwner ? true : '' }
 
         return this.solutionService.list({
             params
@@ -205,8 +200,8 @@ export class IssueViewComponent implements OnInit {
     }
 
     getProposals() {
-        const isOwner = this.auth.isOwner();
-        const params = { 'showDeleted': isOwner ? true : '' };
+        const isOwner = this.auth.isOwner()
+        const params = { showDeleted: isOwner ? true : '' }
         return this.proposalService.list({
             params
         })
@@ -217,47 +212,45 @@ export class IssueViewComponent implements OnInit {
     }
 
     getMedia(id: string) {
-        const isOwner = this.auth.isOwner();
+        const isOwner = this.auth.isOwner()
 
         this.mediaService.list({
-            params: { issueId: id, 'showDeleted': isOwner ? true : '' }
+            params: { issueId: id, showDeleted: isOwner ? true : '' }
         })
-            .pipe(finalize(() => { this.isLoading = false; }))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                (mediaList: Array<Media>) => {
-                    // mediaList
-                },
+                () => { },
                 (err) => err
-            );
+            )
     }
 
     onVote(voteData: any, model: string) {
-        this.isLoading = true;
-        const { item, voteValue } = voteData;
-        const vote = new Vote(item._id, model, voteValue);
-        const existingVote = item.votes.currentUser;
+        this.isLoading = true
+        const { item, voteValue } = voteData
+        const vote = new Vote(item._id, model, voteValue)
+        const existingVote = item.votes.currentUser
 
         if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue;
+            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })
-            .pipe(finalize(() => this.isLoading = false))
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue);
-                    this.openSnackBar('Your vote was recorded', 'OK');
+                    this.updateEntityVoteData(item, model, res.voteValue)
+                    this.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error) {
                         if (error.status === 401) {
-                            this.openSnackBar('You must be logged in to vote', 'OK');
+                            this.openSnackBar('You must be logged in to vote', 'OK')
                         } else {
-                            this.openSnackBar('There was an error recording your vote', 'OK');
+                            this.openSnackBar('There was an error recording your vote', 'OK')
                         }
                     }
                 }
-            );
+            )
     }
 
     openSnackBar(message: string, action: string) {
@@ -265,52 +258,52 @@ export class IssueViewComponent implements OnInit {
             duration: 4000,
             horizontalPosition: 'right',
             verticalPosition: 'bottom',
-        });
+        })
     }
 
     toggleHeader() {
-        this.headingEdit = this.headingEdit ? false : true;
+        this.headingEdit = !this.headingEdit
     }
 
     handleSubmit(value?: string) {
 
-        this.toggleHeader();
+        this.toggleHeader()
         if (!value) {
-            return;
+            return
         }
 
-        this.issue.mediaHeading = value;
+        this.issue.mediaHeading = value
         this.issueService.update({ id: this.issue._id, entity: this.issue })
             .subscribe((t) => {
-                this.issue = t;
-            });
+                this.issue = t
+            })
     }
 
     toggleContent() {
-        this.isOpen = this.isOpen ? false : true;
+        this.isOpen = !this.isOpen
     }
 
     handleSuggestionSubmit(formData: any) {
-        const suggestion = <Suggestion>formData;
-        suggestion.organizations = this.organization;
+        const suggestion = formData as Suggestion
+        suggestion.organizations = this.organization
 
-        suggestion.parent = this.issue._id;
-        suggestion.parentType = 'Issue';
-        suggestion.parentTitle = this.issue.name;
+        suggestion.parent = this.issue._id
+        suggestion.parentType = 'Issue'
+        suggestion.parentTitle = this.issue.name
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(t => {
-                this.openSnackBar('Succesfully created', 'OK');
+            .subscribe(() => {
+                this.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK');
-                })
+            (error) => {
+                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
-    // Making a suggestion from issue - prepopulates the data so suggestion can be linked 
+    // Making a suggestion from issue - prepopulates the data so suggestion can be linked
     // to parent
     populateSuggestion() {
-        const { _id, name: title } = this.issue;
+        const { _id, name: title } = this.issue
         const suggestionParentInfo = {
             _id,
             parentTitle: title,
@@ -341,22 +334,22 @@ export class IssueViewComponent implements OnInit {
                                 voteValue: voteValue === 0 ? false : voteValue
                             }
                         }
-                    };
-
-                    if (model === "Solution") {
-                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity);
                     }
 
-                    if (model === "Proposal") {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity);
+                    if (model === 'Solution') {
+                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity)
                     }
 
-                    if (model === "Suggestion") {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity);
+                    if (model === 'Proposal') {
+                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
                     }
 
-                    if (model === "Media") {
-                        return this.mediaService.updateSuggestionVote(entity._id, updatedEntity);
+                    if (model === 'Suggestion') {
+                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
+                    }
+
+                    if (model === 'Media') {
+                        return this.mediaService.updateSuggestionVote(entity._id, updatedEntity)
                     }
                 },
                 (err) => err

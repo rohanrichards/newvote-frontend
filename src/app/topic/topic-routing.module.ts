@@ -1,14 +1,12 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AdminGuard } from '@app/core/authentication/admin.guard';
-import { OwnerGuard } from '@app/core/authentication/owner.guard';
-import { ModeratorGuard } from '@app/core/authentication/moderator.guard';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
+import { ModeratorGuard } from '@app/core/authentication/moderator.guard'
 
-import { extract } from '@app/core';
-import { TopicListComponent } from './list/topic-list.component';
-import { TopicViewComponent } from './view/topic-view.component';
-import { TopicCreateComponent } from './create/topic-create.component';
-import { TopicEditComponent } from './edit/topic-edit.component';
+import { extract } from '@app/core'
+import { TopicListComponent } from './list/topic-list.component'
+import { TopicViewComponent } from './view/topic-view.component'
+import { TopicCreateComponent } from './create/topic-create.component'
+import { TopicEditComponent } from './edit/topic-edit.component'
 
 const routes: Routes = [
     {
@@ -34,7 +32,7 @@ const routes: Routes = [
         component: TopicViewComponent,
         data: { title: extract('Topic'), level: 'child' }
     },
-];
+]
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],

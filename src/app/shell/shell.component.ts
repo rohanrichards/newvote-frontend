@@ -1,21 +1,20 @@
-import { Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser'
 import {
-    Component, OnInit, Input, Output, EventEmitter,
+    Component, OnInit, Output, EventEmitter,
     ViewChild
-} from '@angular/core';
-import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { MediaObserver } from '@angular/flex-layout';
+} from '@angular/core'
+import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router'
+import { MediaObserver } from '@angular/flex-layout'
 
-import { OrganizationService } from '@app/core/http/organization/organization.service';
-import { MetaService } from '@app/core/meta.service';
-import { MatSidenavContainer } from '@angular/material';
+import { OrganizationService } from '@app/core/http/organization/organization.service'
+import { MetaService } from '@app/core/meta.service'
+import { MatSidenavContainer } from '@angular/material'
 
-import { asyncScheduler } from 'rxjs';
-import { filter, observeOn } from 'rxjs/operators';
-import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
-import { ScrollService } from '@app/core/scroll/scroll.service';
-import { I18nService, AuthenticationService } from '@app/core';
-
+import { asyncScheduler } from 'rxjs'
+import { filter, observeOn } from 'rxjs/operators'
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay'
+import { ScrollService } from '@app/core/scroll/scroll.service'
+import { I18nService, AuthenticationService } from '@app/core'
 
 interface ScrollPositionRestore {
     event: Event;
@@ -58,18 +57,17 @@ export class ShellComponent implements OnInit {
         // Without service data is saved multiple times
         this.scrollService.currentRoute$
             .subscribe((route: any) => {
-                this.currentRoute = route;
-            });
-
+                this.currentRoute = route
+            })
 
         // Listen in to the scroll data and update the scroll position on service
         // We save on the service so we can handle multiple scroll listners not copying / resetting
         this.scrollingSubscription = this.scroll
             .scrolled()
             .subscribe((data: CdkScrollable) => {
-                const scrollTop = data.getElementRef().nativeElement.scrollTop;
-                this.scrollService.updateCurrentRoutePosition(scrollTop);
-            });
+                const scrollTop = data.getElementRef().nativeElement.scrollTop
+                this.scrollService.updateCurrentRoutePosition(scrollTop)
+            })
 
         // NavigationStart/Navigation End router events
         // NavigationStart tells us whether we are navigating forwards or backwards
@@ -95,21 +93,21 @@ export class ShellComponent implements OnInit {
 
                         // Only load old page state once if it exists and is the same as current route
                         if (this.oldRouteState && this.oldRouteState.id === e.restoredState.navigationId) {
-                            return false;
+                            return false
                         }
 
                         // If previous page state is not loaded, search the saved page states on service for match
                         // & save page state so the offset can be used once the new route has fully loaded
                         this.oldRouteState = this.scrollService.getSavedRoutes().find((ele: any) => {
-                            return e.restoredState.navigationId === ele.id;
-                        });
+                            return e.restoredState.navigationId === ele.id
+                        })
                     }
 
                     // If navigation is not a back click, remove previous page state
                     // so the scroll is not saved going forwards
                     if (e.navigationTrigger === 'imperative') {
                         // User has user the router navigation
-                        this.oldRouteState = null;
+                        this.oldRouteState = null
                     }
                 }
 
@@ -119,63 +117,62 @@ export class ShellComponent implements OnInit {
                     const currentRoute = {
                         id: e.id,
                         route: e.url
-                    };
+                    }
 
-                    this.scrollService.saveRoute(currentRoute);
+                    this.scrollService.saveRoute(currentRoute)
 
                     if (!this.oldRouteState) {
-                        return this.sidenavContainer.scrollable.scrollTo({ left: 0, top: 0, behavior: 'auto' });
+                        return this.sidenavContainer.scrollable.scrollTo({ left: 0, top: 0, behavior: 'auto' })
                     }
-                    return this.sidenavContainer.scrollable.scrollTo({ left: 0, top: this.oldRouteState.topOffset, behavior: 'auto' });
+                    return this.sidenavContainer.scrollable.scrollTo({ left: 0, top: this.oldRouteState.topOffset, behavior: 'auto' })
                 }
-            });
+            })
     }
 
     ngOnInit() {
         this.organizationService.get().subscribe(org => {
-            this.organization = org;
-        });
+            this.organization = org
+        })
 
     }
 
     setLanguage(language: string) {
-        this.i18nService.language = language;
+        this.i18nService.language = language
     }
 
-
     get languages(): string[] {
-        return this.i18nService.supportedLanguages;
+        return this.i18nService.supportedLanguages
     }
 
     get isMobile(): boolean {
-        return this.media.isActive('xs') || this.media.isActive('sm');
+        return this.media.isActive('xs') || this.media.isActive('sm')
     }
 
     visitOrganizationUrl(event: any) {
-        event.preventDefault();
-        let { organizationUrl: url } = this.organization;
-        url = this.setHttp(url);
-        window.open(url, '_blank');
+        event.preventDefault()
+        let { organizationUrl: url } = this.organization
+        url = this.setHttp(url)
+        window.open(url, '_blank')
     }
 
     setHttp(link: string) {
         if (link.search(/^http[s]?\:\/\//) === -1) {
-            link = 'https://' + link;
+            link = 'https://' + link
         }
-        return link;
+        return link
     }
 
     redirectToLanding() {
-        const { hostname } = window.location;
+        const { hostname } = window.location
 
         // separate the current hostname into subdomain and main site
-        const splitHostname = hostname.split('.');
-        splitHostname[0] = 'app';
+        const splitHostname = hostname.split('.')
+        splitHostname[0] = 'app'
 
-        const newHostName = splitHostname.join('.');
+        // const newHostName = splitHostname.join('.')
         // window.location.href = `http://${newHostName}:${window.location.port}`;
         // window.open(`http://${newHostName}:${window.location.port}`, '_self');
-        this.router.navigate(['/landing']);
+        this.router.navigate(['/landing'])
     }
 
 }
