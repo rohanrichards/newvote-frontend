@@ -313,7 +313,7 @@ export class OrganizationEditComponent implements OnInit {
 
                 if (res.moderators.length) {
                     const config = new MatSnackBarConfig()
-                    config.duration = 2000
+                    config.duration = 3000
                     config.panelClass = ['warn-snack']
 
                     setTimeout(() => {
