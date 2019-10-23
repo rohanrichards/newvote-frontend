@@ -1,17 +1,16 @@
-import { Injectable } from '@angular/core';
-import { TopicService } from '../topic/topic.service';
-import { ProposalService } from '../proposal/proposal.service';
-import { SolutionService } from '../solution/solution.service';
-import { SuggestionService } from '../suggestion/suggestion.service';
-import { IssueService } from '../issue/issue.service';
-
+import { Injectable } from '@angular/core'
+import { TopicService } from '../topic/topic.service'
+import { ProposalService } from '../proposal/proposal.service'
+import { SolutionService } from '../solution/solution.service'
+import { SuggestionService } from '../suggestion/suggestion.service'
+import { IssueService } from '../issue/issue.service'
 
 type Services = {
-    Topic: TopicService,
-    Action: ProposalService,
-    Solution: SolutionService,
-    Suggestion: SuggestionService,
-    Issue: IssueService
+    Topic: TopicService;
+    Action: ProposalService;
+    Solution: SolutionService;
+    Suggestion: SuggestionService;
+    Issue: IssueService;
 }
 
 @Injectable({
@@ -35,12 +34,11 @@ export class SortingService {
         private issueService: IssueService
     ) { }
 
-
     sortEntityBy(model: string, sort: string) {
-        this.services[model].updateFilter(sort);
+        this.services[model].updateFilter(sort)
     }
 
     orderEntityBy(model: string, order: string) {
-        this.services[model].updateOrder(order);
+        this.services[model].updateOrder(order)
     }
 }
