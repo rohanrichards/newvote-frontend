@@ -13,6 +13,7 @@ export interface ISuggestion {
     status: number;
     organizations: any;
     softDeleted: boolean;
+    slug: string;
 }
 
 export class Suggestion implements ISuggestion {
@@ -27,6 +28,7 @@ export class Suggestion implements ISuggestion {
         public parent: any = {},
         public parentTitle: string = '',
         public parentType: string = '',
-        public softDeleted: boolean = false
+        public softDeleted: boolean = false,
+        public slug: string = '',
     ) { }
 }

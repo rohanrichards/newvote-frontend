@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { finalize, take } from 'rxjs/operators'
+import { finalize, take, tap } from 'rxjs/operators'
 import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -80,12 +80,10 @@ export class SolutionViewComponent implements OnInit {
             const ID = params.get('id')
             this.getSolution(ID)
             this.getProposals()
-            this.subscribeToSuggestionStore(ID)
+            this.getSuggestions()
             this.subscribeToSolutionStore(ID)
-            this.subscribeToProposalStore(ID)
         })
 
-        this.getSuggestions()
     }
 
     getSolution(id: string) {
@@ -122,7 +120,6 @@ export class SolutionViewComponent implements OnInit {
         const isModerator = this.auth.isModerator()
 
         this.suggestionService.list({
-            forceUpdate: true,
             params: {
                 showDeleted: isModerator ? true : ''
             }
@@ -134,10 +131,12 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.selectEntity(id)
-            .subscribe((solution: Solution) => {
-                if (!solution) return false
-                this.solution = solution
+        this.solutionQuery.getSolutionWithSlug(id)
+            .subscribe((solutions: Solution[]) => {
+                if (!solutions.length) return false
+                this.solution = solutions[0]
+                this.subscribeToProposalStore(solutions[0]._id)
+                this.subscribeToSuggestionStore(solutions[0]._id)
                 this.stateService.setLoadingState(AppState.complete)
             })
     }

@@ -140,14 +140,15 @@ export class ProposalEditComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposalQuery.selectEntity(id)
-            .subscribe((proposal: Proposal) => {
+        this.proposalQuery.getProposalWithSlug(id)
+            .subscribe((proposal: Proposal[]) => {
                 if (!proposal) return false
-                this.proposal = proposal
-                this.updateForm(proposal)
-                this.updateTags(proposal)
-                this.subscribeToSolutionStore(proposal)
-            })
+                this.proposal = proposal[0]
+                this.updateForm(proposal[0])
+                this.updateTags(proposal[0])
+                this.subscribeToSolutionStore(proposal[0])
+            }, (err: any) => err)
+
     }
 
     subscribeToSolutionStore(proposal: any) {
@@ -231,7 +232,7 @@ export class ProposalEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/proposals/${t._id}`])
+                    this.router.navigate([`/proposals/${t.slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )

@@ -11,6 +11,7 @@ export interface IIssue {
     softDeleted: boolean;
     mediaHeading?: string;
     suggestionTemplate?: string;
+    slug: string;
 }
 
 export class Issue implements IIssue {
@@ -21,6 +22,7 @@ export class Issue implements IIssue {
         public description: string = '',
         public organizations: any = {},
         public topics: Array<any> = [],
-        public softDeleted: boolean = false
+        public softDeleted: boolean = false,
+        public slug: string = '',
     ) { }
 }
