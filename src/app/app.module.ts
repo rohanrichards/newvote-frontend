@@ -45,6 +45,7 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 
 import { NgxCaptchaModule } from 'ngx-captcha'
+import { FeedModule } from './feed/feed.module'
 
 @NgModule({
     imports: [
@@ -62,6 +63,7 @@ import { NgxCaptchaModule } from 'ngx-captcha'
         SharedModule,
         ShellModule,
         HomeModule,
+        FeedModule,
         ShareModule,
         InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
