@@ -39,19 +39,20 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
-import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
-import { RepModalComponent } from './rep-modal/rep-modal.component';
-import { ChildCardComponent } from './child-card/child-card.component';
-import { RepCardComponent } from './rep-card/rep-card.component';
-import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
+import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component'
+import { RepModalComponent } from './rep-modal/rep-modal.component'
+import { ChildCardComponent } from './child-card/child-card.component'
+import { RepCardComponent } from './rep-card/rep-card.component'
+import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component'
 import { CommunityCardComponent } from './community-card/community-card.component'
-import { RepItemListComponent } from './rep-item-list/rep-item-list.component';
-import { AdminPanelComponent } from './admin-panel/admin-panel.component';
-import { GridCardComponent } from './grid-list/grid-card/grid-card.component';
-import { RepCardChildComponent } from './rep-card-child/rep-card-child.component';
-import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-list.component';
-import { SideMenuComponent } from './side-menu/side-menu.component';
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
+import { AdminPanelComponent } from './admin-panel/admin-panel.component'
+import { GridCardComponent } from './grid-list/grid-card/grid-card.component'
+import { RepCardChildComponent } from './rep-card-child/rep-card-child.component'
+import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-list.component'
+import { SideMenuComponent } from './side-menu/side-menu.component'
 import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component'
+import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 
 @NgModule({
     imports: [
@@ -109,6 +110,7 @@ import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component
         RepChildCardListComponent,
         SideMenuComponent,
         RepCardV2Component,
+        ProgressBarComponent,
     ],
     exports: [
         LoaderComponent,
@@ -142,7 +144,8 @@ import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component
         CommunityCardComponent,
         AdminPanelComponent,
         SideMenuComponent,
-        RepCardV2Component
+        RepCardV2Component,
+        ProgressBarComponent,
     ]
 })
 export class SharedModule { }
