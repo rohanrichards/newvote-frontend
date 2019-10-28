@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="progress-header"
+        [style.padding-left.rem]="3"
+        fxLayout="row">
+        <div class="header-logo">
+        </div>
+        <h2 class="mat-display-1"> Progress News Feed</h2>
+    </div>
+
+    <ul class="progress-bar">
+        <li *ngFor="let field of fields; index as i"
+            [ngClass]="{
+                        'active': getActive(i),
+                        'progress-item': true
+                }">{{ field }}</li>
+    </ul>
+</div>
