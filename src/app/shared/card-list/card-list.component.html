@@ -95,6 +95,7 @@
                             [lazyLoad]="getSuggestionIcon(item.type)" />
                     </div>
                     <mat-card-title fxFlex="1 1 80%"
+                        class="text-left"
                         translate>
                         {{item.title}}
                         <mat-card-subtitle class="item-subtitle">
@@ -141,7 +142,7 @@
                                 </div>
                                 <div fxLayout="column"
                                     fxFlex>
-                                    <span class="mat-title"
+                                    <span class="mat-title text-left"
                                         [innerHtml]="child.title"></span>
                                     <app-vote-buttons class="buttons"
                                         [item]="child"
