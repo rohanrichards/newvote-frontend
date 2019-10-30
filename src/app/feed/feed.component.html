@@ -3,7 +3,9 @@
         fxLayout="column">
         <app-progress-bar [steps]="3">
         </app-progress-bar>
-        <app-progress-feed>
+        <app-progress-form>
+        </app-progress-form>
+        <app-progress-feed (updateProgressState)="updateProgress()">
         </app-progress-feed>
     </div>
 </div>

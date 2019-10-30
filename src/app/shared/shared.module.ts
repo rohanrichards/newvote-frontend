@@ -42,6 +42,7 @@ import { NavbarComponent } from './navbar/navbar.component'
 import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component'
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
+import { ProgressFormComponent } from './progress-form/progress-form.component'
 
 @NgModule({
     imports: [
@@ -88,7 +89,8 @@ import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
         NavbarComponent,
         MakeSuggestionComponent,
         ProgressBarComponent,
-        ProgressFeedComponent
+        ProgressFeedComponent,
+        ProgressFormComponent
     ],
     exports: [
         LoaderComponent,
@@ -116,7 +118,8 @@ import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
         NavbarComponent,
         MakeSuggestionComponent,
         ProgressBarComponent,
-        ProgressFeedComponent
+        ProgressFeedComponent,
+        ProgressFormComponent
     ]
 })
 export class SharedModule { }
