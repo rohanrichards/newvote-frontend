@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { finalize, take, filter } from 'rxjs/operators'
+import { finalize, take, filter, map } from 'rxjs/operators'
 import { MatDialog } from '@angular/material'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
@@ -24,6 +24,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ToastService } from '@app/core/toast/toast.service'
+import { Observable } from 'rxjs'
 
 @Component({
     selector: 'app-proposal',
@@ -42,6 +43,7 @@ export class ProposalViewComponent implements OnInit {
     handleImageUrl = optimizeImage;
     organization: any;
     suggestions: any[];
+    suggestions$: Observable<Suggestion[]>
 
     constructor(
         private organizationService: OrganizationService,
@@ -74,28 +76,28 @@ export class ProposalViewComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
             this.subscribeToProposalStore(ID)
-            this.subscribeToSuggestionStore(ID)
             this.getProposal(ID)
             this.getSuggestions()
         })
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.suggestions$
+        this.suggestions$ = this.suggestionQuery.suggestions$
             .pipe(
-                filter((entity: any) => entity.parent === id)
+                map((entities) => {
+                    return entities.filter((res) => {
+                        return res.parent === id
+                    })
+                })
             )
-            .subscribe((suggestions: Suggestion[]) => {
-                this.suggestions = suggestions
-            })
-
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposalQuery.selectEntity(id)
-            .subscribe((proposal: Proposal) => {
-                if (!proposal) return false
-                this.proposal = proposal
+        this.proposalQuery.getProposalWithSlug(id)
+            .subscribe((proposal: Proposal[]) => {
+                if (!proposal.length) return false
+                this.proposal = proposal[0]
+                this.subscribeToSuggestionStore(proposal[0]._id)
                 return this.stateService.setLoadingState(AppState.complete)
             })
     }
@@ -188,9 +190,9 @@ export class ProposalViewComponent implements OnInit {
             .subscribe(() => {
                 this.toast.openSnackBar('Succesfully created', 'OK')
             },
-                (error) => {
-                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+            (error) => {
+                this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            })
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {

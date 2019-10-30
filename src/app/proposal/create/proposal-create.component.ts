@@ -181,7 +181,7 @@ export class ProposalCreateComponent implements OnInit {
                         }
 
                         this.toast.openSnackBar('Succesfully created', 'OK')
-                        this.router.navigate([`/proposals/${t._id}`])
+                        this.router.navigate([`/proposals/${t.slug || t._id}`])
                     },
                     (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
@@ -204,8 +204,8 @@ export class ProposalCreateComponent implements OnInit {
                         if (t.error) {
                             this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.toast.openSnackBar('Succesfully created', 'OK')
-                            this.router.navigate([`/solutions/${this.proposal.solutions[0]._id}`], { queryParams: { forceUpdate: true } })
+                            this.toast.thisopenSnackBar('Succesfully created', 'OK')
+                            this.router.navigate([`/solutions/${this.proposal.solutions[0].slug || this.proposal.solutions[0]._id}`])
                         }
                     })
             }

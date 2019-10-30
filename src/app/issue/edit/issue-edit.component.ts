@@ -115,11 +115,19 @@ export class IssueEditComponent implements OnInit {
     }
 
     subscribeToIssueStore(id: string) {
-        this.issueQuery.selectEntity(id)
-            .subscribe((issue: Issue) => {
-                if (!issue) return false
-                this.updateForm(issue)
-            })
+
+        let issueQuery
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            issueQuery = this.issueQuery.getIssueWithTopic(id)
+
+        } else {
+            issueQuery = this.issueQuery.getIssueWithTopic(id)
+        }
+
+        issueQuery.subscribe((issue: Issue) => {
+            if (!issue) return false
+            this.updateForm(issue)
+        })
     }
 
     updateForm(issue: Issue) {
@@ -199,7 +207,7 @@ export class IssueEditComponent implements OnInit {
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading)
                     this.toast.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/issues/${t._id}`])
+                    this.router.navigate([`/issues/${t.slug || t._id}`])
                 },
                 (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )

@@ -66,10 +66,10 @@ export class SuggestionViewComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.selectEntity(id)
-            .subscribe((suggestion: Suggestion) => {
-                if (!suggestion) return false
-                this.suggestion = suggestion
+        this.suggestionQuery.getSuggestionWithSlug(id)
+            .subscribe((suggestion: Suggestion[]) => {
+                if (!suggestion.length) return false
+                this.suggestion = suggestion[0]
                 this.stateService.setLoadingState(AppState.complete)
             })
     }

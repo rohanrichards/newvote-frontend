@@ -181,7 +181,7 @@ export class SolutionCreateComponent implements OnInit {
                         }
 
                         this.toast.openSnackBar('Succesfully created', 'OK')
-                        this.router.navigate([`/solutions/${t._id}`])
+                        this.router.navigate([`/solutions/${t.slug || t._id}`])
                     },
                     (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 )
@@ -197,7 +197,7 @@ export class SolutionCreateComponent implements OnInit {
                     .subscribe(
                         t => {
                             this.toast.openSnackBar('Succesfully created', 'OK')
-                            this.router.navigate([`/solutions/${t._id}`])
+                            this.router.navigate([`/solutions/${t.slug || t._id}`])
                         },
                         (err) => this.toast.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     )

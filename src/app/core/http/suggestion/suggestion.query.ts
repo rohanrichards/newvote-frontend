@@ -22,4 +22,11 @@ export class SuggestionQuery extends QueryEntity<SuggestionState, Suggestion> {
     ) {
         super(store)
     }
+
+    getSuggestionWithSlug(id: string) {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Suggestion) => isObjectId ? entity._id === id : entity.slug === id
+        })
+    }
 }

@@ -42,7 +42,7 @@
                     <button mat-icon-button
                         matTooltip="Edit this Action"
                         color="accent"
-                        routerLink="/proposals/edit/{{proposal._id}}">
+                        routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
                         <mat-icon aria-label="Edit the action">edit</mat-icon>
                     </button>
                     <button mat-icon-button
@@ -93,7 +93,7 @@
                     <span
                         *ngFor="let parent of proposal.solutions; let i = index">
                         <a mat-button
-                            routerLink="/solutions/{{parent._id}}">{{parent.title || parent.name}}</a>
+                            routerLink="/solutions/{{parent.slug || parent._id}}">{{parent.title || parent.name}}</a>
                     </span>
                 </span>
                 <app-more-less [displayText]="proposal.description"
@@ -133,7 +133,7 @@
             </mat-toolbar>
             <app-card-list path="/suggestions"
                 [@fadeIn]=true
-                [items]=suggestions
+                [items$]=suggestions$
                 model="Suggestion"
                 (restore)="admin.onRestore($event, 'Suggestion')"
                 (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
