@@ -64,7 +64,7 @@
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <a mat-menu-item
-                        *ngIf="auth.isOwner() && organization"
+                        *ngIf="query.isOwner() && organization"
                         routerLink="/communities/edit/{{organization._id}}"
                         translate>Edit Community</a>
                     <mat-divider></mat-divider>
@@ -117,7 +117,7 @@
     </mat-toolbar> -->
 
     <mat-toolbar color="warn"
-        *ngIf="!verified && !hideVerify && loggedIn"
+        *ngIf="showVerify && !hideVerify"
         class="community-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
         ngClass.lt-md="top-bar-height-sm">

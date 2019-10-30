@@ -22,10 +22,9 @@ export class NavbarComponent implements OnInit {
 
     showSearch = false;
     hideVerify = false;
-
-    verified: unknown;
-    loggedIn: boolean;
     routeLevel: string;
+    isAuthenticated: boolean;
+    showVerify: boolean;
 
     constructor(
         private meta: MetaService,
@@ -40,21 +39,19 @@ export class NavbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.query.isLoggedIn$.subscribe(
-            (res) => { this.loggedIn = res },
-            (err) => err
-        )
-        this.meta.routeLevel$
-            .subscribe((res) => {
-                this.routeLevel = res
+        this.query.isLoggedIn$
+            .subscribe((loggedIn: boolean) => {
+                this.isAuthenticated = loggedIn
             })
 
         this.query.isCommunityVerified()
+            .subscribe((verified) => {
+                this.showVerify = this.checkVerify(verified, this.isAuthenticated)
+            })
+
+        this.meta.routeLevel$
             .subscribe((res) => {
-                console.log(res, 'is verified?')
-                console.log(this.loggedIn, 'are they logged in?')
-                console.log(this.hideVerify, 'hiding verify?')
-                this.verified = res
+                this.routeLevel = res
             })
     }
 
@@ -71,28 +68,24 @@ export class NavbarComponent implements OnInit {
         return this.meta.getAppBarTitle()
     }
 
-    get isAuthenticated(): boolean {
-        return this.auth.isAuthenticated()
-    }
+    // get isAuthenticated(): boolean {
+    //     return this.auth.isAuthenticated()
+    // }
 
-    get isVerified(): boolean {
-        // debugger;
-        if (this.isAuthenticated) {
-            return (this.auth.isVerified())
-        } else {
-            return true
-        }
-    }
+    // get isVerified(): boolean {
+    //     // debugger;
+    //     if (this.isAuthenticated) {
+    //         return (this.auth.isVerified())
+    //     } else {
+    //         return true
+    //     }
+    // }
 
-    get showVerify(): boolean {
-        if (this.isVerified) {
-            return false
-        }
-        if (!this.isVerified && !this.hideVerify) {
-            return true
-        } else {
-            return false
-        }
+    checkVerify(verified: boolean, loggedIn: boolean): boolean {
+        if (!loggedIn) return false
+        if (verified) return false
+        if (!verified && !this.hideVerify) return true
+        return false
     }
 
     get isMobile(): boolean {
@@ -128,6 +121,10 @@ export class NavbarComponent implements OnInit {
                 return this.location.back()
             })
 
+    }
+
+    toggleVerify() {
+        this.hideVerify = !this.hideVerify
     }
 
     handleVerify() {

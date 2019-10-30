@@ -10,6 +10,7 @@ import { Observable } from 'rxjs'
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
+
     isCommunityVerified$: Observable<any>;
 
     constructor(
@@ -65,13 +66,14 @@ export class AuthenticationQuery extends Query<IUser> {
 
     isUserPartOfOrganization(user: IUser, organization: Organization) {
         if (!user.verified) return false
-        // if (!user.mobileNumber) return false;
+        if (user.roles.includes('guest')) return false
+        if (!user.mobileNumber && organization.authType === 0) return false
+        if (!user.organizations.length) return false
 
-        const exists = user.organizations.some((userOrganization: any) => {
+        return user.organizations.some((userOrganization: any) => {
             if (typeof userOrganization === 'string') return organization._id === userOrganization
             return organization._id === userOrganization._id
         })
-        return exists
     }
 
     isUserVerified() {

@@ -28,7 +28,6 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
             // Do something with the error
             log.error('Request error', response)
         }
-
         // unauthorized
         if (response instanceof HttpErrorResponse) {
             const error = response
