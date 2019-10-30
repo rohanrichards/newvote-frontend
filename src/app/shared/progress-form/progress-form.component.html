@@ -1,0 +1,30 @@
+<div class="container">
+    <div class=""
+        fxLayoutGap="8px">
+        <button mat-raised-button
+            color="warn"
+            (click)="toggleUpdateForm()"
+            fxFlex>Add Update</button>
+        <button mat-raised-button
+            color="primary"
+            (click)="toggleProgressForm()"
+            fxFlex>Progress Update</button>
+    </div>
+
+    <div *ngIf="showForm"
+        class="quill-editor-container cf">
+        <quill-editor [(ngModel)]="progressForm.description"></quill-editor>
+    </div>
+
+    <div class="progress-form"
+        *ngIf="showProgress">
+        <h4 class="mat-subheading">Update the Progress of the {{ item.name }}
+        </h4>
+        <mat-radio-group [(ngModel)]="progressStateForm.progressState"
+            fxLayout="column"
+            aria-label="Select an option">
+            <mat-radio-button *ngFor="let state of progressStates"
+                [value]="state">{{state}}</mat-radio-button>
+        </mat-radio-group>
+    </div>
+</div>

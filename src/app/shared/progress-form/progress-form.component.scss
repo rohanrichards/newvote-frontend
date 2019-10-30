@@ -1,0 +1,20 @@
+.container {
+    padding: 2rem;
+}
+
+.quill-editor-container {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+::ng-deep {
+    .ql-container {
+        height: 250px !important;
+    }
+}
+
+.progress-form {
+    margin-top: 2rem;
+    border: 1px solid black;
+    padding: 1rem;
+}

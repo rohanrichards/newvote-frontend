@@ -12,4 +12,7 @@ export class FeedComponent implements OnInit {
     ngOnInit() {
     }
 
+    updateProgress(state: string) {
+        // this.feedService.update(state);
+    }
 }

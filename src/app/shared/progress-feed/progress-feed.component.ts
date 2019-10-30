@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
+import { TouchSequence } from 'selenium-webdriver'
 
 @Component({
     selector: 'app-progress-feed',
