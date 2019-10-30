@@ -53,6 +53,7 @@ import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-
 import { SideMenuComponent } from './side-menu/side-menu.component'
 import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component'
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
+import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 
 @NgModule({
     imports: [
@@ -111,6 +112,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component'
         SideMenuComponent,
         RepCardV2Component,
         ProgressBarComponent,
+        ProgressFeedComponent
     ],
     exports: [
         LoaderComponent,
@@ -146,6 +148,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component'
         SideMenuComponent,
         RepCardV2Component,
         ProgressBarComponent,
+        ProgressFeedComponent
     ]
 })
 export class SharedModule { }

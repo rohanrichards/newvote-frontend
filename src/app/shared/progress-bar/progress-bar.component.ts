@@ -9,7 +9,7 @@ export class ProgressBarComponent implements OnInit {
 
     @Input() steps: number;
     activeField = 2;
-    fields: Array<string> = ['Proposal', 'Raised', 'Acknowledged', 'In Progress', 'Outcome']
+    fields: Array<string> = ['Raised', 'In Progress', 'Outcome']
 
     constructor() { }
 
