@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { FeedStore } from './feed.store'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { tap, catchError } from 'rxjs/operators'
 import { IFeed, Feed } from '@app/core/models/feed.model'
 import { Observable } from 'rxjs'
@@ -13,10 +13,11 @@ export interface FeedContext {
 }
 
 const routes = {
-    create: () => '/feed',
+    create: () => '/feeds',
+    list: () => '/feeds',
     view: (c: FeedContext) => `/feeds/${c.id}`,
     update: (c: FeedContext) => `/feeds/${c.id}`,
-    delete: (c: FeedContext) => `/feeds/${c.id}`
+    delete: (c: FeedContext) => `/feeds/${c.id}`,
 }
 
 @Injectable({ providedIn: 'root' })
@@ -26,8 +27,23 @@ export class FeedService {
         private http: HttpClient) {
     }
 
-    get() {
-        return this.http.get('').pipe(tap(entities => this.feedStore.set(entities)))
+    get(context: FeedContext): Observable<any> {
+        let params = new HttpParams()
+
+        if (context.params) {
+            params = new HttpParams({ fromObject: context.params })
+        }
+
+        const options = {
+            withCredentials: true,
+            params
+        }
+
+        return this.http
+            .get(routes.list(), options)
+            .pipe(
+                tap(entities => this.feedStore.set(entities))
+            )
     }
 
     create(context: FeedContext): Observable<Feed> {
