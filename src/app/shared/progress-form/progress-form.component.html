@@ -24,6 +24,7 @@
             fxLayout="column"
             aria-label="Select an option">
             <mat-radio-button *ngFor="let state of progressStates"
+                (change)="handleProgressState(state)"
                 [value]="state">{{state}}</mat-radio-button>
         </mat-radio-group>
     </div>

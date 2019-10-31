@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+import { FeedService } from '@app/core/http/feed'
 
 @Component({
     selector: 'app-feed',
@@ -7,12 +8,13 @@ import { Component, OnInit } from '@angular/core'
 })
 export class FeedComponent implements OnInit {
 
-    constructor() { }
+    constructor(private feedService: FeedService) { }
 
     ngOnInit() {
     }
 
     updateProgress(state: string) {
+        console.log(state, 'this is state')
         // this.feedService.update(state);
     }
 }
