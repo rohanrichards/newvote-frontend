@@ -111,23 +111,32 @@ export class OrganizationService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
-                tap((res: Organization) => this.communityStore.add(res)),
+                tap((res: any) => this.communityStore.add(res.organization)),
                 map((res: any) => res),
                 catchError(handleError)
             )
     }
 
     update(context: OrganizationContext): Observable<any> {
+        // Organization update returns an object
+        /*
+             moderators array - a collection of moderators that was not saved
+             {
+                 organization: object
+                 moderators: array
+             }
+        */
+
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
-                tap((res: Organization) => {
+                tap((res: any) => {
                     // since there are two stores we need to check whether to update both
                     if (res._id === this._org._id) {
-                        this.organizationStore.update(res)
+                        this.organizationStore.update(res.organization)
                     }
 
-                    this.communityStore.update(res._id, res)
+                    this.communityStore.update(res._id, res.organization)
                 }),
                 map((res: any) => res),
                 catchError(handleError)
