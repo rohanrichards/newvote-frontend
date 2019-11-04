@@ -36,6 +36,7 @@ import { MediaQuery } from '@app/core/http/media/media.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { FeedService } from '@app/core/http/feed'
 
 @Component({
     selector: 'app-issue',
@@ -87,6 +88,7 @@ export class IssueViewComponent implements OnInit {
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         public access: AccessControlQuery,
+        private feedService: FeedService
     ) { }
 
     ngOnInit() {
@@ -363,6 +365,11 @@ export class IssueViewComponent implements OnInit {
                 (err) => err
             )
 
+    }
+
+    updateProgress(state: string) {
+        console.log(state, 'this is state')
+        this.feedService.update({ id: this.issue.feed._id })
     }
 
 }
