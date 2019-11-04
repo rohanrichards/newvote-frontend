@@ -3,7 +3,7 @@ export interface IProgress {
     parent: any;
     parentType: string;
     organizations: any;
-    state: any;
+    states: any;
 }
 
 export class Progress implements IProgress {
@@ -11,6 +11,6 @@ export class Progress implements IProgress {
         public organizations: any = {},
         public parent: string = '',
         public parentType: any = '',
-        public state: any = {}
+        public states: Array<any> = []
     ) { }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { Progress } from '@app/core/models/progress.model'
 
 @Component({
     selector: 'app-progress-form',
@@ -12,9 +13,10 @@ export class ProgressFormComponent implements OnInit {
         name: 'Issue'
     };
 
+    @Input() progress: Progress;
     @Output() updateProgressState = new EventEmitter();
 
-    progressStates: Array<string> = ['Raised', 'In Progress', 'Outcome']
+    state: string;
     showForm = false;
     showProgress = false;
 
@@ -49,5 +51,9 @@ export class ProgressFormComponent implements OnInit {
 
     handleProgressState(value: string) {
         this.updateProgressState.emit(value)
+    }
+
+    getStates(object: Progress) {
+        return object.states
     }
 }

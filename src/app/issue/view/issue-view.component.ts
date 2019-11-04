@@ -37,6 +37,9 @@ import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { FeedService } from '@app/core/http/feed'
+import { Progress } from '@app/core/models/progress.model'
+import { ProgressService, ProgressQuery } from '@app/core/http/progress'
+import { cloneDeep } from 'lodash'
 
 @Component({
     selector: 'app-issue',
@@ -62,6 +65,26 @@ export class IssueViewComponent implements OnInit {
     solutions$: Observable<Solution[]>;
     suggestions$: Observable<Suggestion[]>;
     isVerified: boolean;
+    progress: any;
+    defaultState = {
+        organizations: '',
+        parent: '',
+        parentType: 'Issue',
+        states: [
+            {
+                name: 'Raised',
+                active: true
+            },
+            {
+                name: 'In Progress',
+                active: false
+            },
+            {
+                name: 'Outcome',
+                active: false
+            },
+        ]
+    } as Progress
 
     constructor(
         private organizationService: OrganizationService,
@@ -88,7 +111,9 @@ export class IssueViewComponent implements OnInit {
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         public access: AccessControlQuery,
-        private feedService: FeedService
+        private feedService: FeedService,
+        private progressQuery: ProgressQuery,
+        private progressService: ProgressService
     ) { }
 
     ngOnInit() {
@@ -126,12 +151,23 @@ export class IssueViewComponent implements OnInit {
         })
     }
 
+    subscribeToProgressStore(parentId: string) {
+        this.progressQuery.selectAll({
+            filterBy: (entity) => entity.parent === parentId
+        })
+            .subscribe((res) => {
+                if (!res) return false
+                this.progress = res
+            })
+    }
+
     subscribeToIssueStore(id: string) {
 
         this.issueQuery.getIssueWithTopic(id)
             .subscribe(
                 (issue: Issue) => {
                     if (!issue) return issue
+
                     this.issue = issue
                     this.subscribeToSuggestionStore(issue._id)
                     this.subscribeToSolutionStore(issue._id)
@@ -367,9 +403,35 @@ export class IssueViewComponent implements OnInit {
 
     }
 
-    updateProgress(state: string) {
-        console.log(state, 'this is state')
-        this.feedService.update({ id: this.issue.feed._id })
+    updateProgress(state: any) {
+
+        if (!this.progress) {
+            return this.updateState(this.defaultState, state)
+            //     this.progress.create(this.defaultState);
+            //         .subscribe((res:any) => res)
+        }
+
+        const updatedProgress = cloneDeep(this.progress)
+        this.updateState(updatedProgress, state)
+
+        // this.progress.update({ id: this.issue.progressState._id, entity: this.issue.progressState })
+    }
+
+    updateState(progressState: any, newState: any) {
+        // Map over the state object and set all states before the index of the updated state
+        const states = progressState.states.slice()
+        const stateIndex = states.findIndex((item: any) => {
+            return item.name === newState.name
+        })
+
+        progressState.states.map((state: any, index: any) => {
+            if (index <= stateIndex) {
+                state.active = true
+                return state
+            }
+            state.active = false
+            return state
+        })
     }
 
 }

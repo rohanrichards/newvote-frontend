@@ -12,6 +12,7 @@ export interface IIssue {
     mediaHeading?: string;
     suggestionTemplate?: string;
     slug: string;
+    progressState?: any;
 }
 
 export class Issue implements IIssue {
@@ -24,5 +25,6 @@ export class Issue implements IIssue {
         public topics: Array<any> = [],
         public softDeleted: boolean = false,
         public slug: string = '',
+        public progressState: any = {}
     ) { }
 }

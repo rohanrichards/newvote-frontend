@@ -7,11 +7,14 @@
         <h2 class="mat-display-1"> Progress News Feed</h2>
     </div>
 
-    <ul class="progress-bar">
-        <li *ngFor="let field of fields; index as i"
-            [ngClass]="{
-                        'active': getActive(i),
-                        'progress-item': true
-                }">{{ field }}</li>
-    </ul>
+    <div>
+        <ul class="progress-bar">
+            <li *ngFor="let state of getStates(progressState)"
+                [ngClass]="{
+                            'active': state.active,
+                            'progress-item': true
+                    }">{{ state.name }}</li>
+        </ul>
+    </div>
+
 </div>

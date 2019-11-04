@@ -20,12 +20,12 @@
         *ngIf="showProgress">
         <h4 class="mat-subheading">Update the Progress of the {{ item.name }}
         </h4>
-        <mat-radio-group [(ngModel)]="progressStateForm.progressState"
-            fxLayout="column"
+        <mat-radio-group fxLayout="column"
+            [(ngModel)]="state"
             aria-label="Select an option">
-            <mat-radio-button *ngFor="let state of progressStates"
+            <mat-radio-button *ngFor="let state of getStates(progress)"
                 (change)="handleProgressState(state)"
-                [value]="state">{{state}}</mat-radio-button>
+                [value]="state">{{state.name}}</mat-radio-button>
         </mat-radio-group>
     </div>
 </div>

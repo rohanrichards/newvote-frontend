@@ -10,7 +10,7 @@ export class ProgressService {
         private http: HttpClient) {
     }
 
-    get() {
-        return this.http.get('').pipe(tap(entities => this.progressStore.set(entities)))
-    }
+    // get() {
+    //     return this.http.get('').pipe(tap(entities => this.progressStore.set(entities)))
+    // }
 }
