@@ -33,6 +33,7 @@ import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { MediaQuery } from '@app/core/http/media/media.query'
+import { FeedService } from '@app/core/http/feed'
 
 @Component({
     selector: 'app-issue',
@@ -79,7 +80,8 @@ export class IssueViewComponent implements OnInit {
         private proposalService: ProposalService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        private mediaQuery: MediaQuery
+        private mediaQuery: MediaQuery,
+        private feedService: FeedService
     ) { }
 
     ngOnInit() {
@@ -355,6 +357,11 @@ export class IssueViewComponent implements OnInit {
                 (err) => err
             )
 
+    }
+
+    updateProgress(state: string) {
+        console.log(state, 'this is state')
+        this.feedService.update({ id: this.issue.feed._id })
     }
 
 }
