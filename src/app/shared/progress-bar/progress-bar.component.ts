@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
+import { Progress } from '@app/core/models/progress.model'
 
 @Component({
     selector: 'app-progress-bar',
@@ -7,21 +8,15 @@ import { Component, OnInit, Input } from '@angular/core'
 })
 export class ProgressBarComponent implements OnInit {
 
-    @Input() steps: number;
-    activeField = 2;
-    fields: Array<string> = ['Raised', 'In Progress', 'Outcome']
+    @Input() progressState: Progress;
 
     constructor() { }
 
     ngOnInit() {
+
     }
 
-    getActive(index: number) {
-        if (index < this.activeField) {
-            return true
-        }
-
-        return false
+    getStates(object: Progress) {
+        return object.states
     }
-
 }
