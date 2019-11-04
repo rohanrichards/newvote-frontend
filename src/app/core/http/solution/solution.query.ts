@@ -1,25 +1,24 @@
-import { Injectable } from "@angular/core";
-import { QueryEntity, combineQueries } from "@datorama/akita";
-import { SolutionState, SolutionStore } from "./solution.state";
-import { Solution } from "@app/core/models/solution.model";
-import { ProposalQuery } from "../proposal/proposal.query";
-import { map, filter } from "rxjs/operators";
-import { IssueQuery } from "../issue/issue.query";
-import { VotesQuery } from "../vote/vote.query";
-import { Proposal } from "@app/core/models/proposal.model";
+import { Injectable } from '@angular/core'
+import { QueryEntity, combineQueries } from '@datorama/akita'
+import { SolutionState, SolutionStore } from './solution.state'
+import { Solution } from '@app/core/models/solution.model'
+import { ProposalQuery } from '../proposal/proposal.query'
+import { map, filter } from 'rxjs/operators'
+import { IssueQuery } from '../issue/issue.query'
+import { VotesQuery } from '../vote/vote.query'
+import { Proposal } from '@app/core/models/proposal.model'
 
-import { cloneDeep } from 'lodash';
-import { AuthenticationQuery } from "@app/core/authentication/authentication.query";
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     solutions$ = this.selectAll({
         filterBy: (entity) => {
             if (this.auth.isModerator()) {
-                return true;
+                return true
             }
 
-            return !entity.softDeleted;
+            return !entity.softDeleted
         }
     })
 
@@ -30,7 +29,14 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         private voteQuery: VotesQuery,
         private auth: AuthenticationQuery
     ) {
-        super(store);
+        super(store)
+    }
+
+    getSolutionWithSlug(id: string) {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Solution) => isObjectId ? entity._id === id : entity.slug === id
+        })
     }
 
     selectSolutions(issueId?: string) {
@@ -42,16 +48,16 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         )
             .pipe(
                 map((results) => {
-                    let [solutions, proposals] = results;
+                    let [solutions, proposals] = results
 
                     if (issueId) {
                         solutions = solutions.filter((solution) => {
                             return solution.issues.some((issue) => {
                                 if (typeof issue === 'string') {
-                                    return issue === issueId;
+                                    return issue === issueId
                                 }
 
-                                return issue._id === issueId;
+                                return issue._id === issueId
                             })
                         })
                     }
@@ -63,10 +69,10 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
                         const solutionProposals = proposals.filter((proposal: Proposal) => {
                             return proposal.solutions.some((pSolution: any) => {
                                 if (typeof pSolution === 'string') {
-                                    return solution._id === pSolution;
+                                    return solution._id === pSolution
                                 }
 
-                                return solution._id === pSolution._id;
+                                return solution._id === pSolution._id
                             })
                         })
 
@@ -80,51 +86,21 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
             )
     }
 
-    selectOneSolution(id: string) {
-        return combineQueries(
-            [
-                this.selectEntity(id),
-                this.proposalQuery.proposals$,
-            ]
-        )
-            .pipe(
-                map((results) => {
-                    let [solution, proposals] = results;
-
-                    const solutionProposals = proposals.filter((proposal: Proposal) => {
-                        return proposal.solutions.some((pSolution: any) => {
-                            if (typeof pSolution === 'string') {
-                                return solution._id === pSolution;
-                            }
-
-                            return solution._id === pSolution._id;
-                        })
-                    })
-
-                    return {
-                        ...solution,
-                        proposals: solutionProposals,
-                        votes: solution.votes
-                    }
-                })
-            )
-    }
-
     filterByProposalId(id: string) {
         return this.solutions$
             .pipe(
                 filter((entity: any) => {
                     const includesSolutionId = entity.proposals.some((proposal: any) => {
                         // New proposals return an array of string _id's instead of Objects with a property of
-                        // ._id 
-                        if (typeof proposal === "string") {
-                            return proposal === id;
+                        // ._id
+                        if (typeof proposal === 'string') {
+                            return proposal === id
                         }
 
-                        return proposal._id === id;
+                        return proposal._id === id
                     })
 
-                    return includesSolutionId;
+                    return includesSolutionId
                 })
             )
     }

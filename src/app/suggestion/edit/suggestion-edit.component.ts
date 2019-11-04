@@ -4,8 +4,7 @@ import { Location } from '@angular/common'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { Observable, of } from 'rxjs'
-import { switchMap, startWith, finalize, debounceTime } from 'rxjs/operators'
+import { finalize } from 'rxjs/operators'
 import { merge } from 'lodash'
 
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
@@ -74,16 +73,17 @@ export class SuggestionEditComponent implements OnInit {
                     (err) => err
                 )
         })
+
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.selectEntity(id)
+        this.suggestionQuery.getSuggestionWithSlug(id)
             .subscribe(
-                (suggestion) => {
-                    if (!suggestion) return false;
-                    this.suggestion = suggestion
-                    this.updateForm(suggestion)
-                    this.updateTags(suggestion)
+                (suggestion: Suggestion[]) => {
+                    if (!suggestion.length) return false
+                    this.suggestion = suggestion[0]
+                    this.updateForm(suggestion[0])
+                    this.updateTags(suggestion[0])
                 },
                 (err) => err
             )
@@ -92,7 +92,7 @@ export class SuggestionEditComponent implements OnInit {
     subscribeToOrganizationStore() {
         this.organizationQuery.select()
             .subscribe(
-                (organization: Organization) => this.organization = organization,
+                (organization: Organization) => { this.organization = organization },
                 (err) => err
             )
     }
@@ -123,7 +123,7 @@ export class SuggestionEditComponent implements OnInit {
         this.isLoading = true
 
         const suggestion = cloneDeep(this.suggestion)
-        merge(suggestion, <Suggestion>this.suggestionForm.value)
+        merge(suggestion, this.suggestionForm.value as Suggestion)
         suggestion.organizations = this.organization
         suggestion.media = this.mediaList
 
@@ -132,7 +132,7 @@ export class SuggestionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/suggestions/${t._id}`])
+                    this.router.navigate([`/suggestions/${t._slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
@@ -145,22 +145,22 @@ export class SuggestionEditComponent implements OnInit {
         })
     }
 
-    // imported data from query is read only, so need to copy / replace 
+    // imported data from query is read only, so need to copy / replace
     // array on each update
     mediaAdded(event: any) {
         if (event.value) {
-            let mediaList = [...this.mediaList, event.value];
-            this.mediaList = mediaList;
+            const mediaList = [...this.mediaList, event.value]
+            this.mediaList = mediaList
             this.mediaInput.nativeElement.value = ''
         }
     }
 
     mediaRemoved(media: any) {
-        let mediaList = [...this.mediaList];
+        const mediaList = [...this.mediaList]
         const index = mediaList.indexOf(media)
         if (index > -1) {
-            mediaList.splice(index, 1);
-            this.mediaList = mediaList;
+            mediaList.splice(index, 1)
+            this.mediaList = mediaList
         }
     }
 

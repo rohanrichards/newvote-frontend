@@ -1,35 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
-import { OrganizationService } from '@app/core';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { ProposalService } from '@app/core/http/proposal/proposal.service';
-import { UserService } from '@app/core/http/user/user.service';
-import { AuthenticationService } from '@app/core/authentication/authentication.service';
-import { MetaService } from '@app/core/meta.service';
+import { OrganizationService } from '@app/core'
+import { IssueService } from '@app/core/http/issue/issue.service'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { UserService } from '@app/core/http/user/user.service'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { MetaService } from '@app/core/meta.service'
 
-import { Issue } from '@app/core/models/issue.model';
-import { Organization } from '@app/core/models/organization.model';
-import { optimizeImage } from '@app/shared/helpers/cloudinary';
+import { Issue } from '@app/core/models/issue.model'
+import { Organization } from '@app/core/models/organization.model'
+import { optimizeImage } from '@app/shared/helpers/cloudinary'
 
-import { trigger } from '@angular/animations';
-import { fadeIn } from '@app/shared/animations/fade-animations';
-import { forkJoin } from 'rxjs';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { JoyrideService } from 'ngx-joyride';
-import { MatSnackBar } from '@angular/material';
+import { trigger } from '@angular/animations'
+import { fadeIn } from '@app/shared/animations/fade-animations'
+import { forkJoin } from 'rxjs'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { JoyrideService } from 'ngx-joyride'
+import { MatSnackBar } from '@angular/material'
 
-import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps';
-import { IssueQuery } from '@app/core/http/issue/issue.query';
+import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
+import { IssueQuery } from '@app/core/http/issue/issue.query'
 
-import { assign } from 'lodash';
-import { AdminService } from '@app/core/http/admin/admin.service';
-import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
-import { SolutionQuery } from '@app/core/http/solution/solution.query';
-import { Proposal } from '@app/core/models/proposal.model';
-import { Solution } from '@app/core/models/solution.model';
-import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query';
+import { AdminService } from '@app/core/http/admin/admin.service'
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
+import { SolutionQuery } from '@app/core/http/solution/solution.query'
+import { Proposal } from '@app/core/models/proposal.model'
+import { Solution } from '@app/core/models/solution.model'
+import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-home',
@@ -74,31 +73,31 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.stateService.loadingState$.subscribe((state: string) => {
-            this.loadingState = state;
-        });
+            this.loadingState = state
+        })
 
         this.meta.updateTags(
             {
                 title: 'Home'
-            });
-        this.subscribeToOrgStore();
-        this.subscribeToIssueStore();
-        this.subscribeToProposalStore();
-        this.subscribeToSolutionStore();
-        this.fetchData();
+            })
+        this.subscribeToOrgStore()
+        this.subscribeToIssueStore()
+        this.subscribeToProposalStore()
+        this.subscribeToSolutionStore()
+        this.fetchData()
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator();
-        const params = { 'showDeleted': isModerator ? true : ' ' }
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
 
-        this.isLoading = true;
-        this.stateService.setLoadingState(AppState.loading);
+        this.isLoading = true
+        this.stateService.setLoadingState(AppState.loading)
 
-        const getSolutions = this.solutionService.list({ params });
-        const getProposals = this.proposalService.list({ params });
-        const getIssues = this.issueService.list({ params });
-        const getUsers = this.userService.count({});
+        const getSolutions = this.solutionService.list({ params })
+        const getProposals = this.proposalService.list({ params })
+        const getIssues = this.issueService.list({ params })
+        const getUsers = this.userService.count()
 
         forkJoin({
             solutions: getSolutions,
@@ -108,68 +107,63 @@ export class HomeComponent implements OnInit {
         })
             .subscribe(
                 ({ count }) => {
-                    this.userCount = count;
-                    this.stateService.setLoadingState(AppState.complete);
+                    this.userCount = count
+                    this.stateService.setLoadingState(AppState.complete)
                 },
-                (err) => {
-                    return this.stateService.setLoadingState(AppState.serverError);
-                }
-            );
+                () => this.stateService.setLoadingState(AppState.serverError)
+            )
     }
 
     subscribeToOrgStore() {
-        const host = document.location.host;
-        const subdomain = host.split('.')[0];
         this.organizationQuery.select()
             .subscribe((res) => {
                 this.org = res
             })
-
     }
 
     subscribeToIssueStore() {
         this.issueQuery.issues$
             .subscribe((issues: Issue[]) => {
-                this.issues = issues;
+                this.issues = issues
             })
     }
 
     subscribeToProposalStore() {
         this.proposalQuery.proposals$
             .subscribe((proposals: Proposal[]) => {
-                this.proposals = proposals;
+                this.proposals = proposals
             })
     }
 
     subscribeToSolutionStore() {
         this.solutionQuery.solutions$
             .subscribe((solutions: Solution[]) => {
-                this.solutions = solutions;
+                this.solutions = solutions
             })
     }
 
     handleUserCount(count: number) {
         if (this.auth.isAdmin() || this.auth.isOwner()) {
-            return `${count}`;
+            return `${count}`
         }
 
         if (!count) {
-            return `0`;
+            return '0'
         }
 
         if (count < 1000) {
-            return `< 1K`;
+            return '< 1K'
         }
 
-        return `${Math.floor(count / 1000)}K+`;
+        return `${Math.floor(count / 1000)}K+`
     }
 
     onDone() {
-        return this.completeTour();
+        return this.completeTour()
     }
 
     startTour(event: any) {
-        event.stopPropagation();
+        event.stopPropagation()
         this.joyrideService.startTour(
             {
                 steps: ['step1@home', 'step2@home', 'step3@home', 'issues1@issues',
@@ -178,17 +172,17 @@ export class HomeComponent implements OnInit {
                 stepDefaultPosition: 'center',
                 waitingTime: 1150,
             }
-        );
+        )
     }
 
     completeTour() {
-        const user = this.auth.credentials.user;
-        user.completedTour = true;
+        const user = this.auth.credentials.user
+        user.completedTour = true
         this.userService.patch({ id: user._id, entity: user })
             .subscribe(
-                (res) => {
-                    this.auth.saveTourToLocalStorage();
-                    this.openSnackBar('Tour Complete', 'OK');
+                () => {
+                    this.auth.saveTourToLocalStorage()
+                    this.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err
             )
@@ -198,6 +192,6 @@ export class HomeComponent implements OnInit {
         this.snackBar.open(message, action, {
             duration: 4000,
             horizontalPosition: 'right'
-        });
+        })
     }
 }

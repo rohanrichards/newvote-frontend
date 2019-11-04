@@ -1,5 +1,5 @@
-import { EntityState, StoreConfig, Store, EntityStore } from "@datorama/akita";
-import { Injectable } from "@angular/core";
+import { EntityState, StoreConfig, EntityStore } from '@datorama/akita'
+import { Injectable } from '@angular/core'
 
 export interface VoteMetaData {
     _id: string;
@@ -14,6 +14,6 @@ export interface VoteMetaDataState extends EntityState<VoteMetaData> { };
 @StoreConfig({ name: 'votes', idKey: '_id' })
 export class VoteStore extends EntityStore<VoteMetaDataState> {
     constructor() {
-        super();
+        super()
     }
 }

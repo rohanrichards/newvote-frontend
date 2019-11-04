@@ -41,11 +41,10 @@ import { JoyrideModule } from 'ngx-joyride'
 import { LandingModule } from './landing/landing.module'
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io'
+import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 
-import { NgxCaptchaModule } from 'ngx-captcha';
-
+import { NgxCaptchaModule } from 'ngx-captcha'
 
 @NgModule({
     imports: [

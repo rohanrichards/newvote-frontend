@@ -19,7 +19,7 @@ import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
-import { cloneDeep, assign } from 'lodash'
+import { cloneDeep } from 'lodash'
 
 @Component({
     selector: 'app-solution',
@@ -145,13 +145,13 @@ export class SolutionEditComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.selectEntity(id)
+        this.solutionQuery.getSolutionWithSlug(id)
             .subscribe(
-                (solution: Solution) => {
-                    if (!solution) return false;
-                    this.solution = solution
-                    this.updateForm(solution)
-                    this.updateTags(solution)
+                (solution: Solution[]) => {
+                    if (!solution.length) return false
+                    this.solution = solution[0]
+                    this.updateForm(solution[0])
+                    this.updateTags(solution[0])
                 }
             )
     }
@@ -159,7 +159,7 @@ export class SolutionEditComponent implements OnInit {
     subscribeToIssuesStore() {
         this.issueQuery.selectAll()
             .subscribe(
-                (issues: Issue[]) => this.allIssues = issues,
+                (issues: Issue[]) => { this.allIssues = issues },
                 (err) => err
             )
     }
@@ -167,7 +167,7 @@ export class SolutionEditComponent implements OnInit {
     subscribeToOrganizationStore() {
         this.organizationQuery.select()
             .subscribe(
-                (org) => this.organization = org,
+                (org) => { this.organization = org },
                 (err) => err
             )
     }
@@ -181,7 +181,7 @@ export class SolutionEditComponent implements OnInit {
             this.imageFile = file
 
             reader.onload = (pe: ProgressEvent) => {
-                this.imageUrl = (<FileReader>pe.target).result
+                this.imageUrl = (pe.target as FileReader).result
             }
 
             reader.readAsDataURL(file)
@@ -195,7 +195,7 @@ export class SolutionEditComponent implements OnInit {
 
     onSave() {
         const solution = cloneDeep(this.solution)
-        merge(solution, <ISolution>this.solutionForm.value)
+        merge(solution, this.solutionForm.value) as ISolution
 
         this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -226,7 +226,7 @@ export class SolutionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/solutions/${t._id}`], { queryParams: { forceUpdate: true } })
+                    this.router.navigate([`/solutions/${t.slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
@@ -258,9 +258,6 @@ export class SolutionEditComponent implements OnInit {
         if (index >= 0) {
             this.issues.splice(index, 1)
         }
-    }
-
-    add(event: any) {
     }
 
     private _filter(value: any): IIssue[] {
