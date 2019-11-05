@@ -127,8 +127,7 @@
         fxFlex.gt-md="800px">
         <mat-accordion [style.margin-bottom.rem]="1"
             [style.display]="'block'">
-            <mat-expansion-panel class="accordion-header"
-                [expanded]="suggestions && suggestions.length && suggestions.length > 0">
+            <mat-expansion-panel class="accordion-header">
                 <mat-expansion-panel-header>
                     <h3 class="mat-headline"
                         [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
@@ -137,7 +136,7 @@
                 </mat-expansion-panel-header>
                 <app-card-list path="/suggestions"
                     [@fadeIn]=true
-                    [items]=suggestions
+                    [items$]=suggestions$
                     model="Suggestion"
                     (restore)="admin.onRestore($event, 'Suggestion')"
                     (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
