@@ -156,8 +156,9 @@ export class IssueViewComponent implements OnInit {
             filterBy: (entity) => entity.parent === parentId
         })
             .subscribe((res) => {
-                if (!res) return false
-                this.progress = res
+                console.log(res, 'this is progress Store')
+                if (!res.length) return false
+                this.progress = res[0]
             })
     }
 
@@ -172,6 +173,7 @@ export class IssueViewComponent implements OnInit {
                     this.subscribeToSuggestionStore(issue._id)
                     this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
+                    this.subscribeToProgressStore(issue._id)
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
@@ -201,6 +203,7 @@ export class IssueViewComponent implements OnInit {
         this.getSolutions()
         this.getSuggestions()
         this.getTopics()
+        this.getProgress()
     }
 
     getTopics() {
@@ -214,6 +217,11 @@ export class IssueViewComponent implements OnInit {
                 res => res,
                 err => err
             )
+    }
+
+    getProgress() {
+        this.progressService.get({})
+            .subscribe((res) => res)
     }
 
     getSuggestions() {
@@ -406,15 +414,20 @@ export class IssueViewComponent implements OnInit {
     updateProgress(state: any) {
 
         if (!this.progress) {
-            return this.updateState(this.defaultState, state)
-            //     this.progress.create(this.defaultState);
-            //         .subscribe((res:any) => res)
+            this.defaultState.parent = this.issue._id
+            this.updateState(this.defaultState, state)
+            return this.progressService.create({ entity: this.defaultState })
+                .subscribe((res) => {
+                    console.log(res, 'this is res on progress Service create')
+                })
         }
-
+        console.log(this.progress, 'progress exists')
         const updatedProgress = cloneDeep(this.progress)
         this.updateState(updatedProgress, state)
-
-        // this.progress.update({ id: this.issue.progressState._id, entity: this.issue.progressState })
+        return this.progressService.update({ id: this.progress._id, entity: this.progress })
+            .subscribe((res) => {
+                console.log(res, 'this is res on progress Service update')
+            })
     }
 
     updateState(progressState: any, newState: any) {

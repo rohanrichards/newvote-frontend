@@ -51,7 +51,10 @@ export class ProgressService {
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
-                tap((progress: Progress) => this.progressStore.add(progress))
+                tap((progress: Progress) => {
+                    console.log(progress, 'this is progress on tap')
+                    this.progressStore.add(progress)
+                })
             )
     }
 
@@ -69,7 +72,7 @@ export class ProgressService {
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
-                tap((progress: Progress) => this.progressStore.upsert(progress._id, progress))
+                tap((progress: IProgress) => this.progressStore.upsert(progress._id, progress))
             )
     }
 
@@ -78,7 +81,7 @@ export class ProgressService {
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
-                tap((progress: Progress) => this.progressStore.remove(progress._id))
+                tap((progress: IProgress) => this.progressStore.remove(progress._id))
             )
     }
 }
