@@ -176,7 +176,7 @@
                     </div>
                     
                     <!-- Orphaned Topics -->
-                    <div [@fadeIn]=true >
+                    <div [@fadeIn]=true *ngIf="orphanedIssues.length">
                         <div class="topic-header">
                             <h2 class="mat-h1 no-margin">
                                 General Issues
@@ -185,7 +185,7 @@
                         </div>
                         <app-grid-list 
                             path="/issues"
-                            [items]="filterIssues(false, issues)"
+                            [items]="orphanedIssues"
                             model="Issue"
                             [titleCard]=true
                             (restore)="admin.onRestore($event, 'Issue')"
