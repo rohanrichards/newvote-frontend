@@ -145,10 +145,20 @@ export class SolutionViewComponent implements OnInit {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
         })
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false;
+            this.suggestions = res;
+        })
     }
 
     subscribeToProposalStore(id: string) {
         this.proposals$ = this.proposalQuery.filterBySolutionId(id)
+
+        this.proposals$.subscribe((res) => {
+            if (!res) return false;
+            this.proposals = res;
+        })
     }
 
     onVote(voteData: any, model: string) {

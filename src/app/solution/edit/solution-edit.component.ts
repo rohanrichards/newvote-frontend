@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize } from 'rxjs/operators'
 import { merge } from 'lodash'
@@ -48,6 +48,8 @@ export class SolutionEditComponent implements OnInit {
 
     @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
+    resetImage: boolean
 
     constructor(
         private solutionService: SolutionService,
@@ -100,7 +102,11 @@ export class SolutionEditComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
-
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
             form.append('upload_preset', 'qhf7z3qa')
@@ -191,6 +197,16 @@ export class SolutionEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.solutionForm.get('imageUrl').value
+        this.resetImage = false;
+        this.fileInput.nativeElement.value = null;
+    }
+
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/solution-default.png';
+        this.newImage = false;
+        this.imageUrl = DEFAULT_IMAGE;
+        this.resetImage = true;
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {
@@ -206,6 +222,7 @@ export class SolutionEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 solution.imageUrl = res.secure_url
+                this.resetImage = false;
                 this.updateWithApi(solution)
             }
         }
@@ -220,6 +237,10 @@ export class SolutionEditComponent implements OnInit {
     updateWithApi(solution: any) {
         solution.organizations = this.organization
         solution.issues = this.issues
+
+        if (this.resetImage) {
+            solution.imageUrl = this.imageUrl;
+        }
 
         this.solutionService.update({ id: solution._id, entity: solution })
             .pipe(finalize(() => { this.isLoading = false }))
