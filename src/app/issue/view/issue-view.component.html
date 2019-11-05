@@ -114,7 +114,7 @@
                     <button mat-icon-button
                         matTooltip="Edit this Issue"
                         color="accent"
-                        routerLink="/issues/edit/{{issue._id}}">
+                        routerLink="/issues/edit/{{issue.slug || issue._id}}">
                         <mat-icon aria-label="Edit the issue">edit</mat-icon>
                     </button>
                     <button mat-icon-button

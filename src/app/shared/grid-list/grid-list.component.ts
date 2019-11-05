@@ -55,7 +55,7 @@ export class GridListComponent {
     handleUrl(item: any) {
 
         if (this.model !== 'Organization') {
-            return this.router.navigate([`/${this.path}/${item._id}`])
+            return this.router.navigate([`/${this.path}/${item.slug || item._id}`])
         }
 
         const { hostname } = window.location

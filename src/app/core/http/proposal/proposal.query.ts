@@ -23,6 +23,13 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         super(store)
     }
 
+    getProposalWithSlug(id: string) {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Proposal) => isObjectId ? entity._id === id : entity.slug === id
+        })
+    }
+
     filterBySolutionId(id: string) {
         return this.selectAll({
             filterBy: (entity) => {

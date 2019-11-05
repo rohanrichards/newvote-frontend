@@ -25,16 +25,20 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
     }
 
     getIssueWithTopic(issueId: string) {
+        const isObjectId = issueId.match(/^[0-9a-fA-F]{24}$/)
+
         return combineQueries(
             [
-                this.selectEntity(issueId),
+                this.selectAll({
+                    filterBy: (entity: Issue) => isObjectId ? entity._id === issueId : entity.slug === issueId
+                }),
                 this.topicQuery.selectAll()
             ]
         )
             .pipe(
                 map((results) => {
                     const [storeIssue, topics] = results
-                    const issue = cloneDeep(storeIssue)
+                    const issue = cloneDeep(storeIssue[0])
 
                     if (!issue) {
                         return false

@@ -145,13 +145,13 @@ export class SolutionEditComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.selectEntity(id)
+        this.solutionQuery.getSolutionWithSlug(id)
             .subscribe(
-                (solution: Solution) => {
-                    if (!solution) return false
-                    this.solution = solution
-                    this.updateForm(solution)
-                    this.updateTags(solution)
+                (solution: Solution[]) => {
+                    if (!solution.length) return false
+                    this.solution = solution[0]
+                    this.updateForm(solution[0])
+                    this.updateTags(solution[0])
                 }
             )
     }
@@ -226,7 +226,7 @@ export class SolutionEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/solutions/${t._id}`], { queryParams: { forceUpdate: true } })
+                    this.router.navigate([`/solutions/${t.slug || t._id}`])
                 },
                 (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )

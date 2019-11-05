@@ -172,7 +172,7 @@ export class IssueCreateComponent implements OnInit {
                         }
 
                         this.openSnackBar('Succesfully created', 'OK')
-                        this.router.navigate([`/issues/${t._id}`])
+                        this.router.navigate([`/issues/${t.slug || t._id}`])
                     },
                     (err) => {
                         this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
@@ -192,7 +192,7 @@ export class IssueCreateComponent implements OnInit {
                             this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
                             this.openSnackBar('Succesfully created', 'OK')
-                            this.router.navigate(['/issues'], { queryParams: { forceUpdate: true } })
+                            this.router.navigate(['/issues'])
                         }
                     })
             }
