@@ -193,7 +193,10 @@ export class IssueViewComponent implements OnInit {
                             image: issue.imageUrl || ''
                         })
                 },
-                (err) => err
+                (err) => {
+                    this.isLoading = false
+                    this.stateService.setLoadingState(AppState.error)
+                }
             )
     }
 

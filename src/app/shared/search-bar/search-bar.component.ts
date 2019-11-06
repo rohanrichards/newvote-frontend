@@ -14,6 +14,7 @@ import { SearchService } from '@app/core/http/search/search.service'
 })
 export class SearchBarComponent implements OnInit {
     @Input() isVisible = false;
+    @Input() error = false;
     @Output() isVisibleChange = new EventEmitter<boolean>();
     @Output() closeSearch = new EventEmitter();
 

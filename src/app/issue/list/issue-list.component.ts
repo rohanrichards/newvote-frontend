@@ -171,7 +171,7 @@ export class IssueListComponent implements OnInit {
                     this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
-                    this.stateService.setLoadingState(AppState.serverError)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }

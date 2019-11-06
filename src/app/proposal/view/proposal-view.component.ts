@@ -131,7 +131,7 @@ export class ProposalViewComponent implements OnInit {
                         })
                 },
                 () => {
-                    return this.stateService.setLoadingState(AppState.serverError)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }

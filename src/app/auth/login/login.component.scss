@@ -1,37 +1,37 @@
 @import "src/theme/theme-variables";
 
 :host {
-  display: flex;
-  flex: 1;
-  background-color: #ECEFF1;
-  height: calc(100% - 64px);
-  min-height: 400px;
+    display: flex;
+    flex: 1;
+    background-color: #ECEFF1;
+    height: calc(100vh - 64px);
+    min-height: 400px;
 }
 
 .inline-loader {
-  display: inline-block;
+    display: inline-block;
 }
 
 .remember-toggle {
-	margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .version {
-  margin: 0;
+    margin: 0;
 }
 
 .login-container,
 .mat-form-field {
-  width: 100%;
+    width: 100%;
 }
 
 .login-error {
-  color: mat-color($app-warn);
+    color: mat-color($app-warn);
 }
 
 .signup-terms {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }
 
 .larger-spacing {

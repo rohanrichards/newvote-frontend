@@ -85,7 +85,7 @@ export class SuggestionViewComponent implements OnInit {
                             description: suggestion.description
                         })
                 },
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 

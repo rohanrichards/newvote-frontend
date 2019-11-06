@@ -8,7 +8,7 @@
         <app-skeleton-panel [hasVote]=true>
         </app-skeleton-panel>
     </div>
-    <div *ngSwitchCase="'serverError'">
+    <div *ngSwitchCase="'error'">
         <app-skeleton-header [noLogo]=true>
         </app-skeleton-header>
         <app-skeleton-panel [hasVote]=true>
@@ -147,13 +147,13 @@
             </app-skeleton-wide-card>
         </div>
     </div>
-    <div *ngSwitchCase="'serverError'"
+    <div *ngSwitchCase="'error'"
         class="container"
         fxLayout="column"
         fxLayoutAlign="center center">
         <div fxFlex.gt-sm="690px"
             fxFlex.gt-md="800px">
-            <app-error-card>
+            <app-error-card model="Solution">
             </app-error-card>
         </div>
     </div>
