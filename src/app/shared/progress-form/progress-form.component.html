@@ -17,15 +17,26 @@
     </div>
 
     <div class="progress-form"
-        *ngIf="showProgress">
+        *ngIf="showProgress"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="24px">
         <h4 class="mat-subheading">Update the Progress of the {{ item.name }}
         </h4>
-        <mat-radio-group fxLayout="column"
+        <mat-radio-group [style.width.%]="50"
+            fxLayout="column"
+            fxLayoutGap="12px"
             [(ngModel)]="state"
             aria-label="Select an option">
-            <mat-radio-button *ngFor="let state of getStates(progress)"
-                (change)="handleProgressState(state)"
-                [value]="state">{{state.name}}</mat-radio-button>
+            <div *ngFor="let state of getStates(progress)"
+                [style.width.%]="100">
+                <mat-radio-button [style.width.%]="100"
+                    (change)="handleProgressState(state)"
+                    [value]="state.name">
+                    {{state.name}}
+                </mat-radio-button>
+                <hr />
+            </div>
         </mat-radio-group>
     </div>
 </div>

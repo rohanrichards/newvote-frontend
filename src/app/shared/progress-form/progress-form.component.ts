@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { Progress } from '@app/core/models/progress.model'
 
@@ -7,7 +7,7 @@ import { Progress } from '@app/core/models/progress.model'
     templateUrl: './progress-form.component.html',
     styleUrls: ['./progress-form.component.scss']
 })
-export class ProgressFormComponent implements OnInit {
+export class ProgressFormComponent implements OnChanges {
 
     @Input() item: any = {
         name: 'Issue'
@@ -28,9 +28,20 @@ export class ProgressFormComponent implements OnInit {
         progressState: new FormControl('', [Validators.required])
     })
 
-    constructor() { }
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.progress) {
+            // when component inits the radio group has no value
+            // once progress object is received can then look for the active element by looking for the last active elemtn in array
 
-    ngOnInit() {
+            // Take the state array, and remove any entries that are false
+            // once we have all the true entries, select last in array to be the active element
+            // in the radio form group
+            const filteredState = changes.progress.currentValue.states.slice().filter((state: any) => {
+                return !!state.active
+            })
+
+            this.state = filteredState[filteredState.length - 1].name || ''
+        }
     }
 
     toggleProgressForm() {

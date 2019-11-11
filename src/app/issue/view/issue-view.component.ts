@@ -139,7 +139,6 @@ export class IssueViewComponent implements OnInit {
             filterBy: (entity) => entity.parent === parentId
         })
             .subscribe((res) => {
-                console.log(res, 'this is progress Store')
                 if (!res.length) return false
                 this.progress = res[0]
             })
@@ -409,17 +408,12 @@ export class IssueViewComponent implements OnInit {
             this.defaultState.parent = this.issue._id
             this.updateState(this.defaultState, state)
             return this.progressService.create({ entity: this.defaultState })
-                .subscribe((res) => {
-                    console.log(res, 'this is res on progress Service create')
-                })
+                .subscribe((res) => res)
         }
-        console.log(this.progress, 'progress exists')
         const updatedProgress = cloneDeep(this.progress)
         this.updateState(updatedProgress, state)
-        return this.progressService.update({ id: this.progress._id, entity: this.progress })
-            .subscribe((res) => {
-                console.log(res, 'this is res on progress Service update')
-            })
+        return this.progressService.update({ id: this.progress._id, entity: updatedProgress })
+            .subscribe((res) => res)
     }
 
     updateState(progressState: any, newState: any) {
