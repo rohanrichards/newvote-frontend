@@ -42,7 +42,9 @@ export class ProgressService {
         return this.http
             .get(routes.list(), options)
             .pipe(
-                tap(entities => this.progressStore.set(entities))
+                tap(entities => {
+                    this.progressStore.set(entities)
+                })
             )
     }
 
@@ -52,7 +54,6 @@ export class ProgressService {
             .pipe(
                 catchError(handleError),
                 tap((progress: Progress) => {
-                    console.log(progress, 'this is progress on tap')
                     this.progressStore.add(progress)
                 })
             )

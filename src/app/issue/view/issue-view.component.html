@@ -160,10 +160,9 @@
                 <span class="mat-headline center-span"
                     [style.margin-bottom]="'0'">Issue Progress</span>
             </mat-toolbar>
-            <app-progress-bar
-                [progressState]="issue.progressState || defaultState">
+            <app-progress-bar [progressState]="progress || defaultState">
             </app-progress-bar>
-            <app-progress-form [progress]="issue.progressState || defaultState"
+            <app-progress-form [progress]="progress || defaultState"
                 (updateProgressState)="updateProgress($event)">
             </app-progress-form>
             <mat-toolbar color="primary"
