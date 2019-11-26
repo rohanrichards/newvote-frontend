@@ -1,28 +1,53 @@
-<mat-toolbar *ngIf="isVisible" color="accent"
-    fxFill>
-	<mat-form-field
-		color="warn"
-		[floatLabel]="'never'"
-	    >
-		<mat-label>Search</mat-label>
-		<input matInput
-		    type="text"
-		    #searchInputElement
-		    [formControl]="searchInputControl"
-			[matAutocomplete]="auto">
-		<!-- <button matSuffix mat-icon-button aria-label="Close Search">
-			
-		</button> -->
-		
-	</mat-form-field>
-	<button  mat-icon-button aria-label="Close Search" (click)="onSearchClose($event)">
-		<mat-icon [ngClass]="isVisible ? 'open': ''" matSuffix>close</mat-icon>
-	</button>
-	<mat-autocomplete #auto="matAutocomplete"
-	    (optionSelected)="searchSelected($event)">
-		<mat-option *ngFor="let option of searchResults$ | async"
-		    [value]="option">
-			<span class="schema-tag">{{option.schema}}</span>{{option.name || option.title}}
-		</mat-option>
-	</mat-autocomplete>
+<mat-toolbar *ngIf="isVisible && !error"
+    color="accent">
+    <mat-form-field color="warn"
+        [floatLabel]="'never'">
+        <mat-label>Search</mat-label>
+        <input matInput
+            type="text"
+            #searchInputElement
+            [formControl]="searchInputControl"
+            [matAutocomplete]="auto">
+        <button matSuffix
+            mat-icon-button
+            aria-label="Close Search">
+
+        </button>
+
+    </mat-form-field>
+    <button mat-icon-button
+        aria-label="Close Search"
+        (click)="onSearchClose($event)">
+        <mat-icon [ngClass]="isVisible ? 'open': ''"
+            matSuffix>close</mat-icon>
+    </button>
+    <mat-autocomplete #auto="matAutocomplete"
+        (optionSelected)="searchSelected($event)">
+        <mat-option *ngFor="let option of searchResults$ | async"
+            [value]="option">
+            <span
+                class="schema-tag">{{option.schema}}</span>{{option.name || option.title}}
+        </mat-option>
+    </mat-autocomplete>
 </mat-toolbar>
+
+<div *ngIf="error && isVisible">
+    <mat-form-field [style.width.%]="100"
+        color="warn"
+        [floatLabel]="'never'">
+        <mat-label>Search</mat-label>
+        <input matInput
+            type="text"
+            #searchInputElement
+            [formControl]="searchInputControl"
+            [matAutocomplete]="auto">
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete"
+        (optionSelected)="searchSelected($event)">
+        <mat-option *ngFor="let option of searchResults$ | async"
+            [value]="option">
+            <span
+                class="schema-tag">{{option.schema}}</span>{{option.name || option.title}}
+        </mat-option>
+    </mat-autocomplete>
+</div>

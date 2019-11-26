@@ -1,49 +1,74 @@
 .container {
-  padding: 1em;
+    padding: 1em;
 }
 
 .logo {
-  width: 150px;
-  margin: 0 auto;
+    width: 150px;
+    margin: 0 auto;
 }
 
 q {
-  font-style: italic;
-  proposals: "« " " »";
+    font-style: italic;
+    proposals: "« "" »";
 }
 
 //global overrides for mat-toolbar
 .header-info-panel {
-	white-space: normal !important;
-	padding-top: 16px;
-	height: auto;
-	min-height: 32px;
-	line-height: 32px;
-	display: block;
+    white-space: normal !important;
+    padding-top: 16px;
+    height: auto;
+    min-height: 32px;
+    line-height: 32px;
+    display: block;
 }
 
 .image-container {
-	height: 350px !important;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
+    height: 350px !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 
-	width: calc(100% + 32px);
-	margin: -16px -16px 16px -16px;
+    width: calc(100% + 32px);
+    margin: -16px -16px 16px -16px;
 }
 
 .admin-panel {
-	.button-panel {
-		background-color: rgba(0, 0, 0, 0.6);
-		border-bottom-left-radius: 15px;
-	}
+    .button-panel {
+        background-color: rgba(0, 0, 0, 0.6);
+        border-bottom-left-radius: 15px;
+    }
 }
 
 .buttons {
-	margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .error-container {
-	margin-top: 0.5rem;
-	padding: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+}
+
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        margin-top: 1rem;
+        background: white;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
 }

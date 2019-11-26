@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize } from 'rxjs/operators'
 import { merge, cloneDeep } from 'lodash'
@@ -43,9 +43,11 @@ export class IssueEditComponent implements OnInit {
         topics: new FormControl(''),
         imageUrl: new FormControl('', [Validators.required])
     });
+    resetImage: boolean
 
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private issueService: IssueService,
@@ -100,6 +102,12 @@ export class IssueEditComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
+
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
 
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
@@ -170,6 +178,16 @@ export class IssueEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.issueForm.get('imageUrl').value
+        this.fileInput.nativeElement.value = null;
+    }
+
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/issue-default.png';
+        this.newImage = false;
+        this.imageUrl = DEFAULT_IMAGE;
+        this.resetImage = true;
+        // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
+        this.fileInput.nativeElement.value = null;
     }
 
     onSave() {
@@ -186,6 +204,7 @@ export class IssueEditComponent implements OnInit {
                 merge(issue, this.issueForm.value as IIssue)
                 const res = JSON.parse(response)
                 issue.imageUrl = res.secure_url
+                this.resetImage = false;
                 this.updateWithApi(issue)
             }
         }
@@ -200,6 +219,11 @@ export class IssueEditComponent implements OnInit {
 
     updateWithApi(issue: any) {
         issue.topics = this.topics
+
+        if (this.resetImage) {
+            issue.imageUrl = this.imageUrl;
+        }
+
         this.issueService.update({ id: issue._id, entity: issue })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
