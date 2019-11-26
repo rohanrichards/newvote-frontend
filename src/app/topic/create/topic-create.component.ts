@@ -28,6 +28,7 @@ export class TopicCreateComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+
     userImageUpload: boolean
 
     constructor(
@@ -93,14 +94,14 @@ export class TopicCreateComponent implements OnInit {
             }
 
             reader.readAsDataURL(file)
-            this.userImageUpload = true;
+            this.userImageUpload = true
         }
     }
 
     setDefaultImage() {
-        this.userImageUpload = false;
-        this.imageUrl = false;
-        this.topicForm.patchValue({ imageUrl: '' });
+        this.userImageUpload = false
+        this.imageUrl = false
+        this.topicForm.patchValue({ imageUrl: '' })
     }
 
     onSave() {
@@ -119,14 +120,17 @@ export class TopicCreateComponent implements OnInit {
 
                 this.topicService.create({ entity: this.topic })
                     .pipe(finalize(() => { this.isLoading = false }))
-                    .subscribe(t => {
-                        if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
-                        } else {
-                            this.openSnackBar('Succesfully created', 'OK')
-                            this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } })
-                        }
-                    })
+                    .subscribe(
+                        t => {
+                            if (t.error) {
+                                this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            } else {
+                                this.openSnackBar('Succesfully created', 'OK')
+                                this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } })
+                            }
+                        },
+                        err => err
+                    )
             }
         }
 

@@ -122,10 +122,10 @@ export class AuthenticationService {
         return this.httpClient
             .get<Credentials>(routes.checkAuth())
             .pipe(
+                catchError(handleError),
                 map((res) => {
                     return res
                 }),
-                catchError(handleError)
             )
     }
 
