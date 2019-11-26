@@ -91,10 +91,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     subscribeToTopicStore(id: string) {
-        this.topicQuery.selectEntity(id)
-            .subscribe((topic: Topic) => {
-                if (!topic) return false
-                this.updateForm(topic)
+
+        this.topicQuery.getTopic(id)
+            .subscribe((topic: Topic[]) => {
+                if (!topic.length) return false
+                this.updateForm(topic[0])
             })
     }
 
