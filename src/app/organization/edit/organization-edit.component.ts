@@ -1,7 +1,7 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete, MatSnackBar, MatSnackBarConfig } from '@angular/material'
 import { ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
@@ -308,8 +308,19 @@ export class OrganizationEditComponent implements OnInit {
 
         this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe(() => {
+            .subscribe((res) => {
                 this.openSnackBar('Succesfully updated', 'OK')
+
+                if (res.moderators.length) {
+                    const config = new MatSnackBarConfig()
+                    config.duration = 3000
+                    config.panelClass = ['warn-snack']
+
+                    setTimeout(() => {
+                        this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                    }, 3100)
+                }
+
                 this.location.back()
             },
             (error) => {
@@ -317,11 +328,13 @@ export class OrganizationEditComponent implements OnInit {
             })
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'center'
-        })
+    openSnackBar(message: string, action: string, config?: any) {
+        const defaultConfig = {
+            duration: 3000,
+            horizontalPosition: 'right'
+        }
+
+        this.snackBar.open(message, action, config || defaultConfig)
     }
 
     ownerSelected(event: any) {

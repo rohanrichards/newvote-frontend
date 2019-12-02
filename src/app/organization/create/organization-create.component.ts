@@ -1,6 +1,6 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete, MatSnackBar, MatSnackBarConfig } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
@@ -198,13 +198,23 @@ export class OrganizationCreateComponent implements OnInit {
         this.uploader.onCompleteAll = () => {
             this.organizationService.create({ entity: this.organization })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(t => {
-                    if (t.error) {
-                        this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
-                    } else {
-                        this.openSnackBar('Succesfully created', 'OK')
-                        this.router.navigate(['/organizations'])
+                .subscribe(res => {
+                    this.openSnackBar('Succesfully created', 'OK')
+
+                    if (res.moderators.length) {
+                        const config = new MatSnackBarConfig()
+                        config.duration = 2000
+                        config.panelClass = ['warn-snack']
+
+                        setTimeout(() => {
+                            this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                        }, 3100)
                     }
+
+                    this.router.navigate(['/organizations'])
+                },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
         }
 
@@ -226,11 +236,13 @@ export class OrganizationCreateComponent implements OnInit {
         this.uploader.uploadAll()
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
+    openSnackBar(message: string, action: string, config?: any) {
+        const defaultConfig = {
+            duration: 3000,
             horizontalPosition: 'right'
-        })
+        }
+
+        this.snackBar.open(message, action, config || defaultConfig)
     }
 
     userSelected(event: any) {
@@ -241,7 +253,7 @@ export class OrganizationCreateComponent implements OnInit {
         this.userInput.nativeElement.value = ''
     }
 
-    userRemoved() {
+    userRemoved(user: any) {
         this.owner = null
     }
 

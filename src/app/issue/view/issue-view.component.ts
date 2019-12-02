@@ -105,6 +105,11 @@ export class IssueViewComponent implements OnInit {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
         })
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false
+            this.suggestions = res
+        })
     }
 
     subscribeToIssueStore(id: string) {
@@ -125,6 +130,12 @@ export class IssueViewComponent implements OnInit {
 
     subscribeToSolutionStore(issueId: string) {
         this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+
+        this.solutions$.subscribe((res) => {
+            if (!res.length) return false
+            this.solutions = res
+            this.stateService.setLoadingState(AppState.complete)
+        })
     }
 
     subscribeToMediaStore(id: string) {
@@ -182,7 +193,10 @@ export class IssueViewComponent implements OnInit {
                             image: issue.imageUrl || ''
                         })
                 },
-                (err) => err
+                (err) => {
+                    this.isLoading = false
+                    this.stateService.setLoadingState(AppState.error)
+                }
             )
     }
 

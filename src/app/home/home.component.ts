@@ -110,7 +110,9 @@ export class HomeComponent implements OnInit {
                     this.userCount = count
                     this.stateService.setLoadingState(AppState.complete)
                 },
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => {
+                    return this.stateService.setLoadingState(AppState.error)
+                }
             )
     }
 

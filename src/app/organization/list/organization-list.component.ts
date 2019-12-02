@@ -73,7 +73,7 @@ export class OrganizationListComponent implements OnInit {
                     return this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
-                    return this.stateService.setLoadingState(AppState.serverError)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }
