@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
 import { finalize } from 'rxjs/operators'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { merge, cloneDeep } from 'lodash'
 
 import { ITopic, Topic } from '@app/core/models/topic.model'
