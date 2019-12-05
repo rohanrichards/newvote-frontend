@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize } from 'rxjs/operators'
 
@@ -30,7 +30,7 @@ export class ProposalCreateComponent implements OnInit {
     organization: Organization;
     filteredSolutions: Observable<ISolution[]>;
     separatorKeysCodes: number[] = [ENTER, COMMA];
-    isLoading = true;
+    isLoading = false;
     imageUrl: any;
     uploader: FileUploader;
     userImageUpload: boolean;
@@ -44,6 +44,8 @@ export class ProposalCreateComponent implements OnInit {
 
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
+
     suggestionTemplate: any;
 
     constructor(
@@ -62,7 +64,7 @@ export class ProposalCreateComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isLoading = true
+        // this.isLoading = true
         this.meta.updateTags(
             {
                 title: 'Create Action',
@@ -110,6 +112,12 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
+
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
 
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
@@ -171,7 +179,7 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/action-default.png';
+            this.proposal.imageUrl = 'assets/action-default.png';
             return this.proposalService.create({ entity: this.proposal })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -189,6 +197,8 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
+            console.log(item, 'this is item');
+            console.log(status, 'this is statuss');
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 this.proposal.imageUrl = res.secure_url
@@ -204,14 +214,24 @@ export class ProposalCreateComponent implements OnInit {
                         if (t.error) {
                             this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.toast.thisopenSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${this.proposal.solutions[0].slug || this.proposal.solutions[0]._id}`])
                         }
-                    })
+                    },
+                    (err) => {
+
+                    }
+                    )
             }
         }
 
         this.uploader.uploadAll()
+    }
+
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+        this.fileInput.nativeElement.value = null;
     }
 
     solutionSelected(event: any) {

@@ -90,6 +90,7 @@ export class IssueListComponent implements OnInit {
     loadingState: string;
     suggestions: any[];
     suggestions$: Observable<Suggestion[]>;
+    orphanedIssues: any[];
 
     constructor(
         private suggestionQuery: SuggestionQuery,
@@ -171,7 +172,7 @@ export class IssueListComponent implements OnInit {
                     this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
-                    this.stateService.setLoadingState(AppState.serverError)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }
@@ -196,11 +197,12 @@ export class IssueListComponent implements OnInit {
         this.issueQuery.issues$
             .subscribe((issues: Issue[]) => {
                 this.issues = issues
+                this.orphanedIssues = this.filterIssues(null, issues)
             })
     }
 
     // filter the issue list for matching topicId's
-    filterIssues(topic: Topic, issues: Issue[]) {
+    filterIssues(topic: Topic | null, issues: Issue[]) {
         const issuesCopy = issues.slice()
 
         if (!topic) {

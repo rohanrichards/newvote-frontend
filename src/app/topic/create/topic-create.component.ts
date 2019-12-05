@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { finalize } from 'rxjs/operators'
 
 import { ITopic } from '@app/core/models/topic.model'
@@ -28,6 +28,7 @@ export class TopicCreateComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+    userImageUpload: boolean
 
     constructor(
         private topicService: TopicService,
@@ -63,7 +64,11 @@ export class TopicCreateComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
-
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
             form.append('upload_preset', 'qhf7z3qa')
@@ -88,7 +93,14 @@ export class TopicCreateComponent implements OnInit {
             }
 
             reader.readAsDataURL(file)
+            this.userImageUpload = true;
         }
+    }
+
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+        this.topicForm.patchValue({ imageUrl: '' });
     }
 
     onSave() {

@@ -64,7 +64,7 @@ export class OrganizationViewComponent implements OnInit {
 
                 },
                 () => {
-                    this.stateService.setLoadingState(AppState.serverError)
+                    this.stateService.setLoadingState(AppState.error)
                 }
             )
     }

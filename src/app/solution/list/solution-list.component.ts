@@ -118,12 +118,17 @@ export class SolutionListComponent implements OnInit {
         ])
             .subscribe(
                 () => this.stateService.setLoadingState(AppState.complete),
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 
     subscribeToSolutionStore() {
         this.solutions$ = this.solutionQuery.selectSolutions()
+
+        this.solutions$.subscribe((res) => {
+            if (!res) return false
+            this.solutions = res
+        })
     }
 
     subscribeToSuggestionStore() {
@@ -133,6 +138,11 @@ export class SolutionListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'solution')
                 }),
             )
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false
+            this.suggestions = res
+        })
     }
 
     onVote(voteData: any, model: string) {

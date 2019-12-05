@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 @Component({
     selector: 'app-error-card',
@@ -6,5 +6,13 @@ import { Component } from '@angular/core'
     styleUrls: ['./error-card.component.scss']
 })
 export class ErrorCardComponent {
+
+    modelLinks = {
+        Action: '/proposals',
+        Solution: '/solutions',
+        Issue: '/issues'
+    }
+
+    @Input() model: string;
 
 }

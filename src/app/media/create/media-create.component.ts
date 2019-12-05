@@ -4,7 +4,7 @@ import { Location } from '@angular/common'
 import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize, debounceTime } from 'rxjs/operators'
 
@@ -115,6 +115,12 @@ export class MediaCreateComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
+
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
 
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form

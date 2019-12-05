@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize } from 'rxjs/operators'
 
@@ -43,6 +43,8 @@ export class SolutionCreateComponent implements OnInit {
 
     @ViewChild('issueInput', { static: true }) issueInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
+
     suggestionTemplate: any;
 
     constructor(
@@ -107,7 +109,11 @@ export class SolutionCreateComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
-
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
             form.append('upload_preset', 'qhf7z3qa')
@@ -155,6 +161,12 @@ export class SolutionCreateComponent implements OnInit {
         }
     }
 
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+        this.fileInput.nativeElement.value = null;
+    }
+
     onSave() {
         this.isLoading = true
         this.solution = this.solutionForm.value as ISolution
@@ -170,7 +182,7 @@ export class SolutionCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/solution-default.png';
+            this.solution.imageUrl = 'assets/solution-default.png';
             return this.solutionService.create({ entity: this.solution })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(

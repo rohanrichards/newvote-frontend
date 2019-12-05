@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { Observable } from 'rxjs'
 import { map, startWith, finalize, delay } from 'rxjs/operators'
 
@@ -45,6 +45,7 @@ export class IssueCreateComponent implements OnInit {
     suggestionTemplate: any;
 
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
     constructor(
@@ -94,6 +95,12 @@ export class IssueCreateComponent implements OnInit {
             // Use default "withCredentials" value for CORS requests
             fileItem.withCredentials = false
             return { fileItem, form }
+        }
+
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
         }
 
         this.topicService.list({})
@@ -148,6 +155,14 @@ export class IssueCreateComponent implements OnInit {
         }
     }
 
+    setDefaultImage() {
+        this.userImageUpload = false;
+        this.imageUrl = false;
+        // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
+        this.fileInput.nativeElement.value = null;
+    }
+
+
     onSave() {
         this.isLoading = true
         this.issue = this.issueForm.value as IIssue
@@ -163,7 +178,7 @@ export class IssueCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            // this.imageUrl = 'assets/issue-default.png';
+            this.issue.imageUrl = 'assets/issue-default.png';
             return this.issueService.create({ entity: this.issue })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
