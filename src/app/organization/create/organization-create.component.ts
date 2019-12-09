@@ -13,6 +13,7 @@ import { UserService } from '@app/core/http/user/user.service'
 import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-organization',
@@ -98,7 +99,7 @@ export class OrganizationCreateComponent implements OnInit {
         private userService: UserService,
         private organizationService: OrganizationService,
         public auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService
@@ -198,26 +199,26 @@ export class OrganizationCreateComponent implements OnInit {
         this.uploader.onCompleteAll = () => {
             this.organizationService.create({ entity: this.organization })
                 .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(res => {
-                    this.openSnackBar('Succesfully created', 'OK')
+                .subscribe(
+                    (res) => {
+                            this.toast.openSnackBar('Succesfully created', 'OK')
 
-                    if (res.moderators.length) {
-                        const config = new MatSnackBarConfig()
-                        config.duration = 2000
-                        config.panelClass = ['warn-snack']
+                            if (res.moderators.length) {
+                                const config = new MatSnackBarConfig()
+                                config.duration = 2000
+                                config.panelClass = ['warn-snack']
+        
+                                setTimeout(() => {
+                                    this.toast.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                                }, 3100)
+                            }
 
-                        setTimeout(() => {
-                            this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
-                        }, 3100)
-                    }
-
-                    this.router.navigate(['/organizations'])
-                },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+                            this.router.navigate(['/organizations'])
+                    },
+                    (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                )
         }
-
+        
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
             // when the upload is complete compare the files name
             // to the one we stored earlier so we know which file it is
@@ -234,15 +235,6 @@ export class OrganizationCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string, config?: any) {
-        const defaultConfig = {
-            duration: 3000,
-            horizontalPosition: 'right'
-        }
-
-        this.snackBar.open(message, action, config || defaultConfig)
     }
 
     userSelected(event: any) {

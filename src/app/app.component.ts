@@ -10,6 +10,8 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, OrganizationService } from '@app/core'
 import { Organization } from './core/models/organization.model'
 import { MetaService } from './core/meta.service'
+import { ToastService } from './core/toast/toast.service'
+import { CookieService } from 'ngx-cookie-service'
 
 const log = new Logger('App')
 
@@ -30,7 +32,10 @@ export class AppComponent implements OnInit {
         private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
         private i18nService: I18nService,
         private organizationService: OrganizationService,
-        private meta: MetaService) { }
+        private meta: MetaService,
+        private toast: ToastService,
+        private cookieService: CookieService) { }
+
 
     ngOnInit() {
         // Setup logger
@@ -46,6 +51,16 @@ export class AppComponent implements OnInit {
         this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages)
 
         const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+
+        // For AAF Logins we sometimes redirect the user - if the user is redirected
+        // display toast 
+        this.activatedRoute.queryParams
+            .subscribe((params: any) => {
+                if (params.redirectLogin) {
+                    this.toast.openSnackBar('You have successfully logged in. Now you can vote on your issue', 'OK');
+                    this.cookieService.delete('redirect', '/', 'newvote.org')
+                }
+            })
 
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)

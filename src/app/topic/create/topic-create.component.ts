@@ -3,13 +3,13 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { finalize } from 'rxjs/operators'
-import { MatSnackBar } from '@angular/material'
 
 import { ITopic } from '@app/core/models/topic.model'
 import { Organization } from '@app/core/models/organization.model'
 import { TopicService } from '@app/core/http/topic/topic.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-topic',
@@ -33,7 +33,7 @@ export class TopicCreateComponent implements OnInit {
     constructor(
         private topicService: TopicService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private route: ActivatedRoute
@@ -121,9 +121,9 @@ export class TopicCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(t => {
                         if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } })
                         }
                     })
@@ -132,12 +132,4 @@ export class TopicCreateComponent implements OnInit {
 
         this.uploader.uploadAll()
     }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
 }

@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
@@ -15,6 +15,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-solution',
@@ -51,7 +52,7 @@ export class SolutionCreateComponent implements OnInit {
         private solutionService: SolutionService,
         private issueService: IssueService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService
@@ -191,10 +192,10 @@ export class SolutionCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/solutions/${t.slug || t._id}`])
                     },
-                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 )
         }
 
@@ -207,22 +208,15 @@ export class SolutionCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(
                         t => {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${t.slug || t._id}`])
                         },
-                        (err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
+                        (err) => this.toast.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     )
             }
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

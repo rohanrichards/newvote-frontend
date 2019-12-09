@@ -1,7 +1,7 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { Observable } from 'rxjs'
@@ -14,6 +14,7 @@ import { MetaService } from '@app/core/meta.service'
 
 import { Suggestion } from '@app/core/models/suggestion.model'
 import { Organization } from '@app/core/models/organization.model'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -53,7 +54,7 @@ export class SuggestionCreateComponent implements OnInit {
         private organizationService: OrganizationService,
         private searchService: SearchService,
         private location: Location,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService
@@ -155,21 +156,15 @@ export class SuggestionCreateComponent implements OnInit {
 
         this.suggestionService.create({ entity: this.suggestion })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe((suggestion: Suggestion) => {
-                this.openSnackBar('Succesfully created', 'OK')
-                this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
-            },
-            error => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            }
+            .subscribe(
+                (suggestion: Suggestion) => {
+                    this.toast.openSnackBar('Succesfully created', 'OK')
+                    this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
+                },
+                error => {
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     parentSelected(event: any) {

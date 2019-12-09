@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
@@ -18,6 +18,7 @@ import { MetaService } from '@app/core/meta.service'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 import { cloneDeep } from 'lodash'
 
@@ -56,7 +57,7 @@ export class SolutionEditComponent implements OnInit {
         private issueService: IssueService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
@@ -246,18 +247,11 @@ export class SolutionEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/solutions/${t.slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

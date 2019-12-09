@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
@@ -19,6 +19,7 @@ import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-proposal',
@@ -55,7 +56,7 @@ export class ProposalEditComponent implements OnInit {
         private solutionService: SolutionService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private proposalQuery: ProposalQuery,
@@ -254,18 +255,11 @@ export class ProposalEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/proposals/${t.slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     solutionSelected(event: any) {

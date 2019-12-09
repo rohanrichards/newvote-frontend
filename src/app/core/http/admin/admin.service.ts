@@ -6,7 +6,7 @@ import { ProposalService } from '../proposal/proposal.service'
 import { MediaService } from '../media/media.service'
 import { OrganizationService } from '../organization/organization.service'
 import { assign } from 'lodash'
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material'
+import { MatDialog, MatDialogRef } from '@angular/material'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { Issue, IIssue } from '@app/core/models/issue.model'
 import { Media, IMedia } from '@app/core/models/media.model'
@@ -17,6 +17,7 @@ import { Proposal, IProposal } from '@app/core/models/proposal.model'
 import { TopicService } from '../topic/topic.service'
 import { Topic, ITopic } from '@app/core/models/topic.model'
 import { Router } from '@angular/router'
+import { ToastService } from '@app/core/toast/toast.service'
 
 type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal
     | ITopic | IIssue | IOrganization | ISolution | IMedia | ISuggestion | IProposal;
@@ -38,8 +39,8 @@ export class AdminService {
         private mediaService: MediaService,
         private topicService: TopicService,
         private dialog: MatDialog,
-        private snackBar: MatSnackBar,
-        private router: Router
+        private router: Router,
+        private toast: ToastService
     ) { }
 
     getService(model: string): ServiceType {
@@ -101,7 +102,7 @@ export class AdminService {
 
                 service.subscribe(
                     () => {
-                        this.openSnackBar('Succesfully deleted', 'OK')
+                        this.toast.openSnackBar('Succesfully deleted', 'OK')
                         if (redirectRoute) {
                             this.router.navigate([`/${redirectRoute}`])
                         }
@@ -163,7 +164,7 @@ export class AdminService {
                 }
 
                 service.subscribe(() => {
-                    this.openSnackBar('Succesfully removed', 'OK')
+                    this.toast.openSnackBar('Succesfully removed', 'OK')
 
                     if (redirectRoute) {
                         this.router.navigate([`/${redirectRoute}`])
@@ -225,7 +226,7 @@ export class AdminService {
                 }
 
                 service.subscribe(() => {
-                    this.openSnackBar('Succesfully removed', 'OK')
+                    this.toast.openSnackBar('Succesfully removed', 'OK')
 
                     if (redirectRoute) {
                         this.router.navigate([`/${redirectRoute}`])
@@ -235,11 +236,4 @@ export class AdminService {
         })
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right',
-            verticalPosition: 'bottom',
-        })
-    }
 }

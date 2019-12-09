@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
 import { Observable, forkJoin } from 'rxjs'
@@ -33,6 +33,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -95,7 +96,7 @@ export class IssueListComponent implements OnInit {
         private suggestionQuery: SuggestionQuery,
         private issueQuery: IssueQuery,
         private voteService: VoteService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         private suggestionService: SuggestionService,
         public stateService: StateService,
         private issueService: IssueService,
@@ -252,18 +253,11 @@ export class IssueListComponent implements OnInit {
 
         this.suggestionService.create({ entity: suggestion })
             .subscribe(() => {
-                this.openSnackBar('Succesfully created', 'OK')
+                this.toast.openSnackBar('Succesfully created', 'OK')
             },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
+                (error) => {
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     onVote(voteData: any, model: string) {
@@ -282,13 +276,13 @@ export class IssueListComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )

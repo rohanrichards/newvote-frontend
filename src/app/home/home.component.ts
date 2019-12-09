@@ -18,7 +18,6 @@ import { forkJoin } from 'rxjs'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyrideService } from 'ngx-joyride'
-import { MatSnackBar } from '@angular/material'
 
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
@@ -29,6 +28,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-home',
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
         private proposalService: ProposalService,
         private userService: UserService,
         private meta: MetaService,
-        public snackBar: MatSnackBar,
+        private toast: ToastService,
         public admin: AdminService,
         private proposalQuery: ProposalQuery,
         private solutionQuery: SolutionQuery,
@@ -184,16 +184,10 @@ export class HomeComponent implements OnInit {
             .subscribe(
                 () => {
                     this.auth.saveTourToLocalStorage()
-                    this.openSnackBar('Tour Complete', 'OK')
+                    this.toast.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err
             )
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
 }
