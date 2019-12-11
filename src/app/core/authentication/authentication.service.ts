@@ -357,9 +357,21 @@ export class AuthenticationService {
                         verified,
                         organizations
                     })
-                }),
-                map((res) => {
-                    return res
+
+                    // After updating store - if we refresh page credentials will have not updated,
+                    // the store will pull data from the data store on local store
+                    // need to update local store with latest verification data
+
+                    let { user, token } = this._credentials;
+                    user.verified = verified;
+                    user.organizations = organizations;
+
+                    const newCreds = {
+                        user,
+                        token
+                    }
+                    
+                    this.setCredentials(newCreds, true);
                 })
             )
     }
