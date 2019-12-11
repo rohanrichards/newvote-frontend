@@ -20,4 +20,11 @@ export class TopicQuery extends QueryEntity<TopicState, Topic> {
     ) {
         super(store)
     }
+
+    getTopicWithSlug(id: string) {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Topic) => isObjectId ? entity._id === id : entity.slug === id
+        })
+    }
 }
