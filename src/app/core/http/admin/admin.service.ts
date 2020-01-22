@@ -225,7 +225,7 @@ export class AdminService {
                 }
 
                 service.subscribe(() => {
-                    this.openSnackBar('Succesfully removed', 'OK')
+                    this.openSnackBar('Succesfully restored', 'OK')
 
                     if (redirectRoute) {
                         this.router.navigate([`/${redirectRoute}`])
