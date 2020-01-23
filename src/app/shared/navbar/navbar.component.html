@@ -117,7 +117,7 @@
     </mat-toolbar> -->
 
     <mat-toolbar color="warn"
-        *ngIf="showVerify && !hideVerify"
+        *ngIf="!!showVerify && !hideVerify && delayPassed"
         class="community-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
         ngClass.lt-md="top-bar-height-sm">

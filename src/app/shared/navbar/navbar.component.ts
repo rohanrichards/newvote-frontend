@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
 import { MatSidenav, MatSnackBar } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
-import { map, take } from 'rxjs/operators'
+import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
@@ -26,6 +26,9 @@ export class NavbarComponent implements OnInit {
     isAuthenticated: boolean;
     showVerify: boolean;
 
+    VERIFYDELAY = 1000;
+    delayPassed: any;
+
     constructor(
         private meta: MetaService,
         private titleService: Title,
@@ -42,6 +45,14 @@ export class NavbarComponent implements OnInit {
         this.query.isLoggedIn$
             .subscribe((loggedIn: boolean) => {
                 this.isAuthenticated = loggedIn
+                // need to delay the showing on the verification bar
+                // when a user is loggedin and visits the app for the first time, there's a moment whenn
+                // showVerify is false whilst user is loggedIn
+                if (loggedIn && !this.delayPassed) {
+                    setTimeout(() => {
+                        this.delayPassed = true
+                    }, this.VERIFYDELAY)
+                }
             })
 
         this.query.isCommunityVerified()
