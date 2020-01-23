@@ -9,7 +9,7 @@ import { CookieService } from 'ngx-cookie-service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { Organization } from '@app/core/models/organization.model'
 import { handleError } from '../http/errors'
-import { AuthenticationStore } from './authentication.store'
+import { AuthenticationStore, createInitialState } from './authentication.store'
 
 export interface Credentials {
     // Customize received credentials here
@@ -92,6 +92,7 @@ export class AuthenticationService {
                 },
                 (err) => {
                     if (err.status === 400) {
+                        this.authenticationStore.update(createInitialState())
                         return this.setCredentials()
                     }
                 }
