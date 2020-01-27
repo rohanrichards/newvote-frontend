@@ -24,7 +24,6 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
-import { EntityDirtyCheckPlugin } from '@datorama/akita'
 import { Observable, pipe } from 'rxjs'
 
 @Component({

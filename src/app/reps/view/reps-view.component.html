@@ -1,1 +1,176 @@
-<p>reps-view works!</p>
+<!-- <app-loader [isLoading]="loadingState === 'loading' || isLoading"
+    size="1.5"></app-loader> -->
+
+<!-- App Page Header -->
+<!-- <ng-container [ngSwitch]="loadingState">
+    <div *ngSwitchCase="'loading'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+    </div>
+    <div *ngSwitchCase="'error'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="error-container">
+                    <app-error-card model="Action">
+                    </app-error-card>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <mat-toolbar
+        color="primary"
+        class="header-info-panel">
+        <div
+            class="image-container"
+            fxLayout="column"
+            [defaultImage]="handleImageUrl(imageUrl, true)"
+            [lazyLoad]="handleImageUrl(imageUrl)">
+            <!-- <div class="admin-panel"
+                *ngIf="auth.isModerator(proposal)"
+                fxLayout="column"
+                fxLayoutAlign="center end">
+                <div class="button-panel">
+                    <button mat-icon-button
+                        matTooltip="Add a new Action"
+                        color="accent"
+                        routerLink="/proposals/create">
+                        <mat-icon aria-label="Add a new action">
+                            playlist_add
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Edit this Action"
+                        color="accent"
+                        routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
+                        <mat-icon aria-label="Edit the action">edit</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        *ngIf="proposal.softDeleted"
+                        matTooltip="Restore Action"
+                        color="accent"
+                        (click)="admin.onRestore(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Restore Action">restore
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        *ngIf="!proposal.softDeleted"
+                        matTooltip="Remove Action"
+                        color="accent"
+                        (click)="admin.onSoftDelete(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Remove Action">delete
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        *ngIf="auth.isAdmin()"
+                        matTooltip="Delete this Action"
+                        color="warn"
+                        (click)="admin.onDelete(proposal, 'Proposal', '/')">
+                        <mat-icon aria-label="Delete the action forever">
+                            delete_forever</mat-icon>
+                    </button>
+                </div>
+            </div> -->
+            <!-- <div fxLayout="row"
+                fxFlex></div> -->
+            <!-- <div fxLayout="row wrap"
+                fxLayoutAlign="center center">
+                <div fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="800px">
+                    <app-share-buttons></app-share-buttons>
+                </div>
+            </div> -->
+        </div>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="mat-display-1"
+                    translate>Name: Steve</div>
+                <app-more-less [displayText]="'Position: some text'"
+                    maxHeight="200">
+                </app-more-less>
+            </div>
+        </div>
+    </mat-toolbar>
+
+        
+    <!-- Rep page Body information -->
+    <div
+        class="container"
+        fxLayout="row wrap"
+        fxLayoutAlign="center start">
+        <div 
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px">
+            <mat-accordion [style.margin-bottom.rem]="1"
+                [style.display]="'block'"
+                [multi]="true">
+                <mat-expansion-panel class="accordion-header"
+                    >
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Solutions
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/solutions"
+                        [@fadeIn]=true
+                        [items$]=solutions$
+                        model="Solution"
+                        (restore)="admin.onRestore($event, 'Solution')"
+                        (softDelete)="admin.onSoftDelete($event, 'Solution')"
+                        (delete)="admin.onDelete($event, 'Solution')"
+                        (vote)="onVote($event, 'Solution')">
+                    </app-card-list>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel class="accordion-header"
+                   >
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Actions
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/proposals"
+                        [items$]="proposals$"
+                        model="Action"
+                        [showChildren]="false"
+                        [showParent]="true"
+                        parentPath="/solutions"
+                        parentPropName="solutions"
+                        (restore)="admin.onRestore($event, 'Proposal')"
+                        (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                        (delete)="admin.onDelete($event, 'Proposal')"
+                        (vote)="onVote($event, 'Proposal')">
+                    </app-card-list>
+                </mat-expansion-panel>
+                <!-- <mat-expansion-panel class="accordion-header"
+                    [expanded]="!!issues.length && issues.length > 0">
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Issues
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/issues"
+                        [@fadeIn]=true
+                        [items$]=issues$
+                        model="Issue"
+                        (restore)="admin.onRestore($event, 'Issue')"
+                        (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                        (delete)="admin.onDelete($event, 'Issue')"
+                        (vote)="onVote($event, 'Issue')">
+                    </app-card-list>
+                </mat-expansion-panel> -->
+            </mat-accordion>
+        </div>
+    </div>

@@ -11,6 +11,7 @@ import { QuillModule } from 'ngx-quill';
 import { QuillSettings } from '@app/shared/quill/quill.settings';
 import { RepsListComponent } from './list/reps-list.component';
 import { RepsViewComponent } from './view/reps-view.component';
+import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
 
 
 @NgModule({
@@ -27,7 +28,10 @@ import { RepsViewComponent } from './view/reps-view.component';
         ReactiveFormsModule,
         MaterialModule,
         MaterialFileInputModule,
-        QuillModule.forRoot(QuillSettings)
+        QuillModule.forRoot(QuillSettings),
+        LazyLoadImageModule.forRoot({
+            preset: intersectionObserverPreset
+        })
     ]
 })
 export class RepsModule { }

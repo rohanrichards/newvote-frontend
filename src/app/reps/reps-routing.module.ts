@@ -11,7 +11,7 @@ const routes: Routes = [
         data: { title: extract(''), level: 'root' }
     },
     {
-        path: '',
+        path: ':id',
         component: RepsViewComponent,
         data: {
             title: extract(''),

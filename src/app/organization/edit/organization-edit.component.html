@@ -115,7 +115,8 @@
 				</mat-select>
 				<mat-hint>By setting organization to private it will be hidden from NewVotes community lists.</mat-hint>
 			</mat-form-field>
-
+			
+			<!-- Owner -->
 			<div fxFlex.gt-sm="60"
 			 fxLayout="row">
 				<mat-form-field style="width: 100%; padding-right: 0.5rem"
@@ -169,6 +170,8 @@
 					</button>
 				</div>
 			</div>
+
+			<!-- Moderators -->
 			<mat-form-field class="example-chip-list"
 			 *ngIf="auth.isOwner()">
 				<mat-chip-list #modChipList>
@@ -188,6 +191,27 @@
 					 (matChipInputTokenEnd)="moderatorSelected($event)">
 				</mat-chip-list>
 			</mat-form-field>
+
+			<!-- REPS -->
+			<mat-form-field class="example-chip-list"
+			*ngIf="auth.isOwner()">
+			   <mat-chip-list #repChipList>
+				   <mat-chip *ngFor="let rep of organizationForm.value.reps"
+					[selectable]="false"
+					[removable]="true"
+					(removed)="representativeRemoved(rep)">
+					   {{rep}}
+					   <mat-icon matChipRemove>cancel</mat-icon>
+				   </mat-chip>
+				   <input placeholder="Select Community Representatives"
+					#repInput
+					formControlName="moderatorsControl"
+					[matChipInputFor]="repChipList"
+					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					[matChipInputAddOnBlur]="true"
+					(matChipInputTokenEnd)="representativeSelected($event)">
+			   </mat-chip-list>
+		   </mat-form-field>
 
 			<span>Home Page Background Image</span>
 			<input type="file"

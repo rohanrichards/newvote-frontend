@@ -4,7 +4,11 @@ import { Proposal } from '@app/core/models/proposal.model';
 import { Observable } from 'rxjs';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
-
+import { optimizeImage } from '@app/shared/helpers/cloudinary'
+import { AdminService } from '@app/core/http/admin/admin.service';
+import { Solution } from '@app/core/models/solution.model';
+import { Issue } from '@app/core/models/issue.model';
+import { Suggestion } from '@app/core/models/suggestion.model';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -12,28 +16,40 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 })
 
 export class RepsListComponent implements OnInit {
-  proposals$: Observable<Proposal[]>
-  constructor(
-      private proposalQuery: ProposalQuery,
-      private proposalService: ProposalService,
-      private auth: AuthenticationQuery
-  ) { }
+    isLoading: boolean;
+    loadingState: any;
+    proposals$: Observable<Proposal[]>;
+    handleImageUrl = optimizeImage;
+    imageUrl = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FAyyM_Yxlmx4%2Fmaxresdefault.jpg&f=1&nofb=1'
+    reps: any;
 
-  ngOnInit() {
-      this.fetchData()
-      this.subscribeToProposalStore()
-  }
+    proposals: Proposal[];
+    solutions: Solution[];
+    issues: Issue[];
+    suggestions: Suggestion[];
 
-  subscribeToProposalStore() {
-      this.proposals$ = this.proposalQuery.selectAll({})
-  }
+    constructor(
+        private proposalQuery: ProposalQuery,
+        private proposalService: ProposalService,
+        private auth: AuthenticationQuery,
+        public admin: AdminService
+    ) { }
 
-  fetchData() {
-      const isModerator = this.auth.isModerator()
-      // this.isLoading = true
-      const params = { softDeleted: isModerator ? true : '' }
+    ngOnInit() {
+        this.fetchData()
+        this.subscribeToProposalStore()
+    }
 
-      this.proposalService.list({ orgs: [], params })
-          .subscribe(() => true)
-  }
+    subscribeToProposalStore() {
+        this.proposals$ = this.proposalQuery.selectAll({})
+    }
+
+    fetchData() {
+        const isModerator = this.auth.isModerator()
+        // this.isLoading = true
+        const params = { softDeleted: isModerator ? true : '' }
+
+        this.proposalService.list({ orgs: [], params })
+            .subscribe(() => true)
+    }
 }
