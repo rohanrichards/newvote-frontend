@@ -3,13 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 import { handleError } from '@app/core/http/errors'
-import { store } from './rep.store'
+import { RepStore } from './rep.store'
 import { IRep, Rep } from '@app/core/models/rep.model'
 
 const routes = {
-    list: () => '/Reps',
+    list: () => '/reps',
     view: (c: RepContext) => `/reps/${c.id}`,
-    create: () => '/Reps',
+    create: () => '/reps',
     update: (c: RepContext) => `/reps/${c.id}`,
     delete: (c: RepContext) => `/reps/${c.id}`
 }
@@ -28,7 +28,7 @@ export class RepService {
 
     constructor(
         private httpClient: HttpClient,
-        private store: store
+        private store: RepStore
     ) { }
 
     list(context: RepContext): Observable<any[]> {

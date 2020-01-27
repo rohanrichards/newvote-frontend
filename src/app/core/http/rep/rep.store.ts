@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { EntityState, StoreConfig, EntityStore } from '@datorama/akita'
-import { Proposal } from '@app/core/models/proposal.model'
 import { Rep } from '@app/core/models/rep.model'
 
 export interface RepState extends EntityState<Rep> { };

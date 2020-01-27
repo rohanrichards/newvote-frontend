@@ -18,6 +18,6 @@ export class Rep implements IRep {
         public organizations: any = {},
         public proposals: Array<any> = [],
         public issues: Array<any> = [],
-        public solutions: Array<any> = []
+        public solutions: Array<any> = [],
     ) {}
 }
