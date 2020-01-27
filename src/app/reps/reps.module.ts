@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { RepsRoutingModule } from './reps-routing.module';
-import { RepsComponent } from './reps.component';
 import { SharedModule } from '@app/shared';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +15,6 @@ import { RepsViewComponent } from './view/reps-view.component';
 
 @NgModule({
     declarations: [
-        RepsComponent,
         RepsListComponent,
         RepsViewComponent
     ],

@@ -45,8 +45,6 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 
 import { NgxCaptchaModule } from 'ngx-captcha';
-import { RepsComponent } from './reps/reps.component';
-import { RepsModule } from './reps/reps.module'
 
 @NgModule({
     imports: [

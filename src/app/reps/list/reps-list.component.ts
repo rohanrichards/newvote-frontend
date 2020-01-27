@@ -6,9 +6,9 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 
 @Component({
-  selector: 'app-reps-list',
-  templateUrl: './reps-list.component.html',
-  styleUrls: ['./reps-list.component.scss']
+    selector: 'app-reps-list',
+    templateUrl: './reps-list.component.html',
+    styleUrls: ['./reps-list.component.scss']
 })
 
 export class RepsListComponent implements OnInit {
