@@ -3,6 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 
 import { Logger } from '../logger.service'
 import { AuthenticationService } from './authentication.service'
+import { AuthenticationQuery } from './authentication.query'
 
 const log = new Logger('AuthenticationGuard')
 
@@ -10,10 +11,10 @@ const log = new Logger('AuthenticationGuard')
 export class AuthenticationGuard implements CanActivate {
 
     constructor(private router: Router,
-        private authenticationService: AuthenticationService) { }
+        private authenticationService: AuthenticationService, private authQuery: AuthenticationQuery) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (this.authenticationService.isAuthenticated() && this.authenticationService.isCommunityVerified()) {
+        if (this.authenticationService.isAuthenticated() && this.authQuery.isCommunityVerified()) {
             return true
         }
 
