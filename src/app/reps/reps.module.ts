@@ -12,12 +12,16 @@ import { QuillSettings } from '@app/shared/quill/quill.settings';
 import { RepsListComponent } from './list/reps-list.component';
 import { RepsViewComponent } from './view/reps-view.component';
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { RepsEditComponent } from './edit/reps-edit.component';
+import { RepsCreateComponent } from './create/reps-create.component';
 
 
 @NgModule({
     declarations: [
         RepsListComponent,
-        RepsViewComponent
+        RepsViewComponent,
+        RepsEditComponent,
+        RepsCreateComponent
     ],
     imports: [
         CommonModule,

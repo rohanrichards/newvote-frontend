@@ -3,6 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { extract } from '@app/core';
 import { RepsListComponent } from './list/reps-list.component';
 import { RepsViewComponent } from './view/reps-view.component';
+import { RepsEditComponent } from './edit/reps-edit.component';
+import { ModeratorGuard } from '@app/core/authentication/moderator.guard';
 
 const routes: Routes = [
     {
@@ -18,6 +20,18 @@ const routes: Routes = [
             level: 'child'
         }
     },
+    {
+        path: 'create',
+        component: RepsEditComponent,
+        data: { title: extract('New Rep'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    },
+    {
+        path: 'edit/:id',
+        component: RepsEditComponent,
+        data: { title: extract('Edit Rep'), level: 'child' },
+        canActivate: [ModeratorGuard]
+    }
 ];
 
 @NgModule({

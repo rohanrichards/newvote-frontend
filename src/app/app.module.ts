@@ -43,8 +43,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
-
-import { NgxCaptchaModule } from 'ngx-captcha';
+import { NgxCaptchaModule } from 'ngx-captcha'
 
 @NgModule({
     imports: [
@@ -86,7 +85,7 @@ import { NgxCaptchaModule } from 'ngx-captcha';
         AppRoutingModule,
     ],
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     entryComponents: [
         ConfirmDialogComponent
