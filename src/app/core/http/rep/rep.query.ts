@@ -6,7 +6,7 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { Rep } from '@app/core/models/rep.model'
 
 @Injectable()
-export class SuggestionQuery extends QueryEntity<RepState, Rep> {
+export class RepQuery extends QueryEntity<RepState, Rep> {
     Reps$ = this.selectAll()
 
     constructor(

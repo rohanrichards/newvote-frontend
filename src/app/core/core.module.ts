@@ -46,6 +46,8 @@ import { MediaStore } from './http/media/media.store'
 import { MediaQuery } from './http/media/media.query'
 import { AuthenticationQuery } from './authentication/authentication.query'
 import { AuthenticationStore } from './authentication/authentication.store'
+import { RepQuery } from './http/rep/rep.query'
+import { RepStore } from './http/rep/rep.store'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -114,6 +116,8 @@ export function tokenGetter() {
         CommunityStore,
         MediaStore,
         MediaQuery,
+        RepQuery,
+        RepStore,
         {
             provide: HttpClient,
             useClass: HttpService

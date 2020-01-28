@@ -22,6 +22,8 @@ import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { RepService } from '@app/core/http/rep/rep.service';
+import { RepQuery } from '@app/core/http/rep/rep.query'
 
 @Component({
     selector: 'app-reps-edit',
@@ -79,29 +81,18 @@ export class RepsEditComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private issueQuery: IssueQuery,
         private auth: AuthenticationQuery,
-        private stateService: StateService
+        private stateService: StateService,
+        private repService: RepService,
+        private repQuery: RepQuery
     ) { }
 
     ngOnInit() {
-        this.filteredSolutions = this.repForm.get('solutions').valueChanges.pipe(
-            startWith(''),
-            map((solution: string) => solution ? this._filter(solution, this.allSolutions) : this.allSolutions.slice()))
-
-        this.filteredProposals = this.repForm.get('proposals').valueChanges.pipe(
-            startWith(''),
-            map((proposal: string) => proposal ? this._filter(proposal, this.allProposals) : this.allProposals.slice()))
-
-        this.filteredIssues = this.repForm.get('issues').valueChanges.pipe(
-            startWith(''),
-            map((issue: string) => {
-                console.log(issue, 'this is text')
-                console.log(this.allIssues, 'al issues')
-                return issue ? this._filter(issue, this.allIssues) : this.allIssues.slice()
-            }))
-
         this.isLoading = true
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
+
+            this.repService.view({ id: ID, orgs: [] })
+
             // this.subscribeToProposalStore(ID)
             // this.subscribeToOrganizationStore()
 
@@ -115,6 +106,7 @@ export class RepsEditComponent implements OnInit {
 
         this.fetchData()
         this.subscribeToStores()
+        this.initiateFilters()
 
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
@@ -133,6 +125,22 @@ export class RepsEditComponent implements OnInit {
                 }
             ]
         }
+    }
+
+    initiateFilters() {
+        this.filteredSolutions = this.repForm.get('solutions').valueChanges.pipe(
+            startWith(''),
+            map((solution: string) => solution ? this._filter(solution, this.allSolutions) : this.allSolutions.slice()))
+
+        this.filteredProposals = this.repForm.get('proposals').valueChanges.pipe(
+            startWith(''),
+            map((proposal: string) => proposal ? this._filter(proposal, this.allProposals) : this.allProposals.slice()))
+
+        this.filteredIssues = this.repForm.get('issues').valueChanges.pipe(
+            startWith(''),
+            map((issue: string) => {
+                return issue ? this._filter(issue, this.allIssues) : this.allIssues.slice()
+            }))
     }
 
     subscribeToStores() {
@@ -315,7 +323,6 @@ export class RepsEditComponent implements OnInit {
     }
 
     private _filter(value: any, entityArray: any[]): any[] {
-        console.log(value, 'this is value')
         const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase()
 
         const filterVal = entityArray.filter((item: any) => {

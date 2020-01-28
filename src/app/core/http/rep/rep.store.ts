@@ -4,7 +4,7 @@ import { Rep } from '@app/core/models/rep.model'
 
 export interface RepState extends EntityState<Rep> { };
 
-Injectable()
+@Injectable()
 @StoreConfig({ name: 'proposals', idKey: '_id' })
 export class RepStore extends EntityStore<RepState, Rep> {
     constructor() {
