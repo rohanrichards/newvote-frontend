@@ -14,6 +14,7 @@ import { RepsViewComponent } from './view/reps-view.component';
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
 import { RepsEditComponent } from './edit/reps-edit.component';
 import { RepsCreateComponent } from './create/reps-create.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { RepsCreateComponent } from './create/reps-create.component';
         QuillModule.forRoot(QuillSettings),
         LazyLoadImageModule.forRoot({
             preset: intersectionObserverPreset
-        })
+        }),
+        FileUploadModule
     ]
 })
 export class RepsModule { }

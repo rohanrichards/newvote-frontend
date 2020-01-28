@@ -7,6 +7,7 @@ export interface IRep {
     proposals: Array<any>;
     issues: Array<any>;
     solutions: Array<any>;
+    imageUrl: string;
 }
 
 export class Rep implements IRep {
@@ -19,5 +20,6 @@ export class Rep implements IRep {
         public proposals: Array<any> = [],
         public issues: Array<any> = [],
         public solutions: Array<any> = [],
+        public imageUrl: string = ''
     ) {}
 }
