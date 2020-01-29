@@ -15,7 +15,8 @@ export function createInitialState(): IUser {
         verified: false,
         profileImageURL: '',
         roles: [],
-        completedTour: false
+        completedTour: false,
+        organizations: []
     }
 }
 

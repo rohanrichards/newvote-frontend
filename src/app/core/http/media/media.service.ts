@@ -47,12 +47,12 @@ export class MediaService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 tap((res: Media[]) => {
                     this.voteService.populateStore(res)
                     this.mediaStore.add(res)
                 }),
                 map((res: Array<any>) => res),
-                catchError((e) => of([{ error: e }]))
             )
     }
 
@@ -60,12 +60,12 @@ export class MediaService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 tap((res: Media) => {
                     this.voteService.addEntityVote(res)
                     this.mediaStore.add(res)
                 }),
-                map((res: any) => res),
-                catchError((e) => of({ error: e }))
+                map((res: any) => res)
             )
     }
 
@@ -73,9 +73,9 @@ export class MediaService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.add(res)),
                 map((res: any) => res),
-                catchError((e) => of({ error: e }))
             )
     }
 
@@ -83,9 +83,9 @@ export class MediaService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.update(res._id, res)),
-                map((res: any) => res),
-                catchError((e) => of({ error: e }))
+                map((res: any) => res)
             )
     }
 
@@ -93,9 +93,9 @@ export class MediaService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.remove(res._id)),
-                map((res: any) => res),
-                catchError((e) => of({ error: e }))
+                map((res: any) => res)
             )
     }
 
@@ -103,8 +103,8 @@ export class MediaService {
         return this.httpClient
             .get(routes.meta(context))
             .pipe(
-                map((res: any) => res),
-                catchError((e) => of({ error: e }))
+                catchError((e) => of([{ error: e }])),
+                map((res: any) => res)
             )
     }
 

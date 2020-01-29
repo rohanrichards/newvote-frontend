@@ -46,9 +46,9 @@ export class TopicService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 tap((topics: Topic[]) => this.topicStore.add(topics)),
                 map((res: Array<any>) => res),
-                catchError(handleError)
             )
     }
 
@@ -57,9 +57,9 @@ export class TopicService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError(handleError),
                 tap((topic: Topic) => this.topicStore.add(topic)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -67,9 +67,9 @@ export class TopicService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((topic: Topic) => this.topicStore.add(topic)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -77,9 +77,9 @@ export class TopicService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -87,9 +87,9 @@ export class TopicService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 tap((topic: Topic) => this.topicStore.remove(topic._id)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
