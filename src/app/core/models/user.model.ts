@@ -1,3 +1,5 @@
+import { Organization } from "./organization.model";
+
 // TODO: complete this based off mongo
 
 export interface IUser {
@@ -13,6 +15,7 @@ export interface IUser {
     profileImageURL: string;
     roles: string[];
     completedTour?: boolean;
+    organizations: string[];
 }
 
 export class User implements IUser {
@@ -29,5 +32,6 @@ export class User implements IUser {
         public profileImageURL: string = '',
         public roles: string[] = ['guest'],
         public completedTour: boolean = false,
+        public organizations: any[] = []
     ) { }
 }

@@ -61,8 +61,8 @@ export class VoteService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 map((res: Array<any>) => res),
-                catchError(handleError)
             )
     }
 
@@ -70,8 +70,8 @@ export class VoteService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError(handleError),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -80,8 +80,8 @@ export class VoteService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -90,8 +90,8 @@ export class VoteService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -99,8 +99,8 @@ export class VoteService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 

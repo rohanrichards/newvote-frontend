@@ -31,8 +31,8 @@ export class UserService {
         return this.httpClient
             .get(routes.count())
             .pipe(
+                catchError((e) => of([{ error: e }])),
                 map((res: Array<any>) => res),
-                catchError((e) => of({ error: e }))
             )
     }
 
@@ -54,8 +54,8 @@ export class UserService {
         return this.httpClient
             .get(routes.list(), options)
             .pipe(
-                map((res: Array<any>) => res),
-                catchError((e) => of([{ error: e }]))
+                catchError((e) => of([{ error: e }])),
+                map((res: Array<any>) => res)
             )
     }
 
@@ -90,8 +90,8 @@ export class UserService {
         return this.httpClient
             .patch(routes.patch(context), context.entity)
             .pipe(
+                catchError((e) => of({ error: e })),
                 map((res: any) => res),
-                catchError((e) => of({ error: e }))
             )
     }
     // delete(context: UserContext): Observable<any> {

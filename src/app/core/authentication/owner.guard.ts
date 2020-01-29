@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 
 import { Logger } from '../logger.service'
-import { AuthenticationService } from './authentication.service'
+import { AuthenticationQuery } from './authentication.query'
 
 const log = new Logger('OwnerGuard')
 
@@ -10,10 +10,11 @@ const log = new Logger('OwnerGuard')
 export class OwnerGuard implements CanActivate {
 
     constructor(private router: Router,
-        private authenticationService: AuthenticationService) { }
+        private authQuery: AuthenticationQuery
+    ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (this.authenticationService.isOwner()) {
+        if (this.authQuery.isOwner()) {
             return true
         }
 
