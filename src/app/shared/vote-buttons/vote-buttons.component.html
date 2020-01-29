@@ -12,21 +12,20 @@
             <button mat-raised-button
                 fxFlex="1 1 100%"
                 [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
-                class="vote-button"
-                color="primary"
+                class="vote-button vote-up"
+                
                 (click)="onVote(item, 1, $event)"><span fxHide="true"
                     fxShow.gt-xs="true">VOTE UP</span>
-                <mat-icon>arrow_upward</mat-icon>
+                <mat-icon>thumb_up</mat-icon>
             </button>
 
             <button fxFlex="1 1 100%"
                 mat-raised-button
                 [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
-                class="vote-button vote-button-dark"
-                color="primary"
+                class="vote-button vote-down"
                 (click)="onVote(item, -1, $event)"><span fxHide="true"
                     fxShow.gt-xs="true">VOTE DOWN</span>
-                <mat-icon>arrow_downward</mat-icon>
+                <mat-icon>thumb_down</mat-icon>
             </button>
         </div>
     </div>
