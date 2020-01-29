@@ -45,11 +45,11 @@ export class SuggestionService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 tap((data: Suggestion[]) => {
                     this.voteService.populateStore(data)
                     this.suggestionStore.add(data)
-                }),
-                catchError(handleError)
+                })
             )
     }
 
@@ -57,12 +57,12 @@ export class SuggestionService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError(handleError),
                 tap((res: Suggestion) => {
                     this.voteService.addEntityVote(res)
                     this.suggestionStore.add(res)
                 }),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -70,9 +70,9 @@ export class SuggestionService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: Suggestion) => this.suggestionStore.add(res)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -80,9 +80,9 @@ export class SuggestionService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: Suggestion) => this.suggestionStore.update(res._id, res)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -90,9 +90,9 @@ export class SuggestionService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 tap((res: any) => this.suggestionStore.remove(res._id)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
