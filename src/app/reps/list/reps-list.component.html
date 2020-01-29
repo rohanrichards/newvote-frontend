@@ -7,6 +7,14 @@
         2.2) A textarea field, 250 characters max
     3) A section to list tiles e.g Issues, solutions Actions
  -->
+ <mat-toolbar>
+    <div class="example-button-row">
+        <button mat-icon-button matTooltip="Manage Reps" (click)="openDialog()">
+          <mat-icon aria-label="Manage Reps">add</mat-icon>
+        </button>
+        Open Reps Menu
+    </div>
+ </mat-toolbar>
  <div class="reps-container" fxLayout="row" fxLayoutGap="16px">
     <mat-card >
         <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />

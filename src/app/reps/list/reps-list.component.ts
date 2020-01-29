@@ -9,6 +9,8 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 import { Solution } from '@app/core/models/solution.model';
 import { Issue } from '@app/core/models/issue.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { RepModalComponent } from '@app/shared/rep-modal/rep-modal.component';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -29,10 +31,11 @@ export class RepsListComponent implements OnInit {
     suggestions: Suggestion[];
 
     constructor(
+        public dialog: MatDialog,
         private proposalQuery: ProposalQuery,
         private proposalService: ProposalService,
         private auth: AuthenticationQuery,
-        public admin: AdminService
+        public admin: AdminService,
     ) { }
 
     ngOnInit() {
@@ -51,5 +54,19 @@ export class RepsListComponent implements OnInit {
 
         this.proposalService.list({ orgs: [], params })
             .subscribe(() => true)
+    }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(RepModalComponent, {
+            width: '400px',
+            data: { repEmail: '', newReps: [], currentReps: ['Jamie', 'Craig'] }
+        })
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (!result) {
+                console.log('CLOSED')
+            }
+            console.log(result)
+        })
     }
 }
