@@ -59,11 +59,11 @@ export class TopicViewComponent implements OnInit {
     }
 
     subscribeToTopicStore(id: string) {
-        this.topicQuery.selectEntity(id)
-            .subscribe((topic: Topic) => {
-                if (!topic) return false
+        this.topicQuery.getTopicWithSlug(id)
+            .subscribe((topics: Topic[]) => {
+                if (!topics.length) return false
+                const [ topic, ...rest ] = topics;
                 this.topic = topic
-
             })
     }
 

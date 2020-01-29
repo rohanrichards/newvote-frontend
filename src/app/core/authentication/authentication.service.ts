@@ -9,7 +9,7 @@ import { CookieService } from 'ngx-cookie-service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { Organization } from '@app/core/models/organization.model'
 import { handleError } from '../http/errors'
-import { AuthenticationStore } from './authentication.store'
+import { AuthenticationStore, createInitialState } from './authentication.store'
 
 export interface Credentials {
     // Customize received credentials here
@@ -45,6 +45,7 @@ const routes = {
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
+    communityVerify: () => '/users/community-verify',
     sso: () => '/auth/jwt',
     checkAuth: () => '/auth/check-status'
 }
@@ -62,7 +63,6 @@ export class AuthenticationService {
     private _org: Organization;
 
     // Only use if a user has a verified account and is visiting a new community
-    private communityVerified = true;
 
     constructor(
         private httpClient: HttpClient,
@@ -88,11 +88,11 @@ export class AuthenticationService {
         this.checkStatus()
             .subscribe(
                 (res) => {
-                    this.checkIfCommunityVerified(res.user)
                     return this.setCredentials(res, true)
                 },
                 (err) => {
                     if (err.status === 400) {
+                        this.authenticationStore.update(createInitialState())
                         return this.setCredentials()
                     }
                 }
@@ -111,7 +111,6 @@ export class AuthenticationService {
             .pipe(
                 tap((res) => this.authenticationStore.update(res.user)),
                 map((res) => {
-                    this.checkIfCommunityVerified(res.user)
                     this.setCredentials(res, context.remember)
                     return res
                 })
@@ -155,7 +154,7 @@ export class AuthenticationService {
         // Customize credentials invalidation here
         this.setCredentials()
         // reset community verified once no user is there (only shows if logged in)
-        this.communityVerified = true
+        // this.communityVerified = true
         this.cookieService.delete('credentials')
         this.authenticationStore.reset()
 
@@ -319,31 +318,6 @@ export class AuthenticationService {
         this.setCredentials(this._credentials, true)
     }
 
-    isCommunityVerified(): boolean {
-        return this.communityVerified
-    }
-
-    checkIfCommunityVerified(user?: any) {
-
-        const { organizations } = user
-        const isUserPartOfOrg = organizations.find((id: string) => {
-            return this._org._id === id
-        })
-
-        // community verification only for verified users
-        if (!user.verified) {
-            return false
-        }
-
-        if (!isUserPartOfOrg) {
-            this.communityVerified = false
-            return false
-        }
-
-        this.communityVerified = true
-        return true
-    }
-
     setVerified(credentials: Credentials) {
         // debugger;
         if (localStorage.getItem(credentialsKey)) {
@@ -370,6 +344,35 @@ export class AuthenticationService {
             .pipe(
                 map((res) => {
                     return res
+                })
+            )
+    }
+
+    verifyWithCommunity(): Observable<any> {
+        return this.httpClient
+            .post(routes.communityVerify(), {})
+            .pipe(
+                tap((res: any) => {
+                    const { verified, organizations } = res
+                    this.authenticationStore.update({
+                        verified,
+                        organizations
+                    })
+
+                    // After updating store - if we refresh page credentials will have not updated,
+                    // the store will pull data from the data store on local store
+                    // need to update local store with latest verification data
+
+                    let { user, token } = this._credentials;
+                    user.verified = verified;
+                    user.organizations = organizations;
+
+                    const newCreds = {
+                        user,
+                        token
+                    }
+                    
+                    this.setCredentials(newCreds, true);
                 })
             )
     }

@@ -87,10 +87,6 @@ export class LoginComponent implements OnInit {
         return this.i18nService.supportedLanguages
     }
 
-    get isCommunityVerified(): boolean {
-        return this.authenticationService.isCommunityVerified()
-    }
-
     loginWithSSO() {
         let url
 
