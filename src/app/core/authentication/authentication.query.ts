@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core'
 import { IUser } from '../models/user.model'
 import { AuthenticationStore } from './authentication.store'
-import { Query } from '@datorama/akita'
+import { Query, toBoolean, combineQueries } from '@datorama/akita'
 import { OrganizationQuery } from '../http/organization/organization.query'
+import { map } from 'rxjs/operators'
+import { Organization } from '../models/organization.model'
+import { Observable } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
+
+    isCommunityVerified$: Observable<any>;
 
     constructor(
         protected store: AuthenticationStore,
@@ -17,6 +22,17 @@ export class AuthenticationQuery extends Query<IUser> {
 
     isLoggedIn() {
         return !!this.getValue()._id
+    }
+
+    isCommunityVerified() {
+        return combineQueries([
+            this.select(),
+            this.organizationQuery.select()
+        ]).pipe(
+            map(([user, organization]) => {
+                return this.isUserPartOfOrganization(user, organization)
+            })
+        )
     }
 
     isOwner() {
@@ -46,6 +62,31 @@ export class AuthenticationQuery extends Query<IUser> {
 
             return moderator._id === userId
         })
+    }
+
+    isUserPartOfOrganization(user: IUser, organization: Organization) {
+        if (!user.verified) return false
+        if (user.roles.includes('guest')) return false
+        if (!user.mobileNumber && organization.authType === 0) return false
+        if (!user.organizations.length) return false
+
+        return user.organizations.some((userOrganization: any) => {
+            if (typeof userOrganization === 'string') return organization._id === userOrganization
+            return organization._id === userOrganization._id
+        })
+    }
+
+    isUserVerified() {
+        return toBoolean(this.getValue().verified)
+    }
+
+    doesMobileNumberExist() {
+        const number = this.getValue().mobileNumber
+
+        if (number && number.length) {
+            return true
+        }
+        return false
     }
 
 }
