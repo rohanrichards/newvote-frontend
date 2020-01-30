@@ -52,6 +52,7 @@ export class NavbarComponent implements OnInit {
                 if (!res) return false
                 this.isRep = res
             })
+
         this.repQuery.repId$
             .subscribe((res) => {
                 if (!res) return false

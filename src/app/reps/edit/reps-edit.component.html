@@ -12,7 +12,7 @@
                 <!-- {{repForm.status}} -->
                 <input matInput
                     placeholder="Name"
-                    formControlName="title"
+                    formControlName="displayName"
                     required>
                 <mat-error *ngIf="repForm.hasError('required', ['title'])">
                     Name is <strong>required</strong>
@@ -117,7 +117,7 @@
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="Select a proposal..."
-                        #solutionInput
+                        #proposalInput
                         formControlName="proposals"
                         [matAutocomplete]="proposalAuto"
                         [matChipInputFor]="proposalChipList"
@@ -144,7 +144,7 @@
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="Select a issue..."
-                        #solutionInput
+                        #issueInput
                         formControlName="issues"
                         [matAutocomplete]="issueAuto"
                         [matChipInputFor]="issueChipList"

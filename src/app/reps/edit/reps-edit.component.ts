@@ -1,8 +1,8 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatAutocomplete } from '@angular/material';
+import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material';
 import { finalize, startWith, map } from 'rxjs/operators';
 import { IRep, Rep } from '@app/core/models/rep.model';
 import { merge, Observable, forkJoin } from 'rxjs';
@@ -52,14 +52,16 @@ export class RepsEditComponent implements OnInit {
     filteredProposals: Observable<IProposal[]>;
 
     repForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
-        description: new FormControl('', [Validators.required]),
-        position: new FormControl(''),
+        displayName: new FormControl('', [Validators.required]),
+        description: new FormControl(''),
+        position: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required]),
-        proposals: new FormControl([]),
-        solutions: new FormControl([]),
-        issues: new FormControl([]),
+        proposals: new FormControl(''),
+        solutions: new FormControl(''),
+        issues: new FormControl(''),
     });
+
+    DEFAULT_IMAGE = 'https://via.placeholder.com/250'
 
     @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
@@ -83,29 +85,27 @@ export class RepsEditComponent implements OnInit {
         private auth: AuthenticationQuery,
         private stateService: StateService,
         private repService: RepService,
-        private repQuery: RepQuery
+        private repQuery: RepQuery,
+        public snackBar: MatSnackBar
     ) { }
 
     ngOnInit() {
-        this.isLoading = true
+        // this.isLoading = true
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
 
-            // this.repService.view({ id: ID, orgs: [] })
+            this.repService.view({ id: ID, orgs: [] })
+                .subscribe(
+                    (res) => res,
+                    (err) => err
+                )
 
+            this.subscribeToRepStore(ID)
             // this.subscribeToProposalStore(ID)
             // this.subscribeToOrganizationStore()
-
-            // this.proposalService.view({ id: ID, orgs: [] })
-            //     .pipe(finalize(() => { this.isLoading = false }))
-            //     .subscribe(
-            //         (res) => res,
-            //         (err) => err
-            //     )
         })
 
         this.fetchData()
-        this.subscribeToStores()
         this.initiateFilters()
 
         // set up the file uploader
@@ -125,6 +125,58 @@ export class RepsEditComponent implements OnInit {
                 }
             ]
         }
+
+        this.uploader = new FileUploader(uploaderOptions)
+
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
+
+        this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
+            // Add Cloudinary's unsigned upload preset to the upload form
+            form.append('upload_preset', 'qhf7z3qa')
+            // Add file to upload
+            form.append('file', fileItem)
+
+            // Use default "withCredentials" value for CORS requests
+            fileItem.withCredentials = false
+            return { fileItem, form }
+        }
+    }
+
+    updateForm(rep: any) {
+        this.imageUrl = rep.imageUrl || this.DEFAULT_IMAGE
+        this.repForm.patchValue({
+            position: rep.position,
+            displayName: rep.displayName,
+            description: rep.description,
+            imageUrl: rep.imageUrl || this.DEFAULT_IMAGE,
+        })
+    }
+
+    updateTags(rep: any) {
+        this.meta.updateTags(
+            {
+                title: `Edit ${rep.displayName}`,
+                appBarTitle: 'Edit Rep',
+            })
+    }
+
+    subscribeToRepStore(id: any) {
+        this.repQuery.selectAll({
+            filterBy: (rep) => rep._id === id
+        })
+            .subscribe((repArray: any) => {
+                if (!repArray.length) return false
+                const [rep, ...rest ] = repArray
+                this.rep = rep
+                this.updateForm(rep)
+                this.updateTags(rep)
+                // Used to get entity data after rep has been loaded
+                this.subscribeToStores(rep)
+            })
     }
 
     initiateFilters() {
@@ -143,7 +195,18 @@ export class RepsEditComponent implements OnInit {
             }))
     }
 
-    subscribeToStores() {
+    subscribeToStores(rep: any) {
+        let { proposals, solutions, issues } = rep
+        proposals = proposals.map((proposal: any) => {
+            return proposal._id
+        })
+        solutions = solutions.map((solution: any) => {
+            return solution._id
+        })
+        issues = issues.map((issue: any) => {
+            return issue._id
+        })
+        // All entities
         this.proposalQuery.proposals$
             .subscribe((res) => {
                 this.allProposals = res
@@ -156,13 +219,27 @@ export class RepsEditComponent implements OnInit {
             .subscribe((res) => {
                 this.allIssues = res
             })
+
+        // selectedEntities
+        this.proposalQuery.selectMany(proposals)
+            .subscribe((res) => {
+                this.proposals = res
+            })
+        this.solutionQuery.selectMany(solutions)
+            .subscribe((res) => {
+                this.solutions = res
+            })
+        this.issueQuery.selectMany(issues)
+            .subscribe((res) => {
+                this.issues = res
+            })
     }
 
     fetchData() {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
 
-        this.isLoading = true
+        // this.isLoading = true
         // this.stateService.setLoadingState(AppState.loading)
 
         const getSolutions = this.solutionService.list({ params })
@@ -219,7 +296,7 @@ export class RepsEditComponent implements OnInit {
         const rep = cloneDeep(this.rep)
         // merge(rep, this.repForm.value)
 
-        this.isLoading = true
+        // this.isLoading = true
         this.uploader.onCompleteAll = () => {
             this.isLoading = false
         }
@@ -241,22 +318,30 @@ export class RepsEditComponent implements OnInit {
     }
 
     updateWithApi(rep: any) {
-        // rep.organizations = this.organization
-        // rep.solutions = this.solutions
+        rep.organizations = this.organization
+        const newRep = cloneDeep(rep)
+        merge(newRep, this.repForm.value)
 
-        // if (this.resetImage) {
-        //     rep.imageUrl = this.imageUrl;
-        // }
+        if (this.resetImage) {
+            rep.imageUrl = this.imageUrl
+        }
 
-        // this.proposalService.update({ id: proposal._id, entity: proposal })
-        //     .pipe(finalize(() => { this.isLoading = false }))
-        //     .subscribe(
-        //         (t) => {
-        //             this.openSnackBar('Succesfully updated', 'OK')
-        //             this.router.navigate([`/proposals/${t.slug || t._id}`])
-        //         },
-        //         (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-        //     )
+        this.repService.update({ id: newRep._id, entity: newRep })
+            .pipe(finalize(() => { this.isLoading = false }))
+            .subscribe(
+                (t) => {
+                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.router.navigate([`/reps/${t._id}`])
+                },
+                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+            )
+    }
+
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        })
     }
 
     solutionSelected(event: any) {
@@ -323,7 +408,8 @@ export class RepsEditComponent implements OnInit {
     }
 
     private _filter(value: any, entityArray: any[]): any[] {
-        const filterValue = value.title ? value.title.toLowerCase() : value.toLowerCase()
+        const title = value.title || value.name
+        const filterValue = title ? title.toLowerCase() : value.toLowerCase()
 
         const filterVal = entityArray.filter((item: any) => {
             const { title, name } = item
