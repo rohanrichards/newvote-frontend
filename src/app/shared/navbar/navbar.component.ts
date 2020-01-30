@@ -8,6 +8,8 @@ import { MatSidenav } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
 import { map, take } from 'rxjs/operators'
 import { Location } from '@angular/common'
+import { RepQuery } from '@app/core/http/rep/rep.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -22,22 +24,38 @@ export class NavbarComponent implements OnInit {
     showSearch = false;
     hideVerify = false;
 
+    isRep = false
+
     routeLevel: string;
+    userId: string;
 
     constructor(
         private meta: MetaService,
         private titleService: Title,
         public auth: AuthenticationService,
+        private authQuery: AuthenticationQuery,
         private router: Router,
         private media: MediaObserver,
         private route: ActivatedRoute,
-        private location: Location
+        private location: Location,
+        public repQuery: RepQuery
     ) { }
 
     ngOnInit() {
         this.meta.routeLevel$
             .subscribe((res) => {
                 this.routeLevel = res
+            })
+
+        this.repQuery.isRep()
+            .subscribe((res) => {
+                if (!res) return false
+                this.isRep = res
+            })
+        this.repQuery.repId$
+            .subscribe((res) => {
+                if (!res) return false
+                this.userId = res._id
             })
     }
 

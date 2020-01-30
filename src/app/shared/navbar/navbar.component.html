@@ -68,6 +68,11 @@
                         routerLink="/communities/edit/{{organization._id}}"
                         translate>Edit Community</a>
                     <mat-divider></mat-divider>
+                    <a mat-menu-item
+                        *ngIf="isRep && organization"
+                        routerLink="/reps/edit/{{userId}}"
+                        translate>Edit Profile</a>
+                    <mat-divider></mat-divider>
                 </mat-list>
                 <button mat-menu-item
                     (click)="logout()"
