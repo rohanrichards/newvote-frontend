@@ -11,14 +11,16 @@ const routes = {
     view: (c: RepContext) => `/reps/${c.id}`,
     create: () => '/reps',
     update: (c: RepContext) => `/reps/${c.id}`,
+    deleteMany: () => '/reps',
     delete: (c: RepContext) => `/reps/${c.id}`
+
 }
 
 export interface RepContext {
     // The Rep's category: 'dev', 'explicit'...
     orgs?: Array<string>; // users organisations
     id?: string; // id of object to find/modify
-    entity?: IRep; // the object being created or edited
+    entity?: any; // the object being created or edited
     params?: any;
     forceUpdate?: boolean;
 }
@@ -90,6 +92,21 @@ export class RepService {
             .delete(routes.delete(context))
             .pipe(
                 tap((rep: Rep) => this.store.remove(rep._id)),
+                map((res: any) => res),
+                catchError(handleError)
+            )
+    }
+
+    deleteMany(context: RepContext): Observable<any> {
+        return this.httpClient
+            .put(routes.deleteMany(), context.entity)
+            .pipe(
+                tap((reps: any) => {
+                    const deletedIds = reps.slice().map((rep: any) => {
+                        return rep._id
+                    })
+                    this.store.remove(deletedIds)
+                }),
                 map((res: any) => res),
                 catchError(handleError)
             )

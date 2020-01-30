@@ -91,7 +91,7 @@ export class RepsEditComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
 
-            this.repService.view({ id: ID, orgs: [] })
+            // this.repService.view({ id: ID, orgs: [] })
 
             // this.subscribeToProposalStore(ID)
             // this.subscribeToOrganizationStore()

@@ -15,6 +15,7 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 import { RepsEditComponent } from './edit/reps-edit.component';
 import { RepsCreateComponent } from './create/reps-create.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { RepService } from '@app/core/http/rep/rep.service';
 
 
 @NgModule({
@@ -38,6 +39,9 @@ import { FileUploadModule } from 'ng2-file-upload';
             preset: intersectionObserverPreset
         }),
         FileUploadModule
+    ],
+    providers: [
+        RepService
     ]
 })
 export class RepsModule { }

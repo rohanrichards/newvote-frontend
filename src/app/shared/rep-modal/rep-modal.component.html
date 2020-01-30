@@ -4,24 +4,37 @@
         <div fxLayout="row">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Add new Rep"
-                   [(ngModel)]="data.repEmail" [ngModelOptions]="{standalone: true}">
+                    [(ngModel)]="data.repEmail"
+                    [ngModelOptions]="{standalone: true}">
             </mat-form-field>
             <button mat-button (click)="addRep()">Submit New Rep</button>
         </div>
-       
+
     </form>
     <mat-list role="list">
         <h3 mat-subheader>New Student Reps</h3>
         <mat-list-item role="listitem" *ngFor="let rep of data.newReps">
             <mat-icon mat-list-icon>chevron_right</mat-icon>
             <h4 mat-line>{{ rep }}</h4>
+            <button mat-icon-button color="accent"
+                aria-label="Remove rep"
+                (click)="removeNewRep(rep)"
+                >
+                <mat-icon>delete_outline</mat-icon>
+            </button>
         </mat-list-item>
     </mat-list>
     <mat-list role="list">
         <h3 mat-subheader>Current Student Reps</h3>
         <mat-list-item role="listitem" *ngFor="let rep of data.currentReps">
             <mat-icon mat-list-icon>chevron_right</mat-icon>
-            <h4 mat-line>{{ rep }}</h4>
+            <h4 mat-line>{{ rep.displayName }}</h4>
+            <button mat-icon-button color="accent"
+                aria-label="Delete Rep"
+                (click)="removeCurrentRep(rep)"
+                >
+                <mat-icon>delete_outline</mat-icon>
+            </button>
         </mat-list-item>
     </mat-list>
     <div fxLayoutAlign="end end">

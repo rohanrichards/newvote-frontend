@@ -11,6 +11,9 @@ import { Issue } from '@app/core/models/issue.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { RepModalComponent } from '@app/shared/rep-modal/rep-modal.component';
+import { Rep } from '@app/core/models/rep.model';
+import { RepService } from '@app/core/http/rep/rep.service';
+import { RepQuery } from '@app/core/http/rep/rep.query';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -23,8 +26,7 @@ export class RepsListComponent implements OnInit {
     proposals$: Observable<Proposal[]>;
     handleImageUrl = optimizeImage;
     imageUrl = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FAyyM_Yxlmx4%2Fmaxresdefault.jpg&f=1&nofb=1'
-    reps: any;
-
+    reps: any[];
     proposals: Proposal[];
     solutions: Solution[];
     issues: Issue[];
@@ -32,15 +34,29 @@ export class RepsListComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
+        private repsService: RepService,
+        private repQuery: RepQuery,
         private proposalQuery: ProposalQuery,
         private proposalService: ProposalService,
         private auth: AuthenticationQuery,
         public admin: AdminService,
+
     ) { }
 
     ngOnInit() {
         this.fetchData()
         this.subscribeToProposalStore()
+        this.subscribeToRepStore()
+    }
+
+    subscribeToRepStore() {
+        this.repQuery.selectAll()
+            .subscribe(
+                (reps) => {
+                    this.reps = reps
+                },
+                (err) => err
+            )
     }
 
     subscribeToProposalStore() {
@@ -54,19 +70,42 @@ export class RepsListComponent implements OnInit {
 
         this.proposalService.list({ orgs: [], params })
             .subscribe(() => true)
+
+        this.repsService.list({ orgs: [], params })
+            .subscribe((res) => res)
     }
 
     openDialog(): void {
         const dialogRef = this.dialog.open(RepModalComponent, {
             width: '400px',
-            data: { repEmail: '', newReps: [], currentReps: ['Jamie', 'Craig'] }
+            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [] }
         })
 
         dialogRef.afterClosed().subscribe(result => {
-            if (!result) {
-                console.log('CLOSED')
+            if (!result) return false
+            const { newReps, removeReps, currentReps } = result
+            if (removeReps.length) {
+                this.deleteReps(removeReps)
             }
-            console.log(result)
+            if (newReps.length) {
+                this.createReps({ newReps, currentReps })
+            }
         })
+    }
+
+    createReps(reps: any) {
+        this.repsService.create({ entity: reps })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
+    }
+
+    deleteReps(reps: any) {
+        this.repsService.deleteMany({ entity: reps })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 }

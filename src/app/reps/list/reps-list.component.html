@@ -16,85 +16,17 @@
     </div>
  </mat-toolbar>
  <div class="reps-container" fxLayout="row" fxLayoutGap="16px">
-    <mat-card >
+    <mat-card *ngFor="let rep of reps">
         <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />
         <mat-card-header>
             <div>
-                <p class="mat-h3 mat-subheading-1">Name</p>
-                <p class="mat-h3 mat-subheading-1">Position</p>
+                <p class="mat-h3 mat-subheading-1">Name: {{ rep.displayName }}</p>
+                <p class="mat-h3 mat-subheading-1">Position: {{ rep.position }}</p>
             </div>
         </mat-card-header>
         <div>
-            <quill-editor></quill-editor>
-        </div>
-        <mat-card-content>
-            <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <app-card-list
-                path="/proposals"
-                [items$]="proposals$"
-                model="Proposal"
-                [showChildren]="false"
-            >
-            </app-card-list>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-        <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />
-        <mat-card-header>
-            <div>
-                <p class="mat-h3 mat-subheading-1">Name</p>
-                <p class="mat-h3 mat-subheading-1">Position</p>
-            </div>
-        </mat-card-header>
-        <div>
-            <quill-editor></quill-editor>
-        </div>
-        <mat-card-content>
-            <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <app-card-list
-                path="/proposals"
-                [items$]="proposals$"
-                model="Proposal"
-                [showChildren]="false"
-            >
-            </app-card-list>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-        <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />
-        <mat-card-header>
-            <div>
-                <p class="mat-h3 mat-subheading-1">Name</p>
-                <p class="mat-h3 mat-subheading-1">Position</p>
-            </div>
-        </mat-card-header>
-        <div>
-            <quill-editor></quill-editor>
-        </div>
-        <mat-card-content>
-            <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <app-card-list
-                path="/proposals"
-                [items$]="proposals$"
-                model="Proposal"
-                [showChildren]="false"
-            >
-            </app-card-list>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-        <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />
-        <mat-card-header>
-            <div>
-                <p class="mat-h3 mat-subheading-1">Name</p>
-                <p class="mat-h3 mat-subheading-1">Position</p>
-            </div>
-        </mat-card-header>
-        <div>
-            <quill-editor></quill-editor>
+            <p class="mat-h3 mat-subheading-1">About:</p>
+            <p>{{ rep.description }}</p>
         </div>
         <mat-card-content>
             <p class="mat-h2">Issues, Solutions, and Actions:</p>
