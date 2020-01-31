@@ -94,6 +94,8 @@ export class RepsEditComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
 
+            this.fetchData()
+            this.initiateFilters()
             this.repService.view({ id: ID, orgs: [] })
                 .subscribe(
                     (res) => res,
@@ -101,12 +103,9 @@ export class RepsEditComponent implements OnInit {
                 )
 
             this.subscribeToRepStore(ID)
-            // this.subscribeToProposalStore(ID)
-            // this.subscribeToOrganizationStore()
         })
 
-        this.fetchData()
-        this.initiateFilters()
+
 
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
@@ -198,12 +197,21 @@ export class RepsEditComponent implements OnInit {
     subscribeToStores(rep: any) {
         let { proposals, solutions, issues } = rep
         proposals = proposals.map((proposal: any) => {
+            if (typeof proposal === 'string') {
+                return proposal
+            }
             return proposal._id
         })
         solutions = solutions.map((solution: any) => {
+            if (typeof solution === 'string') {
+                return solution
+            }
             return solution._id
         })
         issues = issues.map((issue: any) => {
+            if (typeof issue === 'string') {
+                return issue
+            }
             return issue._id
         })
         // All entities
@@ -221,16 +229,27 @@ export class RepsEditComponent implements OnInit {
             })
 
         // selectedEntities
-        this.proposalQuery.selectMany(proposals)
+        this.proposalQuery.selectAll({
+            filterBy: (proposal: any) => proposals.includes(proposal._id)
+        })
             .subscribe((res) => {
+                if (!res.length) return false
                 this.proposals = res
             })
-        this.solutionQuery.selectMany(solutions)
+        this.solutionQuery.selectAll({
+            filterBy: (solution: any) => solutions.includes(solution._id)
+        })
             .subscribe((res) => {
+                if (!res.length) return false
+
                 this.solutions = res
             })
-        this.issueQuery.selectMany(issues)
+
+        this.issueQuery.selectAll({
+            filterBy: (issue: any) => issues.includes(issue._id)
+        })
             .subscribe((res) => {
+                if (!res.length) return false
                 this.issues = res
             })
     }
