@@ -39,7 +39,7 @@ export class RepsViewComponent implements OnInit {
     constructor(
         private proposalQuery: ProposalQuery,
         private proposalService: ProposalService,
-        private auth: AuthenticationQuery,
+        public auth: AuthenticationQuery,
         private issueQuery: IssueQuery,
         private solutionQuery: SolutionQuery,
         private solutionService: SolutionService,

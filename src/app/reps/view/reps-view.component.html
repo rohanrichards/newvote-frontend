@@ -34,7 +34,7 @@
             [defaultImage]="handleImageUrl(imageUrl, true)"
             [lazyLoad]="handleImageUrl(imageUrl)">
             <div class="admin-panel"
-                *ngIf="auth.isModerator()"
+                *ngIf="repQuery.isRep()"
                 fxLayout="column"
                 fxLayoutAlign="center end">
                 <div class="button-panel">

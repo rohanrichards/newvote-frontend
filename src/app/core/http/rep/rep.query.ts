@@ -6,6 +6,9 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { Rep } from '@app/core/models/rep.model'
 import { map } from 'rxjs/operators'
 import { OrganizationQuery } from '../organization/organization.query'
+import { ProposalQuery } from '../proposal/proposal.query'
+import { SolutionQuery } from '../solution/solution.query'
+import { IssueQuery } from '../issue/issue.query'
 
 @Injectable()
 export class RepQuery extends QueryEntity<RepState, Rep> {
@@ -30,7 +33,10 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
     constructor(
         protected store: RepStore,
         private auth: AuthenticationQuery,
-        private orgQuery: OrganizationQuery
+        private orgQuery: OrganizationQuery,
+        private proposalQuery: ProposalQuery,
+        private solutionQuery: SolutionQuery,
+        private issueQuery: IssueQuery
     ) {
         super(store)
     }
@@ -67,6 +73,54 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
                     return hasRepRole && isRepForOrg
                 })
             )
+    }
 
+    populateReps() {
+        return combineQueries(
+            [
+                this.selectAll(),
+                this.proposalQuery.selectAll(),
+                this.solutionQuery.selectAll(),
+                this.issueQuery.selectAll()
+            ]
+        )
+            .pipe(
+                map((result: any) => {
+                    const [reps, proposals, solutions, issues] = result
+                    
+                    console.log(reps, 'this is before reps')
+                    if (!reps.length) return false
+                    reps.map((rep: any) => {
+                        console.log('LOOPING')
+                        if (rep.proposals.length && proposals.length) {
+                            rep.proposals = rep.proposals.map((proposalId: any) => {
+                                return proposals.find((item: any) => {
+                                    return item._id === proposalId
+                                })
+                            })
+                        }
+
+                        if (rep.solutions.length && solutions.length) {
+                            rep.solutions = rep.solutions.map((solutionId: any) => {
+                                return solutions.find((item: any) => {
+                                    return item._id === solutionId
+                                })
+                            })
+                        }
+
+                        if (rep.issues.length && issues.length) {
+                            rep.issues = rep.issues.map((issueId: any) => {
+                                return issues.find((item: any) => {
+                                    return item._id === issueId
+                                })
+                            })
+                        }
+
+                        return rep
+                    })
+                    console.log(reps, 'this is after reps')
+                    return reps
+                })
+            )
     }
 }

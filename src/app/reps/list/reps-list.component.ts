@@ -14,6 +14,8 @@ import { RepModalComponent } from '@app/shared/rep-modal/rep-modal.component';
 import { Rep } from '@app/core/models/rep.model';
 import { RepService } from '@app/core/http/rep/rep.service';
 import { RepQuery } from '@app/core/http/rep/rep.query';
+import { SolutionService } from '@app/core/http/solution/solution.service';
+import { IssueService } from '@app/core/http/issue/issue.service';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -38,6 +40,8 @@ export class RepsListComponent implements OnInit {
         private repQuery: RepQuery,
         private proposalQuery: ProposalQuery,
         private proposalService: ProposalService,
+        private solutionService: SolutionService,
+        private issueService: IssueService,
         private auth: AuthenticationQuery,
         public admin: AdminService,
 
@@ -45,23 +49,24 @@ export class RepsListComponent implements OnInit {
 
     ngOnInit() {
         this.fetchData()
-        this.subscribeToProposalStore()
+        // this.subscribeToProposalStore()
         this.subscribeToRepStore()
     }
 
     subscribeToRepStore() {
-        this.repQuery.selectAll()
+        this.repQuery.populateReps()
             .subscribe(
                 (reps) => {
+                    console.log(reps, 'this is final reps')
                     this.reps = reps
                 },
                 (err) => err
             )
     }
 
-    subscribeToProposalStore() {
-        this.proposals$ = this.proposalQuery.selectAll({})
-    }
+    // subscribeToProposalStore() {
+    //     this.proposals$ = this.proposalQuery.selectAll({})
+    // }
 
     fetchData() {
         const isModerator = this.auth.isModerator()
@@ -69,9 +74,15 @@ export class RepsListComponent implements OnInit {
         const params = { softDeleted: isModerator ? true : '' }
 
         this.proposalService.list({ orgs: [], params })
-            .subscribe(() => true)
+            .subscribe((res) => res)
 
         this.repsService.list({ orgs: [], params })
+            .subscribe((res) => res)
+
+        this.solutionService.list({ orgs: [], params })
+            .subscribe((res) => res)
+
+        this.issueService.list({ orgs: [], params })
             .subscribe((res) => res)
     }
 
