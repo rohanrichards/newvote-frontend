@@ -5,8 +5,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material';
 import { finalize, startWith, map } from 'rxjs/operators';
 import { IRep, Rep } from '@app/core/models/rep.model';
-import { merge, Observable, forkJoin } from 'rxjs';
-import { cloneDeep } from 'lodash'
+import { Observable, forkJoin } from 'rxjs';
+import { cloneDeep, merge } from 'lodash'
 import { ActivatedRoute, Router } from '@angular/router';
 import { MetaService } from '@app/core/meta.service';
 import { Organization } from '@app/core/models/organization.model';
@@ -56,9 +56,9 @@ export class RepsEditComponent implements OnInit {
         description: new FormControl(''),
         position: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required]),
-        proposals: new FormControl(''),
-        solutions: new FormControl(''),
-        issues: new FormControl(''),
+        proposals: new FormControl([]),
+        solutions: new FormControl([]),
+        issues: new FormControl([]),
     });
 
     DEFAULT_IMAGE = 'https://via.placeholder.com/250'
@@ -318,9 +318,13 @@ export class RepsEditComponent implements OnInit {
     }
 
     updateWithApi(rep: any) {
-        rep.organizations = this.organization
         const newRep = cloneDeep(rep)
-        merge(newRep, this.repForm.value)
+        merge(newRep, this.repForm.value as IRep)
+
+        newRep.solutions = this.solutions
+        newRep.proposals = this.proposals
+        newRep.issues = this.issues
+        newRep.organizations = this.organization
 
         if (this.resetImage) {
             rep.imageUrl = this.imageUrl

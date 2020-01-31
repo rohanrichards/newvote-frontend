@@ -12,6 +12,11 @@ q {
     proposals: "« "" »";
 }
 
+.description-container {
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+
 //global overrides for mat-toolbar
 .header-info-panel {
     white-space: normal !important;
@@ -47,27 +52,68 @@ q {
     padding: 0.5rem;
 }
 
+
+.container {
+    padding: 1em;
+}
+
+.logo {
+    width: 150px;
+    margin: 0 auto;
+}
+
+q {
+    font-style: italic;
+    topics: "« "" »";
+}
+
+.no-margin {
+    margin: 0;
+}
+
+
+
+.topic-header {
+    margin-bottom: 1rem;
+
+    .mat-divider {
+        min-height: 2px;
+    }
+}
+
+.empty-card {
+    cursor: default;
+}
+
+.empty-card-blank {
+    margin-top: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 200px;
+    max-height: 350px;
+    width: 50%;
+    background-image: url("assets/logo-no-text.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-bottom: 0.5rem;
+}
+
+.empty-title-container {
+    text-align: center;
+}
+
+.empty-card-wrap {
+    background-color: white;
+    padding: 1rem;
+}
+
 .mat-expansion-panel {
     background-color: #0277bd;
     color: white;
     text-align: center;
 }
 
-::ng-deep {
-    .mat-expansion-panel-header:hover {
-        background-color: #0277bd;
-    }
-
-    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
-        background-color: #0277bd;
-    }
-
-    .mat-expansion-panel-body {
-        margin-top: 1rem;
-        background: white;
-    }
-
-    .mat-expansion-panel-content {
-        background: white;
-    }
+.divider {
+    margin: 0.5rem 0;
 }

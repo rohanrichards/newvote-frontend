@@ -23,11 +23,18 @@
                         <span translate>{{ organization.name }}</span>
                     </a>
                     <mat-divider></mat-divider>
+
                     <a mat-list-item
                         routerLink="/home"
                         routerLinkActive="active"
                         (click)="isMobile && sidenav.close()">
                         <span translate>Home</span>
+                    </a>
+
+                    <a mat-list-item
+                    routerLink="/reps"
+                    routerLinkActive="active">
+                        <span>Reps</span>
                     </a>
 
                     <a mat-list-item

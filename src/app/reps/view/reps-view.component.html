@@ -33,68 +33,43 @@
             fxLayout="column"
             [defaultImage]="handleImageUrl(imageUrl, true)"
             [lazyLoad]="handleImageUrl(imageUrl)">
-            <!-- <div class="admin-panel"
-                *ngIf="auth.isModerator(proposal)"
+            <div class="admin-panel"
+                *ngIf="auth.isModerator()"
                 fxLayout="column"
                 fxLayoutAlign="center end">
                 <div class="button-panel">
                     <button mat-icon-button
-                        matTooltip="Add a new Action"
+                        matTooltip="Edit this Rep"
                         color="accent"
-                        routerLink="/proposals/create">
-                        <mat-icon aria-label="Add a new action">
-                            playlist_add
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Edit this Action"
-                        color="accent"
-                        routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
-                        <mat-icon aria-label="Edit the action">edit</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="proposal.softDeleted"
-                        matTooltip="Restore Action"
-                        color="accent"
-                        (click)="admin.onRestore(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Restore Action">restore
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="!proposal.softDeleted"
-                        matTooltip="Remove Action"
-                        color="accent"
-                        (click)="admin.onSoftDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Remove Action">delete
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="auth.isAdmin()"
-                        matTooltip="Delete this Action"
-                        color="warn"
-                        (click)="admin.onDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Delete the action forever">
-                            delete_forever</mat-icon>
+                        routerLink="/reps/edit/{{rep._id}}">
+                        <mat-icon aria-label="Edit Rep Profile">edit</mat-icon>
                     </button>
                 </div>
-            </div> -->
-            <!-- <div fxLayout="row"
-                fxFlex></div> -->
-            <!-- <div fxLayout="row wrap"
+            </div>
+            <div fxLayout="row"
+                fxFlex></div>
+            <div fxLayout="row wrap"
                 fxLayoutAlign="center center">
                 <div fxFlex.gt-sm="690px"
                     fxFlex.gt-md="800px">
                     <app-share-buttons></app-share-buttons>
                 </div>
-            </div> -->
+            </div>
         </div>
-        <div fxLayout="row wrap"
-            fxLayoutAlign="center center">
-            <div fxFlex.gt-sm="690px"
+        <div 
+            fxLayout="row wrap"
+            fxLayoutAlign="center start"
+            class="description-container">
+            <div 
+                *ngIf="rep"
+                fxFlex.sm="400px"
+                fxFlex.gt-sm="690px"
                 fxFlex.gt-md="800px">
-                <div class="mat-display-1"
-                    translate>Name: Steve</div>
-                <app-more-less [displayText]="'Position: some text'"
+                <div class="mat-headline"
+                    translate>Name: {{ rep.displayName }}</div>
+                <div class="mat-title"
+                    translate>Position: {{ rep.position }}</div>
+                <app-more-less [displayText]="rep.description"
                     maxHeight="200">
                 </app-more-less>
             </div>
@@ -105,14 +80,84 @@
     <!-- Rep page Body information -->
     <div
         class="container"
-        fxLayout="row wrap"
-        fxLayoutAlign="center start">
+        >
         <div 
-            fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px">
-            <mat-accordion [style.margin-bottom.rem]="1"
+        fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px"
+            fxFlex="100">
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Issues
+                </h2>
+                <mat-divider class="divider"></mat-divider >
+                <app-grid-list 
+                    path="/issues"
+                    [items]="issues"
+                    model="Issue"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Issue')"
+                    (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                    (delete)="admin.onDelete($event, 'Issue')">
+                    </app-grid-list>
+            </div>
+
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Actions
+                </h2>
+                <mat-divider class="divider"></mat-divider>
+                <app-grid-list 
+                    path="/proposals"
+                    [items]="proposals"
+                    model="Proposal"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Proposal')"
+                    (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                    (delete)="admin.onDelete($event, 'Proposal')">
+                    </app-grid-list>
+            </div>
+
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Solutions
+                </h2>
+                <mat-divider class="divider"></mat-divider>
+                <app-grid-list 
+                    path="/solutions"
+                    [items]="solutions"
+                    model="Solution"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Solution')"
+                    (softDelete)="admin.onSoftDelete($event, 'Solution')"
+                    (delete)="admin.onDelete($event, 'Solution')">
+                    </app-grid-list>
+            </div>
+
+        </div>
+    </div>
+
+    
+                <!-- <mat-accordion [style.margin-bottom.rem]="1"
                 [style.display]="'block'"
                 [multi]="true">
+                <mat-expansion-panel class="accordion-header"
+                >
+                    <mat-expansion-panel-header>
+                        <h3 class="mat-headline"
+                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                            Issues
+                        </h3>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/issues"
+                        [items$]=issues$
+                        model="Issue"
+                        (restore)="admin.onRestore($event, 'Issue')"
+                        (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                        (delete)="admin.onDelete($event, 'Issue')"
+                        >
+                    </app-card-list>
+                </mat-expansion-panel>
+
                 <mat-expansion-panel class="accordion-header"
                     >
                     <mat-expansion-panel-header>
@@ -122,7 +167,6 @@
                         </h3>
                     </mat-expansion-panel-header>
                     <app-card-list path="/solutions"
-                        [@fadeIn]=true
                         [items$]=solutions$
                         model="Solution"
                         (restore)="admin.onRestore($event, 'Solution')"
@@ -153,24 +197,4 @@
                         >
                     </app-card-list>
                 </mat-expansion-panel>
-                <!-- <mat-expansion-panel class="accordion-header"
-                    [expanded]="!!issues.length && issues.length > 0">
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            Issues
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-card-list path="/issues"
-                        [@fadeIn]=true
-                        [items$]=issues$
-                        model="Issue"
-                        (restore)="admin.onRestore($event, 'Issue')"
-                        (softDelete)="admin.onSoftDelete($event, 'Issue')"
-                        (delete)="admin.onDelete($event, 'Issue')"
-                        (vote)="onVote($event, 'Issue')">
-                    </app-card-list>
-                </mat-expansion-panel> -->
-            </mat-accordion>
-        </div>
-    </div>
+            </mat-accordion> -->
