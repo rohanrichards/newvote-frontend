@@ -6,56 +6,14 @@
         Open Reps Menu
     </div>
  </mat-toolbar>
- <div class="reps-container" fxLayout="row" fxLayoutGap="16px">
-    <mat-card class="pointer-card" *ngFor="let rep of reps" routerLink="/reps/{{rep._id}}">
-        <img mat-card-image src="https://images.unsplash.com/photo-1580067532285-5575a5c8d36a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" />
-        <mat-card-header>
-            <div>
-                <p class="mat-h3 mat-subheading-1">Name: {{ rep.displayName }}</p>
-                <p class="mat-h3 mat-subheading-1">Position: {{ rep.position }}</p>
-            </div>
-        </mat-card-header>
-        <div>
-            <p class="mat-h3 mat-subheading-1">About:</p>
-            <p innerHtml]="rep.description"></p>
-        </div>
-        <mat-card-content>
-            <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <h2 class="mat-h1 no-margin">
-                Issues
-            </h2>
-            <div *ngFor="let issue of rep.issues">
-                <app-child-card
-                    path="/issues"
-                    [item]="issue"
-                    repCard=true
-                    >
-                </app-child-card>
-            </div>
-            
-            <h2 class="mat-h1 no-margin">
-                Solutions
-            </h2>
-            <div *ngFor="let solution of rep.solutions">
-                <app-child-card
-                    path="/solutions"
-                    [item]="solution"
-                    repCard=true
-                    >
-                </app-child-card>
-            </div>
-
-            <h2 class="mat-h1 no-margin">
-                Actions
-            </h2>
-            <div *ngFor="let proposal of rep.proposals">
-                <app-child-card
-                    path="/proposals"
-                    [item]="proposal"
-                    repCard=true
-                    >
-                </app-child-card>
-            </div>
-        </mat-card-content>
-    </mat-card>
+ <div class="reps-container" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="16px">
+     <div *ngFor="let rep of reps"
+        fxFlex.gt-sm="400px"
+        >
+        <app-rep-card
+            path="/reps"
+            [item]="rep"
+            >
+        </app-rep-card>
+     </div>
 </div>

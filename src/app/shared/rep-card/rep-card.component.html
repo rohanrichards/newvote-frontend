@@ -1,0 +1,50 @@
+    <mat-card class="pointer-card" routerLink="{{path}}{{item._id}}">
+        <img mat-card-image [src]="item.imageUrl" />
+        <mat-card-header>
+            <div>
+                <p class="mat-h3 mat-subheading-1">Name: {{ item.displayName }}</p>
+                <p class="mat-h3 mat-subheading-1">Position: {{ item.position }}</p>
+            </div>
+        </mat-card-header>
+        <div>
+            <p class="mat-h3 mat-subheading-1">About:</p>
+            <p [innerHtml]="item.description"></p>
+        </div>
+        <mat-card-content>
+            <p class="mat-h2">Issues, Solutions, and Actions:</p>
+            <h2 class="mat-h1 no-margin">
+                Issues
+            </h2>
+            <div *ngFor="let issue of item.issues">
+                <app-child-card
+                    path="/issues"
+                    [item]="issue"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>       
+            <h2 class="mat-h1 no-margin">
+                Solutions
+            </h2>
+            <div *ngFor="let solution of item.solutions">
+                <app-child-card
+                    path="/solutions"
+                    [item]="solution"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>
+
+            <h2 class="mat-h1 no-margin">
+                Actions
+            </h2>
+            <div *ngFor="let proposal of item.proposals">
+                <app-child-card
+                    path="/proposals"
+                    [item]="proposal"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>
+        </mat-card-content>
+    </mat-card>

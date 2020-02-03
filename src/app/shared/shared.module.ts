@@ -41,7 +41,8 @@ import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
 import { RepModalComponent } from './rep-modal/rep-modal.component';
-import { ChildCardComponent } from './child-card/child-card.component'
+import { ChildCardComponent } from './child-card/child-card.component';
+import { RepCardComponent } from './rep-card/rep-card.component'
 
 @NgModule({
     imports: [
@@ -88,7 +89,8 @@ import { ChildCardComponent } from './child-card/child-card.component'
         NavbarComponent,
         MakeSuggestionComponent,
         RepModalComponent,
-        ChildCardComponent
+        ChildCardComponent,
+        RepCardComponent
     ],
     exports: [
         LoaderComponent,
@@ -116,7 +118,8 @@ import { ChildCardComponent } from './child-card/child-card.component'
         NavbarComponent,
         MakeSuggestionComponent,
         RepModalComponent,
-        ChildCardComponent
+        ChildCardComponent,
+        RepCardComponent
     ]
 })
 export class SharedModule { }
