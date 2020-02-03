@@ -1,0 +1,70 @@
+mat-card-actions {
+    padding: 16px 8px 8px;
+    margin-bottom: 0 !important;
+}
+
+.child-container {
+    margin-top: 32px;
+}
+
+.mini-proposal {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    margin-bottom: 8px;
+
+    .point-area {
+        cursor: pointer;
+    }
+
+    .point-area:hover {
+        background-color: white;
+    }
+
+    .likert-container {
+        margin: 0 !important;
+    }
+
+    .mini-proposal-image {
+        min-width: 88px;
+        min-height: 88px;
+        max-height: 88px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 8px;
+        border-radius: 3px;
+    }
+
+    .mat-title {
+        margin: 0px;
+        padding: 8px !important;
+    }
+
+    .buttons {
+        margin: 8px 8px 16px;
+    }
+}
+
+.soft-deleted {
+    border: 2px solid red;
+}
+
+
+.suggestion-image-container {
+    padding: 0;
+}
+
+.suggestion-image {
+    max-width: 75px;
+    height: auto;
+    object-fit: contain;
+}
+
+.text-left {
+    text-align: start;
+}
+
+.description-box {
+    padding-left: 8px;
+}

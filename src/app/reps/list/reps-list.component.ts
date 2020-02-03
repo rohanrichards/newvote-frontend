@@ -54,7 +54,7 @@ export class RepsListComponent implements OnInit {
     }
 
     subscribeToRepStore() {
-        this.repQuery.populateReps()
+        this.repQuery.selectAll()
             .subscribe(
                 (reps) => {
                     console.log(reps, 'this is final reps')

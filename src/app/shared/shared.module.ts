@@ -40,7 +40,8 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
-import { RepModalComponent } from './rep-modal/rep-modal.component'
+import { RepModalComponent } from './rep-modal/rep-modal.component';
+import { ChildCardComponent } from './child-card/child-card.component'
 
 @NgModule({
     imports: [
@@ -86,7 +87,8 @@ import { RepModalComponent } from './rep-modal/rep-modal.component'
         ErrorCardComponent,
         NavbarComponent,
         MakeSuggestionComponent,
-        RepModalComponent
+        RepModalComponent,
+        ChildCardComponent
     ],
     exports: [
         LoaderComponent,
@@ -113,7 +115,8 @@ import { RepModalComponent } from './rep-modal/rep-modal.component'
         ErrorCardComponent,
         NavbarComponent,
         MakeSuggestionComponent,
-        RepModalComponent
+        RepModalComponent,
+        ChildCardComponent
     ]
 })
 export class SharedModule { }

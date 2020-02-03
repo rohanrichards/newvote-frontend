@@ -1,12 +1,3 @@
-<!-- <h1>All Reps View</h1> -->
-
-<!-- 
-    1) Create a sort of kanban style board where each lane is a REP
-    2) A rep consists of a card with an image (avatar)
-        2.1) A name & Position Text Field
-        2.2) A textarea field, 250 characters max
-    3) A section to list tiles e.g Issues, solutions Actions
- -->
  <mat-toolbar>
     <div class="example-button-row">
         <button mat-icon-button matTooltip="Manage Reps" (click)="openDialog()">
@@ -26,58 +17,45 @@
         </mat-card-header>
         <div>
             <p class="mat-h3 mat-subheading-1">About:</p>
-            <p>{{ rep.description }}</p>
+            <p innerHtml]="rep.description"></p>
         </div>
         <mat-card-content>
             <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <!-- <app-card-list
-                path="/proposals"
-                [items$]="proposals$"
-                model="Proposal"
-                [showChildren]="false"
-            >
-            </app-card-list> -->
             <h2 class="mat-h1 no-margin">
                 Issues
             </h2>
-            <mat-divider class="divider"></mat-divider >
-            <!-- <app-grid-list 
-                path="/issues"
-                [items]="rep.issues"
-                model="Issue"
-                [titleCard]=true
-                (restore)="admin.onRestore($event, 'Issue')"
-                (softDelete)="admin.onSoftDelete($event, 'Issue')"
-                (delete)="admin.onDelete($event, 'Issue')">
-            </app-grid-list>
-
+            <div *ngFor="let issue of rep.issues">
+                <app-child-card
+                    path="/issues"
+                    [item]="issue"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>
+            
             <h2 class="mat-h1 no-margin">
                 Solutions
             </h2>
-            <mat-divider class="divider"></mat-divider >
-            <app-grid-list 
-                path="/solutions"
-                [items]="rep.solutions"
-                model="Solution"
-                [titleCard]=true
-                (restore)="admin.onRestore($event, 'Solution')"
-                (softDelete)="admin.onSoftDelete($event, 'Solution')"
-                (delete)="admin.onDelete($event, 'Solution')">
-            </app-grid-list>
+            <div *ngFor="let solution of rep.solutions">
+                <app-child-card
+                    path="/solutions"
+                    [item]="solution"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>
 
             <h2 class="mat-h1 no-margin">
-                Proposals
+                Actions
             </h2>
-            <mat-divider class="divider"></mat-divider >
-            <app-grid-list 
-                path="/proposals"
-                [items]="rep.proposals"
-                model="Proposal"
-                [titleCard]=true
-                (restore)="admin.onRestore($event, 'Proposal')"
-                (softDelete)="admin.onSoftDelete($event, 'Proposal')"
-                (delete)="admin.onDelete($event, 'Proposal')">
-            </app-grid-list> -->
+            <div *ngFor="let proposal of rep.proposals">
+                <app-child-card
+                    path="/proposals"
+                    [item]="proposal"
+                    repCard=true
+                    >
+                </app-child-card>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

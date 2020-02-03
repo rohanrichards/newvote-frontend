@@ -24,6 +24,7 @@ export class CardListComponent implements OnInit {
     @Input() parentPath: string;
     @Input() parentPropName: string;
     @Input() isError: boolean;
+    @Input() repCard: boolean;
     @Output() restore = new EventEmitter();
     @Output() softDelete = new EventEmitter();
     @Output() delete = new EventEmitter();
