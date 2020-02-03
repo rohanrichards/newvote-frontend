@@ -61,7 +61,7 @@ export class RepsEditComponent implements OnInit {
         issues: new FormControl([]),
     });
 
-    DEFAULT_IMAGE = 'https://via.placeholder.com/250'
+    DEFAULT_IMAGE = 'assets/logo-no-text.png'
 
     @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;
@@ -296,24 +296,24 @@ export class RepsEditComponent implements OnInit {
         }
     }
 
-    onResetImage() {
-        this.newImage = false
-        this.imageUrl = this.repForm.get('imageUrl').value
-        this.resetImage = false;
-        this.fileInput.nativeElement.value = null;
-    }
+    // onResetImage() {
+    //     this.newImage = false
+    //     this.imageUrl = this.repForm.get('imageUrl').value
+    //     this.resetImage = false;
+    //     this.fileInput.nativeElement.value = null;
+    // }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/action-default.png';
         this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
+        this.imageUrl = this.DEFAULT_IMAGE;
         this.resetImage = true;
         this.fileInput.nativeElement.value = null;
     }
 
     onSave() {
         const rep = cloneDeep(this.rep)
-        // merge(rep, this.repForm.value)
+        merge(rep, this.repForm.value as IRep)
+        // merge(rep, this.repForm.value) as IRep
 
         // this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -336,17 +336,14 @@ export class RepsEditComponent implements OnInit {
         }
     }
 
-    updateWithApi(rep: any) {
-        const newRep = cloneDeep(rep)
-        merge(newRep, this.repForm.value as IRep)
-
+    updateWithApi(newRep: any) {
         newRep.solutions = this.solutions
         newRep.proposals = this.proposals
         newRep.issues = this.issues
         newRep.organizations = this.organization
 
         if (this.resetImage) {
-            rep.imageUrl = this.imageUrl
+            newRep.imageUrl = this.imageUrl
         }
 
         this.repService.update({ id: newRep._id, entity: newRep })
