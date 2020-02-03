@@ -16,6 +16,9 @@ import { IssueService } from '@app/core/http/issue/issue.service';
 import { RepQuery } from '@app/core/http/rep/rep.query';
 import { RepService } from '@app/core/http/rep/rep.service';
 import { ActivatedRoute } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model';
 @Component({
     selector: 'app-reps-view',
     templateUrl: './reps-view.component.html',
@@ -47,12 +50,19 @@ export class RepsViewComponent implements OnInit {
         public admin: AdminService,
         public repQuery: RepQuery,
         private repService: RepService,
-        private route: ActivatedRoute
-
+        private route: ActivatedRoute,
+        private stateService: StateService,
     ) { }
 
     ngOnInit() {
         this.fetchData()
+
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state
+        })
+
+        this.stateService.setLoadingState(AppState.loading)
+
 
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
@@ -67,36 +77,55 @@ export class RepsViewComponent implements OnInit {
     }
 
     subscribeToIssuesStore(issues: any[]) {
-        this.issues$ = this.issueQuery.selectAll({
-            filterBy: (issue) => issues.includes(issue._id)
-        })
-
-        this.issues$.subscribe((res: any[]) => {
-            if (!res.length) return false
-            this.issues = res
-        })
+        this.issueQuery.issues$
+            .pipe(
+                map((items: any[]) => {
+                    return items.filter((res) => {
+                        return issues.find((item) => {
+                            return item._id === res._id || item === res._id
+                        })
+                    })
+                })
+            )
+            .subscribe((res: any[]) => {
+                if (!res.length) return false
+                this.issues = res
+            })
     }
 
     subscribeToSolutionStore(solutions: any[]) {
-        this.solutions$ = this.solutionQuery.selectAll({
-            filterBy: (solution) => solutions.includes(solution._id)
-        })
 
-        this.solutions$.subscribe((res: any[]) => {
-            if (!res.length) return false
-            this.solutions = res
-        })
+        this.solutionQuery.solutions$
+            .pipe(
+                map((items: any[]) => {
+                    return items.filter((res) => {
+                        return solutions.find((item) => {
+                            return item._id === res._id || item === res._id
+                        })
+                    })
+                })
+            )
+            .subscribe((res: any[]) => {
+                if (!res.length) return false
+                this.solutions = res
+            })
     }
 
     subscribeToProposalStore(proposals: any[]) {
-        this.proposals$ = this.proposalQuery.selectAll({
-            filterBy: (proposal) => proposals.includes(proposal._id)
-        })
-
-        this.proposals$.subscribe((res: any[]) => {
-            if (!res.length) return false
-            this.proposals = res
-        })
+        this.proposalQuery.proposals$
+            .pipe(
+                map((items: any[]) => {
+                    return items.filter((res) => {
+                        return proposals.find((item) => {
+                            return item._id === res._id || item === res._id
+                        })
+                    })
+                })
+            )
+            .subscribe((res: any[]) => {
+                if (!res.length) return false
+                this.proposals = res
+            })
     }
 
     subscribeToRepStore(ID: string) {
@@ -106,10 +135,11 @@ export class RepsViewComponent implements OnInit {
             if (!res.length) return false
             this.rep = res[0]
 
-            const {proposals, solutions, issues} = res[0]
+            const { proposals, solutions, issues } = res[0]
             this.subscribeToIssuesStore(issues)
             this.subscribeToSolutionStore(solutions)
             this.subscribeToProposalStore(proposals)
+            this.stateService.setLoadingState(AppState.complete)
         })
     }
 
@@ -123,7 +153,7 @@ export class RepsViewComponent implements OnInit {
         const getSolutions = this.solutionService.list({ params })
         const getProposals = this.proposalService.list({ params })
         const getIssues = this.issueService.list({ params })
-        
+
         forkJoin({
             solutions: getSolutions,
             proposals: getProposals,

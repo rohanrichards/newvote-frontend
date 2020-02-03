@@ -50,14 +50,13 @@ export class RepsListComponent implements OnInit {
     ngOnInit() {
         this.fetchData()
         // this.subscribeToProposalStore()
-        this.subscribeToRepStore()
     }
 
     subscribeToRepStore() {
-        this.repQuery.selectAll()
+        this.repQuery.populateReps()
             .subscribe(
-                (reps) => {
-                    console.log(reps, 'this is final reps')
+                (reps: any[]) => {
+                    if (!reps.length) return false
                     this.reps = reps
                 },
                 (err) => err
@@ -77,7 +76,9 @@ export class RepsListComponent implements OnInit {
             .subscribe((res) => res)
 
         this.repsService.list({ orgs: [], params })
-            .subscribe((res) => res)
+            .subscribe((res) => {
+                this.subscribeToRepStore()
+            })
 
         this.solutionService.list({ orgs: [], params })
             .subscribe((res) => res)

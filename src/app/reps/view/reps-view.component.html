@@ -2,7 +2,7 @@
     size="1.5"></app-loader> -->
 
 <!-- App Page Header -->
-<!-- <ng-container [ngSwitch]="loadingState">
+<ng-container [ngSwitch]="loadingState">
     <div *ngSwitchCase="'loading'">
         <app-skeleton-header [noLogo]=true>
         </app-skeleton-header>
@@ -24,7 +24,8 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
+    <div *ngSwitchCase="'complete'">
     <mat-toolbar
         color="primary"
         class="header-info-panel">
@@ -80,6 +81,8 @@
     <!-- Rep page Body information -->
     <div
         class="container"
+        fxLayout="row wrap"
+        fxLayoutAlign="center center"
         >
         <div 
         fxFlex.gt-sm="690px"
@@ -135,66 +138,6 @@
 
         </div>
     </div>
-
+</div>
     
-                <!-- <mat-accordion [style.margin-bottom.rem]="1"
-                [style.display]="'block'"
-                [multi]="true">
-                <mat-expansion-panel class="accordion-header"
-                >
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            Issues
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-card-list path="/issues"
-                        [items$]=issues$
-                        model="Issue"
-                        (restore)="admin.onRestore($event, 'Issue')"
-                        (softDelete)="admin.onSoftDelete($event, 'Issue')"
-                        (delete)="admin.onDelete($event, 'Issue')"
-                        >
-                    </app-card-list>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel class="accordion-header"
-                    >
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            Solutions
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-card-list path="/solutions"
-                        [items$]=solutions$
-                        model="Solution"
-                        (restore)="admin.onRestore($event, 'Solution')"
-                        (softDelete)="admin.onSoftDelete($event, 'Solution')"
-                        (delete)="admin.onDelete($event, 'Solution')"
-                        >
-                    </app-card-list>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel class="accordion-header"
-                   >
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            Actions
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-card-list path="/proposals"
-                        [items$]="proposals$"
-                        model="Action"
-                        [showChildren]="false"
-                        [showParent]="true"
-                        parentPath="/solutions"
-                        parentPropName="solutions"
-                        (restore)="admin.onRestore($event, 'Proposal')"
-                        (softDelete)="admin.onSoftDelete($event, 'Proposal')"
-                        (delete)="admin.onDelete($event, 'Proposal')"
-                        >
-                    </app-card-list>
-                </mat-expansion-panel>
-            </mat-accordion> -->
+               

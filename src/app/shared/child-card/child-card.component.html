@@ -1,4 +1,4 @@
-<div routerLink="/{{path}}/{{item.slug || item._id}}">
+<div *ngIf="item; else noItem" routerLink="/{{path}}/{{item.slug || item._id}}">
     <div class='mini-proposal' [ngClass]="{'soft-deleted': item.softDeleted}">
         <div fxLayout="column" class="point-area">
             <div fxLayout="row" fxLayoutAlign="start center">
@@ -20,3 +20,8 @@
         </div>
     </div>
 </div>
+<ng-template #noItem>
+    <div class='mini-proposal'>
+        <span class="mat-title text-left">No Items</span>
+    </div>
+</ng-template>

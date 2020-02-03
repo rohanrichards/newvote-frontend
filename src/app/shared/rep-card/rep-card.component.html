@@ -12,39 +12,49 @@
         </div>
         <mat-card-content>
             <p class="mat-h2">Issues, Solutions, and Actions:</p>
-            <h2 class="mat-h1 no-margin">
-                Issues
-            </h2>
-            <div *ngFor="let issue of item.issues">
-                <app-child-card
-                    path="/issues"
-                    [item]="issue"
-                    repCard=true
-                    >
-                </app-child-card>
-            </div>       
-            <h2 class="mat-h1 no-margin">
-                Solutions
-            </h2>
-            <div *ngFor="let solution of item.solutions">
-                <app-child-card
-                    path="/solutions"
-                    [item]="solution"
-                    repCard=true
-                    >
-                </app-child-card>
+            
+            <div *ngIf="item.issues.length">
+                <h2 class="mat-h1 no-margin">
+                    Issues
+                </h2>
+                
+                <div *ngFor="let issue of item.issues">
+                    <app-child-card
+                        path="/issues"
+                        [item]="issue"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>  
+            </div>
+            
+            <div *ngIf="item.solutions.length">
+                <h2 class="mat-h1 no-margin">
+                    Solutions
+                </h2>
+                <div *ngFor="let solution of item.solutions">
+                    <app-child-card
+                        path="/solutions"
+                        [item]="solution"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>
             </div>
 
-            <h2 class="mat-h1 no-margin">
-                Actions
-            </h2>
-            <div *ngFor="let proposal of item.proposals">
-                <app-child-card
-                    path="/proposals"
-                    [item]="proposal"
-                    repCard=true
-                    >
-                </app-child-card>
-            </div>
+            <div *ngIf="item.proposals.length">
+                <h2 class="mat-h1 no-margin">
+                    Actions
+                </h2>
+                <div *ngFor="let proposal of item.proposals">
+                    <app-child-card
+                        path="/proposals"
+                        [item]="proposal"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>
+            </div> 
+            
         </mat-card-content>
     </mat-card>
