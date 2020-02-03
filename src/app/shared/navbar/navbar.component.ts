@@ -35,7 +35,6 @@ export class NavbarComponent implements OnInit {
     constructor(
         private meta: MetaService,
         private titleService: Title,
-        private query: AuthenticationQuery,
         public auth: AuthenticationService,
         private authQuery: AuthenticationQuery,
         private router: Router,
@@ -70,17 +69,23 @@ export class NavbarComponent implements OnInit {
                 this.routeLevel = res
             })
 
-        this.repQuery.isRep()
+        this.authQuery.select()
+            .subscribe((res) => {
+                if (!res) return false
+                this.repQuery.getRepId(res._id)
+                    .subscribe((rep: any) => {
+                        if (!res) return false
+                        this.userId = rep._id
+                    })
+            })
+
+        this.authQuery.isRep()
             .subscribe((res) => {
                 if (!res) return false
                 this.isRep = res
             })
 
-        this.repQuery.repId$
-            .subscribe((res) => {
-                if (!res) return false
-                this.userId = res._id
-            })
+
     }
 
     toggleSearch() {
@@ -156,7 +161,7 @@ export class NavbarComponent implements OnInit {
     }
 
     handleVerify() {
-        if (!this.query.isUserVerified() || !this.query.doesMobileNumberExist()) {
+        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
             return this.router.navigate(['/auth/verify'], { replaceUrl: true })
         }
 

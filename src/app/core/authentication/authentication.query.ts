@@ -6,16 +6,17 @@ import { OrganizationQuery } from '../http/organization/organization.query'
 import { map } from 'rxjs/operators'
 import { Organization } from '../models/organization.model'
 import { Observable } from 'rxjs'
+import { RepQuery } from '../http/rep/rep.query'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
-
     isCommunityVerified$: Observable<any>;
 
     constructor(
         protected store: AuthenticationStore,
-        private organizationQuery: OrganizationQuery
+        private organizationQuery: OrganizationQuery,
+        private repQuery: RepQuery
     ) {
         super(store)
     }
@@ -62,6 +63,40 @@ export class AuthenticationQuery extends Query<IUser> {
 
             return moderator._id === userId
         })
+    }
+
+    isRep() {
+        const organization = this.organizationQuery.getValue()
+        const { _id, roles } = this.getValue()
+
+        if (this.isModerator()) {
+            return true
+        }
+
+        const hasRepRole = roles.includes('rep')
+        const userRep = this.repQuery.selectEntity((entity: any) => {
+            return entity.owner === _id && entity.organizations === organization._id
+        })
+
+        if (!userRep) return false
+
+        return userRep && hasRepRole
+    }
+
+    canAccessRepProfile(id: any) {
+        const organization = this.organizationQuery.getValue()
+        const { _id } = this.getValue()
+        const { owner, organizations } = this.repQuery.getEntity(id)
+
+        if (this.isModerator()) {
+            return true
+        }
+
+        if (organization._id !== organizations) {
+            return false
+        }
+
+        return owner === _id
     }
 
     isUserPartOfOrganization(user: IUser, organization: Organization) {

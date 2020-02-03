@@ -48,6 +48,7 @@ import { AuthenticationQuery } from './authentication/authentication.query'
 import { AuthenticationStore } from './authentication/authentication.store'
 import { RepQuery } from './http/rep/rep.query'
 import { RepStore } from './http/rep/rep.store'
+import { RepGuard } from './authentication/rep.guard'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -82,6 +83,7 @@ export function tokenGetter() {
         ModeratorGuard,
         ContentGuard,
         EndorserGuard,
+        RepGuard,
         SuggestionCreatorGuard,
         OrganizationService,
         MetaService,

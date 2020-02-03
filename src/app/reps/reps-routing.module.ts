@@ -6,6 +6,7 @@ import { RepsViewComponent } from './view/reps-view.component';
 import { RepsEditComponent } from './edit/reps-edit.component';
 import { ModeratorGuard } from '@app/core/authentication/moderator.guard';
 import { RepsCreateComponent } from './create/reps-create.component';
+import { RepGuard } from '@app/core/authentication/rep.guard';
 
 const routes: Routes = [
     {
@@ -13,17 +14,17 @@ const routes: Routes = [
         component: RepsListComponent,
         data: { title: extract(''), level: 'root' }
     },
-    {
-        path: 'create',
-        component: RepsCreateComponent,
-        data: { title: extract('New Rep'), level: 'child' },
-        // canActivate: [ModeratorGuard]
-    },
+    // {
+    //     path: 'create',
+    //     component: RepsCreateComponent,
+    //     data: { title: extract('New Rep'), level: 'child' },
+    //     // canActivate: [ModeratorGuard]
+    // },
     {
         path: 'edit/:id',
         component: RepsEditComponent,
         data: { title: extract('Edit Rep'), level: 'child' },
-        // canActivate: [ModeratorGuard]
+        canActivate: [RepGuard]
     },
     {
         path: ':id',
