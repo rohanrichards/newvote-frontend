@@ -84,43 +84,5 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
                 this.issueQuery.selectAll()
             ]
         )
-            .pipe(
-                map((result: any) => {
-                    const [reps, proposals, solutions, issues] = result
-                    
-                    console.log(reps, 'this is before reps')
-                    if (!reps.length) return false
-                    reps.map((rep: any) => {
-                        console.log('LOOPING')
-                        if (rep.proposals.length && proposals.length) {
-                            rep.proposals = rep.proposals.map((proposalId: any) => {
-                                return proposals.find((item: any) => {
-                                    return item._id === proposalId
-                                })
-                            })
-                        }
-
-                        if (rep.solutions.length && solutions.length) {
-                            rep.solutions = rep.solutions.map((solutionId: any) => {
-                                return solutions.find((item: any) => {
-                                    return item._id === solutionId
-                                })
-                            })
-                        }
-
-                        if (rep.issues.length && issues.length) {
-                            rep.issues = rep.issues.map((issueId: any) => {
-                                return issues.find((item: any) => {
-                                    return item._id === issueId
-                                })
-                            })
-                        }
-
-                        return rep
-                    })
-                    console.log(reps, 'this is after reps')
-                    return reps
-                })
-            )
     }
 }
