@@ -48,12 +48,12 @@ export class ProposalService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 tap((data: Proposal[]) => {
                     this.voteService.populateStore(data)
                     this.proposalStore.add(data)
                 }),
                 map((res: Array<any>) => res),
-                catchError(handleError)
             )
     }
 
@@ -61,12 +61,12 @@ export class ProposalService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError(handleError),
                 tap((res: Proposal) => {
                     this.voteService.addEntityVote(res)
                     this.proposalStore.add(res)
                 }),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -74,9 +74,9 @@ export class ProposalService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: Proposal) => this.proposalStore.add(res)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -84,9 +84,9 @@ export class ProposalService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((proposal: Proposal) => this.proposalStore.upsert(proposal._id, proposal)),
                 map((res: any) => res),
-                catchError(handleError)
             )
     }
 
@@ -94,9 +94,9 @@ export class ProposalService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 tap((proposal: Proposal) => this.proposalStore.remove(proposal._id)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 

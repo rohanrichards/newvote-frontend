@@ -64,7 +64,7 @@
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <a mat-menu-item
-                        *ngIf="auth.isOwner() && organization"
+                        *ngIf="query.isOwner() && organization"
                         routerLink="/communities/edit/{{organization._id}}"
                         translate>Edit Community</a>
                     <mat-divider></mat-divider>
@@ -105,6 +105,7 @@
         [isVisible]="showSearch"
         (closeSearch)="toggleSearch()"></app-search-bar>
 
+    <!--
     <mat-toolbar color="warn"
         *ngIf="showVerify"
         class="sticky-verify"
@@ -118,18 +119,18 @@
             (click)="hideVerify = true">
             <mat-icon>close</mat-icon>
         </button>
-    </mat-toolbar>
+    </mat-toolbar> -->
 
     <mat-toolbar color="warn"
-        *ngIf="!auth.isCommunityVerified() && !hideVerify"
+        *ngIf="!!showVerify && !hideVerify && delayPassed"
         class="community-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
         ngClass.lt-md="top-bar-height-sm">
-        <span class="mat-body">Your account is not verified with this
-            community</span>
+        <span class="mat-body">Your account is not yet verified with this
+            community.</span>
         <div fxFlex></div>
         <button mat-stroked-button
-            routerLink="/auth/login">Verify</button>
+            (click)="handleVerify()">Verify</button>
         <button mat-icon-button
             (click)="hideVerify = true">
             <mat-icon>close</mat-icon>

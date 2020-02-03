@@ -155,13 +155,14 @@ export class SuggestionCreateComponent implements OnInit {
 
         this.suggestionService.create({ entity: this.suggestion })
             .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe((suggestion: Suggestion) => {
-                this.openSnackBar('Succesfully created', 'OK')
-                this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
-            },
-            error => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            }
+            .subscribe(
+                (suggestion: Suggestion) => {
+                    this.openSnackBar('Succesfully created', 'OK')
+                    this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
+                },
+                error => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
             )
     }
 

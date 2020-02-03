@@ -146,7 +146,6 @@ export class SolutionListComponent implements OnInit {
     }
 
     onVote(voteData: any, model: string) {
-
         this.isLoading = true
         const { item, voteValue } = voteData
         const vote = new Vote(item._id, model, voteValue)
