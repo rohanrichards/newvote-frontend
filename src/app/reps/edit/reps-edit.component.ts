@@ -24,6 +24,7 @@ import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
 import { RepService } from '@app/core/http/rep/rep.service';
 import { RepQuery } from '@app/core/http/rep/rep.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
     selector: 'app-reps-edit',
@@ -86,7 +87,8 @@ export class RepsEditComponent implements OnInit {
         private stateService: StateService,
         private repService: RepService,
         private repQuery: RepQuery,
-        public snackBar: MatSnackBar
+        public snackBar: MatSnackBar,
+        private org: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -145,6 +147,14 @@ export class RepsEditComponent implements OnInit {
         }
     }
 
+    subscribeToOrgStore(rep: any) {
+        this.org.select()
+            .subscribe((org: any) => {
+                if (!org) return false
+                this.updateTags(rep, org)
+            })
+    }
+
     updateForm(rep: any) {
         this.imageUrl = rep.imageUrl || this.DEFAULT_IMAGE
         this.repForm.patchValue({
@@ -155,11 +165,11 @@ export class RepsEditComponent implements OnInit {
         })
     }
 
-    updateTags(rep: any) {
+    updateTags(rep: any, org: any) {
         this.meta.updateTags(
             {
                 title: `Edit ${rep.displayName}`,
-                appBarTitle: 'Edit Rep',
+                appBarTitle: `Edit ${org.representativeTitle}`,
             })
     }
 
@@ -172,7 +182,7 @@ export class RepsEditComponent implements OnInit {
                 const [rep, ...rest ] = repArray
                 this.rep = rep
                 this.updateForm(rep)
-                this.updateTags(rep)
+                this.subscribeToOrgStore(rep)
                 // Used to get entity data after rep has been loaded
                 this.subscribeToStores(rep)
             })

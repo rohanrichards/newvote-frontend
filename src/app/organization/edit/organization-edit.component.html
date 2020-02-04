@@ -193,26 +193,12 @@
 				</mat-chip-list>
 			</mat-form-field>
 
-			<!-- REPS -->
-			<mat-form-field class="example-chip-list"
-			*ngIf="auth.isOwner()">
-			   <mat-chip-list #repChipList>
-				   <mat-chip *ngFor="let rep of organizationForm.value.reps"
-					[selectable]="false"
-					[removable]="true"
-					(removed)="representativeRemoved(rep)">
-					   {{rep}}
-					   <mat-icon matChipRemove>cancel</mat-icon>
-				   </mat-chip>
-				   <input placeholder="Select Community Representatives"
-					#repInput
-					formControlName="repsControl"
-					[matChipInputFor]="repChipList"
-					[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					[matChipInputAddOnBlur]="true"
-					(matChipInputTokenEnd)="representativeSelected($event)">
-			   </mat-chip-list>
-		   </mat-form-field>
+			<mat-form-field>
+				<input matInput
+				 type="text"
+				 placeholder="Representative Name"
+				 formControlName="representativeTitle">
+			</mat-form-field>
 
 			<span>Home Page Background Image</span>
 			<input type="file"

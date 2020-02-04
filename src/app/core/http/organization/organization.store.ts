@@ -23,7 +23,7 @@ export function createInitialStore(): Organization {
         softDeleted: false,
         url: '',
         voteRoles: [],
-        reps: []
+        representativeTitle: '',
     }
 }
 

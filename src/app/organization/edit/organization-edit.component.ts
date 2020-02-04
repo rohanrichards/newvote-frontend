@@ -50,7 +50,7 @@ export class OrganizationEditComponent implements OnInit {
         moderators: new FormControl([]),
         moderatorsControl: new FormControl([], [Validators.email]),
         reps: new FormControl([]),
-        repsControl: new FormControl([], [Validators.email]),
+        representativeTitle: new FormControl(''),
         authType: new FormControl(0, [Validators.required]),
         authUrl: new FormControl(''),
         authEntityId: new FormControl(''),
@@ -188,7 +188,6 @@ export class OrganizationEditComponent implements OnInit {
             longDescription: organization.longDescription,
             url: organization.url,
             moderators: organization.moderators,
-            reps: organization.reps,
             organizationUrl: organization.organizationUrl,
             futureOwner: organization.futureOwner,
             newLeaderEmail: '',
@@ -196,7 +195,8 @@ export class OrganizationEditComponent implements OnInit {
             authUrl: organization.authUrl,
             authEntityId: organization.authEntityId,
             privateOrg: organization.privateOrg || false,
-            voteRoles: organization.voteRoles
+            voteRoles: organization.voteRoles,
+            representativeTitle: organization.representativeTitle || ''
         })
     }
 

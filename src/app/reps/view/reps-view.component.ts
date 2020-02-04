@@ -19,6 +19,10 @@ import { ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model';
+import { MetaService } from '@app/core/meta.service';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
+import { Organization } from '@app/core/models/organization.model';
+import { IRep } from '@app/core/models/rep.model';
 @Component({
     selector: 'app-reps-view',
     templateUrl: './reps-view.component.html',
@@ -52,6 +56,8 @@ export class RepsViewComponent implements OnInit {
         private repService: RepService,
         private route: ActivatedRoute,
         private stateService: StateService,
+        private meta: MetaService,
+        private org: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -63,7 +69,6 @@ export class RepsViewComponent implements OnInit {
 
         this.stateService.setLoadingState(AppState.loading)
 
-
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
 
@@ -74,6 +79,25 @@ export class RepsViewComponent implements OnInit {
                 )
             this.subscribeToRepStore(ID)
         })
+    }
+
+    updateTags(organization: Organization, rep: IRep) {
+        this.meta.updateTags(
+            {
+                title: `View ${organization.representativeTitle}`,
+                appBarTitle: `View ${organization.representativeTitle}`,
+                description: rep.description,
+                image: rep.imageUrl
+            })
+    }
+
+    // subscribe after getting rep so can pass in the rep object
+    subscribeToOrgStore(rep: any) {
+        this.org.select()
+            .subscribe((org: any) => {
+                if (!org) return false
+                this.updateTags(org, rep)
+            })
     }
 
     subscribeToIssuesStore(issues: any[]) {
@@ -139,6 +163,7 @@ export class RepsViewComponent implements OnInit {
             this.subscribeToIssuesStore(issues)
             this.subscribeToSolutionStore(solutions)
             this.subscribeToProposalStore(proposals)
+            this.subscribeToOrgStore(this.rep)
             this.stateService.setLoadingState(AppState.complete)
         })
     }

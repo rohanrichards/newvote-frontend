@@ -10,6 +10,7 @@ import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -42,7 +43,7 @@ export class NavbarComponent implements OnInit {
         private route: ActivatedRoute,
         private location: Location,
         public repQuery: RepQuery,
-        public authQuery: AuthenticationQuery
+        public authQuery: AuthenticationQuery,
     ) { }
 
     ngOnInit() {

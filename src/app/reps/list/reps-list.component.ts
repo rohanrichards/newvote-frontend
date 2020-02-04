@@ -16,6 +16,10 @@ import { RepService } from '@app/core/http/rep/rep.service';
 import { RepQuery } from '@app/core/http/rep/rep.query';
 import { SolutionService } from '@app/core/http/solution/solution.service';
 import { IssueService } from '@app/core/http/issue/issue.service';
+import { MetaService } from '@app/core/meta.service';
+import { OrganizationService } from '@app/core';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
+import { Organization } from '@app/core/models/organization.model';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -44,14 +48,34 @@ export class RepsListComponent implements OnInit {
         private issueService: IssueService,
         public auth: AuthenticationQuery,
         public admin: AdminService,
-
+        private meta: MetaService,
+        private organizationQuery: OrganizationQuery
     ) { }
 
     ngOnInit() {
         this.fetchData()
+        this.subscribeToOrgStore()
         // this.subscribeToProposalStore()
     }
 
+    updateTags(organization: Organization) {
+        this.meta.updateTags(
+            {
+                title: `All ${organization.representativeTitle}`,
+                appBarTitle: `All ${organization.representativeTitle}`,
+                description: `View all of ${organization.name} community on the NewVote platform.`
+            })
+    }
+
+    subscribeToOrgStore() {
+        this.organizationQuery.select()
+            .subscribe((org: any) => {
+                if (!org) return false
+                this.updateTags(org)
+            })
+    }
+
+    // Called in services so not to throw errors not finding reps
     subscribeToRepStore() {
         this.repQuery.populateReps()
             .subscribe(
