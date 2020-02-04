@@ -10,6 +10,7 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, OrganizationService } from '@app/core'
 import { Organization } from './core/models/organization.model'
 import { MetaService } from './core/meta.service'
+import { DataFetchService } from './core/http/data/data-fetch.service'
 
 const log = new Logger('App')
 
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit {
         private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
         private i18nService: I18nService,
         private organizationService: OrganizationService,
-        private meta: MetaService) { }
+        private meta: MetaService,
+        private dataFetch: DataFetchService) { }
 
     ngOnInit() {
         // Setup logger
@@ -79,6 +81,16 @@ export class AppComponent implements OnInit {
                 this.router.navigate(['/landing'])
             }
         })
+
+        this.fetchData()
+    }
+
+    fetchData() {
+        this.dataFetch.get()
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
 }

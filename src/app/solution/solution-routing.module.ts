@@ -7,6 +7,7 @@ import { SolutionListComponent } from './list/solution-list.component'
 import { SolutionViewComponent } from './view/solution-view.component'
 import { SolutionCreateComponent } from './create/solution-create.component'
 import { SolutionEditComponent } from './edit/solution-edit.component'
+import { RepOrgGuard } from '@app/core/authentication/rep-org.guard'
 
 const routes: Routes = [
     { path: '', component: SolutionListComponent, data: { title: extract('All Solutions'), level: 'root' } },
@@ -14,7 +15,7 @@ const routes: Routes = [
         path: 'create',
         component: SolutionCreateComponent,
         data: { title: extract('New Solution'), level: 'child' },
-        canActivate: [ModeratorGuard]
+        canActivate: [RepOrgGuard]
     },
     {
         path: 'create/:id',

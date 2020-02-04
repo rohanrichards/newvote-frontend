@@ -5,7 +5,7 @@ import { Logger } from '../logger.service'
 import { AuthenticationQuery } from './authentication.query'
 import { RepQuery } from '../http/rep/rep.query'
 
-const log = new Logger('ModeratorGuard')
+const log = new Logger('RepGuard')
 
 @Injectable()
 export class RepGuard implements CanActivate {
@@ -15,8 +15,9 @@ export class RepGuard implements CanActivate {
         private repQuery: RepQuery) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        console.log('activating')
-        if (this.repQuery.isRep() || this.auth.isModerator()) {
+        const urlSplit = state.url.split('/')
+        const repId = urlSplit[urlSplit.length - 1]
+        if (this.repQuery.repGuard(repId)) {
             return true
         }
 

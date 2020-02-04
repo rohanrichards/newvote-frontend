@@ -55,6 +55,18 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
             )
     }
 
+    repGuard(repId: string) {
+        const rep = this.getEntity(repId);
+        const { _id = false } = this.authQuery.getValue()
+
+        if (!rep || !_id) return false
+        if (this.authQuery.isModerator()) {
+            return true
+        }
+
+        return rep.owner === _id
+    }
+
     populateReps() {
         return combineQueries(
             [
@@ -143,6 +155,7 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
                     return true
                 })
             )
+
         // const organization = this.organizationQuery.getValue()
         // const { _id, roles } = this.getValue()
 
@@ -158,6 +171,42 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
         // if (!userRep) return false
 
         // return userRep && hasRepRole
+    }
+
+    // For guard for create entity pages
+    // need to check if a user is
+    // 1) loggedin
+    // 2) verified
+    // 3) has been assigned a rep role
+    // 4) they are a rep and they are a rep for the current organization
+    // being browsed
+    isRepForOrg() {
+        const ROLE = 'rep'
+        const { _id, roles } = this.authQuery.getValue()
+        
+        if (this.authQuery.isModerator()) {
+            return true
+        }
+        
+        if (!_id) {
+            console.log('no ud')
+            return false
+        }
+        if (!this.authQuery.isUserVerified()) {
+            console.log('not verified')
+            return false
+        }
+        const hasRepRole = roles.includes(ROLE)
+        const organizationId = this.organizationQuery.getValue()._id
+
+        const rep = this.getAll({
+            filterBy: (entity: any) => {
+                const { owner, organizations } = entity
+                return owner === _id && organizations === organizationId
+            }
+        })
+
+        return rep.length && hasRepRole
     }
 
     // compare a repId against the current user to determine
