@@ -1,20 +1,23 @@
 <mat-card class="pointer-card" routerLink="{{path}}{{'/'}}{{item._id}}">
         <img mat-card-image [src]="item.imageUrl" />
-        <mat-card-header>
-            <div>
-                <p class="mat-h3 mat-subheading-1">Name: {{ item.displayName }}</p>
-                <p class="mat-h3 mat-subheading-1">Position: {{ item.position }}</p>
-            </div>
-        </mat-card-header>
         <div>
-            <p class="mat-h3 mat-subheading-1">About:</p>
-            <p [innerHtml]="item.description"></p>
+            <div class="field-container">
+                <h3 class="no-margin">Name</h3>
+                <p class="mat-h3 no-margin">{{ item.displayName }}</p>
+            </div>
+            <div class="field-container">
+                <h3 class="no-margin">Position</h3>
+                <p class="mat-h3 no-margin">{{ item.position }}</p>
+            </div>
+            <div class="field-container">
+                <h3 class="no-margin">About</h3>
+                <p class="no-margin" [innerHtml]="item.description"></p>            
+            </div>   
         </div>
         <mat-card-content>
-            <p class="mat-h2">Issues, Solutions, and Actions:</p>
             
             <div *ngIf="item.issues.length">
-                <h2 class="mat-h1 no-margin">
+                <h2>
                     Issues
                 </h2>
                 
@@ -29,7 +32,7 @@
             </div>
             
             <div *ngIf="item.solutions.length">
-                <h2 class="mat-h1 no-margin">
+                <h2>
                     Solutions
                 </h2>
                 <div *ngFor="let solution of item.solutions">
@@ -43,7 +46,7 @@
             </div>
 
             <div *ngIf="item.proposals.length">
-                <h2 class="mat-h1 no-margin">
+                <h2>
                     Actions
                 </h2>
                 <div *ngFor="let proposal of item.proposals">

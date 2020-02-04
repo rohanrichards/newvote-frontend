@@ -38,7 +38,7 @@
                 *ngIf="repQuery.isRep()"
                 fxLayout="column"
                 fxLayoutAlign="center end">
-                <div class="button-panel">
+                <div class="button-panel" *ngIf="repQuery.canAccessRepProfile(rep._id)">
                     <button mat-icon-button
                         matTooltip="Edit this Rep"
                         color="accent"

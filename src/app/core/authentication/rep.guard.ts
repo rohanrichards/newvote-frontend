@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core'
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 
 import { Logger } from '../logger.service'
-import { AuthenticationService } from './authentication.service'
-import { RepQuery } from '../http/rep/rep.query'
 import { AuthenticationQuery } from './authentication.query'
+import { RepQuery } from '../http/rep/rep.query'
 
 const log = new Logger('ModeratorGuard')
 
@@ -17,7 +16,7 @@ export class RepGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         console.log('activating')
-        if (this.auth.isRep() || this.auth.isModerator()) {
+        if (this.repQuery.isRep() || this.auth.isModerator()) {
             return true
         }
 

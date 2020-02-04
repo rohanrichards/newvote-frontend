@@ -42,7 +42,7 @@ export class RepsListComponent implements OnInit {
         private proposalService: ProposalService,
         private solutionService: SolutionService,
         private issueService: IssueService,
-        private auth: AuthenticationQuery,
+        public auth: AuthenticationQuery,
         public admin: AdminService,
 
     ) { }

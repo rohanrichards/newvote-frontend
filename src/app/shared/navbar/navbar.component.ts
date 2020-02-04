@@ -36,17 +36,17 @@ export class NavbarComponent implements OnInit {
         private meta: MetaService,
         private titleService: Title,
         public auth: AuthenticationService,
-        private authQuery: AuthenticationQuery,
         private router: Router,
         private media: MediaObserver,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private location: Location,
-        public repQuery: RepQuery
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
-        this.query.isLoggedIn$
+        this.authQuery.isLoggedIn$
             .subscribe((loggedIn: boolean) => {
                 this.isAuthenticated = loggedIn
                 // need to delay the showing on the verification bar
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit {
                 }
             })
 
-        this.query.isCommunityVerified()
+        this.authQuery.isCommunityVerified()
             .subscribe((verified) => {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
@@ -69,22 +69,17 @@ export class NavbarComponent implements OnInit {
                 this.routeLevel = res
             })
 
-        this.authQuery.select()
-            .subscribe((res) => {
-                if (!res) return false
-                this.repQuery.getRepId(res._id)
-                    .subscribe((rep: any) => {
-                        if (!res) return false
-                        this.userId = rep._id
-                    })
+        this.repQuery.getRepId()
+            .subscribe((rep: any) => {
+                if (!rep) return false
+                this.userId = rep._id
             })
 
-        this.authQuery.isRep()
-            .subscribe((res) => {
+        this.repQuery.isRep()
+            .subscribe((res: any) => {
                 if (!res) return false
                 this.isRep = res
             })
-
 
     }
 
@@ -160,21 +155,21 @@ export class NavbarComponent implements OnInit {
         this.hideVerify = !this.hideVerify
     }
 
-    handleVerify() {
-        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
-            return this.router.navigate(['/auth/verify'], { replaceUrl: true })
-        }
+    // handleVerify() {
+    //     if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
+    //         return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+    //     }
 
-        return this.auth.verifyWithCommunity()
-            .subscribe(
-                (res) => {
-                    this.openSnackBar('You have successfully verified with this community.', 'OK')
-                },
-                (error) => {
-                    console.log(error, 'this is error')
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
-    }
+    //     return this.auth.verifyWithCommunity()
+    //         .subscribe(
+    //             (res) => {
+    //                 this.openSnackBar('You have successfully verified with this community.', 'OK')
+    //             },
+    //             (error) => {
+    //                 console.log(error, 'this is error')
+    //                 this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+    //             })
+    // }
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {

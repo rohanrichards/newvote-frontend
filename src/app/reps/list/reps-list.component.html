@@ -1,4 +1,4 @@
- <mat-toolbar>
+ <mat-toolbar *ngIf="auth.isModerator()">
     <div class="example-button-row">
         <button mat-icon-button matTooltip="Manage Reps" (click)="openDialog()">
           <mat-icon aria-label="Manage Reps">add</mat-icon>
