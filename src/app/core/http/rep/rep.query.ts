@@ -183,17 +183,15 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
     isRepForOrg() {
         const ROLE = 'rep'
         const { _id, roles } = this.authQuery.getValue()
-        
+
         if (this.authQuery.isModerator()) {
             return true
         }
-        
+
         if (!_id) {
-            console.log('no ud')
             return false
         }
         if (!this.authQuery.isUserVerified()) {
-            console.log('not verified')
             return false
         }
         const hasRepRole = roles.includes(ROLE)

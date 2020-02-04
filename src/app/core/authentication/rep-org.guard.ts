@@ -20,12 +20,10 @@ export class RepOrgGuard implements CanActivate {
     canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): boolean {
-        
-        console.log('RUNING REP-ORG')
         if (this.authQuery.isModerator()) {
             return true
         }
-        
+
         if (this.repQuery.isRepForOrg()) {
             return true
         }

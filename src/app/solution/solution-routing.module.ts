@@ -21,7 +21,7 @@ const routes: Routes = [
         path: 'create/:id',
         component: SolutionCreateComponent,
         data: { title: extract('New Solution'), level: 'child' },
-        canActivate: [ModeratorGuard]
+        canActivate: [RepOrgGuard]
     },
     {
         path: 'edit/:id',

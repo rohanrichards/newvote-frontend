@@ -96,19 +96,6 @@ export class NavbarComponent implements OnInit {
         return this.meta.getAppBarTitle()
     }
 
-    // get isAuthenticated(): boolean {
-    //     return this.auth.isAuthenticated()
-    // }
-
-    // get isVerified(): boolean {
-    //     // debugger;
-    //     if (this.isAuthenticated) {
-    //         return (this.auth.isVerified())
-    //     } else {
-    //         return true
-    //     }
-    // }
-
     checkVerify(verified: boolean, loggedIn: boolean): boolean {
         if (!loggedIn) return false
         if (verified) return false
@@ -154,22 +141,6 @@ export class NavbarComponent implements OnInit {
     toggleVerify() {
         this.hideVerify = !this.hideVerify
     }
-
-    // handleVerify() {
-    //     if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
-    //         return this.router.navigate(['/auth/verify'], { replaceUrl: true })
-    //     }
-
-    //     return this.auth.verifyWithCommunity()
-    //         .subscribe(
-    //             (res) => {
-    //                 this.openSnackBar('You have successfully verified with this community.', 'OK')
-    //             },
-    //             (error) => {
-    //                 console.log(error, 'this is error')
-    //                 this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-    //             })
-    // }
 
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
