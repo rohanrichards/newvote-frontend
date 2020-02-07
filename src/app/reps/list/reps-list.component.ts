@@ -38,6 +38,9 @@ export class RepsListComponent implements OnInit {
     issues: Issue[];
     suggestions: Suggestion[];
 
+    representativeTags: any[] = [
+    ]
+
     constructor(
         public dialog: MatDialog,
         private repsService: RepService,
@@ -114,7 +117,8 @@ export class RepsListComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(RepModalComponent, {
             width: '400px',
-            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [] }
+            height: '60vh',
+            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.representativeTags }
         })
 
         dialogRef.afterClosed().subscribe(result => {
