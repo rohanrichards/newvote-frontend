@@ -118,7 +118,7 @@ export class RepsListComponent implements OnInit {
         const dialogRef = this.dialog.open(RepModalComponent, {
             width: '400px',
             height: '60vh',
-            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.representativeTags }
+            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.representativeTags, tagsUpdated: false }
         })
 
         dialogRef.afterClosed().subscribe(result => {
