@@ -63,7 +63,6 @@ export class RepModalComponent implements OnInit {
         const { value } = this
         let { representativeTags } = this.data
 
-        console.log(representativeTags, 'this is representativeTags on add')
         const tag = {
             name: value.trim(),
             color: 'primary'

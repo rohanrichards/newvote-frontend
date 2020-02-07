@@ -31,15 +31,13 @@ export class RepsListComponent implements OnInit {
     loadingState: any;
     proposals$: Observable<Proposal[]>;
     handleImageUrl = optimizeImage;
-    imageUrl = 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FAyyM_Yxlmx4%2Fmaxresdefault.jpg&f=1&nofb=1'
     reps: any[];
     proposals: Proposal[];
     solutions: Solution[];
     issues: Issue[];
     suggestions: Suggestion[];
-
-    representativeTags: any[] = [
-    ]
+    representativeTags: any[] = []
+    organization: Organization;
 
     constructor(
         public dialog: MatDialog,
@@ -52,7 +50,8 @@ export class RepsListComponent implements OnInit {
         public auth: AuthenticationQuery,
         public admin: AdminService,
         private meta: MetaService,
-        private organizationQuery: OrganizationQuery
+        private organizationQuery: OrganizationQuery,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit() {
@@ -74,6 +73,7 @@ export class RepsListComponent implements OnInit {
         this.organizationQuery.select()
             .subscribe((org: any) => {
                 if (!org) return false
+                this.organization = org
                 this.updateTags(org)
             })
     }
@@ -123,12 +123,16 @@ export class RepsListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (!result) return false
-            const { newReps, removeReps, currentReps } = result
+            const { newReps, removeReps, currentReps, representativeTags, tagsUpdated } = result
             if (removeReps.length) {
                 this.deleteReps(removeReps)
             }
             if (newReps.length) {
                 this.createReps({ newReps, currentReps })
+            }
+
+            if (tagsUpdated) {
+                this.updateRepresentativeTags(representativeTags)
             }
         })
     }
@@ -143,6 +147,14 @@ export class RepsListComponent implements OnInit {
 
     deleteReps(reps: any) {
         this.repsService.deleteMany({ entity: reps })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
+    }
+
+    updateRepresentativeTags(tags: any) {
+        return this.organizationService.patch({ id: this.organization._id, entity: tags })
             .subscribe(
                 (res) => res,
                 (err) => err

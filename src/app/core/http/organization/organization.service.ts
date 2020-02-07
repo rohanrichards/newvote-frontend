@@ -14,7 +14,8 @@ const routes = {
     create: () => '/organizations',
     update: (c: OrganizationContext) => `/organizations/${c.id}`,
     updateOwner: (c: OrganizationContext) => `/organizations/owner/${c.id}`,
-    delete: (c: OrganizationContext) => `/organizations/${c.id}`
+    delete: (c: OrganizationContext) => `/organizations/${c.id}`,
+    patch: (c: OrganizationContext) => `/organizations/${c.id}`
 }
 
 export interface OrganizationContext {
@@ -163,6 +164,15 @@ export class OrganizationService {
                 catchError(handleError),
                 tap((res: Organization) => this.communityStore.remove(res._id)),
                 map((res: any) => res)
+            )
+    }
+
+    patch(context: OrganizationContext): Observable<any> {
+        return this.httpClient
+            .patch(routes.patch(context), context.entity)
+            .pipe(
+                catchError(handleError),
+                tap((res: Organization) => this.communityStore.update({ representativeTags: res.representativeTags }))
             )
     }
 
