@@ -46,7 +46,7 @@
             <div class="pointer-card" *ngFor="let tag of tags" fxFlex="1 1 400px" fxLayout="column">
                 <div class="tag-header">
                     <h2 class="mat-h1 no-margin">
-                        {{tag}}
+                        {{tag | titlecase}}
                     </h2>
                 </div>
                 <div *ngFor="let rep of filterReps(allReps, tag)" fxFlex="1 1 400px">

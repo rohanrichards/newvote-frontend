@@ -37,7 +37,6 @@ export class RepsListComponent implements OnInit {
     loadingState: any;
     proposals$: Observable<Proposal[]>;
     handleImageUrl = optimizeImage;
-    reps: any[];
     proposals: Proposal[];
     solutions: Solution[];
     issues: Issue[];
@@ -73,10 +72,6 @@ export class RepsListComponent implements OnInit {
                 return tagName ? this._filter(tagName) : this.allTags.slice()
             })
         )
-        // this.tagFilter.valueChanges
-        //     .subscribe((tagString: string) => {
-        //         this.filteredReps = tagString ? this._filter(tagString) : this.allReps.slice()
-        //     })
     }
 
     ngOnInit() {
@@ -144,9 +139,9 @@ export class RepsListComponent implements OnInit {
 
     openDialog(): void {
         const dialogRef = this.dialog.open(RepModalComponent, {
-            width: '400px',
+            width: '500px',
             height: '60vh',
-            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.organization.representativeTags, tagsUpdated: false }
+            data: { repEmail: '', newReps: [], currentReps: this.allReps, removeReps: [], representativeTags: this.organization.representativeTags, tagsUpdated: false }
         })
 
         dialogRef.afterClosed().subscribe(result => {

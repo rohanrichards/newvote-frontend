@@ -13,3 +13,10 @@
 .add-button {
   margin-left: auto;
 }
+
+::ng-deep {
+  .mat-dialog-content {
+    padding: 0;
+    margin: 0;
+  }
+}
