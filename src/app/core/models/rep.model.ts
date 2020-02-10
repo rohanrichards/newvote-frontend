@@ -9,6 +9,7 @@ export interface IRep {
     solutions: Array<any>;
     imageUrl: string;
     owner: any;
+    tags: Array<any>;
 }
 
 export class Rep implements IRep {
@@ -22,6 +23,7 @@ export class Rep implements IRep {
         public issues: Array<any> = [],
         public solutions: Array<any> = [],
         public imageUrl: string = '',
-        public owner: any = {}
+        public owner: any = {},
+        public tags: any = [],
     ) {}
 }

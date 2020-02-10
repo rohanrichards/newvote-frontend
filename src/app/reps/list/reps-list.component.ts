@@ -36,7 +36,6 @@ export class RepsListComponent implements OnInit {
     solutions: Solution[];
     issues: Issue[];
     suggestions: Suggestion[];
-    representativeTags: any[] = []
     organization: Organization;
 
     constructor(
@@ -118,7 +117,7 @@ export class RepsListComponent implements OnInit {
         const dialogRef = this.dialog.open(RepModalComponent, {
             width: '400px',
             height: '60vh',
-            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.representativeTags, tagsUpdated: false }
+            data: { repEmail: '', newReps: [], currentReps: this.reps, removeReps: [], representativeTags: this.organization.representativeTags, tagsUpdated: false }
         })
 
         dialogRef.afterClosed().subscribe(result => {
@@ -154,7 +153,13 @@ export class RepsListComponent implements OnInit {
     }
 
     updateRepresentativeTags(tags: any) {
-        return this.organizationService.patch({ id: this.organization._id, entity: tags })
+        // API request only takes representativeTags
+        // rest of organization object passed for type matching on service
+        const organization = {
+            ...this.organization,
+            representativeTags: tags
+        }
+        return this.organizationService.patch({ id: this.organization._id, entity: organization })
             .subscribe(
                 (res) => res,
                 (err) => err

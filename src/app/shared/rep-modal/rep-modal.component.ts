@@ -69,7 +69,7 @@ export class RepModalComponent implements OnInit {
         }
         // Add our fruit
         if ((value || '').trim()) {
-            data.tagsUpdated = true
+            this.data.tagsUpdated = true
             representativeTags = [...representativeTags, tag];
             this.data.representativeTags = representativeTags
         }
@@ -85,7 +85,7 @@ export class RepModalComponent implements OnInit {
         if (index >= 0) {
             representativeTags = [...representativeTags.splice(0, index), ...representativeTags.splice(index+1, representativeTags.length -1)]
             this.data.representativeTags = representativeTags
-            data.tagsUpdated = true
+            this.data.tagsUpdated = true
         }
 
     }
