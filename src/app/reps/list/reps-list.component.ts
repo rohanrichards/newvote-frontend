@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { Proposal } from '@app/core/models/proposal.model';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 import { Solution } from '@app/core/models/solution.model';
 import { Issue } from '@app/core/models/issue.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatAutocomplete } from '@angular/material';
 import { RepModalComponent } from '@app/shared/rep-modal/rep-modal.component';
 import { Rep } from '@app/core/models/rep.model';
 import { RepService } from '@app/core/http/rep/rep.service';
@@ -20,6 +20,9 @@ import { MetaService } from '@app/core/meta.service';
 import { OrganizationService } from '@app/core';
 import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 import { Organization } from '@app/core/models/organization.model';
+import { FormControl } from '@angular/forms';
+import { startWith, map, filter } from 'rxjs/operators';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -27,6 +30,9 @@ import { Organization } from '@app/core/models/organization.model';
 })
 
 export class RepsListComponent implements OnInit {
+    @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+
     isLoading: boolean;
     loadingState: any;
     proposals$: Observable<Proposal[]>;
@@ -37,6 +43,15 @@ export class RepsListComponent implements OnInit {
     issues: Issue[];
     suggestions: Suggestion[];
     organization: Organization;
+
+    tagCtrl = new FormControl('')
+    allTags: any[];
+    allReps: any[];
+    tags: string[] = []
+    filteredTags: Observable<any[]>;
+    filteredReps: Observable<any[]>;
+    selectedTags: Array<any> = [];
+    separatorKeysCodes: number[] = [ENTER, COMMA];
 
     constructor(
         public dialog: MatDialog,
@@ -51,7 +66,18 @@ export class RepsListComponent implements OnInit {
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
         private organizationService: OrganizationService
-    ) { }
+    ) {
+        this.filteredTags = this.tagCtrl.valueChanges.pipe(
+            startWith(''),
+            map((tagName: string) => {
+                return tagName ? this._filter(tagName) : this.allTags.slice()
+            })
+        )
+        // this.tagFilter.valueChanges
+        //     .subscribe((tagString: string) => {
+        //         this.filteredReps = tagString ? this._filter(tagString) : this.allReps.slice()
+        //     })
+    }
 
     ngOnInit() {
         this.fetchData()
@@ -73,6 +99,9 @@ export class RepsListComponent implements OnInit {
             .subscribe((org: any) => {
                 if (!org) return false
                 this.organization = org
+                this.allTags = org.representativeTags.map((tagObj: any) => {
+                    return tagObj.name
+                })
                 this.updateTags(org)
             })
     }
@@ -83,7 +112,7 @@ export class RepsListComponent implements OnInit {
             .subscribe(
                 (reps: any[]) => {
                     if (!reps.length) return false
-                    this.reps = reps
+                    this.allReps = reps
                 },
                 (err) => err
             )
@@ -165,4 +194,49 @@ export class RepsListComponent implements OnInit {
                 (err) => err
             )
     }
+
+    tagSelected(event: any) {
+        const selectedItem = event.option.value.trim()
+        if (this.allTags.includes(selectedItem)) {
+            this.tags.push(selectedItem)
+            this.tagInput.nativeElement.value = ''
+        }
+    }
+
+    filterReps(reps: any[], tagName: string) {
+        if (!reps.length) return false
+        const filteredReps = reps.filter((rep: any) => {
+            const { tags = [] } = rep
+            if (!tags.length) return false
+            return tags.some((tag: any) => {
+                return tag === tagName
+            })
+        })
+        return filteredReps
+    }
+
+    tagRemoved(tagName: string) {
+        const index = this.tags.indexOf(tagName)
+
+        if (index >= 0) {
+            this.tags.splice(index, 1)
+        }
+    }
+
+    private _filter(tagName: any): any[] {
+        return this.allTags.filter(tag => tag !== tagName)
+    }
+
+    // private _filter(tagName: any): any[] {
+
+    //     const filterVal = this.allReps.filter(rep => {
+    //         if (!rep) return false
+    //         const { representativeTags = [] } = rep;
+    //         if (representativeTags.length) return false
+    //         return representativeTags.find((tag: any) => {
+    //             return tag.name === tagName
+    //         })
+    //     })
+    //     return filterVal
+    // }
 }

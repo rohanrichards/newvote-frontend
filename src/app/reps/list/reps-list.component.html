@@ -1,19 +1,58 @@
  <mat-toolbar *ngIf="auth.isModerator()">
-    <div class="example-button-row">
-        <button mat-icon-button matTooltip="Manage Reps" (click)="openDialog()">
-          <mat-icon aria-label="Manage Reps">add</mat-icon>
-        </button>
-        Open Reps Menu
-    </div>
- </mat-toolbar>
- <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px">
-     <div *ngFor="let rep of reps"
-        fxFlex="1 1 400px"
-        >
-        <app-rep-card
-            path="/reps"
-            [item]="rep"
-            >
-        </app-rep-card>
+     <div class="example-button-row">
+         <button mat-icon-button matTooltip="Manage Reps"
+             (click)="openDialog()">
+             <mat-icon aria-label="Manage Reps">add</mat-icon>
+         </button>
+         Open Reps Menu
      </div>
-</div>
+ </mat-toolbar>
+ <div [ngStyle]="{'padding': '1rem', 'width': '50vw'}">
+     <mat-form-field class="example-chip-list" fxFill>
+         <mat-chip-list #chipList>
+             <mat-chip *ngFor="let tag of tags" 
+                [selectable]="false"
+                (removed)="tagRemoved(tag)"
+                [removable]="true">
+                 {{tag}}
+                 <mat-icon matChipRemove>cancel</mat-icon>
+             </mat-chip>
+             <input placeholder="Filter Tags" #tagInput
+                 [formControl]="tagCtrl" [matAutocomplete]="auto"
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="true">
+         </mat-chip-list>
+         <mat-autocomplete #auto="matAutocomplete"
+             (optionSelected)="tagSelected($event)">
+             <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                 {{tag}}
+             </mat-option>
+         </mat-autocomplete>
+     </mat-form-field>
+ </div>
+ <ng-container *ngIf="!tags.length; else elseBlock">
+     <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column"
+         fxLayoutGap="16px">
+         <div class="pointer-card" *ngFor="let rep of allReps" fxFlex="1 1 400px">
+             <app-rep-card path="/reps" [item]="rep">
+             </app-rep-card>
+         </div>
+     </div>
+ </ng-container>
+ <ng-template #elseBlock>
+     <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column"
+         fxLayoutGap="16px">
+            <div class="pointer-card" *ngFor="let tag of tags" fxFlex="1 1 400px" fxLayout="column">
+                <div class="tag-header">
+                    <h2 class="mat-h1 no-margin">
+                        {{tag}}
+                    </h2>
+                </div>
+                <div *ngFor="let rep of filterReps(allReps, tag)" fxFlex="1 1 400px">
+                    <app-rep-card path="/reps" [item]="rep">
+                    </app-rep-card>
+                </div>
+            </div> 
+     </div>
+ </ng-template>
