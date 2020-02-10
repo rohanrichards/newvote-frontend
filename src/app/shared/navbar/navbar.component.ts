@@ -143,6 +143,22 @@ export class NavbarComponent implements OnInit {
         this.hideVerify = !this.hideVerify
     }
 
+    handleVerify() {
+        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
+            return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+        }
+
+        return this.auth.verifyWithCommunity()
+            .subscribe(
+                (res) => {
+                    this.openSnackBar('You have successfully verified with this community.', 'OK')
+                },
+                (error) => {
+                    console.log(error, 'this is error')
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
+    }
+
     openSnackBar(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 4000,
