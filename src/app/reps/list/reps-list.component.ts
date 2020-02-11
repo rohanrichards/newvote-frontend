@@ -80,7 +80,6 @@ export class RepsListComponent implements OnInit {
         this.repQuery.populateReps()
             .subscribe(
                 (reps: any[]) => {
-                    if (!reps.length) return false
                     this.reps = reps
                 },
                 (err) => err

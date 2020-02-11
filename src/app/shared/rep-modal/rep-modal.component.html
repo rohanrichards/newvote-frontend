@@ -28,7 +28,7 @@
         <h3 mat-subheader>Current Student Reps</h3>
         <mat-list-item role="listitem" *ngFor="let rep of data.currentReps">
             <mat-icon mat-list-icon>chevron_right</mat-icon>
-            <h4 mat-line>{{ rep.displayName }}</h4>
+            <h4 mat-line>{{ rep.displayName || rep.email }}</h4>
             <button mat-icon-button color="accent"
                 aria-label="Delete Rep"
                 (click)="removeCurrentRep(rep)"
