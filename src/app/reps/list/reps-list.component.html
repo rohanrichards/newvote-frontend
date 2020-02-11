@@ -19,7 +19,7 @@
             *ngFor="let rep of reps"
             fxFlex="400px">
             <app-rep-card
-            
+                (delete)="admin.onDelete($event, 'Rep')"
                 path="/reps"
                 [item]="rep"
                 >

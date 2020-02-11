@@ -18,6 +18,8 @@ import { TopicService } from '../topic/topic.service'
 import { Topic, ITopic } from '@app/core/models/topic.model'
 import { Router } from '@angular/router'
 import { HttpErrorResponse } from '@angular/common/http'
+import { IRep } from '@app/core/models/rep.model'
+import { RepService } from '../rep/rep.service'
 
 type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal
     | ITopic | IIssue | IOrganization | ISolution | IMedia | ISuggestion | IProposal;
@@ -30,6 +32,7 @@ type Entities = {
     Proposal: IProposal;
     Media: IMedia;
     Organization: IOrganization;
+    Rep: IRep;
 }
 type Services = {
     Topic: TopicService;
@@ -39,6 +42,7 @@ type Services = {
     Proposal: ProposalService;
     Media: MediaService;
     Organization: OrganizationService;
+    Rep: RepService;
 }
 
 @Injectable({
@@ -53,7 +57,8 @@ export class AdminService {
         Solution: this.solutionService,
         Proposal: this.proposalService,
         Media: this.mediaService,
-        Organization: this.organizationService
+        Organization: this.organizationService,
+        Rep: this.repService,
     }
 
     constructor(
@@ -66,13 +71,18 @@ export class AdminService {
         private topicService: TopicService,
         private dialog: MatDialog,
         private snackBar: MatSnackBar,
-        private router: Router
+        private router: Router,
+        private repService: RepService
     ) { }
 
     getTitle(object: any, model: string): string {
 
         if (model === 'Issue' || model === 'Topic') {
             return object.name
+        }
+
+        if (model === 'Rep') {
+            return model
         }
         return object.title
     }
