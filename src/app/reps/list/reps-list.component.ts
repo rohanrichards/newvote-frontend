@@ -131,7 +131,16 @@ export class RepsListComponent implements OnInit {
     createReps(reps: any) {
         this.repsService.create({ entity: reps })
             .subscribe(
-                (res) => res,
+                (res) => {
+                    const { invalidReps } = res
+                    this.admin.openSnackBar('Reps added successfully', 'OK')
+                    if (invalidReps.length) {
+                        setTimeout(() => {
+                            const message = `These emails could not be created as reps, ${invalidReps.join(', ')}.`
+                            this.admin.openSnackBar(message, 'OK')
+                        }, 5000)
+                    }
+                },
                 (err) => err
             )
     }
@@ -139,7 +148,13 @@ export class RepsListComponent implements OnInit {
     deleteReps(reps: any) {
         this.repsService.deleteMany({ entity: reps })
             .subscribe(
-                (res) => res,
+                (res) => {
+                    let message = 'Rep successfully removed'
+                    if (res.length > 1) {
+                        message = 'Rep\'s successfully removed'
+                    }
+                    this.admin.openSnackBar(message, 'OK')
+                },
                 (err) => err
             )
     }

@@ -71,7 +71,7 @@ export class RepService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
-                tap((res: Rep) => this.store.add(res)),
+                tap((res: any) => this.store.add(res.reps)),
                 map((res: any) => res),
                 catchError(handleError)
             )
