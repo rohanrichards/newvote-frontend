@@ -1,0 +1,63 @@
+<mat-card class="pointer-card" routerLink="{{path}}{{'/'}}{{item._id}}">
+        <img mat-card-image [src]="item.imageUrl" />
+        <div>
+            <div class="field-container">
+                <h3 class="no-margin">Name</h3>
+                <p class="mat-h3 no-margin">{{ item.displayName }}</p>
+            </div>
+            <div class="field-container">
+                <h3 class="no-margin">Position</h3>
+                <p class="mat-h3 no-margin">{{ item.position }}</p>
+            </div>
+            <div class="field-container">
+                <h3 class="no-margin">About</h3>
+                <p class="no-margin" [innerHtml]="item.description"></p>            
+            </div>   
+        </div>
+        <mat-card-content>
+            
+            <div *ngIf="item.issues.length">
+                <h2>
+                    Issues
+                </h2>
+                
+                <div *ngFor="let issue of item.issues">
+                    <app-child-card
+                        path="/issues"
+                        [item]="issue"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>  
+            </div>
+            
+            <div *ngIf="item.solutions.length">
+                <h2>
+                    Solutions
+                </h2>
+                <div *ngFor="let solution of item.solutions">
+                    <app-child-card
+                        path="/solutions"
+                        [item]="solution"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>
+            </div>
+
+            <div *ngIf="item.proposals.length">
+                <h2>
+                    Actions
+                </h2>
+                <div *ngFor="let proposal of item.proposals">
+                    <app-child-card
+                        path="/proposals"
+                        [item]="proposal"
+                        repCard=true
+                        >
+                    </app-child-card>
+                </div>
+            </div> 
+            
+        </mat-card-content>
+    </mat-card>

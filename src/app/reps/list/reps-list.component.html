@@ -1,0 +1,20 @@
+ <mat-toolbar *ngIf="auth.isModerator()">
+    <div class="example-button-row">
+        <button mat-icon-button matTooltip="Manage Reps" (click)="openDialog()">
+          <mat-icon aria-label="Manage Reps">add</mat-icon>
+        </button>
+        Open Reps Menu
+    </div>
+ </mat-toolbar>
+ <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="16px">
+     <div *ngFor="let rep of reps"
+        fxFlex="1 0 400px"
+        >
+        <app-rep-card
+        
+            path="/reps"
+            [item]="rep"
+            >
+        </app-rep-card>
+     </div>
+</div>

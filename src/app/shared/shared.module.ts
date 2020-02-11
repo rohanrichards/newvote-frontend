@@ -39,7 +39,10 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
-import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component'
+import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
+import { RepModalComponent } from './rep-modal/rep-modal.component';
+import { ChildCardComponent } from './child-card/child-card.component';
+import { RepCardComponent } from './rep-card/rep-card.component'
 
 @NgModule({
     imports: [
@@ -84,7 +87,10 @@ import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.compo
         SkeletonPanelComponent,
         ErrorCardComponent,
         NavbarComponent,
-        MakeSuggestionComponent
+        MakeSuggestionComponent,
+        RepModalComponent,
+        ChildCardComponent,
+        RepCardComponent
     ],
     exports: [
         LoaderComponent,
@@ -110,7 +116,10 @@ import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.compo
         SkeletonPanelComponent,
         ErrorCardComponent,
         NavbarComponent,
-        MakeSuggestionComponent
+        MakeSuggestionComponent,
+        RepModalComponent,
+        ChildCardComponent,
+        RepCardComponent
     ]
 })
 export class SharedModule { }

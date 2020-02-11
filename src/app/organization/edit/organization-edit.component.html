@@ -115,10 +115,11 @@
 				</mat-select>
 				<mat-hint>By setting organization to private it will be hidden from NewVotes community lists.</mat-hint>
 			</mat-form-field>
-
+			
+			<!-- Owner -->
 			<div fxFlex.gt-sm="60"
 			 fxLayout="row">
-				<mat-form-field style="width: 100%; padding-right: 0.5rem"
+				<mat-form-field style="width: 100%; padding-right: 0.5rem;"
 				 class="example-chip-list"
 				 *ngIf="auth.isAdmin()">
 					<mat-chip-list #chipList>
@@ -169,6 +170,8 @@
 					</button>
 				</div>
 			</div>
+
+			<!-- Moderators -->
 			<mat-form-field class="example-chip-list"
 			 *ngIf="auth.isOwner()">
 				<mat-chip-list #modChipList>
@@ -181,12 +184,20 @@
 					</mat-chip>
 					<input placeholder="Select Community Moderators"
 					 #moderatorInput
-					 formControlName="moderatorsControl"
+					 formControlName="moderators
+					 Control"
 					 [matChipInputFor]="modChipList"
 					 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
 					 [matChipInputAddOnBlur]="true"
 					 (matChipInputTokenEnd)="moderatorSelected($event)">
 				</mat-chip-list>
+			</mat-form-field>
+
+			<mat-form-field>
+				<input matInput
+				 type="text"
+				 placeholder="Representative Name"
+				 formControlName="representativeTitle">
 			</mat-form-field>
 
 			<span>Home Page Background Image</span>

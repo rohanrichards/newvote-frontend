@@ -19,6 +19,7 @@ export interface IOrganization {
     authEntityId: string;
     privateOrg: boolean;
     voteRoles: Array<any>;
+    representativeTitle: string;
 }
 
 export class Organization implements IOrganization {
@@ -41,6 +42,7 @@ export class Organization implements IOrganization {
         public authUrl: string = '',
         public authEntityId: string = '',
         public privateOrg: boolean = false,
-        public voteRoles: Array<any> = []
+        public voteRoles: Array<any> = [],
+        public representativeTitle: string = ''
     ) { }
 }

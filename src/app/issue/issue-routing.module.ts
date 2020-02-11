@@ -7,6 +7,8 @@ import { IssueListComponent } from './list/issue-list.component'
 import { IssueViewComponent } from './view/issue-view.component'
 import { IssueCreateComponent } from './create/issue-create.component'
 import { IssueEditComponent } from './edit/issue-edit.component'
+import { RepGuard } from '@app/core/authentication/rep.guard'
+import { RepOrgGuard } from '@app/core/authentication/rep-org.guard'
 
 const routes: Routes = [
     { path: '', component: IssueListComponent, data: { title: extract('All Issues'), level: 'root' } },
@@ -14,7 +16,7 @@ const routes: Routes = [
         path: 'create',
         component: IssueCreateComponent,
         data: { title: extract('New Issue'), level: 'child' },
-        canActivate: [ModeratorGuard]
+        canActivate: [RepOrgGuard]
     },
     {
         path: 'edit/:id',

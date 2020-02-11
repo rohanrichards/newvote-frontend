@@ -34,7 +34,7 @@
             [defaultImage]="handleImageUrl(proposal.imageUrl, true)"
             [lazyLoad]="handleImageUrl(proposal.imageUrl)">
             <div class="admin-panel"
-                *ngIf="auth.isModerator(proposal)"
+                *ngIf="repQuery.isRepForOrg()"
                 fxLayout="column"
                 fxLayoutAlign="center end">
                 <div class="button-panel">
@@ -46,7 +46,8 @@
                             playlist_add
                         </mat-icon>
                     </button>
-                    <button mat-icon-button
+                    <ng-container *ngIf="authQuery.isModerator()">
+                        <button mat-icon-button
                         matTooltip="Edit this Action"
                         color="accent"
                         routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
@@ -76,6 +77,9 @@
                         <mat-icon aria-label="Delete the action forever">
                             delete_forever</mat-icon>
                     </button>
+                    </ng-container>
+                       
+
                 </div>
             </div>
             <div fxLayout="row"

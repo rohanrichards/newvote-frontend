@@ -26,6 +26,8 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { Observable } from 'rxjs'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { RepQuery } from '@app/core/http/rep/rep.query'
 
 @Component({
     selector: 'app-solution',
@@ -64,7 +66,9 @@ export class SolutionViewComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private voteQuery: VotesQuery,
         private admin: AdminService,
-        private proposalQuery: ProposalQuery
+        private proposalQuery: ProposalQuery,
+        public authQuery: AuthenticationQuery,
+        public repQuery: RepQuery
     ) { }
 
     ngOnInit() {

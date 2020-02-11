@@ -43,8 +43,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
-
 import { NgxCaptchaModule } from 'ngx-captcha'
+import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 
 @NgModule({
     imports: [
@@ -83,13 +83,14 @@ import { NgxCaptchaModule } from 'ngx-captcha'
             }
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
-        AppRoutingModule // must be imported as the last module as it contains the fallback route
+        AppRoutingModule,
     ],
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     entryComponents: [
-        ConfirmDialogComponent
+        ConfirmDialogComponent,
+        RepModalComponent
     ],
     providers: [
         CookieService,

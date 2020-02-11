@@ -59,7 +59,7 @@ export class IssueListComponent implements OnInit {
         text: 'New Issue',
         color: 'warn',
         routerLink: '/issues/create',
-        role: 'admin'
+        role: 'rep'
     },
     {
         text: 'New Topic',

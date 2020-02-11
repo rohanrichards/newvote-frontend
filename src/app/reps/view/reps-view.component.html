@@ -1,0 +1,143 @@
+<!-- <app-loader [isLoading]="loadingState === 'loading' || isLoading"
+    size="1.5"></app-loader> -->
+
+<!-- App Page Header -->
+<ng-container [ngSwitch]="loadingState">
+    <div *ngSwitchCase="'loading'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+    </div>
+    <div *ngSwitchCase="'error'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasVote]=true>
+        </app-skeleton-panel>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="error-container">
+                    <app-error-card model="Action">
+                    </app-error-card>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchCase="'complete'">
+    <mat-toolbar
+        color="primary"
+        class="header-info-panel">
+        <div
+            class="image-container"
+            fxLayout="column"
+            [defaultImage]="handleImageUrl(rep.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(rep.imageUrl)">
+            <div class="admin-panel"
+                *ngIf="repQuery.isRep()"
+                fxLayout="column"
+                fxLayoutAlign="center end">
+                <div class="button-panel" *ngIf="repQuery.canAccessRepProfile(rep._id)">
+                    <button mat-icon-button
+                        matTooltip="Edit this Rep"
+                        color="accent"
+                        routerLink="/reps/edit/{{rep._id}}">
+                        <mat-icon aria-label="Edit Rep Profile">edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div fxLayout="row"
+                fxFlex></div>
+            <div fxLayout="row wrap"
+                fxLayoutAlign="center center">
+                <div fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="800px">
+                    <app-share-buttons></app-share-buttons>
+                </div>
+            </div>
+        </div>
+        <div 
+            fxLayout="row wrap"
+            fxLayoutAlign="center start"
+            class="description-container">
+            <div 
+                *ngIf="rep"
+                fxFlex.sm="400px"
+                fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="mat-headline"
+                    translate>Name: {{ rep.displayName }}</div>
+                <div class="mat-title"
+                    translate>Position: {{ rep.position }}</div>
+                <app-more-less [displayText]="rep.description"
+                    maxHeight="200">
+                </app-more-less>
+            </div>
+        </div>
+    </mat-toolbar>
+
+        
+    <!-- Rep page Body information -->
+    <div
+        class="container"
+        fxLayout="row wrap"
+        fxLayoutAlign="center center"
+        >
+        <div 
+        fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px"
+            fxFlex="100">
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Issues
+                </h2>
+                <mat-divider class="divider"></mat-divider >
+                <app-grid-list 
+                    path="/issues"
+                    [items]="issues"
+                    model="Issue"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Issue')"
+                    (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                    (delete)="admin.onDelete($event, 'Issue')">
+                    </app-grid-list>
+            </div>
+
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Actions
+                </h2>
+                <mat-divider class="divider"></mat-divider>
+                <app-grid-list 
+                    path="/proposals"
+                    [items]="proposals"
+                    model="Proposal"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Proposal')"
+                    (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                    (delete)="admin.onDelete($event, 'Proposal')">
+                    </app-grid-list>
+            </div>
+
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Solutions
+                </h2>
+                <mat-divider class="divider"></mat-divider>
+                <app-grid-list 
+                    path="/solutions"
+                    [items]="solutions"
+                    model="Solution"
+                    [titleCard]=true
+                    (restore)="admin.onRestore($event, 'Solution')"
+                    (softDelete)="admin.onSoftDelete($event, 'Solution')"
+                    (delete)="admin.onDelete($event, 'Solution')">
+                    </app-grid-list>
+            </div>
+
+        </div>
+    </div>
+</div>
+    
+               
