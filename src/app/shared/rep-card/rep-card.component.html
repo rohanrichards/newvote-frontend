@@ -1,5 +1,30 @@
-<mat-card class="pointer-card" routerLink="{{path}}{{'/'}}{{item._id}}">
-        <img mat-card-image [src]="item.imageUrl" />
+<ng-container *ngIf="item; else emptyBlock">
+    <mat-card class="pointer-card" routerLink="{{path}}{{'/'}}{{item._id}}">
+        <div 
+            class="image-container"
+            [defaultImage]="handleImageUrl(item.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(item.imageUrl)"
+            [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
+            > 
+            <div class="button-panel"   
+                *ngIf="auth.isModerator()">
+                <button color="accent"
+                    mat-icon-button
+                    (click)="$event.stopPropagation()"
+                    routerLink='{{path}}/edit/{{item._id}}'>
+                    <mat-icon aria-label="Edit the content">edit
+                    </mat-icon>
+                </button>
+                <button
+                    color="warn"
+                    mat-icon-button
+                    (click)="onDelete(item, $event)">
+                    <mat-icon aria-label="Delete content forever">
+                        delete_forever</mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- <img mat-card-image /> -->
         <div>
             <div class="field-container">
                 <h3 class="no-margin">Name</h3>
@@ -61,3 +86,28 @@
             
         </mat-card-content>
     </mat-card>
+</ng-container>
+<ng-template #emptyBlock>
+    <mat-card>
+        <img mat-card-image [src]="DEFAULT_IMAGE" />
+        <div>
+            <div class="field-container">
+                <h2 class="no-margin">No {{ repName || 'Representatives'}} Currently</h2> 
+            </div>
+        </div>
+        <mat-card-content>
+            <div class="pointer-card" routerLink="{{'/issues'}}">
+                <h2>
+                    Investigate Issues
+                </h2> 
+                <div class="skeleton-child-container">
+                    <app-skeleton-text-bar></app-skeleton-text-bar>        
+                    <div>
+                        <app-skeleton-child-card [showImage]=true> 
+                        </app-skeleton-child-card>
+                    </div>  
+                </div>        
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

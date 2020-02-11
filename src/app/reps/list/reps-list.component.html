@@ -28,7 +28,7 @@
     </div>
 </ng-container>
  <ng-template #skeletonBlock>
-    <div class="reps-container" 
+    <!-- <div class="reps-container" 
         fxLayout="row" 
         fxLayout.lt-sm="column" 
         fxLayoutGap="16px" 
@@ -36,6 +36,17 @@
         <div 
             fxFlex="400px">
             <app-skeleton-rep-card></app-skeleton-rep-card>
+        </div>
+    </div> -->
+
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            fxFlex="400px">
+            <app-rep-card></app-rep-card>
         </div>
     </div>
  </ng-template>
