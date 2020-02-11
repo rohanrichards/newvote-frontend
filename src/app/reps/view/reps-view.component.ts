@@ -32,7 +32,7 @@ export class RepsViewComponent implements OnInit {
     isLoading: boolean;
     loadingState: any;
     handleImageUrl = optimizeImage;
-    imageUrl = 'https://images.unsplash.com/photo-1580076217624-5165cb3a0ed3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80'
+    imageUrl: string;
     rep: any;
 
     proposals$: Observable<Proposal[]>;

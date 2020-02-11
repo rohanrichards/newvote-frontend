@@ -42,7 +42,8 @@ import { NavbarComponent } from './navbar/navbar.component'
 import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
 import { RepModalComponent } from './rep-modal/rep-modal.component';
 import { ChildCardComponent } from './child-card/child-card.component';
-import { RepCardComponent } from './rep-card/rep-card.component'
+import { RepCardComponent } from './rep-card/rep-card.component';
+import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component'
 
 @NgModule({
     imports: [
@@ -90,7 +91,8 @@ import { RepCardComponent } from './rep-card/rep-card.component'
         MakeSuggestionComponent,
         RepModalComponent,
         ChildCardComponent,
-        RepCardComponent
+        RepCardComponent,
+        SkeletonRepCardComponent
     ],
     exports: [
         LoaderComponent,
@@ -119,7 +121,8 @@ import { RepCardComponent } from './rep-card/rep-card.component'
         MakeSuggestionComponent,
         RepModalComponent,
         ChildCardComponent,
-        RepCardComponent
+        RepCardComponent,
+        SkeletonRepCardComponent
     ]
 })
 export class SharedModule { }
