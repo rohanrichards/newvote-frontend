@@ -155,6 +155,10 @@ export class RepsListComponent implements OnInit {
                 this.createReps({ newReps, currentReps })
             }
 
+            if (currentReps.length) {
+                this.createReps({ newReps, currentReps })
+            }
+
             if (tagsUpdated) {
                 this.updateRepresentativeTags(representativeTags)
             }

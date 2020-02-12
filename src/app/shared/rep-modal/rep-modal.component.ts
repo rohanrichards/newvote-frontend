@@ -35,7 +35,7 @@ export class RepModalComponent implements OnInit {
     addRep() {
         const { newReps = [], repEmail } = this.data
 
-        const repArray = [...newReps, repEmail]
+        const repArray = [...newReps, { name: repEmail, tags: []}]
         this.data.newReps = repArray
         this.data.repEmail = ''
     }
@@ -49,7 +49,8 @@ export class RepModalComponent implements OnInit {
 
     removeCurrentRep(rep: any) {
         const { currentReps } = this.data
-
+        // 1) filter from the currentReps array, the item to be deleted
+        // 2) populate removeReps array with removed item to send to API
         this.data.currentReps = currentReps.slice()
             .filter((item: any) => {
                 if (item._id === rep._id) {
@@ -88,5 +89,14 @@ export class RepModalComponent implements OnInit {
             this.data.tagsUpdated = true
         }
 
+    }
+
+    updateRepTag(repObj: any) {
+        const { newReps, currentReps } = this.data
+        const reps = repObj.isNewRep ? newReps : currentReps
+        const rep = reps.find((item: any) => {
+            return item.name === repObj.rep.name
+        })
+        rep.tags = repObj.tags
     }
 }

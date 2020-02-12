@@ -3,7 +3,7 @@
         <mat-tab label="Manage Reps">
             <!-- First Tab content -->
             <h1 mat-dialog-title>NewVote Reps</h1>
-            <div mat-dialog-content>
+            <div class="content" mat-dialog-content>
                 <form class="example-form">
                     <div fxLayout="row wrap" fxLayoutAlign="space-between center">
                         <mat-form-field fxFlex="1 1 60%" class="example-full-width" >
@@ -18,31 +18,27 @@
                         </div>
        
                     </div>
-    
                 </form>
-                <mat-list role="list" dense>
-                    <h3 mat-subheader>New Student Reps</h3>
-                    <mat-list-item role="listitem" *ngFor="let rep of data.newReps">
-                        <mat-icon mat-list-icon>chevron_right</mat-icon>
-                        <h4 mat-line>{{ rep }}</h4>
-                        <button mat-icon-button color="accent"
-                            aria-label="Remove rep" (click)="removeNewRep(rep)">
-                            <mat-icon>delete_outline</mat-icon>
-                        </button>
-                    </mat-list-item>
-                </mat-list>
-                <mat-list role="list" dense>
-                    <h3 mat-subheader>Current Student Reps</h3>
-                    <mat-list-item role="listitem"
-                        *ngFor="let rep of data.currentReps">
-                        <mat-icon mat-list-icon>chevron_right</mat-icon>
-                        <h4 mat-line>{{ rep.displayName || rep.email }}</h4>
-                        <button mat-icon-button color="accent"
-                            aria-label="Delete Rep" (click)="removeCurrentRep(rep)">
-                            <mat-icon>delete_outline</mat-icon>
-                        </button>
-                    </mat-list-item>
-                </mat-list>
+                <div>
+                    <h3>New Student Reps</h3>
+                    <app-rep-item-list 
+                        *ngFor="let rep of data.newReps" 
+                        (updateRepTag)="updateRepTag($event)"
+                        newRep="true"
+                        [tags]="data.representativeTags"
+                        [rep]="rep">
+                    </app-rep-item-list>
+                </div>
+                <div>
+                    <h3>Current Student Reps</h3>
+                        <app-rep-item-list 
+                            [newRep]="false"
+                            *ngFor="let rep of data.currentReps" 
+                            (updateRepTag)="updateRepTag($event)"
+                            [tags]="data.representativeTags"
+                            [rep]="rep">
+                        </app-rep-item-list>
+                </div>
             </div>
         </mat-tab>
         <mat-tab label="Manage Tags">

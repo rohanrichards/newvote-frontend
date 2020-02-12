@@ -43,7 +43,8 @@ import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.compo
 import { RepModalComponent } from './rep-modal/rep-modal.component';
 import { ChildCardComponent } from './child-card/child-card.component';
 import { RepCardComponent } from './rep-card/rep-card.component';
-import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component'
+import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
 
 @NgModule({
     imports: [
@@ -92,7 +93,8 @@ import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-
         RepModalComponent,
         ChildCardComponent,
         RepCardComponent,
-        SkeletonRepCardComponent
+        SkeletonRepCardComponent,
+        RepItemListComponent
     ],
     exports: [
         LoaderComponent,
