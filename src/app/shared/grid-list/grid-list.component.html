@@ -131,7 +131,7 @@
                 <ng-template #isTitle>
                     <mat-card-content>
                         <mat-card-title class="title-card-header">
-                            {{item.name}}
+                            {{item.name || item.title}}
                         </mat-card-title>
                         <div class="title-card-subheader"
                             [innerHtml]="item.description">

@@ -36,7 +36,7 @@
                     <mat-list-item role="listitem"
                         *ngFor="let rep of data.currentReps">
                         <mat-icon mat-list-icon>chevron_right</mat-icon>
-                        <h4 mat-line>{{ rep.displayName }}</h4>
+                        <h4 mat-line>{{ rep.displayName || rep.email }}</h4>
                         <button mat-icon-button color="accent"
                             aria-label="Delete Rep" (click)="removeCurrentRep(rep)">
                             <mat-icon>delete_outline</mat-icon>
@@ -78,12 +78,10 @@
             </div>
         </mat-tab>
     </mat-tab-group>
-    <div fxLayoutAlign="end end">
-        <button mat-raised-button
-            color="primary"
-            [mat-dialog-close]="data"
-            cdkFocusInitial>Submit</button>
-    </div>
 </div>
-
-
+<div fxLayoutAlign="end end">
+    <button mat-raised-button
+        color="primary"
+        [mat-dialog-close]="data"
+        cdkFocusInitial>Submit</button>
+</div>

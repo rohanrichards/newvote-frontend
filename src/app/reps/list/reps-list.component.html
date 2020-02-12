@@ -35,24 +35,78 @@
      <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column"
          fxLayoutGap="16px">
          <div class="pointer-card" *ngFor="let rep of allReps" fxFlex="1 1 400px">
-             <app-rep-card path="/reps" [item]="rep">
+             <app-rep-card 
+                (delete)="admin.onDelete($event, 'Rep')"
+                path="/reps" 
+                [item]="rep">
              </app-rep-card>
          </div>
      </div>
  </ng-container>
  <ng-template #elseBlock>
-     <div class="reps-container" fxLayout="row" fxLayout.lt-sm="column"
-         fxLayoutGap="16px">
-            <div class="pointer-card" *ngFor="let tag of tags" fxFlex="1 1 400px" fxLayout="column">
-                <div class="tag-header">
-                    <h2 class="mat-h1 no-margin">
-                        {{tag | titlecase}}
-                    </h2>
-                </div>
-                <div *ngFor="let rep of filterReps(allReps, tag)" fxFlex="1 1 400px">
-                    <app-rep-card path="/reps" [item]="rep">
-                    </app-rep-card>
-                </div>
-            </div> 
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div class="pointer-card" *ngFor="let tag of tags" fxFlex="400px" fxLayout="column">
+            <div class="tag-header">
+                <h2 class="mat-h1 no-margin">
+                    {{tag | titlecase}}
+                </h2>
+            </div>
+            <div *ngFor="let rep of filterReps(allReps, tag)" fxFlex="1 1 400px">
+                <app-rep-card 
+                    (delete)="admin.onDelete($event, 'Rep')"
+                    path="/reps" 
+                    [item]="rep">
+                </app-rep-card>
+            </div>
+        </div> 
      </div>
- </ng-template>
+</ng-template>
+
+ <!-- <ng-container 
+    *ngIf="allReps && allReps.length;
+    else skeletonBlock"
+    >
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            *ngFor="let rep of allReps"
+            fxFlex="400px">
+            <app-rep-card
+                (delete)="admin.onDelete($event, 'Rep')"
+                path="/reps"
+                [item]="rep"
+                >
+            </app-rep-card>
+        </div>
+    </div>
+</ng-container>
+ <ng-template #skeletonBlock>
+     <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            fxFlex="400px">
+            <app-skeleton-rep-card></app-skeleton-rep-card>
+        </div>
+    </div> 
+
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            fxFlex="400px">
+            <app-rep-card></app-rep-card>
+        </div>
+    </div>
+ </ng-template> -->

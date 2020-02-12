@@ -1,4 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { optimizeImage } from '../helpers/cloudinary';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 
 @Component({
     selector: 'app-rep-card',
@@ -8,10 +10,33 @@ import { Component, OnInit, Input } from '@angular/core';
 export class RepCardComponent implements OnInit {
   @Input() path: string;
   @Input() item: any;
+  @Input() repName: string;
 
-  constructor() { }
+  @Output() restore = new EventEmitter();
+  @Output() softDelete = new EventEmitter();
+  @Output() delete = new EventEmitter();
+
+  handleImageUrl = optimizeImage
+
+  DEFAULT_IMAGE = 'assets/logo-no-text.png'
+  constructor(public auth: AuthenticationQuery) { }
 
   ngOnInit() {
+  }
+
+  onDelete(item: any, event: any) {
+      event.stopPropagation()
+      this.delete.emit(item)
+  }
+
+  onSoftDelete(item: any, event: any) {
+      event.stopPropagation()
+      this.softDelete.emit(item)
+  }
+
+  onRestore(item: any, event: any) {
+      event.stopPropagation()
+      this.restore.emit(item)
   }
 
 }
