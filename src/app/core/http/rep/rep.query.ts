@@ -77,6 +77,7 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
             ]
         ).pipe(
             map(([reps, allProposals, allSolutions, allIssues]: any) => {
+                if (!reps.length) return []
                 const newReps = reps.slice().map((rep: any) => {
                     let { proposals, solutions, issues } = rep
 

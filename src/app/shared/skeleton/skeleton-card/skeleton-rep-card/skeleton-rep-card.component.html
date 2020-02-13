@@ -1,0 +1,42 @@
+<mat-card>
+    <div class="skeleton-rep-image">
+    </div>
+    <div>
+        <div class="field-container">
+            <app-skeleton-text-bar isSubtitle="true" [width]="100"></app-skeleton-text-bar>
+        </div>
+        <div class="field-container">
+            <app-skeleton-text-bar isSubtitle="true" [width]="140"></app-skeleton-text-bar>
+        </div>
+        <div class="field-container">
+            <app-skeleton-text-bar isText="true" [width]="200"></app-skeleton-text-bar>
+            <app-skeleton-text-bar isText="true" [width]="140"></app-skeleton-text-bar>
+        </div>  
+    </div>
+    <mat-card-content>
+        <div class="skeleton-child-container">
+            <app-skeleton-text-bar></app-skeleton-text-bar>        
+            <div>
+                <app-skeleton-child-card [showImage]=true> 
+                </app-skeleton-child-card>
+            </div>  
+        </div>
+        
+        <div class="skeleton-child-container">
+            <app-skeleton-text-bar></app-skeleton-text-bar>        
+            <div>
+                <app-skeleton-child-card [showImage]=true> 
+                </app-skeleton-child-card>
+            </div>  
+        </div>
+
+        <div class="skeleton-child-container">
+            <app-skeleton-text-bar></app-skeleton-text-bar>        
+            <div>
+                <app-skeleton-child-card [showImage]=true> 
+                </app-skeleton-child-card>
+            </div>  
+        </div>
+        
+    </mat-card-content>
+</mat-card>

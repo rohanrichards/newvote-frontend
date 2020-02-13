@@ -97,26 +97,10 @@
                     path="/issues"
                     [items]="issues"
                     model="Issue"
-                    [titleCard]=true
+                    [titleCard]="true"
                     (restore)="admin.onRestore($event, 'Issue')"
                     (softDelete)="admin.onSoftDelete($event, 'Issue')"
                     (delete)="admin.onDelete($event, 'Issue')">
-                    </app-grid-list>
-            </div>
-
-            <div class="topic-header">
-                <h2 class="mat-h1 no-margin">
-                    Actions
-                </h2>
-                <mat-divider class="divider"></mat-divider>
-                <app-grid-list 
-                    path="/proposals"
-                    [items]="proposals"
-                    model="Proposal"
-                    [titleCard]=true
-                    (restore)="admin.onRestore($event, 'Proposal')"
-                    (softDelete)="admin.onSoftDelete($event, 'Proposal')"
-                    (delete)="admin.onDelete($event, 'Proposal')">
                     </app-grid-list>
             </div>
 
@@ -129,10 +113,26 @@
                     path="/solutions"
                     [items]="solutions"
                     model="Solution"
-                    [titleCard]=true
+                    [titleCard]="true"
                     (restore)="admin.onRestore($event, 'Solution')"
                     (softDelete)="admin.onSoftDelete($event, 'Solution')"
                     (delete)="admin.onDelete($event, 'Solution')">
+                    </app-grid-list>
+            </div>
+
+            <div class="topic-header">
+                <h2 class="mat-h1 no-margin">
+                    Actions
+                </h2>
+                <mat-divider class="divider"></mat-divider>
+                <app-grid-list 
+                    path="/proposals"
+                    [items]="proposals"
+                    model="Proposal"
+                    [titleCard]="true"
+                    (restore)="admin.onRestore($event, 'Proposal')"
+                    (softDelete)="admin.onSoftDelete($event, 'Proposal')"
+                    (delete)="admin.onDelete($event, 'Proposal')">
                     </app-grid-list>
             </div>
 
