@@ -47,18 +47,17 @@
                     <h2 class="mat-title">Representative Tags</h2>
                 </div>
                 <form>
-                    <div fxLayout="row" fxLayoutAlign="sp/ace-between center">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Tag Input</mat-label>
-                            <input matInput appearance="outline" placeholder="Ambassador..." [(ngModel)]="value" [ngModelOptions]="{standalone: true}"/>
-                            <button class="add-button" mat-button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <mat-form-field>
+                            <mat-label>Create Tag</mat-label>
+                            <input matInput placeholder="Ambassador..." [(ngModel)]="value" [ngModelOptions]="{standalone: true}"/>
+                            <button class="add-button" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
                                 <mat-icon>close</mat-icon>
                             </button>
                         </mat-form-field>
-                        <button mat-button (click)="add()">Add Tag</button>
+                        <button mat-flat-button color="primary" (click)="add()">Add Tag</button>
                     </div>
                 </form>
-                <mat-divider></mat-divider>
     
                 <mat-list role="list">
                     <mat-list-item role="listitem" *ngFor="let tag of data.representativeTags">

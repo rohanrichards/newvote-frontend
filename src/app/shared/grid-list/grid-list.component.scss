@@ -1,3 +1,7 @@
+:host {
+	margin-top: 1rem;
+}
+
 .mat-progress-spinner {
 	display: inline-block;
 	vertical-align: middle;
@@ -53,7 +57,6 @@
 	height: 46px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	margin-bottom: 0;
 }
 
 .title-card-subheader {
@@ -61,8 +64,7 @@
 	height: 20px;
 	overflow: hidden;
 	max-width: 60vw;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0;
 
 	p {
 		margin: 0;

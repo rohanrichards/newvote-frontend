@@ -3,7 +3,7 @@
 
 <!-- App Page Header -->
 <ng-container [ngSwitch]="loadingState">
-    <!-- <div *ngSwitchCase="'loading'">
+    <div *ngSwitchCase="'loading'">
         <app-skeleton-header [noLogo]=true>
         </app-skeleton-header>
         <app-skeleton-panel [hasVote]=true>
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
     <mat-toolbar
         *ngSwitchCase="'complete'"
         color="primary"
@@ -36,7 +36,8 @@
             <div class="admin-panel"
                 *ngIf="repQuery.isRep()"
                 fxLayout="column"
-                fxLayoutAlign="center end">
+                fxLayoutAlign="center end"
+                >
                 <div class="button-panel" *ngIf="repQuery.canAccessRepProfile(rep._id)">
                     <button mat-icon-button
                         matTooltip="Edit this Rep"
@@ -59,6 +60,7 @@
         <div 
             fxLayout="row wrap" 
             fxLayoutAlign="center center"
+            fxLayoutAlign.lt-sm="start start"
             class="description-bar">
             <div *ngIf="rep" 
                 fxFlex.sm="400px" 
