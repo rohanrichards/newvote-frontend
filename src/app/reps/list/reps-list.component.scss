@@ -6,8 +6,26 @@
 .reps-container {
   padding: 1rem;
   // overflow: hidden;
+  // max-width: 680px;
+  // margin-left: auto;
+  // margin-right: auto;
+}
+
+.tag-header {
+  margin-bottom: 0;
 }
 
 .pointer-card {
   cursor: pointer;
+}
+
+.form-wrap {
+  width: 60%;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container {
+  padding: 1.5rem;
 }
