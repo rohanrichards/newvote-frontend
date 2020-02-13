@@ -152,11 +152,11 @@ export class RepsListComponent implements OnInit {
                 this.deleteReps(removeReps)
             }
             if (newReps.length) {
-                this.createReps({ newReps, currentReps })
+                this.createReps({ newReps })
             }
 
             if (currentReps.length) {
-                this.createReps({ newReps, currentReps })
+                this.updateReps({ currentReps })
             }
 
             if (tagsUpdated) {
@@ -179,6 +179,20 @@ export class RepsListComponent implements OnInit {
                     }
                 },
                 (err) => err
+            )
+    }
+
+    updateReps(reps: any) {
+        this.repsService.updateMany({ entity: reps })
+            .subscribe(
+                (res) => {
+                    console.log(res, 'this is res');
+                    const message = 'Update Successfull.'
+                    this.admin.openSnackBar(message, 'OK')
+                },
+                (err) => {
+                    this.admin.openSnackBar(err.message, 'OK')
+                }
             )
     }
 

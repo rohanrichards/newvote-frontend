@@ -22,11 +22,11 @@
                 <div>
                     <h3>New Student Reps</h3>
                     <app-rep-item-list 
-                        *ngFor="let rep of data.newReps" 
+                        *ngFor="let newRep of data.newReps" 
                         (updateRepTag)="updateRepTag($event)"
                         newRep="true"
                         [tags]="data.representativeTags"
-                        [rep]="rep">
+                        [rep]="newRep">
                     </app-rep-item-list>
                 </div>
                 <div>

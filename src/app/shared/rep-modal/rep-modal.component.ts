@@ -78,14 +78,14 @@ export class RepModalComponent implements OnInit {
     }
 
     remove(tag: any): void {
-        let { representativeTags } = this.data
+        const { representativeTags } = this.data
         const index = representativeTags.findIndex((item: any) => {
             return item.name === tag.name
         })
 
         if (index >= 0) {
-            representativeTags = [...representativeTags.splice(0, index), ...representativeTags.splice(index+1, representativeTags.length -1)]
-            this.data.representativeTags = representativeTags
+            const newRepTags = [...representativeTags.slice(0, index), ...representativeTags.slice(index+1, representativeTags.length)]
+            this.data.representativeTags = newRepTags
             this.data.tagsUpdated = true
         }
 
@@ -95,8 +95,9 @@ export class RepModalComponent implements OnInit {
         const { newReps, currentReps } = this.data
         const reps = repObj.isNewRep ? newReps : currentReps
         const rep = reps.find((item: any) => {
-            return item.name === repObj.rep.name
+            return item._id === repObj.rep._id
         })
+
         rep.tags = repObj.tags
     }
 }

@@ -38,6 +38,7 @@
              <app-rep-card 
                 (delete)="admin.onDelete($event, 'Rep')"
                 path="/reps" 
+                [tags]="organization.representativeTags"
                 [item]="rep">
              </app-rep-card>
          </div>
@@ -59,6 +60,7 @@
                 <app-rep-card 
                     (delete)="admin.onDelete($event, 'Rep')"
                     path="/reps" 
+                    [tags]="organization.representativeTags"
                     [item]="rep">
                 </app-rep-card>
             </div>

@@ -41,7 +41,7 @@
             <div *ngIf="item.tags && item.tags.length" class="field-container">
                 <h3 class="tag-title-margin">Tags</h3>
                 <mat-chip-list aria-label="User Tags">
-                    <mat-chip *ngFor="let tag of item.tags">{{tag}}</mat-chip>
+                    <mat-chip *ngFor="let tag of filterTags(item.tags)">{{tag}}</mat-chip>
                 </mat-chip-list>
             </div>
         </div>

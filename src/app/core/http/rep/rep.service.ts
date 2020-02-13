@@ -11,6 +11,7 @@ const routes = {
     view: (c: RepContext) => `/reps/${c.id}`,
     create: () => '/reps',
     update: (c: RepContext) => `/reps/${c.id}`,
+    updateMany: () => '/reps',
     deleteMany: () => '/reps',
     delete: (c: RepContext) => `/reps/${c.id}`
 
@@ -73,7 +74,6 @@ export class RepService {
             .pipe(
                 tap((res: any) => {
                     this.store.add(res.reps)
-                    this.store.upsertMany(res.updatedReps)
                 }),
                 map((res: any) => res),
                 catchError(handleError)
@@ -85,6 +85,16 @@ export class RepService {
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((rep: Rep) => this.store.upsert(rep._id, rep)),
+                map((res: any) => res),
+                catchError(handleError)
+            )
+    }
+
+    updateMany(context: RepContext): Observable<any> {
+        return this.httpClient
+            .put(routes.updateMany(), context.entity)
+            .pipe(
+                tap((reps: any[]) => this.store.upsertMany(reps)),
                 map((res: any) => res),
                 catchError(handleError)
             )

@@ -37,9 +37,12 @@
                 <mat-panel-title>
                   {{ rep.displayName || rep.email }}
                 </mat-panel-title>
-                <mat-panel-description>
+                <mat-panel-description *ngIf="!selectedTags.length">
                     Choose Tags
-              </mat-panel-description>
+                </mat-panel-description>
+                <mat-panel-description *ngIf="selectedTags.length">
+                    Selected {{selectedTags.length}} tags.
+                </mat-panel-description>
               </mat-expansion-panel-header>
               
             <div fxLayout="row" *ngIf="tags && tags.length">

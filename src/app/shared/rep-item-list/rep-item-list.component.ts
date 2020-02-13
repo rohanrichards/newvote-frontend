@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-rep-item-list',
@@ -12,11 +13,20 @@ export class RepItemListComponent implements OnInit {
   @Input() newRep = false;
   @Output() updateRepTag = new EventEmitter();
 
-  selectedTags: any[];
+  selectedTags: Array<any> = []
+
   constructor() { }
 
   ngOnInit() {
-      this.selectedTags = this.rep.tags
+      // bug
+      // if a tag is removed from organizations, it will persist on a user tags array
+      // filter the user tags onload so they do not get display
+      const userTags = this.rep.tags.slice().filter((tag: any) => {
+          return !!this.tags.find((item: any) => {
+              return item.name === tag
+          })
+      })
+      this.selectedTags = [...userTags]
   }
 
   handleChange(event: MatSelectChange, newRep: boolean) {
