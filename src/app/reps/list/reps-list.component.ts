@@ -23,6 +23,8 @@ import { Organization } from '@app/core/models/organization.model';
 import { FormControl } from '@angular/forms';
 import { startWith, map, filter } from 'rxjs/operators';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { StateService } from '@app/core/http/state/state.service';
+import { AppState } from '@app/core/models/state.model';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -67,7 +69,8 @@ export class RepsListComponent implements OnInit {
         public admin: AdminService,
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
-        private organizationService: OrganizationService
+        private organizationService: OrganizationService,
+        private stateService: StateService
     ) {
         this.filteredTags = this.tagCtrl.valueChanges.pipe(
             startWith(''),
@@ -81,6 +84,12 @@ export class RepsListComponent implements OnInit {
         this.fetchData()
         this.subscribeToOrgStore()
         // this.subscribeToProposalStore()
+
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state
+        })
+
+        this.stateService.setLoadingState(AppState.loading)
     }
 
     updateTags(organization: Organization) {
@@ -111,6 +120,7 @@ export class RepsListComponent implements OnInit {
                 (reps: any[]) => {
                     if (!reps.length) return false
                     this.allReps = reps
+                    this.stateService.setLoadingState(AppState.complete)
                     // this.reps = reps
                 },
                 (err) => err

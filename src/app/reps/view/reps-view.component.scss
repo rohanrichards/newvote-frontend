@@ -9,12 +9,7 @@
 
 q {
     font-style: italic;
-    proposals: "« "" »";
-}
-
-.description-container {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    solutions: "« "" »";
 }
 
 //global overrides for mat-toolbar
@@ -27,13 +22,19 @@ q {
     display: block;
 }
 
+.description-bar {
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+
 .image-container {
     height: 350px !important;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+
     width: calc(100% + 32px);
-    margin: -16px -16px 16px -16px;
+    margin: -16px -16px 0px -16px;
 }
 
 .admin-panel {
@@ -47,73 +48,58 @@ q {
     margin-bottom: 16px;
 }
 
-.error-container {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-}
-
-
-.container {
-    padding: 1em;
-}
-
-.logo {
-    width: 150px;
-    margin: 0 auto;
-}
-
-q {
-    font-style: italic;
-    topics: "« "" »";
-}
-
-.no-margin {
-    margin: 0;
-}
-
-
-
-.topic-header {
-    margin-bottom: 1rem;
-
-    .mat-divider {
-        min-height: 2px;
-    }
-}
-
-.empty-card {
-    cursor: default;
-}
-
-.empty-card-blank {
-    margin-top: 0.5rem;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: 200px;
-    max-height: 350px;
-    width: 50%;
-    background-image: url("assets/logo-no-text.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-bottom: 0.5rem;
-}
-
-.empty-title-container {
-    text-align: center;
-}
-
-.empty-card-wrap {
-    background-color: white;
-    padding: 1rem;
-}
-
 .mat-expansion-panel {
     background-color: #0277bd;
     color: white;
     text-align: center;
 }
 
-.divider {
-    margin: 0.5rem 0;
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        margin-top: 1rem;
+        background: white;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
+}
+
+/* Skeleton Section */
+
+.skeleton-panel {
+    height: 23.5vh;
+    background-color: #039BE5;
+    padding: 2.5rem 1em;
+}
+
+.skeleton-chip {
+    display: block;
+    padding: 7px 12px;
+    border-radius: 16px;
+    align-items: center;
+    cursor: default;
+    min-height: 32px;
+    height: 1px;
+    background-color: #e0e0e0;
+    width: 64px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card-list {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-span {
+    text-align: center;
+    display: block;
 }
