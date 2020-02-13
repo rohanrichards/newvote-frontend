@@ -1,11 +1,21 @@
- <mat-toolbar *ngIf="auth.isModerator()">
-     <div class="example-button-row">
-         <button mat-icon-button matTooltip="Manage Reps"
-             (click)="openDialog()">
-             <mat-icon aria-label="Manage Reps">add</mat-icon>
-         </button>
-         Open Reps Menu
-     </div>
+<app-header-bar 
+    [headerTitle]="headerTitle"
+    [headerText]="headerText"
+    [buttons]="headerButtons">
+</app-header-bar>
+ 
+ <mat-toolbar *ngIf="auth.isModerator()" fxLayout="row" fxLayoutAlign="center center">
+        <div
+            fxFlex.lt-sm="100%"
+            fxFlex.sm="600px"
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="1100px">
+            <button mat-icon-button matTooltip="Manage Reps"
+                (click)="openDialog()">
+                <mat-icon aria-label="Manage Reps">add</mat-icon>
+            </button>
+            Open Reps Menu
+        </div>
  </mat-toolbar>
 
  <div class="container"

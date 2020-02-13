@@ -52,6 +52,9 @@ export class RepsListComponent implements OnInit {
     selectedTags: Array<any> = [];
     separatorKeysCodes: number[] = [ENTER, COMMA];
 
+    headerTitle = 'Browse Community Reps';
+    headerText = 'Reps are assigned to Issues, Solutions and Actions and can be a point of contact.';
+
     constructor(
         public dialog: MatDialog,
         private repsService: RepService,
