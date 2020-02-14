@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, BehaviorSubject } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
-import { Organization } from '@app/core/models/organization.model'
+import { Organization, IOrganization } from '@app/core/models/organization.model'
 import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
@@ -119,15 +119,6 @@ export class OrganizationService {
     }
 
     update(context: OrganizationContext): Observable<any> {
-        // Organization update returns an object
-        /*
-             moderators array - a collection of moderators that was not saved
-             {
-                 organization: object
-                 moderators: array
-             }
-        */
-
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
@@ -172,7 +163,10 @@ export class OrganizationService {
             .patch(routes.patch(context), context.entity)
             .pipe(
                 catchError(handleError),
-                tap((res: Organization) => this.communityStore.update({ representativeTags: res.representativeTags }))
+                tap((res: IOrganization) => {
+                    console.log(res, 'this is res')
+                    this.organizationStore.update({ representativeTags: res.representativeTags })
+                })
             )
     }
 

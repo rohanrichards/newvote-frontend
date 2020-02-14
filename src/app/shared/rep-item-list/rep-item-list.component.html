@@ -45,16 +45,20 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               
-            <div fxLayout="row" *ngIf="tags && tags.length">
-                <mat-form-field>
-                    <mat-label>Select Tags</mat-label>
-                    <mat-select multiple [(ngModel)]="selectedTags" (selectionChange)="handleChange($event, false)">
-                        <mat-option *ngFor="let tag of tags" [value]="tag.name">
-                            {{tag.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+                <div fxLayout="row" *ngIf="tags && tags.length">
+                    <mat-form-field>
+                        <mat-label>Select Tags</mat-label>
+                        <mat-select multiple [(ngModel)]="selectedTags" (selectionChange)="handleChange($event, false)">
+                            <mat-option *ngFor="let tag of tags" [value]="tag.name">
+                                {{tag.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="!tags.length">
+                    <h4 class="mat-body-1">No tags have been created. Switch to manage tabs to start creating tags for your reps.</h4>
+                </div>
             </mat-expansion-panel>
         </mat-accordion>
         

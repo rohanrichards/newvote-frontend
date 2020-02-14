@@ -8,7 +8,9 @@
             fxFlex.lt-sm="100%"
             fxFlex.sm="600px"
             fxFlex.gt-sm="690px"
-            fxFlex.gt-md="1100px">
+            fxFlex.gt-md="1100px"
+            
+            >
             <button mat-icon-button matTooltip="Manage Reps"
                 (click)="openDialog()">
                 <mat-icon aria-label="Manage Reps">add</mat-icon>
@@ -25,7 +27,8 @@
 	<div 
 		fxFlex.lt-sm="100%"
 		fxFlex.sm="600px"
-		fxFlex.gt-sm="690px"
+        fxFlex.gt-sm="690px"
+        fx.Flex.md="800px"
 	    fxFlex.gt-md="1100px">
         <!-- <div class="form-wrap"> -->
         <mat-form-field class="example-chip-list" fxFill>
@@ -62,7 +65,9 @@
         gdAuto="row"
         gdGap="16px"
         gdColumns.lt-sm="100%"
-        gdColumns.gt-md="375px 375px 375px"
+        gdColumns.md="32% 32% 32%"
+        gdColumns.lg="27% 27% 27%"
+        gdColumns.gt-lg="375px 375px 375px"
        >
            <app-rep-card 
            *ngFor="let rep of allReps"

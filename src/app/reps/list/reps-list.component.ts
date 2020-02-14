@@ -199,7 +199,6 @@ export class RepsListComponent implements OnInit {
         this.repsService.updateMany({ entity: reps })
             .subscribe(
                 (res) => {
-                    console.log(res, 'this is res');
                     const message = 'Update Successfull.'
                     this.admin.openSnackBar(message, 'OK')
                 },
