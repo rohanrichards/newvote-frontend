@@ -73,7 +73,7 @@
                     <!-- valid: {{verifyForm.controls.valid === true}} -->
 
                     <button mat-raised-button
-                        color="primary"
+                        class="verify-button"
                         type="submit"
                         [disabled]="numberForm.invalid || isLoading">
                         <span translate>Send Code</span>
@@ -119,7 +119,7 @@
                         </button>
 
                         <button mat-raised-button
-                            color="primary"
+                            class="verify-button"
                             type="submit"
                             [disabled]="verifyForm.invalid || isLoading">
                             <span translate>Verify Code</span>

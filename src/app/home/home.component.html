@@ -170,20 +170,16 @@
 		</div>
 	</div>
 	<div
-
 	*ngSwitchCase="'complete'"
 	 [@fadeIn]=true
 	 class="community-container container"
 	 fxLayoutAlign="center center">
 		<div
 			fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px"
-		 fxLayout="column">
-			<div class="mat-display-1 no-margin">
-				<span *ngIf="org">{{org.name}}</span>
-			</div>
-			<div class="mat-h2"
-			 *ngIf="org">{{org.description}}</div>
+		 	fxFlex.gt-md="800px"
+		 	fxLayout="column">
+			<h3 class="no-margin" *ngIf="org">{{org.name}}</h3>
+			<h4 *ngIf="org">{{org.description}}</h4>
 			<div fxLayout="row">
 				<div fxFlex></div>
 				<div fxLayout="column">
@@ -315,7 +311,7 @@
 			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px"
 		 	>
-			<h2 class="mat-h2">What's Hot?</h2>
+			<h5>What's Hot?</h5>
 			<ng-container 
 				*ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>

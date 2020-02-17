@@ -19,3 +19,7 @@ $app-warn:   mat-palette($mat-amber, 400, 200, 600);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+$font-weight-light: 200;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
