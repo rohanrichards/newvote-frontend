@@ -169,6 +169,7 @@
 							[items]="filterIssues(topic, issues)"
 							model="Issue"
 							[titleCard]=true
+							[centerTitle]=true
 							(restore)="admin.onRestore($event, 'Issue')"
 							(softDelete)="admin.onSoftDelete($event, 'Issue')"
 							(delete)="admin.onDelete($event, 'Issue')">
@@ -187,7 +188,8 @@
                             path="/issues"
                             [items]="orphanedIssues"
                             model="Issue"
-                            [titleCard]=true
+							[titleCard]=true
+							[centerTitle]=true
                             (restore)="admin.onRestore($event, 'Issue')"
                             (softDelete)="admin.onSoftDelete($event, 'Issue')"
                             (delete)="admin.onDelete($event, 'Issue')">

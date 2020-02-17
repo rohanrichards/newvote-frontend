@@ -18,6 +18,7 @@ export class GridListComponent {
     @Input() items: Array<any>;
     @Input() itemLimit: number;
     @Input() titleCard: boolean;
+    @Input() centerTitle: boolean;
     @Output() delete = new EventEmitter();
     @Output() softDelete = new EventEmitter();
     @Output() restore = new EventEmitter();
