@@ -217,11 +217,13 @@
             </div>
         </div>
     </div>
-    <div *ngSwitchCase="'complete'">
-        <div class="container"
+        <div 
+            *ngSwitchCase="'complete'"
+            class="container"
             [@fadeIn]=true
             fxLayout="row wrap"
-            fxLayoutAlign="center start">
+            fxLayoutAlign="center start"
+            >
             <div fxFlex.gt-sm="690px"
                 fxFlex.gt-md="800px">
                 <mat-toolbar color="primary"
@@ -276,5 +278,4 @@
                 </div>
             </div>
         </div>
-    </div>
 </ng-container>
