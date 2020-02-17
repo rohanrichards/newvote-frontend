@@ -11,6 +11,7 @@ export class RepCardComponent implements OnInit {
   @Input() path: string;
   @Input() item: any;
   @Input() repName: string;
+  @Input() tags: any[];
 
   @Output() restore = new EventEmitter();
   @Output() softDelete = new EventEmitter();
@@ -37,6 +38,15 @@ export class RepCardComponent implements OnInit {
   onRestore(item: any, event: any) {
       event.stopPropagation()
       this.restore.emit(item)
+  }
+
+  filterTags(userTags: any, communityTags: any = this.tags) {
+      if (!userTags.length) return []
+      return userTags.filter((tag: any) => {
+          return communityTags.find((item: any) => {
+              return item.name === tag
+          })
+      })
   }
 
 }

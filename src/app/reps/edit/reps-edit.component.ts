@@ -60,6 +60,7 @@ export class RepsEditComponent implements OnInit {
         proposals: new FormControl([]),
         solutions: new FormControl([]),
         issues: new FormControl([]),
+        tags: new FormControl([]),
     });
 
     DEFAULT_IMAGE = 'assets/logo-no-text.png'
@@ -107,8 +108,6 @@ export class RepsEditComponent implements OnInit {
             this.subscribeToRepStore(ID)
         })
 
-
-
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
             url: 'https://api.cloudinary.com/v1_1/newvote/upload',
@@ -151,6 +150,7 @@ export class RepsEditComponent implements OnInit {
         this.org.select()
             .subscribe((org: any) => {
                 if (!org) return false
+                this.organization = org
                 this.updateTags(rep, org)
             })
     }
@@ -162,6 +162,7 @@ export class RepsEditComponent implements OnInit {
             displayName: rep.displayName,
             description: rep.description,
             imageUrl: rep.imageUrl || this.DEFAULT_IMAGE,
+            tags: rep.tags
         })
     }
 
@@ -435,6 +436,17 @@ export class RepsEditComponent implements OnInit {
         if (index >= 0) {
             this.proposals.splice(index, 1)
         }
+    }
+
+    tagRemoved(tag: any) {
+        const tags = this.repForm.get('tags').value
+        const index = tags.findIndex((item: any) => {
+            return item.name === tag.name
+        })
+
+        const newTags = [...tags.slice(0, index), ...tags.slice(index+1, tags.length-1)]
+
+        this.repForm.patchValue({ tags: newTags })
     }
 
     private _filter(value: any, entityArray: any[]): any[] {

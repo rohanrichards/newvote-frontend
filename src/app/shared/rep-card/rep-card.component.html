@@ -38,9 +38,14 @@
                 <h3 class="no-margin">About</h3>
                 <p class="no-margin" [innerHtml]="item.description"></p>            
             </div>   
+            <div *ngIf="item.tags && item.tags.length" class="field-container">
+                <h3 class="tag-title-margin">Tags</h3>
+                <mat-chip-list aria-label="User Tags">
+                    <mat-chip *ngFor="let tag of filterTags(item.tags)">{{tag}}</mat-chip>
+                </mat-chip-list>
+            </div>
         </div>
-        <mat-card-content>
-            
+        <mat-card-content>          
             <div *ngIf="item.issues.length">
                 <h2>
                     Issues

@@ -1,0 +1,94 @@
+<ng-container *ngIf="newRep; else currentRepBlock">
+    <div class="item-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-accordion [ngStyle]="{'width': '100%'}">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title *ngIf="newRep">
+                  {{ rep.name }}
+                </mat-panel-title>
+                <mat-panel-description>
+                    Choose Tags
+              </mat-panel-description>
+              </mat-expansion-panel-header>
+              
+            <div fxLayout="row" *ngIf="tags && tags.length">
+                <mat-form-field>
+                    <mat-label>Select Tags</mat-label>
+                    <mat-select multiple [(ngModel)]="selectedTags" (selectionChange)="handleChange($event, true)">
+                        <mat-option *ngFor="let tag of tags" [value]="tag.name">
+                            {{tag.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        
+        <!-- <button mat-icon-button color="accent" aria-label="Remove rep">
+            <mat-icon>delete_outline</mat-icon>
+        </button> -->
+    </div>
+</ng-container>
+<ng-template #currentRepBlock>
+    <div class="item-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-accordion [ngStyle]="{'width': '100%'}">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ rep.displayName || rep.email }}
+                </mat-panel-title>
+                <mat-panel-description *ngIf="!selectedTags.length">
+                    Choose Tags
+                </mat-panel-description>
+                <mat-panel-description *ngIf="selectedTags.length">
+                    Selected {{selectedTags.length}} tag{{selectedTags.length === 1 ? '' : 's'}}.
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              
+                <div fxLayout="row" *ngIf="tags && tags.length">
+                    <mat-form-field>
+                        <mat-label>Select Tags</mat-label>
+                        <mat-select multiple [(ngModel)]="selectedTags" (selectionChange)="handleChange($event, false)">
+                            <mat-option *ngFor="let tag of tags" [value]="tag.name">
+                                {{tag.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="!tags.length">
+                    <h4 class="mat-body-1">No tags have been created. Switch to manage tabs to start creating tags for your reps.</h4>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+        
+        <!-- <button mat-icon-button color="accent" aria-label="Remove rep">
+            <mat-icon>delete_outline</mat-icon>
+        </button> -->
+    </div>
+</ng-template>
+
+
+
+
+<!-- <mat-list-item role="listitem" *ngFor="let rep of data.newReps">
+    <div>
+        <button mat-icon-button aria-label="Example icon-button with a heart icon">
+            <mat-icon [matMenuTriggerFor]="menu">more_horiz</mat-icon>
+        </button>
+    </div>
+
+    <mat-menu #menu="matMenu">
+        <ul>
+            <li>mat item 1</li>
+            <li>mat item 2</li>
+            <li>mat item 3</li>
+            <li>mat item 4</li>
+        </ul>
+    </mat-menu>
+    <h4>{{ rep }}</h4>
+    <button mat-icon-button color="accent"
+        aria-label="Remove rep" (click)="removeNewRep(rep)">
+        <mat-icon>delete_outline</mat-icon>
+    </button>
+</mat-list-item> -->
