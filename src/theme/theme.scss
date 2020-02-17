@@ -17,3 +17,17 @@ html {
 	overflow: auto;
 	-webkit-overflow-scrolling: auto;
 }
+
+.content {
+	margin: 0 !important;
+	padding: 0 !important;
+  }
+
+.mat-tab-body {
+	padding-top: 1rem;
+}
+
+.item-wrapper {
+	width: 100%;
+	padding: 0.25rem 0.5rem;
+  }

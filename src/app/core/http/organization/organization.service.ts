@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, BehaviorSubject } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
-import { Organization } from '@app/core/models/organization.model'
+import { Organization, IOrganization } from '@app/core/models/organization.model'
 import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
@@ -14,7 +14,8 @@ const routes = {
     create: () => '/organizations',
     update: (c: OrganizationContext) => `/organizations/${c.id}`,
     updateOwner: (c: OrganizationContext) => `/organizations/owner/${c.id}`,
-    delete: (c: OrganizationContext) => `/organizations/${c.id}`
+    delete: (c: OrganizationContext) => `/organizations/${c.id}`,
+    patch: (c: OrganizationContext) => `/organizations/${c.id}`
 }
 
 export interface OrganizationContext {
@@ -118,15 +119,6 @@ export class OrganizationService {
     }
 
     update(context: OrganizationContext): Observable<any> {
-        // Organization update returns an object
-        /*
-             moderators array - a collection of moderators that was not saved
-             {
-                 organization: object
-                 moderators: array
-             }
-        */
-
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
@@ -163,6 +155,18 @@ export class OrganizationService {
                 catchError(handleError),
                 tap((res: Organization) => this.communityStore.remove(res._id)),
                 map((res: any) => res)
+            )
+    }
+
+    patch(context: OrganizationContext): Observable<any> {
+        return this.httpClient
+            .patch(routes.patch(context), context.entity)
+            .pipe(
+                catchError(handleError),
+                tap((res: IOrganization) => {
+                    console.log(res, 'this is res')
+                    this.organizationStore.update({ representativeTags: res.representativeTags })
+                })
             )
     }
 

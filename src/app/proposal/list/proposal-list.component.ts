@@ -98,7 +98,6 @@ export class ProposalListComponent implements OnInit {
             )
             .subscribe((suggestions) => {
                 if (!suggestions) return false
-                console.log(suggestions, 'this is suggestions')
                 this.suggestions = suggestions
             })
     }

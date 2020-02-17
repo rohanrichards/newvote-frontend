@@ -124,7 +124,18 @@
                     (vote)=onVote($event)>
                 </app-vote-buttons>
             </mat-card-actions>
-            <div *ngIf="showChildren && item[childPath].length"
+            <div *ngIf="showChildren && item[childPath].length" class="child-container">
+                <span class="mat-card-title">{{childName}}</span>
+                <div *ngFor="let child of item[childPath];trackBy: trackByFn">
+                    <app-child-card
+                        [item]="child"
+                        [path]="childPath"
+                    >
+                    </app-child-card>
+                </div>
+            </div>
+
+            <!-- <div *ngIf="showChildren && item[childPath].length"
                 class="child-container">
                 <span class="mat-card-title">{{childName}}</span>
                 <div *ngFor="let child of item[childPath];trackBy: trackByFn"
@@ -153,7 +164,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </mat-card>
     </div>
 </div>

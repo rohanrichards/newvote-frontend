@@ -8,7 +8,9 @@ import { MatSidenav, MatSnackBar } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
 import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
+import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -25,6 +27,8 @@ export class NavbarComponent implements OnInit {
     routeLevel: string;
     isAuthenticated: boolean;
     showVerify: boolean;
+    isRep = false
+    userId: string;
 
     VERIFYDELAY = 1000;
     delayPassed: any;
@@ -32,17 +36,18 @@ export class NavbarComponent implements OnInit {
     constructor(
         private meta: MetaService,
         private titleService: Title,
-        private query: AuthenticationQuery,
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
-        private location: Location
+        private location: Location,
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery,
     ) { }
 
     ngOnInit() {
-        this.query.isLoggedIn$
+        this.authQuery.isLoggedIn$
             .subscribe((loggedIn: boolean) => {
                 this.isAuthenticated = loggedIn
                 // need to delay the showing on the verification bar
@@ -55,7 +60,7 @@ export class NavbarComponent implements OnInit {
                 }
             })
 
-        this.query.isCommunityVerified()
+        this.authQuery.isCommunityVerified()
             .subscribe((verified) => {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
@@ -64,6 +69,19 @@ export class NavbarComponent implements OnInit {
             .subscribe((res) => {
                 this.routeLevel = res
             })
+
+        this.repQuery.getRepId()
+            .subscribe((rep: any) => {
+                if (!rep) return false
+                this.userId = rep._id
+            })
+
+        this.repQuery.isRep()
+            .subscribe((res: any) => {
+                if (!res) return false
+                this.isRep = res
+            })
+
     }
 
     toggleSearch() {
@@ -78,19 +96,6 @@ export class NavbarComponent implements OnInit {
     get title(): string {
         return this.meta.getAppBarTitle()
     }
-
-    // get isAuthenticated(): boolean {
-    //     return this.auth.isAuthenticated()
-    // }
-
-    // get isVerified(): boolean {
-    //     // debugger;
-    //     if (this.isAuthenticated) {
-    //         return (this.auth.isVerified())
-    //     } else {
-    //         return true
-    //     }
-    // }
 
     checkVerify(verified: boolean, loggedIn: boolean): boolean {
         if (!loggedIn) return false
@@ -139,7 +144,7 @@ export class NavbarComponent implements OnInit {
     }
 
     handleVerify() {
-        if (!this.query.isUserVerified() || !this.query.doesMobileNumberExist()) {
+        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
             return this.router.navigate(['/auth/verify'], { replaceUrl: true })
         }
 

@@ -196,8 +196,6 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
-            console.log(item, 'this is item');
-            console.log(status, 'this is statuss');
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 this.proposal.imageUrl = res.secure_url

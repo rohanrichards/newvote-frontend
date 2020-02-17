@@ -49,6 +49,8 @@ export class OrganizationEditComponent implements OnInit {
         futureOwner: new FormControl(''),
         moderators: new FormControl([]),
         moderatorsControl: new FormControl([], [Validators.email]),
+        reps: new FormControl([]),
+        representativeTitle: new FormControl(''),
         authType: new FormControl(0, [Validators.required]),
         authUrl: new FormControl(''),
         authEntityId: new FormControl(''),
@@ -115,6 +117,7 @@ export class OrganizationEditComponent implements OnInit {
     @ViewChild('ownerInput', { static: false }) ownerInput: ElementRef<HTMLInputElement>;
     @ViewChild('ownerAuto', { static: false }) ownerAutocomplete: MatAutocomplete;
     @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<HTMLInputElement>;
+    @ViewChild('repInput', { static: false }) repInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private userService: UserService,
@@ -192,7 +195,8 @@ export class OrganizationEditComponent implements OnInit {
             authUrl: organization.authUrl,
             authEntityId: organization.authEntityId,
             privateOrg: organization.privateOrg || false,
-            voteRoles: organization.voteRoles
+            voteRoles: organization.voteRoles,
+            representativeTitle: organization.representativeTitle || ''
         })
     }
 
@@ -362,6 +366,26 @@ export class OrganizationEditComponent implements OnInit {
         const index = moderators.indexOf(mod)
         moderators.splice(index, 1)
         this.organizationForm.patchValue(moderators)
+    }
+
+    representativeSelected(event: any) {
+        const selectedItem = event.value
+        if (selectedItem && selectedItem != null) {
+            let { reps } = this.organizationForm.value
+            if (reps.indexOf(selectedItem) === -1) {
+                reps = [...reps, selectedItem]
+                this.organizationForm.patchValue({ reps })
+            }
+            this.organizationForm.get('repsControl').setValue('')
+            this.repInput.nativeElement.value = ''
+        }
+    }
+
+    representativeRemoved(rep: any) {
+        const { reps } = this.organizationForm.value
+        const index = reps.indexOf(rep)
+        reps.splice(index, 1)
+        this.organizationForm.patchValue(reps)
     }
 
     ownerRemoved() {
