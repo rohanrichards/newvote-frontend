@@ -45,6 +45,7 @@ import { ChildCardComponent } from './child-card/child-card.component';
 import { RepCardComponent } from './rep-card/rep-card.component';
 import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
 import { CommunityCardComponent } from './community-card/community-card.component'
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
 
 @NgModule({
     imports: [
@@ -94,7 +95,8 @@ import { CommunityCardComponent } from './community-card/community-card.componen
         ChildCardComponent,
         RepCardComponent,
         SkeletonRepCardComponent,
-        CommunityCardComponent
+        CommunityCardComponent,
+        RepItemListComponent,
     ],
     exports: [
         LoaderComponent,

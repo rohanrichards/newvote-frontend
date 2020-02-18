@@ -24,6 +24,7 @@ export function createInitialStore(): Organization {
         url: '',
         voteRoles: [],
         representativeTitle: '',
+        representativeTags: []
     }
 }
 

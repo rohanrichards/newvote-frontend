@@ -1,3 +1,28 @@
 .right-button {
-    float: right important;
+  float: right important;
 }
+
+.container {
+  padding: 1rem;
+}
+
+.modal-item {
+  margin: 1rem 0 1rem 0;
+}
+
+.add-button {
+  margin-left: auto;
+}
+
+::ng-deep {
+  .mat-dialog-content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+.content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+

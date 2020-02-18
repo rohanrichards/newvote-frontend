@@ -46,7 +46,7 @@
 }
 
 .container {
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .header-container {
@@ -78,3 +78,18 @@
     text-align: center;
 }
 
+.about-link {
+    font-weight: 800;
+    color: black;
+    font-size: 1.4em;
+}
+
+.cta-button {
+    padding: 1rem 3rem;
+    font-size: 1.5em;
+}
+
+.mat-sidenav {
+	min-width: 270px;
+	max-width: 28%;
+}
