@@ -140,7 +140,7 @@
 					<div [@fadeIn]=true 
 						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
 						<div class="topic-header">
-							<h2 class="mat-h1 no-margin">
+							<h2 class="custom-headline no-margin">
 								{{topic.name}}
 							</h2>
 							<div class="button-panel"
@@ -179,7 +179,7 @@
                     <!-- Orphaned Topics -->
                     <div [@fadeIn]=true *ngIf="orphanedIssues.length">
                         <div class="topic-header">
-                            <h2 class="mat-h1 no-margin">
+                            <h2 class="custom-headline no-margin">
                                 General Issues
                             </h2>
                                 <mat-divider></mat-divider>

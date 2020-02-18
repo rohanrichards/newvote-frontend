@@ -54,51 +54,55 @@ html {
   -webkit-overflow-scrolling: auto;
 }
 
-h1, 
-h2, 
-h3, 
-h4,
-h5,
-h6 {
+.header-font {
   font-family: "Condensed Din";
 }
 
-h1 {
-  font-weight: $font-weight-light;
-  font-size: 96px;
-  letter-spacing: -1.5;
-}
+// h1, 
+// h2, 
+// h3, 
+// h4,
+// h5,
+// h6 {
+//   font-family: "Condensed Din";
+// }
 
-h2 {
-  font-weight: $font-weight-light;
-  font-size: 60px;
-  letter-spacing: -1.5;
-}
+// h1 {
+//   font-weight: $font-weight-light;
+//   font-size: 96px;
+//   letter-spacing: -1.5;
+// }
 
-h3 {
-  font-weight: $font-weight-regular;
-  font-size: 48px;
-  letter-spacing: 0;
-}
+// h2 {
+//   font-weight: $font-weight-light;
+//   font-size: 60px;
+//   letter-spacing: -1.5;
+// }
 
-h4 {
-  font-weight: $font-weight-regular;
-  letter-spacing: 0.25;
-  font-size: 24px;
-}
+// h3 {
+//   font-weight: $font-weight-regular;
+//   font-size: 48px;
+//   letter-spacing: 0;
+// }
 
-h5 {
-  font-weight: $font-weight-regular;
-  letter-spacing: 0;
-  font-size: 20px;
-}
+// h4 {
+//   font-weight: $font-weight-regular;
+//   letter-spacing: 0.25;
+//   font-size: 24px;
+// }
 
-h6 {
-  font-weight: $font-weight-medium;
-  letter-spacing: 0.15;
-  font-size: 20px;
-}
+// h5 {
+//   font-weight: $font-weight-regular;
+//   letter-spacing: 0;
+//   font-size: 20px;
+// }
 
-.no-margin {
-  margin: 0;
-}
+// h6 {
+//   font-weight: $font-weight-medium;
+//   letter-spacing: 0.15;
+//   font-size: 20px;
+// }
+
+// .no-margin {
+//   margin: 0;
+// }

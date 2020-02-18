@@ -170,16 +170,20 @@
 		</div>
 	</div>
 	<div
+
 	*ngSwitchCase="'complete'"
 	 [@fadeIn]=true
 	 class="community-container container"
 	 fxLayoutAlign="center center">
 		<div
 			fxFlex.gt-sm="690px"
-		 	fxFlex.gt-md="800px"
-		 	fxLayout="column">
-			<h3 class="no-margin" *ngIf="org">{{org.name}}</h3>
-			<h4 *ngIf="org">{{org.description}}</h4>
+		 fxFlex.gt-md="800px"
+		 fxLayout="column">
+			<div class="mat-display-1 no-margin">
+				<span *ngIf="org">{{org.name}}</span>
+			</div>
+			<div class="mat-h2"
+			 *ngIf="org">{{org.description}}</div>
 			<div fxLayout="row">
 				<div fxFlex></div>
 				<div fxLayout="column">
@@ -231,7 +235,7 @@
 					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
 				</div>
 				<div>
-					<button routerLink="/issues" mat-raised-button color="primary"><span class="mat-subheading-2 issues-button">Your Issues</span></button>
+					<button routerLink="/issues" mat-raised-button color="primary"><span class="custom-headline issues-button">Your Issues</span></button>
 				</div>
 			</div>
 		</div>
@@ -311,7 +315,7 @@
 			fxFlex.gt-sm="690px"
 			fxFlex.gt-md="800px"
 		 	>
-			<h5>What's Hot?</h5>
+			<h2 class="mat-h2">What's Hot?</h2>
 			<ng-container 
 				*ngIf="issues.length < 1; then noIssues; else issuesExist">
 			</ng-container>

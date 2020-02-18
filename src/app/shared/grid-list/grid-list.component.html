@@ -123,25 +123,19 @@
                     <mat-card-content>
                         <mat-card-title translate>
                             <div class="truncate-container">
-                                <h5 [class.center-text]="centerTitle" class="truncate">{{item.name || item.title}}</h5>
+                                <span class="truncate">{{item.name}}</span>
                             </div>
                         </mat-card-title>
                     </mat-card-content>
                 </ng-template>
                 <ng-template #isTitle>
                     <mat-card-content>
-                        <h5 class="truncate">
-                            {{item.name || item.title}}
-                        </h5>
-                        <div class="title-card-subheader"
-                            [innerHtml]="item.description">
-                        </div>
-                        <!-- <mat-card-title [class.center-text]="centerTitle" class="title-card-header">
+                        <mat-card-title class="title-card-header">
                             {{item.name || item.title}}
                         </mat-card-title>
                         <div class="title-card-subheader"
                             [innerHtml]="item.description">
-                        </div> -->
+                        </div>
                     </mat-card-content>
                 </ng-template>
             </mat-card>
