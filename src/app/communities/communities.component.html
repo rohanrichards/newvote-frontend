@@ -16,7 +16,7 @@
                     <span translate>Help</span>
                 </a>
                 <mat-divider></mat-divider>
-                
+
                 <a mat-list-item
                     href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
                     target="_blank"
@@ -28,12 +28,14 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <div class="community-wrap" fxFlexLayout="column">
-            <mat-toolbar class="toolbar" color="primary">
+            <mat-toolbar class="toolbar" color="primary" fxLayout="row">
                 <button (click)="sidenav.toggle()" class="menu-button" mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
-
                 <span>NewVote</span>
+                <button class="search-button" mat-icon-button>
+                    <mat-icon>search</mat-icon>
+                </button>
             </mat-toolbar>
             <div fxLayout="row" fxLayoutAlign="start center">
                 <div fxFlex.lt-sm="100%" fxFlex.sm="600px" fxFlex.gt-sm="690px"
