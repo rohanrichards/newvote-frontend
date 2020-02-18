@@ -88,10 +88,6 @@ $custom-header: mat-typography-config(
   @include mat-typography-level-to-styles($custom-header, display-1);
 }
 
-.custom-display4 {
-  // @include mat-typography-level-to-styles($custom-header, display-4);
-}
-
 .custom-subheading2 {
   @include mat-typography-level-to-styles($custom-header, subheading-2);
 }

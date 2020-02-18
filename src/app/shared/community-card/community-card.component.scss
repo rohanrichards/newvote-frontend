@@ -1,0 +1,64 @@
+// .organization-card {
+//     height: 200px;
+//     width: 200px;
+//     background-color: red;
+// }
+
+.organization-card {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.community-image {
+    padding: 0.5rem;
+    border-radius: 5px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 125px;
+    height: 125px;
+
+    .organization-icon {
+        object-fit: contain;
+        max-width: 50px;
+        max-height: 50px;
+    }
+}
+
+.org-title {
+    margin: 0;
+}
+
+.org-subtitle {
+    margin: 0;
+}
+
+.header-wrap {
+    align-self: start;
+}
+
+// Old card styles
+
+// .organization-card {
+//     .organization-image {
+//         background-size: cover;
+//         background-position: center center;
+//         background-repeat: no-repeat;
+//         min-height: 300px;
+//         height: auto;
+//         display: flex;
+//         justify-content: center;
+//         align-items:center;
+
+//         .organization-icon {
+//             min-width: 100px;
+//             height: auto;
+//             max-width: 200px;
+//             object-fit: contain;
+//         }
+
+//         .circle-icon {
+//             border-radius: 50%;
+//         }
+// 	}
+// 	cursor: pointer;
+// }

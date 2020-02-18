@@ -1,5 +1,11 @@
+:host {
+    display: flex;
+    flex-direction:column;
+}
+
 .community-wrap {
     display: block !important;
+    overflow-y: auto;
 }
 .toolbar {
     min-height: 64px;
@@ -43,44 +49,32 @@
     padding: 2rem;
 }
 
+.header-container {
+    padding: 1rem;
+    margin-bottom: 0;
+}
+
 .footer {
+    display: block;
     background-color: #FAFAFA;
-    margin-top: auto;
 }
 
 .card-grid {
-    width: 90%;
-    margin: 0 auto;
-    max-width: 1200px;
-    margin-bottom: 2rem;
+    padding: 1rem;
 }
+
+.no-margin {
+    margin: 0;
+}
+
+// .card-grid {
+//     width: 90%;
+//     margin: 0 auto;
+//     max-width: 1200px;
+//     margin-bottom: 2rem;
+// }
 
 .center-text {
     text-align: center;
 }
 
-
-.organization-card {
-    .organization-image {
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        min-height: 300px;
-        height: auto;
-        display: flex;
-        justify-content: center;
-        align-items:center;
-
-        .organization-icon {
-            min-width: 100px;
-            height: auto;
-            max-width: 200px;
-            object-fit: contain;
-        }
-
-        .circle-icon {
-            border-radius: 50%;
-        }
-	}
-	cursor: pointer;
-}
