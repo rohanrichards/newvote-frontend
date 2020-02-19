@@ -1,0 +1,174 @@
+<ng-container *ngIf="!!isCard; else viewPanel">
+    <div class="card-panel"
+        *ngIf="auth.isModerator() || auth.isCreator(item)">
+        <button color="accent"
+            mat-icon-button
+            (click)="$event.stopPropagation()"
+            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+            <mat-icon aria-label="Edit the content">edit
+            </mat-icon>
+        </button>
+
+        <ng-container
+            *ngIf="model !== 'Rep' && model !== 'Organization'"
+            >
+            <button color="accent"
+                *ngIf="item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onRestore(item, model, redirectRoute)">
+                <mat-icon aria-label="Restore content">
+                    restore
+                </mat-icon>
+            </button>
+            <button color="accent"
+                *ngIf="!item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onSoftDelete(item, model, redirectRoute)">
+                <mat-icon aria-label="Remove content">delete
+                </mat-icon>
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="model === 'Organization' && auth.isAdmin()">
+            <button color="accent"
+                *ngIf="item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onRestore(item, model, redirectRoute)">
+                <mat-icon aria-label="Restore content">
+                    restore
+                </mat-icon>
+            </button>
+            <button color="accent"
+                *ngIf="!item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onSoftDelete(item, model, redirectRoute)">
+                <mat-icon aria-label="Remove content">delete
+                </mat-icon>
+            </button>
+        </ng-container>
+        
+        <button *ngIf="auth.isAdmin()"
+            color="warn"
+            mat-icon-button
+            (click)="$event.stopPropagation(); admin.onDelete(item, model, redirectRoute)">
+            <mat-icon aria-label="Delete content forever">
+                delete_forever</mat-icon>
+        </button>
+    </div>
+</ng-container>
+    
+
+<ng-template #viewPanel>
+    <div class="admin-panel"
+        *ngIf="repQuery.isRepForOrg() || auth.isCreator(item)"
+        fxLayout="column"
+        fxLayoutAlign="center end">
+            <div class="button-panel">
+            <ng-container *ngIf="model === 'Issue'">
+                <button mat-icon-button
+                    matTooltip="Create a new Issue"
+                    color="accent"
+                    routerLink="/issues/create">
+                    <mat-icon aria-label="Create a new issue">add
+                </mat-icon>
+                </button>
+                <button mat-icon-button
+                    matTooltip="Add Solution for this Issue"
+                    color="accent"
+                    routerLink="/solutions/create/{{item._id}}">
+                    <mat-icon aria-label="Add a new solution">
+                        playlist_add
+                    </mat-icon>
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf="model === 'Solution'">
+                <button mat-icon-button
+                    matTooltip="Create a new Solution"
+                    color="accent"
+                    routerLink="/solutions/create">
+                    <mat-icon aria-label="Create a new Solution">add
+                </mat-icon>
+                </button>
+                <button mat-icon-button
+                    matTooltip="Add a Action for this Solution"
+                    color="accent"
+                    routerLink="/proposals/create/{{item._id}}">
+                    <mat-icon aria-label="Add a Action for this Solution">
+                        playlist_add</mat-icon>
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf="model === 'Proposal' && auth.isModerator()">
+                <button mat-icon-button
+                    matTooltip="Add a new Action"
+                    color="accent"
+                    routerLink="/proposals/create">
+                    <mat-icon aria-label="Add a new action">
+                        playlist_add
+                    </mat-icon>
+                </button>
+            </ng-container>
+
+            <ng-container *ngIf="model === 'Suggestion' && auth.isModerator()">
+                <span>
+                    <button mat-icon-button
+                        matTooltip="Set Suggestion Approved"
+                        [color]="item.status === 1 ? 'warn' : 'primary'"
+                        (click)="$event.stopPropagation(); handleSuggestionUpdate(item, 1)">
+                        <mat-icon aria-label="Add a new suggestion">
+                            check_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Set Suggestion Pending"
+                        [color]="item.status === 0 ? 'warn' : 'primary'"
+                        (click)="$event.stopPropagation(); handleSuggestionUpdate(item, 0)">
+                        <mat-icon aria-label="Add a new suggestion">
+                            help_outline</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                        matTooltip="Set Suggestion Denied"
+                        [color]="item.status === -1 ? 'warn' : 'primary'"
+                        (click)="$event.stopPropagation(); handleSuggestionUpdate(item, -1)">
+                        <mat-icon aria-label="Add a new suggestion">block
+                        </mat-icon>
+                    </button>
+                </span>
+            </ng-container>
+
+            <ng-container *ngIf="auth.isModerator()">
+                <button color="accent"
+                    mat-icon-button
+                    (click)="$event.stopPropagation()"
+                    routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+                    <mat-icon aria-label="Edit the content">edit
+                    </mat-icon>
+                </button>
+                <button color="accent"
+                    *ngIf="item.softDeleted"
+                    mat-icon-button
+                    (click)="$event.stopPropagation(); admin.onRestore(item, model, redirectRoute)">
+                    <mat-icon aria-label="Restore content">restore
+                    </mat-icon>
+                </button>
+                <button color="accent"
+                    *ngIf="!item.softDeleted"
+                    mat-icon-button
+                    (click)="$event.stopPropagation(); admin.onSoftDelete(item, model, redirectRoute)">
+                    <mat-icon aria-label="Remove content">delete
+                    </mat-icon>
+                </button>
+                <button *ngIf="auth.isAdmin()"
+                    color="warn"
+                    mat-icon-button
+                    (click)="$event.stopPropagation(); admin.onDelete(item, model, redirectRoute)">
+                    <mat-icon aria-label="Delete content forever">
+                        delete_forever</mat-icon>
+                </button>
+            </ng-container>
+           
+        </div>
+    </div>
+</ng-template>
+
+

@@ -34,76 +34,13 @@
                     class="image-container"
                     [defaultImage]="handleImageUrl(item.imageUrl, true)"
                     [lazyLoad]="handleImageUrl(item.imageUrl)">
-                    <div class="button-panel"
-                        *ngIf="auth.isAdmin() && model === 'Organization'">
-                        <button color="accent"
-                            matTooltip="Edit the item"
-                            mat-icon-button
-                            (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
-                            <mat-icon aria-label="Edit the content">edit
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            matTooltip="Restore the item"
-                            *ngIf="item.softDeleted"
-                            mat-icon-button
-                            (click)="onRestore(item, $event)">
-                            <mat-icon aria-label="Restore content">restore
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            matTooltip="Remove the item"
-                            *ngIf="!item.softDeleted"
-                            mat-icon-button
-                            (click)="onSoftDelete(item, $event)">
-                            <mat-icon aria-label="Delete content forever">delete
-                            </mat-icon>
-                        </button>
-                        <button color="warn"
-                            matTooltip="Delete the item forever"
-                            mat-icon-button
-                            (click)="onDelete(item, $event)"
-                            *ngIf="auth.isAdmin(item)">
-                            <mat-icon aria-label="Delete content forever">
-                                delete_forever</mat-icon>
-                        </button>
-                    </div>
-                    <div class="button-panel"
-                        *ngIf="model !== 'Organization' && auth.isModerator()">
-                        <button color="accent"
-                            matTooltip="Edit the item"
-                            mat-icon-button
-                            (click)="$event.stopPropagation()"
-                            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
-                            <mat-icon aria-label="Edit the content">edit
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            matTooltip="Restore the item"
-                            *ngIf="item.softDeleted"
-                            mat-icon-button
-                            (click)="onRestore(item, $event)">
-                            <mat-icon aria-label="Restore content">restore
-                            </mat-icon>
-                        </button>
-                        <button color="accent"
-                            matTooltip="Remove the item"
-                            *ngIf="!item.softDeleted"
-                            mat-icon-button
-                            (click)="onSoftDelete(item, $event)">
-                            <mat-icon aria-label="Delete content forever">delete
-                            </mat-icon>
-                        </button>
-                        <button color="warn"
-                            matTooltip="Delete the item forever"
-                            mat-icon-button
-                            (click)="onDelete(item, $event)"
-                            *ngIf="auth.isAdmin()">
-                            <mat-icon aria-label="Delete content forever">
-                                delete_forever</mat-icon>
-                        </button>
-                    </div>
+                    <app-admin-panel
+                        [path]="path"
+                        [item]="item"
+                        [model]="model"
+                        isCard=true
+                        >
+                    </app-admin-panel>
                 </div>
                 <ng-container *ngIf="!titleCard; then noTitle; else isTitle">
                 </ng-container>

@@ -42,36 +42,12 @@
                     <div mat-card-image
                         class="image-container"
                         [style.background-image]="'url(' + item.image + ')'">
-                        <div class="button-panel"
-                            *ngIf="auth.isModerator(item)">
-                            <button color="accent"
-                                mat-icon-button
-                                (click)="$event.stopPropagation()"
-                                routerLink='{{path}}/edit/{{item._id}}'>
-                                <mat-icon aria-label="Edit the content">edit
-                                </mat-icon>
-                            </button>
-                            <button *ngIf="!item.softDeleted"
-                                color="accent"
-                                mat-icon-button
-                                (click)="onSoftDelete(item, $event)">
-                                <mat-icon aria-label="Remove content">delete
-                                </mat-icon>
-                            </button>
-                            <button *ngIf="item.softDeleted"
-                                color="accent"
-                                mat-icon-button
-                                (click)="onRestore(item, $event)">
-                                <mat-icon aria-label="Remove content">restore
-                                </mat-icon>
-                            </button>
-                            <button color="warn"
-                                mat-icon-button
-                                (click)="onDelete(item, $event)">
-                                <mat-icon aria-label="Delete content forever">
-                                    delete_forever</mat-icon>
-                            </button>
-                        </div>
+                        <app-admin-panel
+                            [path]="path"
+                            [item]="item"
+                            model="Media"
+                            >
+                        </app-admin-panel>
                     </div>
                     <mat-card-content>
                         <mat-card-title translate>

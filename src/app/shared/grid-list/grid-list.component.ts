@@ -24,7 +24,7 @@ export class GridListComponent {
     @Output() restore = new EventEmitter();
     handleImageUrl = optimizeImage;
 
-    constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
+    constructor(private router: Router, public dialog: MatDialog, public auth: AuthenticationService) { }
 
     getItems() {
         let newItems = this.items.slice()

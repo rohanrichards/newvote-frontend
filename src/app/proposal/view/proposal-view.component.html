@@ -33,55 +33,13 @@
             fxLayout="column"
             [defaultImage]="handleImageUrl(proposal.imageUrl, true)"
             [lazyLoad]="handleImageUrl(proposal.imageUrl)">
-            <div class="admin-panel"
-                *ngIf="repQuery.isRepForOrg()"
-                fxLayout="column"
-                fxLayoutAlign="center end">
-                <div class="button-panel">
-                    <button mat-icon-button
-                        matTooltip="Add a new Action"
-                        color="accent"
-                        routerLink="/proposals/create">
-                        <mat-icon aria-label="Add a new action">
-                            playlist_add
-                        </mat-icon>
-                    </button>
-                    <ng-container *ngIf="authQuery.isModerator()">
-                        <button mat-icon-button
-                        matTooltip="Edit this Action"
-                        color="accent"
-                        routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
-                        <mat-icon aria-label="Edit the action">edit</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="proposal.softDeleted"
-                        matTooltip="Restore Action"
-                        color="accent"
-                        (click)="admin.onRestore(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Restore Action">restore
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="!proposal.softDeleted"
-                        matTooltip="Remove Action"
-                        color="accent"
-                        (click)="admin.onSoftDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Remove Action">delete
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="auth.isAdmin()"
-                        matTooltip="Delete this Action"
-                        color="warn"
-                        (click)="admin.onDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Delete the action forever">
-                            delete_forever</mat-icon>
-                    </button>
-                    </ng-container>
-                       
-
-                </div>
-            </div>
+            <app-admin-panel
+                path="/proposals"
+                [item]="proposal"
+                model="Proposal"
+                redirectRoute="''"
+                >
+            </app-admin-panel>
             <div fxLayout="row"
                 fxFlex></div>
             <!-- <div fxLayout="column"

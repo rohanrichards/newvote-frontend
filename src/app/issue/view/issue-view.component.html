@@ -24,68 +24,12 @@
                 fxLayout="column"
                 [defaultImage]="handleImageUrl(issue.imageUrl, true)"
                 [lazyLoad]="handleImageUrl(issue.imageUrl)">
-                <div class="admin-panel"
-                    *ngIf="repQuery.isRepForOrg()"
-                    fxLayout="column"
-                    fxLayoutAlign="center end">
-                    <div *ngIf="repQuery.isRepForOrg()" class="button-panel">
-                        <button mat-icon-button
-                            matTooltip="Create a new Issue"
-                            color="accent"
-                            routerLink="/issues/create">
-                            <mat-icon aria-label="Create a new issue">add
-                            </mat-icon>
-                        </button>
-                        <button mat-icon-button
-                            matTooltip="Add Solution for this Issue"
-                            color="accent"
-                            routerLink="/solutions/create/{{issue._id}}">
-                            <mat-icon aria-label="Add a new solution">
-                                playlist_add
-                            </mat-icon>
-                        </button>
-                        <ng-container *ngIf="authQuery.isModerator()">
-                            <button mat-icon-button
-                                matTooltip="Add Media to this Issue"
-                                color="accent"
-                                routerLink="/media/create/{{issue._id}}">
-                                <mat-icon aria-label="Add new media">add_a_photo
-                                </mat-icon>
-                            </button>
-                            <button mat-icon-button
-                                matTooltip="Edit this Issue"
-                                color="accent"
-                                routerLink="/issues/edit/{{issue._id}}">
-                                <mat-icon aria-label="Edit the issue">edit
-                                </mat-icon>
-                            </button>
-                            <button mat-icon-button
-                                *ngIf="issue.softDeleted"
-                                matTooltip="Restore this issue"
-                                color="accent"
-                                (click)="admin.onRestore(issue, 'Issue', 'issues')">
-                                <mat-icon aria-label="Remove this issue">restore
-                                </mat-icon>
-                            </button>
-                            <button mat-icon-button
-                                *ngIf="!issue.softDeleted"
-                                matTooltip="Remove this Issue"
-                                color="accent"
-                                (click)="admin.onSoftDelete(issue, 'Issue', 'issues')">
-                                <mat-icon aria-label="Remove this issue">delete
-                                </mat-icon>
-                            </button>
-                            <button *ngIf="auth.isAdmin()"
-                                mat-icon-button
-                                matTooltip="Delete this Issue"
-                                color="warn"
-                                (click)="admin.onDelete(issue, 'Issue', 'issues')">
-                                <mat-icon aria-label="Delete the issue forever">
-                                    delete_forever</mat-icon>
-                            </button>
-                        </ng-container>
-                    </div>
-                </div>
+                <app-admin-panel
+                    model="Issue"
+                    path="/issues"
+                    [item]="issue"
+                    redirectRoute="issues"
+                ></app-admin-panel>
                 <div fxLayout="row"
                     fxFlex></div>
                 <!-- <div fxLayout="column"

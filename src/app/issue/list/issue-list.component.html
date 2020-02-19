@@ -143,25 +143,13 @@
 							<h2 class="custom-headline no-margin">
 								{{topic.name}}
 							</h2>
-							<div class="button-panel"
-								*ngIf="auth.isModerator(topic)">
-								<button color="accent"
-									mat-icon-button
-									[routerLink]="['/topics/edit', topic._id]">
-											<mat-icon aria-label="Edit the content">edit </mat-icon>
-								</button>
-								<button color="accent"
-									mat-icon-button
-									(click)="admin.onSoftDelete(topic, 'Topic')">
-											<mat-icon aria-label="Remove the content">delete</mat-icon>
-								</button>
-								<button color="warn"
-									mat-icon-button
-									*ngIf="auth.isAdmin(topic)"
-									(click)="admin.onDelete(topic, 'Topic')">
-											<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
-								</button>
-							</div>
+							<app-admin-panel
+								model="Topic"
+								[item]="topic"
+								path="/topics"
+								isCard=true
+							>
+							</app-admin-panel>
 							<mat-divider></mat-divider>
 						</div>
 						<app-grid-list 

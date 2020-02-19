@@ -45,7 +45,8 @@ import { ChildCardComponent } from './child-card/child-card.component';
 import { RepCardComponent } from './rep-card/rep-card.component';
 import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
 import { CommunityCardComponent } from './community-card/community-card.component'
-import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component'
 
 @NgModule({
     imports: [
@@ -97,6 +98,7 @@ import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
         SkeletonRepCardComponent,
         CommunityCardComponent,
         RepItemListComponent,
+        AdminPanelComponent,
     ],
     exports: [
         LoaderComponent,
@@ -127,7 +129,8 @@ import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
         ChildCardComponent,
         RepCardComponent,
         SkeletonRepCardComponent,
-        CommunityCardComponent
+        CommunityCardComponent,
+        AdminPanelComponent,
     ]
 })
 export class SharedModule { }
