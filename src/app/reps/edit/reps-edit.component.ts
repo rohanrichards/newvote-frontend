@@ -55,7 +55,7 @@ export class RepsEditComponent implements OnInit {
     repForm = new FormGroup({
         displayName: new FormControl('', [Validators.required]),
         description: new FormControl(''),
-        position: new FormControl('', [Validators.required]),
+        position: new FormControl('', [Validators.required, Validators.maxLength(25)]),
         imageUrl: new FormControl('', [Validators.required]),
         proposals: new FormControl([]),
         solutions: new FormControl([]),
@@ -447,6 +447,10 @@ export class RepsEditComponent implements OnInit {
         const newTags = [...tags.slice(0, index), ...tags.slice(index+1, tags.length-1)]
 
         this.repForm.patchValue({ tags: newTags })
+    }
+
+    handleChange(change: any) {
+        console.log(change, 'this is change')
     }
 
     private _filter(value: any, entityArray: any[]): any[] {

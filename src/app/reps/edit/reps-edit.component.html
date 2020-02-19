@@ -31,7 +31,7 @@
             </mat-form-field>
 
             <div class="quill-editor-container cf">
-                <quill-editor formControlName="description"></quill-editor>
+                <quill-editor maxlength="250" ng-invalid (onContentChanged)="handleChange($event)" formControlName="description"></quill-editor>
             </div>
 
             <input type="file"

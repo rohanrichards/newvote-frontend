@@ -1,17 +1,15 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav [(opened)]="opened" mode="push" fixedInViewport="true">
+    <mat-sidenav #sidenav [(opened)]="opened" mode="push"
+        fixedInViewport="true">
         <nav>
             <mat-list>
-                <a mat-list-item
-                    href="https://newvote.org/the-app"
+                <a mat-list-item href="https://newvote.org/the-app"
                     target="_blank">
                     <span translate>About NewVote</span>
                 </a>
                 <mat-divider></mat-divider>
 
-                <a mat-list-item
-                    href="https://newvote.org/help"
-                    target="_blank"
+                <a mat-list-item href="https://newvote.org/help" target="_blank"
                     (click)="sidenav.close()">
                     <span translate>Help</span>
                 </a>
@@ -19,17 +17,70 @@
 
                 <a mat-list-item
                     href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
-                    target="_blank"
-                    (click)="sidenav.close()">
+                    target="_blank" (click)="sidenav.close()">
                     <span>Feedback</span>
                 </a>
             </mat-list>
         </nav>
     </mat-sidenav>
     <mat-sidenav-content>
-        <div class="community-wrap" fxFlexLayout="column">
+        <!-- <div gdColumns="1fr 3fr 1fr"
+            gdColumns.lt-md="1fr 1fr"
+            gd.columns.lt-sm="1fr"
+            gdRows="80px 100px 3fr auto">
+            <mat-toolbar 
+                gdColumn="1 / span 3"
+                gdRow="1 / span 2"
+                class="toolbar" color="primary" fxLayout="row">
+                <button (click)="sidenav.toggle()" class="menu-button"
+                    mat-icon-button>
+                    <mat-icon>menu</mat-icon>
+                </button>
+                <span>NewVote</span>
+                <button class="search-button" mat-icon-button>
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div    
+                gdColumn="1 / span 1"
+                gdRow="2 / span 1"
+                fxLayout="row" fxLayoutAlign="start center">
+                <div fxFlex.lt-sm="100%" fxFlex.sm="600px" fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="1100px" fxFlex.gt-lg="1500px"
+                    class="header-container">
+                    <h4 [ngStyle]="{ 'margin-bottom': '0' }"
+                        class="custom-display1">
+                        Select Your Community
+                    </h4>
+                </div>
+            </div>
+            <div 
+                gdColumn="1 / span 3"
+                gdRow="3 / span 3"
+                gdAlignColumns="start"
+                gdAlignRows="center" gdColumns.gt-lg="30% 30% 30%"
+                gdColumns.gt-md="1fr 1fr" gdColumns.gt-xs="50% 50%"
+                class="card-grid" gdColumns.xs="1fr" gdRows="auto" gdGap="20px">
+                <app-community-card
+                    *ngFor="let org of organizations$ | async;trackBy trackByFn"
+                    (click)="openCommunityURL($event, org.url)"
+                    [organization]="org">
+                </app-community-card>
+            </div>
+            <div 
+                gdColumn="1 / span 1"
+                gdRow="6 / span 1"
+                class="container">
+                <button mat-button mat-raised-button (click)="handleClick()"
+                    color="warn" class="custom-display1 cta-button">
+                    Create a community
+                </button>
+            </div>
+        </div> -->
+    <div class="community-wrap" fxFlexLayout="column">
             <mat-toolbar class="toolbar" color="primary" fxLayout="row">
-                <button (click)="sidenav.toggle()" class="menu-button" mat-icon-button>
+                <button (click)="sidenav.toggle()" class="menu-button"
+                    mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
                 <span>NewVote</span>
