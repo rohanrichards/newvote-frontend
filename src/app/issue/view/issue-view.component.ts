@@ -64,6 +64,7 @@ export class IssueViewComponent implements OnInit {
     solutions$: Observable<Solution[]>;
     suggestions$: Observable<Suggestion[]>;
     progress: any;
+
     defaultState = {
         organizations: '',
         parent: '',

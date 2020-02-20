@@ -44,11 +44,8 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
-<<<<<<< HEAD
 import { FeedModule } from './feed/feed.module'
-=======
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
->>>>>>> staging
 
 @NgModule({
     imports: [
