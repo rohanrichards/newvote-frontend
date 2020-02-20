@@ -32,7 +32,9 @@
                 [style.width.%]="100">
                 <mat-radio-button [style.width.%]="100"
                     (change)="handleProgressState(state)"
-                    [value]="state.name">
+                    [value]="state.name"
+                    [checked]="state.active && state.name === activeState"
+                    >
                     {{state.name}}
                 </mat-radio-button>
                 <hr />
