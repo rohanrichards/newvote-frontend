@@ -36,16 +36,16 @@
         border-radius: 100%;
         line-height: 3em;
         margin-bottom: 0.5em;
-        border: 4px solid #0277BD;
+        border: 5px solid #0277BD;
     }
 
     li:after {
-        height: 4px;
+        height: 5px;
         width: 100%;
         content: '';
         background: #0277BD;
         position: absolute;
-        top: 1.2em;
+        top: 1.1em;
         left: calc(50%);
         z-index: -1;
     }

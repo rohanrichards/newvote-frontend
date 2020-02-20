@@ -66,6 +66,7 @@ export class IssueViewComponent implements OnInit {
     suggestions$: Observable<Suggestion[]>;
     isVerified: boolean;
     progress: any;
+
     defaultState = {
         organizations: '',
         parent: '',

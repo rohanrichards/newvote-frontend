@@ -4,17 +4,17 @@
         fxLayout="row">
         <div class="header-logo">
         </div>
-        <h2 class="mat-display-1"> Progress News Feed</h2>
+        <h2 class="mat-headline">Progress News Feed</h2>
     </div>
-
     <div>
         <ul class="progress-bar">
             <li *ngFor="let state of getStates(progressState)"
                 [ngClass]="{
                             'active': state.active,
                             'progress-item': true
-                    }">{{ state.name }}</li>
+                    }">
+                {{ state.name }}
+            </li>
         </ul>
     </div>
-
 </div>
