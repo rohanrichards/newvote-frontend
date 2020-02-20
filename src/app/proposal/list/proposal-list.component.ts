@@ -25,16 +25,16 @@ import { ActivatedRoute } from '@angular/router'
 })
 export class ProposalListComponent implements OnInit {
 
-    suggestions: Array<any>;
-    proposals: Array<any>;
+    suggestions: Array<any> = [];
+    proposals: Array<any> = [];
     isLoading: boolean;
     loadingState: string;
-    headerTitle = 'Browse By Proposal';
-    headerText = 'Proposals arrange the current proposals into broader categories. \
-        Select a proposal below to learn more about it and explore relevant proposals being discussed.';
+    headerTitle = 'Browse By Action';
+    headerText = 'Actions arrange the current actions into broader categories. \
+        Select a action below to learn more about it and explore relevant actions being discussed.';
 
     headerButtons = [{
-        text: 'New Proposal',
+        text: 'New Action',
         color: 'warn',
         routerLink: '/proposals/create',
         role: 'admin'
@@ -83,7 +83,10 @@ export class ProposalListComponent implements OnInit {
 
     subscribeToProposalStore() {
         this.proposalQuery.selectAll({})
-            .subscribe((proposals) => { this.proposals = proposals })
+            .subscribe((proposals) => {
+                if (!proposals) return false
+                this.proposals = proposals
+            })
     }
 
     subscribeToSuggestionStore() {
@@ -93,7 +96,10 @@ export class ProposalListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'action')
                 }),
             )
-            .subscribe((suggestions) => { this.suggestions = suggestions })
+            .subscribe((suggestions) => {
+                if (!suggestions) return false
+                this.suggestions = suggestions
+            })
     }
 
     fetchData() {
@@ -105,7 +111,7 @@ export class ProposalListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 () => this.stateService.setLoadingState(AppState.complete),
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
 
         this.suggestionService.list({

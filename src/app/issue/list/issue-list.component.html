@@ -1,6 +1,6 @@
 <app-header-bar [headerTitle]="headerTitle"
     [headerText]="headerText"
-    [buttons]="headerButtons">
+	>
 </app-header-bar>
 
 <app-loader [isLoading]="loadingState === 'loading'"
@@ -118,7 +118,7 @@
 						</div>
 					</div>
 				</div>
-				<div *ngSwitchCase="'serverError'">
+				<div *ngSwitchCase="'error'">
 					<app-error-card>
 					</app-error-card>
 				</div>
@@ -176,7 +176,7 @@
                     </div>
                     
                     <!-- Orphaned Topics -->
-                    <div [@fadeIn]=true >
+                    <div [@fadeIn]=true *ngIf="orphanedIssues.length">
                         <div class="topic-header">
                             <h2 class="mat-h1 no-margin">
                                 General Issues
@@ -185,7 +185,7 @@
                         </div>
                         <app-grid-list 
                             path="/issues"
-                            [items]="filterIssues(false, issues)"
+                            [items]="orphanedIssues"
                             model="Issue"
                             [titleCard]=true
                             (restore)="admin.onRestore($event, 'Issue')"
@@ -193,20 +193,28 @@
                             (delete)="admin.onDelete($event, 'Issue')">
                         </app-grid-list>
                     </div>
-					<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-						<h2 class="mat-headline center-text">Suggestions for Issues</h2>
-                    </mat-toolbar>
-					<app-card-list 
-						path="/suggestions"
-						[@fadeIn]=true
-						[items$]=suggestions$
-						model="Suggestion"
-						(restore)="admin.onRestore($event, 'Suggestion')"
-						(softDelete)="admin.onSoftDelete($event, 'Suggestion')"
-						(delete)="admin.onDelete($event, 'Suggestion')"
-						(vote)="onVote($event, 'Suggestion')"
-						>
-                    </app-card-list>
+                    <mat-accordion [style.margin-bottom.rem]="1"
+                        [style.display]="'block'">
+                        <mat-expansion-panel class="accordion-header" [expanded]="suggestions && suggestions.length && suggestions.length > 0">
+                            <mat-expansion-panel-header>
+                                <h3 class="mat-headline"
+                                    [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                                    Suggestions for Issues
+                                </h3>
+                            </mat-expansion-panel-header>
+                            <app-card-list 
+                                path="/suggestions"
+                                [@fadeIn]=true
+                                [items$]=suggestions$
+                                model="Suggestion"
+                                (restore)="admin.onRestore($event, 'Suggestion')"
+                                (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                                (delete)="admin.onDelete($event, 'Suggestion')"
+                                (vote)="onVote($event, 'Suggestion')"
+                                >
+                            </app-card-list>
+                        </mat-expansion-panel>
+                    </mat-accordion>
 					<div *ngIf="auth.isVerified()">
 						<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
 							<h2 class="mat-headline center-text">Create your own Suggestion</h2>

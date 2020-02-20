@@ -1,212 +1,211 @@
 <app-loader [isLoading]="loadingState === 'loading' || isLoading"
     size="1.5"></app-loader>
 
-
-<ng-container *ngIf="loadingState === 'loading';
-	then skeletonHeader;
-	else mainIssueHeader">
-</ng-container>
-
-<ng-container *ngIf="loadingState === 'loading';
-	then skeletonMedia;
-	else mainMedia">
-</ng-container>
-
-<ng-template #skeletonMedia>
-    <div class="skeleton-media-container">
-        <div class="center-item">
-            <app-skeleton-text-bar class="center-item"
-                [isHeading]=true
-                [width]="150">
-            </app-skeleton-text-bar>
-        </div>
-        <div class="skeleton-media-card-wrap">
-            <app-skeleton-media-card>
-            </app-skeleton-media-card>
-        </div>
+<ng-container [ngSwitch]="loadingState">
+    <!-- Header Template -->
+    <div *ngSwitchCase="'loading'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasChip]=true>
+        </app-skeleton-panel>
     </div>
-</ng-template>
-
-<ng-template #mainMedia>
-    <div [@fadeIn]=true
-        class="container"
-        *ngIf="media"
-        fxLayout="row wrap"
-        fxLayoutAlign="center center">
-        <div fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px"
-            *ngIf="media && !headingEdit"
-            [style.width]="'100%'">
-            <mat-accordion>
-                <mat-expansion-panel class="accordion-header">
-                    <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
-                            {{ this.issue.mediaHeading || "Third Party Media"}}
-                        </h3>
-                    </mat-expansion-panel-header>
-                    <app-swiper-wrapper [@fadeIn]=true
-                        path="/media"
-                        [items]="media"
-                        model="Media"
-                        parent="Issue"
-                        [organization]="issue.organizations.name"
-                        (restore)="admin.onRestore($event, 'Media')"
-                        (softDelete)="admin.onSoftDelete($event, 'Media')"
-                        (delete)="admin.onDelete($event, 'Media')"
-                        (vote)="onVote($event, 'Media')">
-                    </app-swiper-wrapper>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </div>
+    <div *ngSwitchCase="'error'">
+        <app-skeleton-header [noLogo]=true>
+        </app-skeleton-header>
+        <app-skeleton-panel [hasChip]=true>
+        </app-skeleton-panel>
     </div>
-</ng-template>
-
-
-<ng-container *ngIf="loadingState === 'loading';
-	then skeletonCards
-	else mainCards">
-</ng-container>
-
-<!-- Header Template -->
-
-<ng-template #skeletonHeader>
-    <app-skeleton-header [noLogo]=true>
-    </app-skeleton-header>
-    <app-skeleton-panel [hasChip]=true>
-    </app-skeleton-panel>
-</ng-template>
-
-<ng-template #mainIssueHeader>
-    <mat-toolbar [@fadeIn]="!isLoading"
-        color="primary"
-        class="header-info-panel"
-        *ngIf="issue">
-        <div class="image-container"
-            fxLayout="column"
-            [defaultImage]="handleImageUrl(issue.imageUrl, true)"
-            [lazyLoad]="handleImageUrl(issue.imageUrl)">
-            <div class="admin-panel"
-                *ngIf="auth.isModerator(issue)"
+    <div *ngSwitchCase="'complete'">
+        <mat-toolbar
+            color="primary"
+            class="header-info-panel"
+            *ngIf="issue">
+            <div class="image-container"
                 fxLayout="column"
-                fxLayoutAlign="center end">
-                <div class="button-panel">
-                    <button mat-icon-button
-                        matTooltip="Create a new Issue"
-                        color="accent"
-                        routerLink="/issues/create">
-                        <mat-icon aria-label="Create a new issue">add</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Add Solution for this Issue"
-                        color="accent"
-                        routerLink="/solutions/create/{{issue._id}}">
-                        <mat-icon aria-label="Add a new solution">playlist_add
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Add Media to this Issue"
-                        color="accent"
-                        routerLink="/media/create/{{issue._id}}">
-                        <mat-icon aria-label="Add new media">add_a_photo
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Edit this Issue"
-                        color="accent"
-                        routerLink="/issues/edit/{{issue.slug || issue._id}}">
-                        <mat-icon aria-label="Edit the issue">edit</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="issue.softDeleted"
-                        matTooltip="Restore this issue"
-                        color="accent"
-                        (click)="admin.onRestore(issue, 'Issue', 'issues')">
-                        <mat-icon aria-label="Remove this issue">restore
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="!issue.softDeleted"
-                        matTooltip="Remove this Issue"
-                        color="accent"
-                        (click)="admin.onSoftDelete(issue, 'Issue', 'issues')">
-                        <mat-icon aria-label="Remove this issue">delete
-                        </mat-icon>
-                    </button>
-                    <button *ngIf="auth.isAdmin()"
-                        mat-icon-button
-                        matTooltip="Delete this Issue"
-                        color="warn"
-                        (click)="admin.onDelete(issue, 'Issue', 'issues')">
-                        <mat-icon aria-label="Delete the issue forever">
-                            delete_forever</mat-icon>
-                    </button>
+                [defaultImage]="handleImageUrl(issue.imageUrl, true)"
+                [lazyLoad]="handleImageUrl(issue.imageUrl)">
+                <div class="admin-panel"
+                    *ngIf="repQuery.isRepForOrg()"
+                    fxLayout="column"
+                    fxLayoutAlign="center end">
+                    <div *ngIf="repQuery.isRepForOrg()" class="button-panel">
+                        <button mat-icon-button
+                            matTooltip="Create a new Issue"
+                            color="accent"
+                            routerLink="/issues/create">
+                            <mat-icon aria-label="Create a new issue">add
+                            </mat-icon>
+                        </button>
+                        <button mat-icon-button
+                            matTooltip="Add Solution for this Issue"
+                            color="accent"
+                            routerLink="/solutions/create/{{issue._id}}">
+                            <mat-icon aria-label="Add a new solution">
+                                playlist_add
+                            </mat-icon>
+                        </button>
+                        <ng-container *ngIf="authQuery.isModerator()">
+                            <button mat-icon-button
+                                matTooltip="Add Media to this Issue"
+                                color="accent"
+                                routerLink="/media/create/{{issue._id}}">
+                                <mat-icon aria-label="Add new media">add_a_photo
+                                </mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                matTooltip="Edit this Issue"
+                                color="accent"
+                                routerLink="/issues/edit/{{issue._id}}">
+                                <mat-icon aria-label="Edit the issue">edit
+                                </mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                *ngIf="issue.softDeleted"
+                                matTooltip="Restore this issue"
+                                color="accent"
+                                (click)="admin.onRestore(issue, 'Issue', 'issues')">
+                                <mat-icon aria-label="Remove this issue">restore
+                                </mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                *ngIf="!issue.softDeleted"
+                                matTooltip="Remove this Issue"
+                                color="accent"
+                                (click)="admin.onSoftDelete(issue, 'Issue', 'issues')">
+                                <mat-icon aria-label="Remove this issue">delete
+                                </mat-icon>
+                            </button>
+                            <button *ngIf="auth.isAdmin()"
+                                mat-icon-button
+                                matTooltip="Delete this Issue"
+                                color="warn"
+                                (click)="admin.onDelete(issue, 'Issue', 'issues')">
+                                <mat-icon aria-label="Delete the issue forever">
+                                    delete_forever</mat-icon>
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+                <div fxLayout="row"
+                    fxFlex></div>
+                <!-- <div fxLayout="column"
+                            fxLayoutAlign="start start">
+                        </div> -->
+                <div fxLayout="row wrap"
+                    fxLayoutAlign="center center">
+                    <div fxFlex.gt-sm="690px"
+                        fxFlex.gt-md="800px">
+                        <app-share-buttons></app-share-buttons>
+                    </div>
                 </div>
             </div>
-            <div fxLayout="row"
-                fxFlex></div>
-            <!-- <div fxLayout="column"
-				fxLayoutAlign="start start">
-			</div> -->
             <div fxLayout="row wrap"
-                fxLayoutAlign="center center">
+                fxLayoutAlign="center center"
+                class="description-container">
                 <div fxFlex.gt-sm="690px"
                     fxFlex.gt-md="800px">
-                    <app-share-buttons></app-share-buttons>
+                    <div class="mat-display-1"
+                        translate>{{issue.name}}</div>
+                    <app-topic-tags [topics]="issue.topics"></app-topic-tags>
+                    <app-more-less [displayText]="issue.description"
+                        maxHeight="200">
+                    </app-more-less>
+                    <div *ngIf="auth.isVerified()">
+                        <h4 class="mat-subheading-1">Do you have a suggestion
+                            that's
+                            not shown below? Click here to create one.</h4>
+                        <button mat-flat-button
+                            color="warn"
+                            (click)="populateSuggestion()">Make
+                            Suggestion</button>
+                    </div>
                 </div>
             </div>
+        </mat-toolbar>
+    </div>
+</ng-container>
+
+<ng-container [ngSwitch]="loadingState">
+    <div *ngSwitchCase="'loading'">
+        <div class="skeleton-media-container">
+            <div class="center-item">
+                <app-skeleton-text-bar class="center-item"
+                    [isHeading]=true
+                    [width]="150">
+                </app-skeleton-text-bar>
+            </div>
+            <div class="skeleton-media-card-wrap">
+                <app-skeleton-media-card>
+                </app-skeleton-media-card>
+            </div>
         </div>
-        <div fxLayout="row wrap"
-            fxLayoutAlign="center center"
-            class="description-container">
+    </div>
+    <div *ngSwitchCase="'complete'">
+        <div [@fadeIn]=true
+            class="container"
+            *ngIf="media"
+            fxLayout="row wrap"
+            fxLayoutAlign="center center">
             <div fxFlex.gt-sm="690px"
-                fxFlex.gt-md="800px">
-                <div class="mat-display-1"
-                    translate>{{issue.name}}</div>
-                <app-topic-tags [topics]="issue.topics"></app-topic-tags>
-                <app-more-less [displayText]="issue.description"
-                    maxHeight="200">
-                </app-more-less>
-                <div *ngIf="auth.isVerified()">
-                    <h4 class="mat-subheading-1">Do you have a suggestion that's
-                        not shown below? Click here to create one.</h4>
-                    <button mat-flat-button
-                        color="warn"
-                        (click)="populateSuggestion()">Make Suggestion</button>
-                </div>
+                fxFlex.gt-md="800px"
+                *ngIf="media && !headingEdit"
+                [style.width]="'100%'">
+                <mat-accordion>
+                    <mat-expansion-panel class="accordion-header">
+                        <mat-expansion-panel-header>
+                            <h3 class="mat-headline"
+                                [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                                {{ this.issue.mediaHeading || "Third Party Media"}}
+                            </h3>
+                        </mat-expansion-panel-header>
+                        <app-swiper-wrapper [@fadeIn]=true
+                            path="/media"
+                            [items]="media"
+                            model="Media"
+                            parent="Issue"
+                            [organization]="issue.organizations.name"
+                            (restore)="admin.onRestore($event, 'Media')"
+                            (softDelete)="admin.onSoftDelete($event, 'Media')"
+                            (delete)="admin.onDelete($event, 'Media')"
+                            (vote)="onVote($event, 'Media')">
+                        </app-swiper-wrapper>
+                    </mat-expansion-panel>
+                </mat-accordion>
             </div>
         </div>
-    </mat-toolbar>
-</ng-template>
+    </div>
+</ng-container>
 
 
 <!-- Main Section -->
 
-<ng-template #skeletonCards>
-    <div class="container"
-        fxLayout="column"
-        fxLayoutAlign="center start">
-        <div class="skeleton-card-list">
-            <app-skeleton-text-bar [isSubtitle]=true
-                [width]="150">
-            </app-skeleton-text-bar>
+<ng-container [ngSwitch]="loadingState">
+    <div *ngSwitchCase="'loading'">
+        <div class="container"
+            fxLayout="column"
+            fxLayoutAlign="center start">
+            <div class="skeleton-card-list">
+                <app-skeleton-text-bar [isSubtitle]=true
+                    [width]="150">
+                </app-skeleton-text-bar>
 
-            <app-skeleton-wide-card [showImage]=true
-                [showContent]=true
-                [showActions]=true
-                [showChildren]=true>
-            </app-skeleton-wide-card>
-            <app-skeleton-wide-card [showImage]=true
-                [showContent]=true
-                [showActions]=true>
-            </app-skeleton-wide-card>
-            <app-skeleton-wide-card [showImage]=true
-                [showContent]=true
-                [showActions]=true>
-            </app-skeleton-wide-card>
+                <app-skeleton-wide-card [showImage]=true
+                    [showContent]=true
+                    [showActions]=true
+                    [showChildren]=true>
+                </app-skeleton-wide-card>
+                <app-skeleton-wide-card [showImage]=true
+                    [showContent]=true
+                    [showActions]=true>
+                </app-skeleton-wide-card>
+                <app-skeleton-wide-card [showImage]=true
+                    [showContent]=true
+                    [showActions]=true>
+                </app-skeleton-wide-card>
+            </div>
         </div>
     </div>
-</ng-template>
+</ng-container>
 
 <ng-template #mainCards>
     <div class="container"
@@ -263,19 +262,76 @@
                     (delete)="admin.onDelete($event, 'Suggestion')"
                     (vote)="onVote($event, 'Suggestion')">
                 </app-card-list>
-            </div>
-            <div *ngIf="auth.isVerified()">
-                <mat-toolbar color="primary"
-                    fxLayoutAlign="center center"
-                    [style.margin-bottom]="'1rem'">
-                    <h2 class="mat-headline center-text">Create your own
-                        Suggestion</h2>
-                </mat-toolbar>
-                <app-make-suggestion parent="solution"
-                    (submitForm)="handleSuggestionSubmit($event)">
-                </app-make-suggestion>
+    <div *ngSwitchCase="'error'">
+        <div class="container"
+            [@fadeIn]=true
+            fxLayout="row wrap"
+            fxLayoutAlign="center start">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <app-error-card model="Issue">
+                </app-error-card>
             </div>
         </div>
     </div>
-
-</ng-template>
+    <div *ngSwitchCase="'complete'">
+        <div class="container"
+            [@fadeIn]=true
+            fxLayout="row wrap"
+            fxLayoutAlign="center start">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <mat-toolbar color="primary"
+                    fxLayoutAlign="center center"
+                    [style.margin-bottom]="'1rem'">
+                    <span class="mat-headline center-span"
+                        [style.margin-bottom]="'0'">Vote on Solutions</span>
+                </mat-toolbar>
+                <app-card-list path="/solutions"
+                    [items$]=solutions$
+                    model="Solution"
+                    [showChildren]="true"
+                    childPath="proposals"
+                    childName="Actions"
+                    [showParent]="true"
+                    parentPath="/issues"
+                    parentPropName="issues"
+                    (restore)="admin.onRestore($event, 'Solution')"
+                    (delete)="admin.onDelete($event, 'Solution')"
+                    (softDelete)="admin.onSoftDelete($event, 'Solution')"
+                    (vote)="onVote($event, 'Solution')"
+                    (childVote)="onVote($event, 'Proposal')">
+                </app-card-list>
+                <div>
+                    <mat-toolbar color="primary"
+                        fxLayoutAlign="center center"
+                        [style.margin-bottom]="'1rem'">
+                        <h2 class="mat-headline center-text">Community
+                            Suggestions
+                        </h2>
+                    </mat-toolbar>
+                    <app-card-list path="/suggestions"
+                        [@fadeIn]=true
+                        [items$]=suggestions$
+                        model="Suggestion"
+                        (restore)="admin.onRestore($event, 'Suggestion')"
+                        (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                        (delete)="admin.onDelete($event, 'Suggestion')"
+                        (vote)="onVote($event, 'Suggestion')">
+                    </app-card-list>
+                </div>
+                <div *ngIf="auth.isVerified()">
+                    <mat-toolbar color="primary"
+                        fxLayoutAlign="center center"
+                        [style.margin-bottom]="'1rem'">
+                        <h2 class="mat-headline center-text">Create your own
+                            Suggestion</h2>
+                    </mat-toolbar>
+                    <app-make-suggestion parent="solution"
+                        (submitForm)="handleSuggestionSubmit($event)">
+                    </app-make-suggestion>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

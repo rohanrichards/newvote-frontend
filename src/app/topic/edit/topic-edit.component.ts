@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
 import { finalize } from 'rxjs/operators'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { MatSnackBar } from '@angular/material'
 import { merge, cloneDeep } from 'lodash'
 
@@ -33,6 +33,8 @@ export class TopicEditComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+
+    resetImage: boolean
 
     constructor(
         private topicService: TopicService,
@@ -75,7 +77,11 @@ export class TopicEditComponent implements OnInit {
         }
 
         this.uploader = new FileUploader(uploaderOptions)
-
+        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
+            if (this.uploader.queue.length > 1) {
+                this.uploader.removeFromQueue(this.uploader.queue[0])
+            }
+        }
         this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
             // Add Cloudinary's unsigned upload preset to the upload form
             form.append('upload_preset', 'qhf7z3qa')
@@ -91,10 +97,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     subscribeToTopicStore(id: string) {
-        this.topicQuery.selectEntity(id)
-            .subscribe((topic: Topic) => {
-                if (!topic) return false
-                this.updateForm(topic)
+
+        this.topicQuery.getTopic(id)
+            .subscribe((topic: Topic[]) => {
+                if (!topic.length) return false
+                this.updateForm(topic[0])
             })
     }
 
@@ -131,6 +138,14 @@ export class TopicEditComponent implements OnInit {
         this.imageUrl = this.topicForm.get('imageUrl').value
     }
 
+    setDefaultImage() {
+        const DEFAULT_IMAGE = 'assets/topic-default.png'
+        this.newImage = true
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
+    }
+
     onSave() {
         const topic = cloneDeep(this.topic)
         this.isLoading = true
@@ -158,6 +173,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     updateWithApi(topic: any) {
+
+        if (this.resetImage) {
+            topic.imageUrl = this.imageUrl
+        }
+
         this.topicService.update({ id: topic._id, entity: topic })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(

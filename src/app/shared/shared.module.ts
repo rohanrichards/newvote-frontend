@@ -43,6 +43,11 @@ import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.compo
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 import { ProgressFormComponent } from './progress-form/progress-form.component'
+import { RepModalComponent } from './rep-modal/rep-modal.component'
+import { ChildCardComponent } from './child-card/child-card.component'
+import { RepCardComponent } from './rep-card/rep-card.component'
+import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component'
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
 
 @NgModule({
     imports: [
@@ -90,7 +95,12 @@ import { ProgressFormComponent } from './progress-form/progress-form.component'
         MakeSuggestionComponent,
         ProgressBarComponent,
         ProgressFeedComponent,
-        ProgressFormComponent
+        ProgressFormComponent,
+        RepModalComponent,
+        ChildCardComponent,
+        RepCardComponent,
+        SkeletonRepCardComponent,
+        RepItemListComponent
     ],
     exports: [
         LoaderComponent,
@@ -119,7 +129,11 @@ import { ProgressFormComponent } from './progress-form/progress-form.component'
         MakeSuggestionComponent,
         ProgressBarComponent,
         ProgressFeedComponent,
-        ProgressFormComponent
+        ProgressFormComponent,
+        RepModalComponent,
+        ChildCardComponent,
+        RepCardComponent,
+        SkeletonRepCardComponent
     ]
 })
 export class SharedModule { }

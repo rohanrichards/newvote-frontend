@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, BehaviorSubject } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
-import { Organization } from '@app/core/models/organization.model'
+import { Organization, IOrganization } from '@app/core/models/organization.model'
 import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
@@ -14,7 +14,8 @@ const routes = {
     create: () => '/organizations',
     update: (c: OrganizationContext) => `/organizations/${c.id}`,
     updateOwner: (c: OrganizationContext) => `/organizations/owner/${c.id}`,
-    delete: (c: OrganizationContext) => `/organizations/${c.id}`
+    delete: (c: OrganizationContext) => `/organizations/${c.id}`,
+    patch: (c: OrganizationContext) => `/organizations/${c.id}`
 }
 
 export interface OrganizationContext {
@@ -88,9 +89,9 @@ export class OrganizationService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 tap((res: Organization[]) => this.communityStore.add(res)),
-                map((res: Array<any>) => res),
-                catchError(handleError)
+                map((res: Array<any>) => res)
             )
     }
 
@@ -98,12 +99,12 @@ export class OrganizationService {
         return this.httpClient
             .get(routes.view(context))
             .pipe(
+                catchError(handleError),
                 tap((res: Organization) => {
                     this.organizationStore.update(res)
                     this.communityStore.add(res)
                 }),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -111,25 +112,17 @@ export class OrganizationService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: any) => this.communityStore.add(res.organization)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
     update(context: OrganizationContext): Observable<any> {
-        // Organization update returns an object
-        /*
-             moderators array - a collection of moderators that was not saved
-             {
-                 organization: object
-                 moderators: array
-             }
-        */
-
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: any) => {
                     // since there are two stores we need to check whether to update both
                     if (res._id === this._org._id) {
@@ -138,8 +131,7 @@ export class OrganizationService {
 
                     this.communityStore.update(res._id, res.organization)
                 }),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -147,12 +139,12 @@ export class OrganizationService {
         return this.httpClient
             .put(routes.updateOwner(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((res: Organization) => {
                     this.organizationStore.update(res)
                     this.communityStore.update(res._id, res)
                 }),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -160,9 +152,21 @@ export class OrganizationService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 tap((res: Organization) => this.communityStore.remove(res._id)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
+            )
+    }
+
+    patch(context: OrganizationContext): Observable<any> {
+        return this.httpClient
+            .patch(routes.patch(context), context.entity)
+            .pipe(
+                catchError(handleError),
+                tap((res: IOrganization) => {
+                    console.log(res, 'this is res')
+                    this.organizationStore.update({ representativeTags: res.representativeTags })
+                })
             )
     }
 

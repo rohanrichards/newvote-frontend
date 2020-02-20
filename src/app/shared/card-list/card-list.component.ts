@@ -24,6 +24,7 @@ export class CardListComponent implements OnInit {
     @Input() parentPath: string;
     @Input() parentPropName: string;
     @Input() isError: boolean;
+    @Input() repCard: boolean;
     @Output() restore = new EventEmitter();
     @Output() softDelete = new EventEmitter();
     @Output() delete = new EventEmitter();
@@ -40,6 +41,16 @@ export class CardListComponent implements OnInit {
 
     ngOnInit() {
         this.organizationName = this.meta.organization.name
+    }
+
+    hasDefaultImage(url: string) {
+        const defaultImages = ['assets/solution-default.png', 'assets/action-default.png', 'assets/issue-default.png',];
+        const imageIndex = defaultImages.findIndex((item) => item === url);
+        if (imageIndex === -1) {
+            return true;
+        }
+
+        return false;
     }
 
     onDelete(item: any, event: any) {

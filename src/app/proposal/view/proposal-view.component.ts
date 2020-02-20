@@ -24,8 +24,9 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
-import { EntityDirtyCheckPlugin } from '@datorama/akita'
 import { Observable, pipe } from 'rxjs'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { RepQuery } from '@app/core/http/rep/rep.query'
 
 @Component({
     selector: 'app-proposal',
@@ -61,7 +62,9 @@ export class ProposalViewComponent implements OnInit {
         private proposalQuery: ProposalQuery,
         private suggestionQuery: SuggestionQuery,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        public authQuery: AuthenticationQuery,
+        public repQuery: RepQuery
     ) { }
 
     ngOnInit() {
@@ -131,7 +134,7 @@ export class ProposalViewComponent implements OnInit {
                         })
                 },
                 () => {
-                    return this.stateService.setLoadingState(AppState.serverError)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }

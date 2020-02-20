@@ -1,0 +1,35 @@
+.title-bold {
+    font-weight: 700;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.field-container {
+    margin-bottom: 0.5rem;
+
+    p {
+        margin: 0 !important;
+    }
+}
+
+.tag-title-margin {
+    margin-bottom: 0.5rem !important;
+}
+.pointer-card {
+    cursor: pointer !important;
+}
+
+.button-panel {
+    text-align: right;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
+}
+
+.image-container {
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}

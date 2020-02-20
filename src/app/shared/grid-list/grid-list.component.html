@@ -34,9 +34,9 @@
         *ngIf="items"
         fxLayoutAlign="start start"
         fxLayoutAlign.lt-sm="start stretch"
-        fxLayoutGap="32px">
+        fxLayoutGap="16px">
         <div class="item-card-row"
-            fxFlex="0 0 calc(33.3% - 32px)"
+            fxFlex="0 0 calc(33.3% - 16px)"
             fxFlex.lt-sm="0 0 100%"
             *ngFor="let item of getItems();trackBy: trackByFn">
             <mat-card class="item-card"
@@ -131,7 +131,7 @@
                 <ng-template #isTitle>
                     <mat-card-content>
                         <mat-card-title class="title-card-header">
-                            {{item.name}}
+                            {{item.name || item.title}}
                         </mat-card-title>
                         <div class="title-card-subheader"
                             [innerHtml]="item.description">

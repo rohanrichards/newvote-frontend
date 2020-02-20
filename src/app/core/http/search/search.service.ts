@@ -72,7 +72,9 @@ export class SearchService {
 
         return forkJoin([topicObs, issueObs, solutionObs, proposalObs]).pipe(
             map((resultsArray: Array<any>) => {
-                return [].concat([...resultsArray])
+                return resultsArray.reduce((prev, curr) => {
+                    return prev.concat(...curr)
+                }, [])
             })
         )
     }

@@ -46,6 +46,12 @@ import { MediaStore } from './http/media/media.store'
 import { MediaQuery } from './http/media/media.query'
 import { AuthenticationQuery } from './authentication/authentication.query'
 import { AuthenticationStore } from './authentication/authentication.store'
+import { RepQuery } from './http/rep/rep.query'
+import { RepStore } from './http/rep/rep.store'
+import { RepGuard } from './authentication/rep.guard'
+import { RepOrgGuard } from './authentication/rep-org.guard'
+import { DataFetchService } from './http/data/data-fetch.service'
+import { RepService } from './http/rep/rep.service'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -80,6 +86,8 @@ export function tokenGetter() {
         ModeratorGuard,
         ContentGuard,
         EndorserGuard,
+        RepGuard,
+        RepOrgGuard,
         SuggestionCreatorGuard,
         OrganizationService,
         MetaService,
@@ -114,6 +122,10 @@ export function tokenGetter() {
         CommunityStore,
         MediaStore,
         MediaQuery,
+        RepQuery,
+        RepStore,
+        RepService,
+        DataFetchService,
         {
             provide: HttpClient,
             useClass: HttpService

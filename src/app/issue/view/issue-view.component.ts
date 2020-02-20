@@ -37,6 +37,8 @@ import { FeedService } from '@app/core/http/feed'
 import { Progress } from '@app/core/models/progress.model'
 import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
+import { RepQuery } from '@app/core/http/rep/rep.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-issue',
@@ -106,7 +108,9 @@ export class IssueViewComponent implements OnInit {
         private mediaQuery: MediaQuery,
         private feedService: FeedService,
         private progressQuery: ProgressQuery,
-        private progressService: ProgressService
+        private progressService: ProgressService,
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -131,6 +135,11 @@ export class IssueViewComponent implements OnInit {
     subscribeToSuggestionStore(id: string) {
         this.suggestions$ = this.suggestionQuery.selectAll({
             filterBy: entity => entity.parent === id
+        })
+
+        this.suggestions$.subscribe((res) => {
+            if (!res) return false
+            this.suggestions = res
         })
     }
 
@@ -164,6 +173,12 @@ export class IssueViewComponent implements OnInit {
 
     subscribeToSolutionStore(issueId: string) {
         this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+
+        this.solutions$.subscribe((res) => {
+            if (!res.length) return false
+            this.solutions = res
+            this.stateService.setLoadingState(AppState.complete)
+        })
     }
 
     subscribeToMediaStore(id: string) {
@@ -227,7 +242,11 @@ export class IssueViewComponent implements OnInit {
                             image: issue.imageUrl || ''
                         })
                 },
-                (err) => err
+                (err) => {
+                    this.isLoading = false
+                    this.stateService.setLoadingState(AppState.error)
+                    return err
+                }
             )
     }
 

@@ -1,0 +1,166 @@
+<!-- <app-header-bar 
+    [headerTitle]="headerTitle"
+    [headerText]="headerText">
+</app-header-bar> -->
+ 
+ <mat-toolbar *ngIf="auth.isModerator()" fxLayout="row" fxLayoutAlign="center center">
+        <div
+            fxFlex.lt-sm="100%"
+            fxFlex.sm="600px"
+            fxFlex.gt-sm="690px"
+            fxFlex.gt-md="1100px"
+            
+            >
+            <button mat-icon-button matTooltip="Manage Reps"
+                (click)="openDialog()">
+                <mat-icon aria-label="Manage Reps">add</mat-icon>
+            </button>
+            Open Reps Menu
+        </div>
+ </mat-toolbar>
+
+ <div class="container"
+    fxLayout="row wrap"
+    fxLayoutAlign="center start"
+    fxLayoutAlign.lt-sm="start start"
+    >
+	<div 
+		fxFlex.lt-sm="100%"
+		fxFlex.sm="600px"
+        fxFlex.gt-sm="690px"
+        fx.Flex.md="800px"
+	    fxFlex.gt-md="1100px">
+        <!-- <div class="form-wrap"> -->
+        <mat-form-field class="example-chip-list" fxFill>
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let tag of tags" 
+                    [selectable]="false"
+                    (removed)="tagRemoved(tag)"
+                    [removable]="true">
+                    {{tag}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Filter Tags" #tagInput
+                    [formControl]="tagCtrl" [matAutocomplete]="auto"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="true">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete"
+                (optionSelected)="tagSelected($event)">
+                <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                    {{tag}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+</div>  
+
+<ng-container *ngIf="!tags.length; else elseBlock">
+    <div 
+        class="reps-container" 
+        gdColumns="50% 50%"
+        gdAlignColumns="start"
+        gdAlignRows="center"
+        gdAuto="row"
+        gdGap="16px"
+        gdColumns.lt-sm="100%"
+        gdColumns.md="32% 32% 32%"
+        gdColumns.lg="27% 27% 27%"
+        gdColumns.gt-lg="375px 375px 375px"
+       >
+           <app-rep-card 
+           *ngFor="let rep of allReps"
+           (delete)="admin.onDelete($event, 'Rep')"
+           path="/reps" 
+           [tags]="organization.representativeTags"
+           [item]="rep">
+           </app-rep-card>
+
+    </div>
+</ng-container>
+<ng-template #elseBlock>
+    <div fxLayout="column">
+       <div class="pointer-card container" *ngFor="let tag of tags" fxLayoutGap="16px" fxLayout="column">
+           
+        <div 
+            fxLayoutAlign="center start"
+            fxLayoutAlign.lt-sm="start start"
+            >
+            <div 
+                fxFlex.lt-sm="100%"
+                fxFlex.sm="600px"
+                fxFlex.gt-sm="690px"
+                fxFlex.gt-md="1100px">
+                <div class="tag-header">
+                    <h2 class="mat-h1 no-margin">
+                        {{tag | titlecase}}
+                    </h2>
+                </div>
+            </div>
+        </div>
+           <div  
+                gdColumns="50% 50%"
+                gdAlignColumns="start"
+                gdAlignRows="center"
+                gdAuto="row"
+                gdGap="16px"
+                gdColumns.lt-sm="100%"
+                gdColumns.gt-md="375px 375px 375px"
+                >
+                <app-rep-card 
+                    *ngFor="let rep of filterReps(allReps, tag)"
+                    (delete)="admin.onDelete($event, 'Rep')"
+                    path="/reps" 
+                    [tags]="organization.representativeTags"
+                    [item]="rep">
+                </app-rep-card>
+           </div>
+       </div> 
+   </div>
+</ng-template>
+
+ <!-- <ng-container 
+    *ngIf="allReps && allReps.length;
+    else skeletonBlock"
+    >
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            *ngFor="let rep of allReps"
+            fxFlex="400px">
+            <app-rep-card
+                (delete)="admin.onDelete($event, 'Rep')"
+                path="/reps"
+                [item]="rep"
+                >
+            </app-rep-card>
+        </div>
+    </div>
+</ng-container>
+ <ng-template #skeletonBlock>
+     <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            fxFlex="400px">
+            <app-skeleton-rep-card></app-skeleton-rep-card>
+        </div>
+    </div> 
+
+    <div class="reps-container" 
+        fxLayout="row" 
+        fxLayout.lt-sm="column" 
+        fxLayoutGap="16px" 
+        fxLayoutAlign.lt-sm="center center">
+        <div 
+            fxFlex="400px">
+            <app-rep-card></app-rep-card>
+        </div>
+    </div>
+ </ng-template> -->

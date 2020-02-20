@@ -1,0 +1,188 @@
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
+<div class="container"
+    fxLayoutAlign="center center">
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="repForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+            <mat-form-field>
+                <!-- {{repForm.status}} -->
+                <input matInput
+                    placeholder="Name"
+                    formControlName="displayName"
+                    required>
+                <mat-error *ngIf="repForm.hasError('required', ['title'])">
+                    Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <!-- {{repForm.status}} -->
+                <input matInput
+                    placeholder="Position"
+                    formControlName="position"
+                    required>
+                <mat-error *ngIf="repForm.hasError('required', ['title'])">
+                    Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <div class="quill-editor-container cf">
+                <quill-editor formControlName="description"></quill-editor>
+            </div>
+
+            <input type="file"
+                id="fileupload"
+                #fileInput
+                ng2FileSelect
+                [uploader]="uploader"
+                (change)="onFileChange($event)"
+                hidden
+                autoComplete="off" />
+
+            <input matInput
+                hidden
+                placeholder="Enter a name for the action"
+                formControlName="imageUrl"
+                required>
+
+            <div class="image-select"
+                fxLayout="column"
+                fxFlex
+                fxLayoutAlign="center center">
+                <div fxLayout="row"
+                    fxLayoutGap="8px"
+                    fxLayoutAlign="center center"
+                    [style.width.%]="100"
+                    [style.margin-bottom.rem]="0.5">
+                    <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="fileInput.click()">Select Image</button>
+                    <!-- <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="onResetImage()">Cancel Changes</button> -->
+                    <button mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="setDefaultImage()">Reset Image</button>
+                </div>
+                <div class="image-preview"
+                    *ngIf="imageUrl">
+                    <img [src]="imageUrl" />
+                </div>
+                <mat-hint>Images look best at approximately 1500x400 pixels
+                </mat-hint>
+            </div>
+
+            <h4>Choose your Actions/Solutions/Issues:</h4>
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #chipList>
+                    <mat-chip *ngFor="let solution of solutions"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="solutionRemoved(solution)">
+                        {{solution.title}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select a solution..."
+                        #solutionInput
+                        formControlName="solutions"
+                        [matAutocomplete]="solutionAuto"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #solutionAuto="matAutocomplete"
+                    (optionSelected)="solutionSelected($event)">
+                    <mat-option
+                        *ngFor="let solution of filteredSolutions | async"
+                        [value]="solution">
+                        {{solution.title}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #proposalChipList>
+                    <mat-chip *ngFor="let proposal of proposals"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="proposalRemoved(proposal)">
+                        {{proposal.title}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select a proposal..."
+                        #proposalInput
+                        formControlName="proposals"
+                        [matAutocomplete]="proposalAuto"
+                        [matChipInputFor]="proposalChipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #proposalAuto="matAutocomplete"
+                    (optionSelected)="proposalSelected($event)">
+                    <mat-option
+                        *ngFor="let proposal of filteredProposals | async"
+                        [value]="proposal">
+                        {{proposal.title}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #issueChipList>
+                    <mat-chip *ngFor="let issue of issues"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="issueRemoved(issue)">
+                        {{issue.name}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select a issue..."
+                        #issueInput
+                        formControlName="issues"
+                        [matAutocomplete]="issueAuto"
+                        [matChipInputFor]="issueChipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #issueAuto="matAutocomplete"
+                    (optionSelected)="issueSelected($event)">
+                    <mat-option
+                        *ngFor="let issue of filteredIssues | async"
+                        [value]="issue">
+                        {{issue.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="organization && organization.representativeTags">
+                <mat-label>Select Tags</mat-label>
+                <mat-select formControlName="tags" multiple>
+                    <mat-option *ngFor="let tag of organization.representativeTags" [value]="tag.name">{{tag.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="example-chip-list" *ngIf="repForm.get('tags').value && repForm.get('tags').value.length">
+                <mat-chip-list>
+                    <mat-chip *ngFor="let tag of repForm.get('tags').value"
+                        [selectable]="false"
+                        [removable]="false"
+                        >
+                        {{tag}}
+                    </mat-chip>
+                </mat-chip-list>
+            </mat-form-field>
+
+            <button mat-flat-button
+                type="submit"
+                [disabled]="!repForm.valid || isLoading"
+                color="primary">Update</button>
+        </form>
+    </mat-card>
+</div>

@@ -43,9 +43,12 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools'
 import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
-
 import { NgxCaptchaModule } from 'ngx-captcha'
+<<<<<<< HEAD
 import { FeedModule } from './feed/feed.module'
+=======
+import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
+>>>>>>> staging
 
 @NgModule({
     imports: [
@@ -85,13 +88,14 @@ import { FeedModule } from './feed/feed.module'
             }
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
-        AppRoutingModule // must be imported as the last module as it contains the fallback route
+        AppRoutingModule,
     ],
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     entryComponents: [
-        ConfirmDialogComponent
+        ConfirmDialogComponent,
+        RepModalComponent
     ],
     providers: [
         CookieService,

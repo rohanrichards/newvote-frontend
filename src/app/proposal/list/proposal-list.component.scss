@@ -1,13 +1,38 @@
 .container {
-  padding: 1em;
+    padding: 1em;
 }
 
 .logo {
-  width: 150px;
-  margin: 0 auto;
+    width: 150px;
+    margin: 0 auto;
 }
 
 q {
-  font-style: italic;
-  topics: "« " " »";
+    font-style: italic;
+    topics: "« "" »";
+}
+
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        margin-top: 1rem;
+        background: white;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
 }

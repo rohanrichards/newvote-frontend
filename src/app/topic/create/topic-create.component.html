@@ -36,9 +36,23 @@
 
             <div class="image-select"
                 fxLayout="column">
-                <button mat-flat-button
-                    color="primary"
-                    (click)="fileInput.click()">Select Image</button>
+                <div fxLayout="row"
+                    fxLayoutGap="8px"
+                    fxLayoutAlign="center center"
+                    [style.width.%]="100"
+                    [style.margin-bottom.rem]="0.5">
+                    <button class="image-button"
+                        fxFlex
+                        mat-flat-button
+                        type="button"
+                        color="primary"
+                        (click)="fileInput.click()">Select Image</button>
+                    <button mat-flat-button
+                        fxFlex
+                        type="button"
+                        color="primary"
+                        (click)="setDefaultImage()">Reset Image</button>
+                </div>
                 <div class="image-preview"
                     *ngIf="imageUrl">
                     <img [src]="imageUrl" />
