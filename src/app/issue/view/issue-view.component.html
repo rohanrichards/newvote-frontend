@@ -93,10 +93,10 @@
             <mat-accordion>
                 <mat-expansion-panel class="accordion-header">
                     <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
-                            [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
+                        <h2 class="custom-headline no-margin"
+                            [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
                             {{ this.issue.mediaHeading || "Third Party Media"}}
-                        </h3>
+                        </h2>
                     </mat-expansion-panel-header>
                     <app-swiper-wrapper [@fadeIn]=true
                         path="/media"
@@ -166,8 +166,8 @@
             <mat-toolbar color="primary"
                 fxLayoutAlign="center center"
                 [style.margin-bottom]="'1rem'">
-                <span class="mat-headline center-span"
-                    [style.margin-bottom]="'0'">Vote on Solutions</span>
+                <span class="custom-headline center-span"
+                    [style.margin]="'0'">Vote on Solutions</span>
             </mat-toolbar>
             <app-card-list path="/solutions"
                 [items$]=solutions$
@@ -188,7 +188,7 @@
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"
                     [style.margin-bottom]="'1rem'">
-                    <h2 class="mat-headline center-text">Community
+                    <h2 class="custom-headline center-text">Community
                         Suggestions
                     </h2>
                 </mat-toolbar>
@@ -206,7 +206,7 @@
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"
                     [style.margin-bottom]="'1rem'">
-                    <h2 class="mat-headline center-text">Create your own
+                    <h2 class="custom-headline center-text">Create your own
                         Suggestion</h2>
                 </mat-toolbar>
                 <app-make-suggestion parent="solution"

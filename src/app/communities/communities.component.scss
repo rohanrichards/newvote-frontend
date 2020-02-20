@@ -1,12 +1,13 @@
 :host {
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
 }
 
 .community-wrap {
     display: block !important;
     overflow-y: auto;
 }
+
 .toolbar {
     min-height: 64px;
 }
@@ -59,20 +60,9 @@
     background-color: #FAFAFA;
 }
 
-.card-grid {
-    padding: 1rem;
-}
-
 .no-margin {
     margin: 0;
 }
-
-// .card-grid {
-//     width: 90%;
-//     margin: 0 auto;
-//     max-width: 1200px;
-//     margin-bottom: 2rem;
-// }
 
 .center-text {
     text-align: center;
@@ -90,10 +80,14 @@
 }
 
 .mat-sidenav {
-	min-width: 270px;
-	max-width: 28%;
+    min-width: 270px;
+    max-width: 28%;
 }
 
 .search-button {
     margin-left: auto;
+}
+
+.card-grid {
+    padding: 0.5rem;
 }

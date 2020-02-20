@@ -1,15 +1,20 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav [(opened)]="opened" mode="push"
+    <mat-sidenav #sidenav
+        [(opened)]="opened"
+        mode="push"
         fixedInViewport="true">
         <nav>
             <mat-list>
-                <a mat-list-item href="https://newvote.org/the-app"
+                <a mat-list-item
+                    href="https://newvote.org/the-app"
                     target="_blank">
                     <span translate>About NewVote</span>
                 </a>
                 <mat-divider></mat-divider>
 
-                <a mat-list-item href="https://newvote.org/help" target="_blank"
+                <a mat-list-item
+                    href="https://newvote.org/help"
+                    target="_blank"
                     (click)="sidenav.close()">
                     <span translate>Help</span>
                 </a>
@@ -17,7 +22,8 @@
 
                 <a mat-list-item
                     href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
-                    target="_blank" (click)="sidenav.close()">
+                    target="_blank"
+                    (click)="sidenav.close()">
                     <span>Feedback</span>
                 </a>
             </mat-list>
@@ -77,20 +83,29 @@
                 </button>
             </div>
         </div> -->
-    <div class="community-wrap" fxFlexLayout="column">
-            <mat-toolbar class="toolbar" color="primary" fxLayout="row">
-                <button (click)="sidenav.toggle()" class="menu-button"
+        <div class="community-wrap"
+            fxFlexLayout="column">
+            <mat-toolbar class="toolbar"
+                color="primary"
+                fxLayout="row">
+                <button (click)="sidenav.toggle()"
+                    class="menu-button"
                     mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
                 <span>NewVote</span>
-                <button class="search-button" mat-icon-button>
+                <button class="search-button"
+                    mat-icon-button>
                     <mat-icon>search</mat-icon>
                 </button>
             </mat-toolbar>
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <div fxFlex.lt-sm="100%" fxFlex.sm="600px" fxFlex.gt-sm="690px"
-                    fxFlex.gt-md="1100px" fxFlex.gt-lg="1500px"
+            <div fxLayout="row"
+                fxLayoutAlign="start center">
+                <div fxFlex.lt-sm="100%"
+                    fxFlex.sm="600px"
+                    fxFlex.gt-sm="690px"
+                    fxFlex.gt-md="1100px"
+                    fxFlex.gt-lg="1500px"
                     class="header-container">
                     <h4 [ngStyle]="{ 'margin-bottom': '0' }"
                         class="custom-display1">
@@ -98,10 +113,17 @@
                     </h4>
                 </div>
             </div>
-            <div [ngStyle]="{ 'margin-bottom': 'auto'}" gdAlignColumns="start"
-                gdAlignRows="center" gdColumns.gt-lg="500px 500px 500px"
-                gdColumns.gt-md="1fr 1fr 1fr" gdColumns.gt-xs="1fr 1fr"
-                class="card-grid" gdColumns.xs="1fr" gdRows="auto" gdGap="20px">
+            <div gdAlignColumns="start"
+                gdAlignColumns.lt-sm="center"
+                gdAlignRows="center"
+                gdColumns.gt-lg="400px 400px 400px"
+                gdColumns.gt-md="1fr 1fr 1fr"
+                gdColumns.gt-xs="1fr 1fr"
+                class="card-grid"
+                gdColumns.xs="100%"
+                gdRows="auto"
+                gdGap="20px"
+                gdGap.lt-sm="8px">
                 <app-community-card
                     *ngFor="let org of organizations$ | async;trackBy trackByFn"
                     (click)="openCommunityURL($event, org.url)"
@@ -109,13 +131,17 @@
                 </app-community-card>
             </div>
             <div class="container">
-                <button mat-button mat-raised-button (click)="handleClick()"
-                    color="warn" class="custom-display1 cta-button">
+                <button mat-button
+                    mat-raised-button
+                    (click)="handleClick()"
+                    color="warn"
+                    class="custom-display1 cta-button">
                     Create a community
                 </button>
             </div>
             <div class="container">
-                <a class="about-link" href="https://newvote.org/about">About
+                <a class="about-link"
+                    href="https://newvote.org/about">About
                     NewVote</a>
             </div>
         </div>

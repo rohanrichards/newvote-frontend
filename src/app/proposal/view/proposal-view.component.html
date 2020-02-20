@@ -33,12 +33,10 @@
             fxLayout="column"
             [defaultImage]="handleImageUrl(proposal.imageUrl, true)"
             [lazyLoad]="handleImageUrl(proposal.imageUrl)">
-            <app-admin-panel
-                path="/proposals"
+            <app-admin-panel path="/proposals"
                 [item]="proposal"
                 model="Proposal"
-                redirectRoute="''"
-                >
+                redirectRoute="''">
             </app-admin-panel>
             <div fxLayout="row"
                 fxFlex></div>
@@ -102,10 +100,10 @@
             [style.display]="'block'">
             <mat-expansion-panel class="accordion-header">
                 <mat-expansion-panel-header>
-                    <h3 class="mat-headline"
+                    <h2 class="custom-headline no-margin"
                         [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
                         Community Suggestions
-                    </h3>
+                    </h2>
                 </mat-expansion-panel-header>
                 <app-card-list path="/suggestions"
                     [@fadeIn]=true
@@ -122,7 +120,8 @@
             <mat-toolbar color="primary"
                 fxLayoutAlign="center center"
                 [style.margin-bottom]="'1rem'">
-                <h2 class="mat-headline center-text">Create your own Suggestion
+                <h2 class="custom-headline center-text">Create your own
+                    Suggestion
                 </h2>
             </mat-toolbar>
             <app-make-suggestion parent="action"
