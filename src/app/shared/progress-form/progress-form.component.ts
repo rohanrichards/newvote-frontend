@@ -16,7 +16,7 @@ export class ProgressFormComponent implements OnChanges {
     @Input() progress: Progress;
     @Output() updateProgressState = new EventEmitter();
 
-    state: string;
+    currentActiveState: string;
     showForm = false;
     showProgress = false;
 
@@ -27,6 +27,11 @@ export class ProgressFormComponent implements OnChanges {
     progressStateForm = new FormGroup({
         progressState: new FormControl('', [Validators.required])
     })
+
+    ngOnInit() {
+        console.log(this.progress, 'this is progress')
+        this.setCurrentActiveState(this.progress)
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.progress) {
@@ -40,7 +45,7 @@ export class ProgressFormComponent implements OnChanges {
                 return !!state.active
             })
 
-            this.state = filteredState[filteredState.length - 1].name || ''
+            this.currentActiveState = filteredState[filteredState.length - 1].name || ''
         }
     }
 
@@ -65,6 +70,16 @@ export class ProgressFormComponent implements OnChanges {
     }
 
     getStates(object: Progress) {
+
         return object.states
+    }
+
+    //
+    setCurrentActiveState(stateObj: any) {
+        const filteredState = stateObj.states.slice().filter((state: any) => {
+            return !!state.active
+        })
+
+        this.currentActiveState = filteredState[filteredState.length - 1].name || ''
     }
 }
