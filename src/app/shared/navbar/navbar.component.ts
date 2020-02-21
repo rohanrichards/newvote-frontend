@@ -147,7 +147,7 @@ export class NavbarComponent implements OnInit {
     }
 
     handleVerify() {
-        // If community is authType 0 
+        // If community is authType 0
         const { authType, url } = this.orgQuery.getValue()
         if (authType === 0) {
             if (!this.access.isCommunityVerified()) {
@@ -170,6 +170,14 @@ export class NavbarComponent implements OnInit {
             }
         }
 
+        return this.auth.verifyWithCommunity()
+            .subscribe(
+                (res) => {
+                    this.openSnackBar('You have successfully verified with this community.', 'OK')
+                },
+                (error) => {
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
     }
 
     openSnackBar(message: string, action: string) {

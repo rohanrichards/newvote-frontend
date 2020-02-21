@@ -14,7 +14,6 @@ export class FeedComponent implements OnInit {
     }
 
     updateProgress(state: string) {
-        console.log(state, 'this is state')
         // this.feedService.update(state);
     }
 }

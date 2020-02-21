@@ -158,7 +158,7 @@
                 <span class="mat-headline center-span"
                     [style.margin-bottom]="'0'">Issue Progress</span>
                 </mat-toolbar>
-                <app-progress-bar [progressState]="progress || defautState">
+                <app-progress-bar [progressState]="progress || defaultState">
                 </app-progress-bar>
                 <app-progress-form *ngIf="auth.isOwner()" [progress]="progress || defaultState"
                     (updateProgressState)="updateProgress($event)">

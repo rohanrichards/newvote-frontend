@@ -1,14 +1,18 @@
 <div class="container">
     <div class=""
+        fxLayout="row-reverse"
         fxLayoutGap="8px">
-        <button mat-raised-button
+        <button
+            *ngIf="showFeed"
+            mat-raised-button
             color="warn"
             (click)="toggleUpdateForm()"
-            fxFlex>Add Update</button>
+            fxFlex>Add Update</button
+            >
         <button mat-raised-button
             color="primary"
             (click)="toggleProgressForm()"
-            fxFlex>Progress Update</button>
+            fxFlex="40%">Progress Update</button>
     </div>
 
     <div *ngIf="showForm"
@@ -26,14 +30,15 @@
         <mat-radio-group [style.width.%]="50"
             fxLayout="column"
             fxLayoutGap="12px"
-            [(ngModel)]="state"
-            aria-label="Select an option">
-            <div *ngFor="let state of getStates(progress)"
+            aria-label="Select an option"
+            [value]="currentActiveState"
+            >
+            <div *ngFor="let state of progress.states;let i=index"
                 [style.width.%]="100">
                 <mat-radio-button [style.width.%]="100"
                     (change)="handleProgressState(state)"
                     [value]="state.name"
-                    [checked]="state.active && state.name === activeState"
+                    [checked]="state.active === currentActiveState"
                     >
                     {{state.name}}
                 </mat-radio-button>
