@@ -66,6 +66,7 @@ export class IssueViewComponent implements OnInit {
     progress: any;
 
     defaultState = {
+        _id: '',
         organizations: '',
         parent: '',
         parentType: 'Issue',
@@ -149,7 +150,7 @@ export class IssueViewComponent implements OnInit {
             filterBy: (entity) => entity.parent === parentId
         })
             .subscribe((res) => {
-                if (!res.length) return false
+                if (!res.length) return
                 this.progress = res[0]
             })
     }

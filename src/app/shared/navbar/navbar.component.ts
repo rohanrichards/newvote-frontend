@@ -154,7 +154,6 @@ export class NavbarComponent implements OnInit {
                     this.openSnackBar('You have successfully verified with this community.', 'OK')
                 },
                 (error) => {
-                    console.log(error, 'this is error')
                     this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
     }

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms'
 import { Progress } from '@app/core/models/progress.model'
 
 @Component({
@@ -8,6 +8,8 @@ import { Progress } from '@app/core/models/progress.model'
     styleUrls: ['./progress-form.component.scss']
 })
 export class ProgressFormComponent implements OnChanges {
+
+    constructor(private fb: FormBuilder) {}
 
     @Input() item: any = {
         name: 'Issue'
@@ -20,16 +22,7 @@ export class ProgressFormComponent implements OnChanges {
     showForm = false;
     showProgress = false;
 
-    progressForm = new FormGroup({
-        description: new FormControl('', [Validators.required])
-    })
-
-    progressStateForm = new FormGroup({
-        progressState: new FormControl('', [Validators.required])
-    })
-
     ngOnInit() {
-        console.log(this.progress, 'this is progress')
         this.setCurrentActiveState(this.progress)
     }
 
@@ -41,11 +34,8 @@ export class ProgressFormComponent implements OnChanges {
             // Take the state array, and remove any entries that are false
             // once we have all the true entries, select last in array to be the active element
             // in the radio form group
-            const filteredState = changes.progress.currentValue.states.slice().filter((state: any) => {
-                return !!state.active
-            })
-
-            this.currentActiveState = filteredState[filteredState.length - 1].name || ''
+            const { progress: { currentValue: progressObj } } = changes
+            this.setCurrentActiveState(progressObj)
         }
     }
 
@@ -65,21 +55,33 @@ export class ProgressFormComponent implements OnChanges {
         this.showForm = !this.showForm
     }
 
-    handleProgressState(value: string) {
+    handleProgressState(value: any) {
         this.updateProgressState.emit(value)
     }
 
     getStates(object: Progress) {
-
+        if (!object) return false
         return object.states
     }
 
-    //
     setCurrentActiveState(stateObj: any) {
         const filteredState = stateObj.states.slice().filter((state: any) => {
-            return !!state.active
+            return state.active
         })
 
+        if (!filteredState.length) {
+            this.currentActiveState = ''
+            return false
+        }
+
         this.currentActiveState = filteredState[filteredState.length - 1].name || ''
+    }
+
+    checkState(state: any) {
+        if (state.name === this.currentActiveState) {
+            return true
+        }
+
+        return false
     }
 }

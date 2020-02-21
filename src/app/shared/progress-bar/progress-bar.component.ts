@@ -6,17 +6,12 @@ import { Progress } from '@app/core/models/progress.model'
     templateUrl: './progress-bar.component.html',
     styleUrls: ['./progress-bar.component.scss']
 })
-export class ProgressBarComponent implements OnInit {
+export class ProgressBarComponent {
 
-    @Input() progressState: Progress;
-
-    constructor() { }
-
-    ngOnInit() {
-
-    }
+    @Input() progressState: any;
 
     getStates(object: Progress) {
+        if (!object) return false
         return object.states
     }
 }
