@@ -29,3 +29,9 @@
 		height: 250px !important;
 	}
 }
+
+.truncate-chip {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

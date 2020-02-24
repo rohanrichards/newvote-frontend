@@ -79,14 +79,44 @@
                 </mat-hint>
             </div>
 
-            <h4>Choose your Actions/Solutions/Issues:</h4>
+            <h4>Choose your Issues/Solutions/Actions:</h4>
+            <mat-form-field class="example-chip-list">
+                <mat-chip-list #issueChipList>
+                    <mat-chip 
+                        class="truncate-chip"
+                        *ngFor="let issue of issues"
+                        [selectable]="false"
+                        [removable]="true"
+                        (removed)="issueRemoved(issue)">
+                        {{issue.name | slice:0:30 }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Select a issue..."
+                        #issueInput
+                        formControlName="issues"
+                        [matAutocomplete]="issueAuto"
+                        [matChipInputFor]="issueChipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true">
+                </mat-chip-list>
+                <mat-autocomplete #issueAuto="matAutocomplete"
+                    (optionSelected)="issueSelected($event)">
+                    <mat-option
+                        *ngFor="let issue of filteredIssues | async"
+                        [value]="issue">
+                        {{issue.name }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
             <mat-form-field class="example-chip-list">
                 <mat-chip-list #chipList>
                     <mat-chip *ngFor="let solution of solutions"
+                        class="truncate-chip"
                         [selectable]="false"
                         [removable]="true"
                         (removed)="solutionRemoved(solution)">
-                        {{solution.title}}
+                        {{solution.title | slice:0:30  }}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="Select a solution..."
@@ -102,7 +132,7 @@
                     <mat-option
                         *ngFor="let solution of filteredSolutions | async"
                         [value]="solution">
-                        {{solution.title}}
+                        {{solution.title }}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
@@ -110,13 +140,14 @@
             <mat-form-field class="example-chip-list">
                 <mat-chip-list #proposalChipList>
                     <mat-chip *ngFor="let proposal of proposals"
+                        class="truncate-chip"
                         [selectable]="false"
                         [removable]="true"
                         (removed)="proposalRemoved(proposal)">
-                        {{proposal.title}}
+                        {{proposal.title | slice:0:30 }}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input placeholder="Select a proposal..."
+                    <input placeholder="Select a action..."
                         #proposalInput
                         formControlName="proposals"
                         [matAutocomplete]="proposalAuto"
@@ -134,33 +165,6 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-            <mat-form-field class="example-chip-list">
-                <mat-chip-list #issueChipList>
-                    <mat-chip *ngFor="let issue of issues"
-                        [selectable]="false"
-                        [removable]="true"
-                        (removed)="issueRemoved(issue)">
-                        {{issue.name}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input placeholder="Select a issue..."
-                        #issueInput
-                        formControlName="issues"
-                        [matAutocomplete]="issueAuto"
-                        [matChipInputFor]="issueChipList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        [matChipInputAddOnBlur]="true">
-                </mat-chip-list>
-                <mat-autocomplete #issueAuto="matAutocomplete"
-                    (optionSelected)="issueSelected($event)">
-                    <mat-option
-                        *ngFor="let issue of filteredIssues | async"
-                        [value]="issue">
-                        {{issue.name}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-
             <mat-form-field *ngIf="organization && organization.representativeTags">
                 <mat-label>Select Tags</mat-label>
                 <mat-select formControlName="tags" multiple>
@@ -174,7 +178,7 @@
                         [selectable]="false"
                         [removable]="false"
                         >
-                        {{tag}}
+                        {{tag | slice:0:30 }}
                     </mat-chip>
                 </mat-chip-list>
             </mat-form-field>
