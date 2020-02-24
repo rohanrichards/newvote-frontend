@@ -17,6 +17,8 @@ export class GridCardComponent {
   @Input() centerTitle: boolean;
   @Input() repCard: boolean;
   @Input() isCard: boolean;
+  @Input() horizontalCard: boolean;
+
   handleImageUrl = optimizeImage;
 
   constructor(private router: Router) { }

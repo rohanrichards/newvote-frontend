@@ -45,50 +45,30 @@
                 </mat-chip-list>
             </div>
         </div>
-        <mat-card-content>          
-            <div *ngIf="item.issues.length">
-                <h2>
-                    Issues
-                </h2>
-                
-                <div *ngFor="let issue of item.issues">
-                    <app-child-card
-                        path="/issues"
-                        [item]="issue"
-                        repCard=true
-                        >
-                    </app-child-card>
-                </div>  
-            </div>
-            
-            <div *ngIf="item.solutions.length">
-                <h2>
-                    Solutions
-                </h2>
-                <div *ngFor="let solution of item.solutions">
-                    <app-child-card
-                        path="/solutions"
-                        [item]="solution"
-                        repCard=true
-                        >
-                    </app-child-card>
-                </div>
-            </div>
+        <mat-card-content>
+            <app-rep-child-card-list
+                *ngIf="item.issues.length"
+                [items]="item.issues"
+                path="/issues"
+                model="Issues"
+            >
+            </app-rep-child-card-list>
 
-            <div *ngIf="item.proposals.length">
-                <h2>
-                    Actions
-                </h2>
-                <div *ngFor="let proposal of item.proposals">
-                    <app-child-card
-                        path="/proposals"
-                        [item]="proposal"
-                        repCard=true
-                        >
-                    </app-child-card>
-                </div>
-            </div> 
-            
+            <app-rep-child-card-list
+                *ngIf="item.solutions.length"
+                [items]="item.solutions"
+                path="/solutions"
+                model="Solutions"
+            >
+            </app-rep-child-card-list>
+
+            <app-rep-child-card-list
+                *ngIf="item.proposals.length"
+                [items]="item.proposals"
+                path="/proposals"
+                model="Actions"
+            >
+            </app-rep-child-card-list>
         </mat-card-content>
     </mat-card>
 </ng-container>

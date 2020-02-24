@@ -1,0 +1,8 @@
+
+    <div class="rep-faux-card" fxLayout="row" fxLayoutAlign="start center">
+        <img class="rep-image" [src]="item.imageURL || DEFAULT_IMAGE" />
+        <div [style.max-width.px]="200">
+            <h4 class="custom-headline no-margin faux-title">{{ item.name || item.title }}</h4>
+            <div [innerHTML]="item.description" class="faux-description"></div>
+        </div>                     
+    </div>
