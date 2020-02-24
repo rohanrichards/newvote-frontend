@@ -1,8 +1,8 @@
 <div class="rep-faux-card" fxLayout="row" fxLayoutAlign="center start">
-    <div class="image-container" fxFlex.sm="1 1 100" fxFlex.lt-sm="1 1 50" fxFlex.gt-sm="1 1 50">
+    <div class="image-container" fxFlex.sm="1 0 50" fxFlex.lt-sm="1 0 50" fxFlex.gt-sm="1 0 50">
         <img class="rep-image" [src]="item.imageUrl || DEFAULT_IMAGE" />
     </div>
-    <div class="text-parent" fxFlexAlign="center" fxFlex.sm="1 1 50" fxFlex.lt-sm="2 1 50" fxFlex.gt-sm="1 1 50">
+    <div class="text-parent" fxFlexAlign="center" fxFlex.sm="1 1 50" fxFlex.lt-sm="1 1 50" fxFlex.gt-sm="1 1 50">
         <h4 class="custom-headline no-margin faux-title">{{ item.name || item.title }}</h4>
         <p [innerHTML]="item.description" class="faux-description"></p>
     </div>                     
