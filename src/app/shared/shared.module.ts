@@ -46,7 +46,8 @@ import { RepCardComponent } from './rep-card/rep-card.component';
 import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
 import { CommunityCardComponent } from './community-card/community-card.component'
 import { RepItemListComponent } from './rep-item-list/rep-item-list.component';
-import { AdminPanelComponent } from './admin-panel/admin-panel.component'
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { GridCardComponent } from './grid-list/grid-card/grid-card.component'
 
 @NgModule({
     imports: [
@@ -99,6 +100,7 @@ import { AdminPanelComponent } from './admin-panel/admin-panel.component'
         CommunityCardComponent,
         RepItemListComponent,
         AdminPanelComponent,
+        GridCardComponent,
     ],
     exports: [
         LoaderComponent,
