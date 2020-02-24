@@ -8,6 +8,8 @@
 
 .field-container {
     margin-bottom: 0.5rem;
+    overflow: hidden;
+    max-height: 95px;
 
     p {
         margin: 0 !important;
@@ -33,3 +35,9 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+  }

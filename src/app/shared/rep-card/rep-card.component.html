@@ -36,7 +36,7 @@
             </div>
             <div class="field-container">
                 <h3 class="no-margin">About</h3>
-                <p class="no-margin" [innerHtml]="item.description"></p>            
+                <p class="no-margin line-clamp" [innerHtml]="item.description"></p>            
             </div>   
             <div *ngIf="item.tags && item.tags.length" class="field-container">
                 <h3 class="tag-title-margin">Tags</h3>
