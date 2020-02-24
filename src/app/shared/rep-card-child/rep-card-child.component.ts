@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./rep-card-child.component.scss']
 })
 export class RepCardChildComponent implements OnInit {
-  DEFAULT_IMAGE = 'assets/logo-no-text.png'
+  DEFAULT_IMAGE = 'assets/issue-icon-min.png'
   @Input() item: any;
 
   constructor() { }
