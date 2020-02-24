@@ -33,6 +33,8 @@
             [defaultImage]="handleImageUrl(rep.imageUrl, true)"
             [lazyLoad]="handleImageUrl(rep.imageUrl)"
             >
+            <div class="backdrop"></div>
+            <img class="header-image-unblurred" [src]="rep.imageUrl" />
             <div class="admin-panel"
                 *ngIf="repQuery.isRep()"
                 fxLayout="column"
