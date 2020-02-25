@@ -9,6 +9,7 @@
             fxFlex.lt-sm="0 0 100%"
             *ngFor="let item of getItems();trackBy: trackByFn">
             <app-grid-card
+                routerLink='{{path}}/{{item._id}}'
                 [item]="item"
                 [model]="model"
                 [path]="path"

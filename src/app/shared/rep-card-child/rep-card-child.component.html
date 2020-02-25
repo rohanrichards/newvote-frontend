@@ -1,4 +1,6 @@
-<div class="rep-faux-card" fxLayout="row" fxLayoutAlign="center start">
+<div 
+    routerLink='{{path}}/{{item._id}}' (click)="handleClick($event)"
+    class="rep-faux-card" fxLayout="row" fxLayoutAlign="center start">
     <div class="image-container" fxFlex.sm="1 0 50" fxFlex.lt-sm="1 0 50" fxFlex.gt-sm="1 0 50">
         <img class="rep-image" [src]="item.imageUrl || DEFAULT_IMAGE" />
     </div>
