@@ -111,8 +111,6 @@ export class IssueListComponent implements OnInit {
         public admin: AdminService,
         public entities: AllEntityQuery
     ) {
-
-        this.subscribeToIssueStore()
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
 
@@ -197,39 +195,6 @@ export class IssueListComponent implements OnInit {
                 this.allTopics = topics
                 this.orphanedIssues = orphanedIssues || []
             })
-    }
-
-    subscribeToIssueStore() {
-        this.issueQuery.issues$
-            .subscribe((issues: Issue[]) => {
-                // this.issues = issues
-                // this.orphanedIssues = this.filterIssues(null, issues)
-            })
-    }
-
-    // filter the issue list for matching topicId's
-    filterIssues(topic: Topic | null, issues: Issue[]) {
-        const issuesCopy = issues.slice()
-
-        if (!topic) {
-            return issuesCopy.filter((issue) => {
-                return !issue.topics.length
-            })
-        }
-
-        return issuesCopy.filter((issue) => {
-            const topicExists = issue.topics.some((ele) => {
-                // If a new issue is created the topics array will be populated
-                // with objectId's / strings instead of objects with an ._id key
-                if (typeof ele === 'string') {
-                    return ele === topic._id
-                }
-
-                return ele._id === topic._id
-            })
-
-            return topicExists
-        })
     }
 
     topicSelected(event: any) {

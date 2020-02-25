@@ -47,8 +47,13 @@ export class AllEntityQuery {
                             return orphanedIssues.push(issue)
                         }
                         return issue.topics.forEach((topic: ITopic) => {
-
                             const topicIndex = topics.findIndex((item) => {
+                                // when a new issue is added it's topics array will be an
+                                // array of unpopulated object_id's so we need to compare
+                                // an array item of string against an object with an objectid
+                                if (typeof topic === 'string') {
+                                    return item._id === topic
+                                }
                                 return item._id === topic._id
                             })
 
