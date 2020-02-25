@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div *ngSwitchCase="'complete'">
-                    <mat-form-field *ngIf="allTopics.length > 0"
+                    <mat-form-field *ngIf="allTopics.length && allTopics.length > 0"
                         class="example-chip-list"
                         [@fadeIn]=true
                         fxFill>
@@ -141,9 +141,9 @@
                             </div>
                         </mat-card>
                     </ng-container>
-                    <div [@fadeIn]=true
+                    <div
                         *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
-                        <div class="topic-header">
+                        <div *ngIf="topic.issues && topic.issues.length" class="topic-header">
                             <h2 class="custom-headline no-margin">
                                 {{topic.name}}
                             </h2>
@@ -154,8 +154,11 @@
                             </app-admin-panel>
                             <mat-divider></mat-divider>
                         </div>
-                        <app-grid-list path="/issues"
-                            [items]="filterIssues(topic, issues)"
+                        <app-grid-list 
+                            *ngIf="topic.issues && topic.issues.length"
+                            path="/issues"
+                            [style.text-align]="'center'"
+                            [items]="topic.issues"
                             model="Issue"
                             [titleCard]=true
                             [centerTitle]=true
@@ -175,6 +178,7 @@
                             <mat-divider></mat-divider>
                         </div>
                         <app-grid-list path="/issues"
+                            [style.text-align]="'center'"
                             [items]="orphanedIssues"
                             model="Issue"
                             [titleCard]=true

@@ -33,6 +33,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 
 @Component({
     selector: 'app-issue',
@@ -106,9 +107,9 @@ export class IssueListComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private topicQuery: TopicQuery,
-        private cdR: ChangeDetectorRef,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        public entities: AllEntityQuery
     ) {
 
         this.subscribeToIssueStore()
@@ -186,17 +187,23 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToTopicStore() {
-        this.topicQuery.selectAll()
-            .subscribe((topics: Topic[]) => {
+        // this.topicQuery.selectAll()
+        //     .subscribe((topics: Topic[]) => {
+        //         this.allTopics = topics
+        //     })
+        this.entities.populateTopics()
+            .subscribe(({topics, orphanedIssues}: any) => {
+                if (!topics.length) this.allTopics = []
                 this.allTopics = topics
+                this.orphanedIssues = orphanedIssues || []
             })
     }
 
     subscribeToIssueStore() {
         this.issueQuery.issues$
             .subscribe((issues: Issue[]) => {
-                this.issues = issues
-                this.orphanedIssues = this.filterIssues(null, issues)
+                // this.issues = issues
+                // this.orphanedIssues = this.filterIssues(null, issues)
             })
     }
 
