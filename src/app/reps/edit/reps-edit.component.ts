@@ -73,7 +73,8 @@ export class RepsEditComponent implements OnInit {
     @ViewChild('proposalAuto', { static: true }) proposalAuto: MatAutocomplete;
     @ViewChild('issueAuto', { static: true }) issueAuto: MatAutocomplete;
     resetImage: boolean
-
+    MAX_LENGTH = 500;
+    currentChars: number;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -164,6 +165,12 @@ export class RepsEditComponent implements OnInit {
             imageUrl: rep.imageUrl || this.DEFAULT_IMAGE,
             tags: rep.tags
         })
+
+        if (rep.description.length) {
+            const div = document.createElement('div')
+            div.innerHTML = rep.description
+            this.currentChars = div.textContent.length
+        }
     }
 
     updateTags(rep: any, org: any) {
@@ -450,7 +457,8 @@ export class RepsEditComponent implements OnInit {
     }
 
     handleChange(change: any) {
-        console.log(change, 'this is change')
+        const text = change.text.trim()
+        this.currentChars = text.length ? text.length : 0
     }
 
     private _filter(value: any, entityArray: any[]): any[] {

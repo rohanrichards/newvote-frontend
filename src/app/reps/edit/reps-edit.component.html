@@ -14,7 +14,7 @@
                     placeholder="Name"
                     formControlName="displayName"
                     required>
-                <mat-error *ngIf="repForm.hasError('required', ['title'])">
+                <mat-error *ngIf="repForm.hasError('required', ['displayName'])">
                     Name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
@@ -25,13 +25,20 @@
                     placeholder="Position"
                     formControlName="position"
                     required>
-                <mat-error *ngIf="repForm.hasError('required', ['title'])">
+                <mat-error *ngIf="repForm.hasError('required', ['position'])">
                     Position is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
 
             <div class="quill-editor-container cf">
-                <quill-editor maxlength="500" ng-invalid (onContentChanged)="handleChange($event)" formControlName="description"></quill-editor>
+                <!-- extra 6 for html tags -->
+                <quill-editor [maxlength]="MAX_LENGTH + 7" ng-invalid (onContentChanged)="handleChange($event)" formControlName="description"></quill-editor>
+                <mat-error *ngIf="repForm.hasError('required', ['description'])">
+                    Description is <strong>required</strong>
+                </mat-error>
+                <p class="char-counter" [ngClass]="{ 'error-text': (currentChars > MAX_LENGTH) }">
+                    <small>{{ currentChars || '0' }} / {{ MAX_LENGTH }} Characters</small>
+                </p>
             </div>
 
             <input type="file"
