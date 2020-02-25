@@ -29,3 +29,19 @@
 		height: 250px !important;
 	}
 }
+
+.truncate-chip {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.char-counter {
+	color: black;
+	margin-left: auto;
+    width: 25%;
+}
+
+.error-text {
+	color: #ffca28;
+  }

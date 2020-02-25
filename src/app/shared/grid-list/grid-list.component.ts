@@ -13,17 +13,17 @@ import { optimizeImage } from '../helpers/cloudinary'
 })
 export class GridListComponent {
 
+    @Input() itemLimit: number;
     @Input() path: string;
     @Input() model: string;
     @Input() items: Array<any>;
-    @Input() itemLimit: number;
     @Input() titleCard: boolean;
-    @Output() delete = new EventEmitter();
-    @Output() softDelete = new EventEmitter();
-    @Output() restore = new EventEmitter();
+    @Input() centerTitle: boolean;
+    @Input() repCard: boolean;
+
     handleImageUrl = optimizeImage;
 
-    constructor(private router: Router, public dialog: MatDialog, private auth: AuthenticationService) { }
+    constructor(private router: Router, public dialog: MatDialog, public auth: AuthenticationService) { }
 
     getItems() {
         let newItems = this.items.slice()
@@ -35,37 +35,6 @@ export class GridListComponent {
         }
 
         return newItems
-    }
-
-    onDelete(item: any, event: any) {
-        event.stopPropagation()
-        this.delete.emit(item)
-    }
-
-    onSoftDelete(item: any, event: any) {
-        event.stopPropagation()
-        this.softDelete.emit(item)
-    }
-
-    onRestore(item: any, event: any) {
-        event.stopPropagation()
-        this.restore.emit(item)
-    }
-
-    handleUrl(item: any) {
-
-        if (this.model !== 'Organization') {
-            return this.router.navigate([`/${this.path}/${item.slug || item._id}`])
-        }
-
-        const { hostname } = window.location
-
-        // separate the current hostname into subdomain and main site
-        const splitHostname = hostname.split('.')
-        splitHostname[0] = item.url
-
-        const newHostName = splitHostname.join('.')
-        window.location.href = `http://${newHostName}:${window.location.port}`
     }
 
     trackByFn(index: any, item: any) {

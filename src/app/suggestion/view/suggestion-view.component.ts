@@ -89,7 +89,8 @@ export class SuggestionViewComponent implements OnInit {
             )
     }
 
-    updateSuggestion(status: number) {
+    updateSuggestion(data: any) {
+        const { suggestion, status } = data
         this.isLoading = true
 
         const entity = assign({}, this.suggestion, { status })

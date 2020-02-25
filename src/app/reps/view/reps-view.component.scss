@@ -107,3 +107,21 @@ q {
     text-align: center;
     display: block;
 }
+
+.header-image-unblurred {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    object-fit: contain;
+    height: inherit;
+    z-index: 100;
+}
+
+.backdrop {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    backdrop-filter: blur(15px);
+}
