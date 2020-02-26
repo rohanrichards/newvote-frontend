@@ -92,6 +92,7 @@ export class VoteService {
                     // catch the error and if it was due to not being logged in create a vote cookie to update
                     // on next login
                     if (err.status === 401) {
+                        console.log(err.status, 'creating cookie')
                         // remove cookie if it exists, only want one vote
                         if (this.cookieService.get('vote')) {
                             this.cookieService.delete('vote')

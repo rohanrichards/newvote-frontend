@@ -66,13 +66,11 @@ export class LoginComponent implements OnInit {
                 this.isLoading = false
             }))
             .subscribe(credentials => {
-
                 // If a user logs in after making a vote request, we take vote info from the response object
 
                 if (credentials.voted) {
-
-                    const vote = credentials.voted;
-                    const { objectType, object } = credentials.voted;
+                    const vote = credentials.voted
+                    const { objectType, object } = credentials.voted
 
                     this.voteQuery.selectEntity(object)
                         .pipe(
