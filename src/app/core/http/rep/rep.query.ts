@@ -8,6 +8,7 @@ import { SolutionQuery } from '../solution/solution.query'
 import { IssueQuery } from '../issue/issue.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { OrganizationQuery } from '../organization/organization.query'
+import { IOrganization } from '@app/core/models/organization.model'
 
 @Injectable()
 export class RepQuery extends QueryEntity<RepState, Rep> {
@@ -225,5 +226,13 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
         }
 
         return owner === _id
+    }
+
+    isUserRep(id: string, organization: IOrganization) {
+        return this.getAll({
+            filterBy: (rep: IRep) => {
+                return rep.owner === id && rep.organizations === organization._id
+            }
+        }).length
     }
 }

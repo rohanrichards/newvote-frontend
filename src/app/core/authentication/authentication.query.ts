@@ -4,13 +4,20 @@ import { AuthenticationStore } from './authentication.store'
 import { Query, toBoolean, combineQueries } from '@datorama/akita'
 import { OrganizationQuery } from '../http/organization/organization.query'
 import { map } from 'rxjs/operators'
-import { Organization } from '../models/organization.model'
+import { Organization, IOrganization } from '../models/organization.model'
 import { Observable } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
-    isCommunityVerified$: Observable<any>;
+    isCommunityVerified$: Observable<any> = combineQueries([
+        this.select(),
+        this.organizationQuery.select()
+    ]).pipe(
+        map(([user, organization]) => {
+            return this.isUserPartOfOrganization(user, organization)
+        })
+    )
 
     constructor(
         protected store: AuthenticationStore,
@@ -23,15 +30,13 @@ export class AuthenticationQuery extends Query<IUser> {
         return !!this.getValue()._id
     }
 
-    isCommunityVerified() {
-        return combineQueries([
-            this.select(),
-            this.organizationQuery.select()
-        ]).pipe(
-            map(([user, organization]) => {
-                return this.isUserPartOfOrganization(user, organization)
-            })
-        )
+    hasRole(role: string) {
+        return !!this.getValue().roles.includes(role)
+    }
+
+    isCommunityVerified(organization: any) {
+        const user = this.getValue()
+        return this.isUserPartOfOrganization(user, organization)
     }
 
     isAdmin() {
@@ -50,6 +55,26 @@ export class AuthenticationQuery extends Query<IUser> {
     isModerator() {
         const organization = this.organizationQuery.getValue()
 
+        if (this.isOwner()) {
+            return true
+        }
+
+        if (!organization.moderators.length) {
+            return false
+        }
+
+        return organization.moderators.some((moderator: any) => {
+            const userId = this.getValue()._id
+            if (typeof moderator === 'string') {
+                return moderator === userId
+            }
+
+            return moderator._id === userId
+        })
+    }
+
+    // rewriting query to not import other queries
+    isModeratorNew(organization: IOrganization) {
         if (this.isOwner()) {
             return true
         }

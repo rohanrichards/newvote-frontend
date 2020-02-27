@@ -129,7 +129,7 @@ export class IssueViewComponent implements OnInit {
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
-                (err) => console.log(err))
+                (err) => err)
     }
 
     subscribeToSolutionStore(issueId: string) {
