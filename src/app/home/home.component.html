@@ -180,13 +180,6 @@
 	</app-home-info-panel>
 </ng-container>
 
-<div class="about-community-container container text-center container-white" fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
-
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
 	 class="hot-issues-container container">
@@ -290,15 +283,8 @@
 	</ng-template>
 </ng-container>
 
-<ng-container *ngIf="loadingState !== 'complete';
-	then skeletonFooter;
-	else mainFooter">
-</ng-container>
-
-<!-- Templates -->
-
-<ng-template #skeletonFooter>
-	<div class="final-container container">
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'" class="final-container container">
 		<div class="skeleton-footer">
 			<app-skeleton-button [width]="100"
 			 class="footer-button">
@@ -308,37 +294,8 @@
 			</app-skeleton-text-bar>
 		</div>
 	</div>
-</ng-template>
-
-<ng-template #mainFooter>
-	<div [@fadeIn]="isLoading"
-		*ngIf="!auth.isAuthenticated()"
-		class="final-container container text-center"
-		fxLayoutAlign="center center"
-		routerLink="/auth/signup">
-		<div fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px">
-			<button *ngIf="!org.authType || org.authType===0"
-			 mat-button
-			 mat-raised-button
-			 routerLink="/auth/signup"
-			 color="warn"
-			 class="mat-display-1">
-				CREATE ACCOUNT</button>
-			<button *ngIf="org && org.authType && org.authType===1"
-			 mat-button
-			 mat-raised-button
-			 routerLink="/auth/login"
-			 color="warn"
-			 class="mat-display-1">
-				CREATE ACCOUNT</button>
-			<span class="mat-body-2">&nbsp; to begin!</span>
-			<br/>
-			<span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
-		</div>
-	</div>
-</ng-template>
-
-<div *ngIf="loadingState === 'complete'" class="powered-footer" fxLayoutAlign="center center">
-	<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
-</div>
+	<app-home-footer
+		[org]="org"
+		>
+	</app-home-footer>
+</ng-container>

@@ -92,11 +92,6 @@
 }
 
 
-.final-container {
-	background-color: #FFFFFF;
-	cursor: pointer;
-}
-
 .skeleton-title-wrap {
 	display: flex;
 	flex-direction: column;
@@ -199,19 +194,6 @@
 	margin: 0;
 	text-decoration: underline;
 	cursor: pointer;
-}
-
-.pointer {
-	cursor: pointer;
-}
-
-.final-container {
-	padding-bottom: 0;
-}
-
-.powered-footer {
-	background-color: #FFFFFF;
-	padding-bottom: 2rem;
 }
 
 @media only screen and (max-width: 750px) {

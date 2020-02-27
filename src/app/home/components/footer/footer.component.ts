@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
+import { IOrganization } from '@app/core/models/organization.model';
+import { AuthenticationService } from '@app/core/authentication/authentication.service';
 
 @Component({
   selector: 'app-home-footer',
@@ -6,8 +9,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-
-  constructor() { }
+  @Input() org: IOrganization;
+  // TODO: Update service isAuthenticated & JWT check to query
+  constructor(public auth: AuthenticationService) { }
 
   ngOnInit() {
   }
