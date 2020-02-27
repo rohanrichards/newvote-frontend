@@ -144,22 +144,6 @@ export class HomeComponent implements OnInit {
             })
     }
 
-    handleUserCount(count: number) {
-        if (this.auth.isAdmin() || this.auth.isOwner()) {
-            return `${count}`
-        }
-
-        if (!count) {
-            return '0'
-        }
-
-        if (count < 1000) {
-            return '< 1K'
-        }
-
-        return `${Math.floor(count / 1000)}K+`
-    }
-
     onDone() {
         return this.completeTour()
     }

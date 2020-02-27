@@ -1,0 +1,30 @@
+.container {
+	padding: 2em;
+}
+
+.container ~ .container {
+	padding-top: 2em;
+}
+
+.no-margin {
+	margin: 0;
+}
+
+.community-container {
+	text-align: center;
+}
+
+// .issues-button {
+// 	font-weight: 800;
+// 	font-size: 1.4em;
+// }
+
+.info-block {
+    padding: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+    .community-container {
+        padding: 2rem 0.5rem;
+    }
+}

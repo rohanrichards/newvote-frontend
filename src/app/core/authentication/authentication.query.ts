@@ -34,6 +34,11 @@ export class AuthenticationQuery extends Query<IUser> {
         )
     }
 
+    isAdmin() {
+        const user = this.getValue()
+        return !!this.getValue().roles.includes('admin')
+    }
+
     isOwner() {
         const user = this.getValue()
         const organization = this.organizationQuery.getValue()
