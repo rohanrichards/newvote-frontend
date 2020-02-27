@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.meta.updateTags(
             {
-                title: 'Sign in',
+                title: 'Login',
                 description: 'Fill in your account information to sign in.'
             })
 
