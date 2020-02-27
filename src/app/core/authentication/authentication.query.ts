@@ -6,7 +6,6 @@ import { OrganizationQuery } from '../http/organization/organization.query'
 import { map } from 'rxjs/operators'
 import { Organization } from '../models/organization.model'
 import { Observable } from 'rxjs'
-import { RepQuery } from '../http/rep/rep.query'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {

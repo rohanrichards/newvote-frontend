@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit {
 
         this.meta.updateTags(
             {
-                title: 'Home'
+                title: 'Community Home'
             })
         this.subscribeToOrgStore()
         this.subscribeToIssueStore()

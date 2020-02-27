@@ -148,31 +148,4 @@ export class ShellComponent implements OnInit {
         return this.media.isActive('xs') || this.media.isActive('sm')
     }
 
-    visitOrganizationUrl(event: any) {
-        event.preventDefault()
-        let { organizationUrl: url } = this.organization
-        url = this.setHttp(url)
-        window.open(url, '_blank')
-    }
-
-    setHttp(link: string) {
-        if (link.search(/^http[s]?\:\/\//) === -1) {
-            link = 'https://' + link
-        }
-        return link
-    }
-
-    redirectToLanding() {
-        const { hostname } = window.location
-
-        // separate the current hostname into subdomain and main site
-        const splitHostname = hostname.split('.')
-        splitHostname[0] = 'app'
-
-        // const newHostName = splitHostname.join('.')
-        // window.location.href = `http://${newHostName}:${window.location.port}`;
-        // window.open(`http://${newHostName}:${window.location.port}`, '_self');
-        this.router.navigate(['/landing'])
-    }
-
 }

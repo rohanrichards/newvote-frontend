@@ -1,0 +1,101 @@
+<div class="logo-container">
+    <p>
+        <a (click)="redirectToLanding()">
+            <img class="logo"
+                src="assets/logo-no-circle.png"
+                alt="NewVote" />
+        </a>
+    </p>
+</div>
+<nav>
+    <mat-list>
+        <ng-container *ngIf="organization; else communityBlock">
+            <a mat-list-item
+            
+                routerLink="/home"
+                routerLinkActive="active">
+                <span translate>{{ organization.name }}</span>
+            </a>
+            <mat-divider></mat-divider>
+
+            <a mat-list-item
+                routerLink="/home"
+                routerLinkActive="active"
+                (click)="isMobile && handleClick()">
+                <span translate>Home</span>
+            </a>
+
+
+            <a mat-list-item
+            routerLink="/reps"
+            routerLinkActive="active">
+                <span>{{ organization.representativeTitle || 'Rep'}}</span>
+            </a>
+
+            <a mat-list-item
+                routerLink="/issues"
+                routerLinkActive="active"
+                (click)="isMobile && handleClick()">
+                <span translate>Issues</span>
+            </a>
+
+
+            <!-- <a mat-list-item
+                routerLink="/solutions"
+                routerLinkActive="active"
+                (click)="isMobile && sidenav.close()">
+                <span translate>Solutions</span>
+            </a> -->
+
+            <!-- <a mat-list-item
+                *ngIf="auth.isCommunityVerified()"
+                routerLink="/suggestions"
+                routerLinkActive="active"
+                (click)="isMobile && handleClick()">
+                <span translate>Your Suggestions</span>
+            </a> -->
+
+            <a mat-list-item
+                *ngIf="organization && organization.organizationUrl"
+                href="#"
+                (click)="visitOrganizationUrl($event)"
+                target="_blank">
+                <span translate
+                    matLine>About This Community</span>
+            </a>
+        </ng-container>
+
+        <ng-template #communityBlock>
+            <a mat-list-item
+                (click)="isMobile && handleClick()">
+                <span translate>Home</span>
+            </a>
+        </ng-template>
+        
+
+        <mat-divider></mat-divider>
+
+        <a mat-list-item
+            href="https://newvote.org/the-app"
+            target="_blank">
+            <span translate
+                matLine>About NewVote</span>
+        </a>
+
+        <a mat-list-item
+            href="https://newvote.org/help"
+            target="_blank">
+            <span translate>Help</span>
+        </a>
+
+        <a mat-list-item
+            href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
+            target="_blank">
+            <span translate>Give Feedback</span>
+        </a>
+    </mat-list>
+</nav>
+<div class="secure-wrapper">
+    <p class="secure-text mat-caption"><small>SECURED BY</small></p>
+    <img src="assets/entersoft-light.png" />
+</div>

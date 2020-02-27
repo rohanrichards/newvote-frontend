@@ -3,31 +3,11 @@
         [(opened)]="opened"
         mode="push"
         fixedInViewport="true">
-        <nav>
-            <mat-list>
-                <a mat-list-item
-                    href="https://newvote.org/the-app"
-                    target="_blank">
-                    <span translate>About NewVote</span>
-                </a>
-                <mat-divider></mat-divider>
+        <app-side-menu
+            (click)="sidenav.close()"
+            >
 
-                <a mat-list-item
-                    href="https://newvote.org/help"
-                    target="_blank"
-                    (click)="sidenav.close()">
-                    <span translate>Help</span>
-                </a>
-                <mat-divider></mat-divider>
-
-                <a mat-list-item
-                    href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
-                    target="_blank"
-                    (click)="sidenav.close()">
-                    <span>Feedback</span>
-                </a>
-            </mat-list>
-        </nav>
+        </app-side-menu>
     </mat-sidenav>
     <mat-sidenav-content>
         <div class="community-wrap"

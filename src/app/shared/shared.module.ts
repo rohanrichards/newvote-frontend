@@ -49,7 +49,8 @@ import { RepItemListComponent } from './rep-item-list/rep-item-list.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { GridCardComponent } from './grid-list/grid-card/grid-card.component';
 import { RepCardChildComponent } from './rep-card-child/rep-card-child.component';
-import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-list.component'
+import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-list.component';
+import { SideMenuComponent } from './side-menu/side-menu.component'
 
 @NgModule({
     imports: [
@@ -105,6 +106,7 @@ import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-
         GridCardComponent,
         RepCardChildComponent,
         RepChildCardListComponent,
+        SideMenuComponent,
     ],
     exports: [
         LoaderComponent,
@@ -137,6 +139,7 @@ import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-
         SkeletonRepCardComponent,
         CommunityCardComponent,
         AdminPanelComponent,
+        SideMenuComponent,
     ]
 })
 export class SharedModule { }
