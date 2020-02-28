@@ -47,13 +47,13 @@
                 <span translate>Solutions</span>
             </a> -->
 
-            <!-- <a mat-list-item
-                *ngIf="auth.isCommunityVerified()"
+            <a mat-list-item
+                *ngIf="isVerified"
                 routerLink="/suggestions"
                 routerLinkActive="active"
                 (click)="isMobile && handleClick()">
                 <span translate>Your Suggestions</span>
-            </a> -->
+            </a>
 
             <a mat-list-item
                 *ngIf="organization && organization.organizationUrl"
@@ -63,6 +63,7 @@
                 <span translate
                     matLine>About This Community</span>
             </a>
+
         </ng-container>
 
         <ng-template #communityBlock>
@@ -72,7 +73,6 @@
             </a>
         </ng-template>
         
-
         <mat-divider></mat-divider>
 
         <a mat-list-item

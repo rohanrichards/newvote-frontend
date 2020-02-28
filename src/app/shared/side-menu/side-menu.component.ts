@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { MediaObserver } from '@angular/flex-layout';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query';
 
 @Component({
     selector: 'app-side-menu',
@@ -11,11 +12,18 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 export class SideMenuComponent implements OnInit {
     @Input() organization: any;
     @Output() close = new EventEmitter()
+    isVerified: boolean;
 
     constructor(private router: Router, private media: MediaObserver,
-      public auth: AuthenticationQuery) { }
+        public auth: AuthenticationQuery,
+        private access: AccessControlQuery
+    ) { }
 
     ngOnInit() {
+        this.access.isCommunityVerified$
+            .subscribe((verified: boolean) => {
+                this.isVerified = verified;
+            })
     }
 
     redirectToLanding() {
