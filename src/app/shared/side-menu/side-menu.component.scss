@@ -1,0 +1,92 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mat-sidenav {
+	min-width: 270px;
+	max-width: 28%;
+}
+
+.top-bar-height-lg {
+	top: 64px;
+}
+
+.top-bar-height-sm {
+	top: 56px;
+}
+
+// // need a spacer because the toolbar is fixed now
+// router-outlet::after {
+// 	min-height: 64px;
+// 	content:"";
+// 	display: block;
+// 	@media screen and (max-width: 599px) {
+// 		min-height: 44px;
+// 	}
+// }
+
+.has-border {
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.mat-list {
+	padding-top: 0;
+}
+
+.mat-list-item {
+	text-decoration: none;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
+}
+
+.menu-button {
+	margin-right: 1rem;
+}
+
+.logo-container {
+	max-width: 270px;
+	margin-bottom: 32px;
+	margin-top: 32px;
+	cursor: pointer;
+
+	.logo {
+		width: 100%;
+		height: auto;
+		padding: 16px;
+	}
+}
+
+.spacer {
+	height: 24px;
+}
+
+::ng-deep .mat-input-underline {
+	display: none;
+}
+
+
+.secure-wrapper {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 10px;
+	margin-top: auto;
+
+	img {
+		width: 125px;
+		height: auto;
+	}
+}
+
+.secure-text {
+	text-transform: uppercase;
+	margin-bottom: 0;
+}
+
+::ng-deep .mat-drawer-inner-container {
+	display: flex;
+	flex-direction: column;
+}

@@ -34,6 +34,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 
 @Component({
     selector: 'app-issue',
@@ -91,6 +92,7 @@ export class IssueListComponent implements OnInit {
     suggestions: any[];
     suggestions$: Observable<Suggestion[]>;
     orphanedIssues: any[];
+    isVerified: boolean;
 
     constructor(
         private suggestionQuery: SuggestionQuery,
@@ -109,10 +111,16 @@ export class IssueListComponent implements OnInit {
         private topicQuery: TopicQuery,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        public entities: AllEntityQuery
+        public entities: AllEntityQuery,
+        public access: AccessControlQuery,
     ) {
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
+
+        this.access.isCommunityVerified$
+            .subscribe((verified: any) => {
+                this.isVerified = verified
+            })
 
         this.filteredTopics = this.topicFilter.valueChanges.pipe(
             startWith(''),

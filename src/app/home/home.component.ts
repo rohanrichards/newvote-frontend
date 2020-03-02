@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit {
 
         this.meta.updateTags(
             {
-                title: 'Home'
+                title: 'Community Home'
             })
         this.subscribeToOrgStore()
         this.subscribeToIssueStore()
@@ -142,22 +142,6 @@ export class HomeComponent implements OnInit {
             .subscribe((solutions: Solution[]) => {
                 this.solutions = solutions
             })
-    }
-
-    handleUserCount(count: number) {
-        if (this.auth.isAdmin() || this.auth.isOwner()) {
-            return `${count}`
-        }
-
-        if (!count) {
-            return '0'
-        }
-
-        if (count < 1000) {
-            return '< 1K'
-        }
-
-        return `${Math.floor(count / 1000)}K+`
     }
 
     onDone() {

@@ -60,8 +60,8 @@ export class NavbarComponent implements OnInit {
                 }
             })
 
-        this.authQuery.isCommunityVerified()
-            .subscribe((verified) => {
+        this.authQuery.isCommunityVerified$
+            .subscribe((verified: boolean) => {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
 
@@ -90,7 +90,7 @@ export class NavbarComponent implements OnInit {
 
     logout() {
         this.auth.logout()
-            .subscribe(() => this.router.navigate(['/auth/login'], { replaceUrl: true }))
+            .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }))
     }
 
     get title(): string {
@@ -154,7 +154,6 @@ export class NavbarComponent implements OnInit {
                     this.openSnackBar('You have successfully verified with this community.', 'OK')
                 },
                 (error) => {
-                    console.log(error, 'this is error')
                     this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
     }
