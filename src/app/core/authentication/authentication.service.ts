@@ -189,6 +189,8 @@ export class AuthenticationService {
      * Checks is the user is authenticated.
      * @return True if the user is authenticated.
      */
+
+    // TODO: Update service isAuthenticated & JWT check to query
     isAuthenticated(): boolean {
         return !!this._credentials && !this.isTokenExpired()
     }

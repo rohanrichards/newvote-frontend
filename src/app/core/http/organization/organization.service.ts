@@ -164,7 +164,6 @@ export class OrganizationService {
             .pipe(
                 catchError(handleError),
                 tap((res: IOrganization) => {
-                    console.log(res, 'this is res')
                     this.organizationStore.update({ representativeTags: res.representativeTags })
                 })
             )

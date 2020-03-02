@@ -27,6 +27,7 @@ import { Proposal } from '@app/core/models/proposal.model'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { FormControl } from '@angular/forms'
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 
 @Component({
     selector: 'app-solution',
@@ -64,6 +65,7 @@ export class SolutionListComponent implements OnInit {
     suggestions: Array<any>;
     organization: any;
     sort: string;
+    isVerified: boolean
 
     constructor(
         private organizationService: OrganizationService,
@@ -80,7 +82,8 @@ export class SolutionListComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private proposalService: ProposalService,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private access: AccessControlQuery
     ) { }
 
     ngOnInit() {
@@ -93,6 +96,11 @@ export class SolutionListComponent implements OnInit {
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
+
+        this.access.isCommunityVerified$
+            .subscribe((verified: boolean) => {
+                this.isVerified = verified
+            })
 
         this.stateService.setLoadingState(AppState.loading)
 

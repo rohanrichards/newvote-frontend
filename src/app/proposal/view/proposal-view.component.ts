@@ -27,6 +27,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { Observable, pipe } from 'rxjs'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 
 @Component({
     selector: 'app-proposal',
@@ -46,6 +47,7 @@ export class ProposalViewComponent implements OnInit {
     organization: any;
     suggestions: any[];
     suggestions$: Observable<Suggestion[]>
+    isVerified: boolean
 
     constructor(
         private organizationService: OrganizationService,
@@ -64,7 +66,8 @@ export class ProposalViewComponent implements OnInit {
         private voteQuery: VotesQuery,
         public admin: AdminService,
         public authQuery: AuthenticationQuery,
-        public repQuery: RepQuery
+        public repQuery: RepQuery,
+        private access: AccessControlQuery,
     ) { }
 
     ngOnInit() {
@@ -83,6 +86,11 @@ export class ProposalViewComponent implements OnInit {
             this.getProposal(ID)
             this.getSuggestions()
         })
+
+        this.access.isCommunityVerified$
+            .subscribe((verified: boolean) => {
+                this.isVerified = verified
+            })
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -170,22 +178,6 @@ export class ProposalViewComponent implements OnInit {
         this.snackBar.open(message, action, {
             duration: 4000,
             horizontalPosition: 'right'
-        })
-    }
-
-    populateSuggestion() {
-        const { _id, title } = this.proposal
-        const suggestionParentInfo = {
-            _id,
-            parentTitle: title,
-            parentType: 'Action',
-            type: 'action'
-        }
-
-        this.router.navigateByUrl('/suggestions/create', {
-            state: {
-                ...suggestionParentInfo
-            }
         })
     }
 

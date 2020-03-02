@@ -51,15 +51,6 @@
                     <app-more-less [displayText]="issue.description"
                         maxHeight="200">
                     </app-more-less>
-                    <div *ngIf="auth.isVerified()">
-                        <h4 class="mat-subheading-1">Do you have a suggestion
-                            that's
-                            not shown below? Click here to create one.</h4>
-                        <button mat-flat-button
-                            color="warn"
-                            (click)="populateSuggestion()">Make
-                            Suggestion</button>
-                    </div>
                 </div>
             </div>
         </mat-toolbar>
@@ -203,7 +194,7 @@
                     (vote)="onVote($event, 'Suggestion')">
                 </app-card-list>
             </div>
-            <div *ngIf="auth.isVerified()">
+            <div *ngIf="isVerified">
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"
                     [style.margin-bottom]="'1rem'">

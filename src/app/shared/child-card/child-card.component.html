@@ -10,7 +10,7 @@
             [defaultImage]="handleImageUrl(item.imageUrl, true)"
             [lazyLoad]="handleImageUrl(item.imageUrl)">
         </div>
-        <div fxLayout="column">
+        <div fxLayout="column" fxFlex="1 1 100%">
             <span class="mat-title text-left"
                 [innerHtml]="item.title || item.name"></span>
             <app-vote-buttons *ngIf="!repCard"

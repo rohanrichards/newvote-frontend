@@ -4,6 +4,6 @@
 		    *ngFor="let topic of topics"
 		    [matTooltip]="topic.name"
 		    matTooltipPosition="above"
-		    [routerLink]="['/issues', {topic: topic.name}]">{{topic.name.toUpperCase()}}</mat-chip>
+		    [routerLink]="['/issues', {topic: topic.name}]">{{topic.name.toUpperCase() | slice:0:30 }}</mat-chip>
 	</mat-chip-list>
 </div>
