@@ -119,7 +119,6 @@ export class IssueListComponent implements OnInit {
 
         this.access.isCommunityVerified$
             .subscribe((verified: any) => {
-                console.log(verified, 'this is res')
                 this.isVerified = verified
             })
 
