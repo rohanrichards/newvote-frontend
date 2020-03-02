@@ -149,7 +149,7 @@
 			</div>
 		</div>
 	</div>
-	<div *ngSwitchCase="'serverError'"
+	<div *ngSwitchCase="'error'"
 	 class="community-container container"
 	 fxLayoutAlign="center center">
 		<div fxFlex.gt-sm="690px"
@@ -199,7 +199,7 @@
 				<div fxLayout="column">
 					<span
 					[style.text-decoration]="'underline'"
-					routerLink="/issues" class="mat-h1"
+					routerLink="/issues" class="mat-h1 pointer"
 					 *ngIf="issues">{{issues.length}}</span>
 					<span class="mat-h1"
 					 *ngIf="!issues">0</span>
@@ -211,10 +211,10 @@
 				<div fxLayout="column">
 					<span
 					[style.text-decoration]="'underline'"
-					class="mat-h1"
+					class="mat-h1 pointer"
 					routerLink="/solutions"
 					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
-					<span class="mat-h1"
+					<span class="mat-h1 pointer"
 					 *ngIf="!proposals || !solutions">0</span>
 					<span class="mat-h3">Solutions</span>
 				</div>
@@ -235,7 +235,7 @@
 					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
 				</div>
 				<div>
-					<button routerLink="/issues" mat-raised-button color="primary"><span class="mat-subheading-2 issues-button">Your Issues</span></button>
+					<button routerLink="/issues" mat-raised-button color="primary"><span class="custom-headline issues-button">Your Issues</span></button>
 				</div>
 			</div>
 		</div>
@@ -273,7 +273,7 @@
 		</div>
 	</div>
 
-	<div *ngSwitchCase="'serverError'"
+	<div *ngSwitchCase="'error'"
 	 class="hot-issues-container container">
 		<div class="skeleton-issues-container">
 			<app-skeleton-text-bar class="skeleton-issue-header"

@@ -26,6 +26,8 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { Observable } from 'rxjs'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { RepQuery } from '@app/core/http/rep/rep.query'
 
 @Component({
     selector: 'app-solution',
@@ -64,7 +66,9 @@ export class SolutionViewComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private voteQuery: VotesQuery,
         private admin: AdminService,
-        private proposalQuery: ProposalQuery
+        private proposalQuery: ProposalQuery,
+        public authQuery: AuthenticationQuery,
+        public repQuery: RepQuery
     ) { }
 
     ngOnInit() {
@@ -104,7 +108,7 @@ export class SolutionViewComponent implements OnInit {
                             image: solution.imageUrl
                         })
                 },
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 
@@ -147,8 +151,8 @@ export class SolutionViewComponent implements OnInit {
         })
 
         this.suggestions$.subscribe((res) => {
-            if (!res) return false;
-            this.suggestions = res;
+            if (!res) return false
+            this.suggestions = res
         })
     }
 
@@ -156,8 +160,8 @@ export class SolutionViewComponent implements OnInit {
         this.proposals$ = this.proposalQuery.filterBySolutionId(id)
 
         this.proposals$.subscribe((res) => {
-            if (!res) return false;
-            this.proposals = res;
+            if (!res) return false
+            this.proposals = res
         })
     }
 

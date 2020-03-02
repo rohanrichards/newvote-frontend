@@ -17,7 +17,7 @@
                 <mat-icon>arrow_back_ios</mat-icon>
             </button>
         </ng-template>
-        <span class="toolbar-title">{{title}}</span>
+        <span class="toolbar-title custom-headline">{{title}}</span>
         <div fxFlex></div>
         <button mat-icon-button
             (click)="toggleSearch()">
@@ -27,7 +27,7 @@
             class="account-create-menu-icon"
             mat-icon-button
             [matMenuTriggerFor]="loginMenu">
-            <mat-icon color="warn">account_box</mat-icon>
+            <mat-icon color="warn">person_add</mat-icon>
         </button>
         <mat-menu #loginMenu="matMenu">
             <mat-list
@@ -64,10 +64,15 @@
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <a mat-menu-item
-                        *ngIf="auth.isOwner() && organization"
+                        *ngIf="authQuery.isOwner() && organization"
                         routerLink="/communities/edit/{{organization._id}}"
                         translate>Edit Community</a>
                     <mat-divider></mat-divider>
+                    <a mat-menu-item
+                        *ngIf="isRep && organization"
+                        routerLink="/reps/edit/{{userId}}"
+                        translate>Edit Profile</a>
+                    <mat-divider *ngIf="isRep"></mat-divider>
                 </mat-list>
                 <button mat-menu-item
                     (click)="logout()"
@@ -100,6 +105,7 @@
         [isVisible]="showSearch"
         (closeSearch)="toggleSearch()"></app-search-bar>
 
+    <!--
     <mat-toolbar color="warn"
         *ngIf="showVerify"
         class="sticky-verify"
@@ -113,18 +119,18 @@
             (click)="hideVerify = true">
             <mat-icon>close</mat-icon>
         </button>
-    </mat-toolbar>
+    </mat-toolbar> -->
 
     <mat-toolbar color="warn"
-        *ngIf="!auth.isCommunityVerified() && !hideVerify"
+        *ngIf="!!showVerify && !hideVerify && delayPassed"
         class="community-verify"
         ngClass.gt-sm="with-sidenav top-bar-height-lg"
         ngClass.lt-md="top-bar-height-sm">
-        <span class="mat-body">Your account is not verified with this
-            community</span>
+        <span class="mat-body">Your account is not yet verified with this
+            community.</span>
         <div fxFlex></div>
         <button mat-stroked-button
-            routerLink="/auth/login">Verify</button>
+            (click)="handleVerify()">Verify</button>
         <button mat-icon-button
             (click)="hideVerify = true">
             <mat-icon>close</mat-icon>

@@ -15,9 +15,6 @@
         <app-grid-list *ngIf="organizations"
             path="/organizations"
             model="Organization"
-            (delete)="onDelete($event)"
-            (restore)="onRestore($event)"
-            (softDelete)="onSoftDelete($event)"
             [items]=organizations></app-grid-list>
     </div>
 </div>

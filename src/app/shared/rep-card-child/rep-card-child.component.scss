@@ -1,0 +1,51 @@
+:host {
+    width: 200px;
+}
+
+.rep-faux-card {
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+}
+
+.faux-title {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    // max-height: 90px;
+}
+
+.faux-description {
+    max-height: 52px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+img {
+    width: 100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.image-container {
+    height: 100%;
+    width: 100%;
+}
+
+.rep-image {
+    height: 165px;
+    max-height: 175px;
+    max-width: 125px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.text-parent {
+    
+    width: 100%;
+    padding-right: 0.5rem;
+    // word-break: break-all;
+}

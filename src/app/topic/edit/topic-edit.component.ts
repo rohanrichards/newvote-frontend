@@ -33,6 +33,7 @@ export class TopicEditComponent implements OnInit {
         description: new FormControl('', [Validators.required]),
         imageUrl: new FormControl('', [Validators.required])
     });
+
     resetImage: boolean
 
     constructor(
@@ -96,10 +97,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     subscribeToTopicStore(id: string) {
-        this.topicQuery.selectEntity(id)
-            .subscribe((topic: Topic) => {
-                if (!topic) return false
-                this.updateForm(topic)
+
+        this.topicQuery.getTopic(id)
+            .subscribe((topic: Topic[]) => {
+                if (!topic.length) return false
+                this.updateForm(topic[0])
             })
     }
 
@@ -137,11 +139,11 @@ export class TopicEditComponent implements OnInit {
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/topic-default.png';
-        this.newImage = true;
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
+        const DEFAULT_IMAGE = 'assets/topic-default.png'
+        this.newImage = true
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
     }
 
     onSave() {
@@ -173,7 +175,7 @@ export class TopicEditComponent implements OnInit {
     updateWithApi(topic: any) {
 
         if (this.resetImage) {
-            topic.imageUrl = this.imageUrl;
+            topic.imageUrl = this.imageUrl
         }
 
         this.topicService.update({ id: topic._id, entity: topic })

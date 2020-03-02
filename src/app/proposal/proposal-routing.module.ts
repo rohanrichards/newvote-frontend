@@ -7,6 +7,7 @@ import { ProposalListComponent } from './list/proposal-list.component'
 import { ProposalViewComponent } from './view/proposal-view.component'
 import { ProposalCreateComponent } from './create/proposal-create.component'
 import { ProposalEditComponent } from './edit/proposal-edit.component'
+import { RepOrgGuard } from '@app/core/authentication/rep-org.guard'
 
 const routes: Routes = [
     { path: '', component: ProposalListComponent, data: { title: extract('All Proposals'), level: 'root' } },
@@ -14,13 +15,13 @@ const routes: Routes = [
         path: 'create',
         component: ProposalCreateComponent,
         data: { title: extract('New Proposal'), level: 'child' },
-        canActivate: [ModeratorGuard]
+        canActivate: [RepOrgGuard]
     },
     {
         path: 'create/:id',
         component: ProposalCreateComponent,
         data: { title: extract('New Proposal'), level: 'child' },
-        canActivate: [ModeratorGuard]
+        canActivate: [RepOrgGuard]
     },
     {
         path: 'edit/:id',

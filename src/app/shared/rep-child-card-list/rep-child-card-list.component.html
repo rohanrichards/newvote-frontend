@@ -1,0 +1,12 @@
+<div>
+    <h2>
+        {{ model | titlecase }}
+    </h2>
+    <app-rep-card-child
+        [style.width.%]="100"
+        *ngFor="let item of items"
+        [item]="item"
+        [path]="path"
+        >
+    </app-rep-card-child>
+</div>

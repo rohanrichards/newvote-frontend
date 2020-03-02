@@ -23,11 +23,18 @@
                         <span translate>{{ organization.name }}</span>
                     </a>
                     <mat-divider></mat-divider>
+
                     <a mat-list-item
                         routerLink="/home"
                         routerLinkActive="active"
                         (click)="isMobile && sidenav.close()">
                         <span translate>Home</span>
+                    </a>
+
+                    <a mat-list-item
+                    routerLink="/reps"
+                    routerLinkActive="active">
+                        <span>{{ organization.representativeTitle || 'Rep'}}</span>
                     </a>
 
                     <a mat-list-item
@@ -90,7 +97,7 @@
             </div>
         </mat-sidenav>
         <mat-sidenav-content [style.height]="'100vh'">
-            <div [style.height]="'100%'">
+            <div [style.min-height]="'100vh'">
                 <div sticky-component
                     [sideNavRef]="sidenav"
                     [organization]="organization"></div>

@@ -1,0 +1,47 @@
+.container {
+	text-align: center;
+	padding: 1em;
+}
+
+.image-select {
+	margin-bottom: 25px;
+
+	.image-preview {
+		width: 100%;
+		max-height: 250px;
+
+		img {
+			max-width: 100%;
+			max-height: 250px;
+			height: auto;
+		}
+	}
+}
+
+
+.quill-editor-container {
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+
+::ng-deep {
+	.ql-container {
+		height: 250px !important;
+	}
+}
+
+.truncate-chip {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.char-counter {
+	color: black;
+	margin-left: auto;
+    width: 25%;
+}
+
+.error-text {
+	color: #ffca28;
+  }

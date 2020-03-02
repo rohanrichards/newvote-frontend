@@ -8,33 +8,13 @@
         fxLayout="column"
         [defaultImage]="handleImageUrl(topic.imageUrl, true)"
         [lazyLoad]="handleImageUrl(topic.imageUrl)">
-        <div class="admin-panel"
-            *ngIf="auth.isModerator()"
-            fxLayout="column"
-            fxLayoutAlign="center end">
-            <div class="button-panel">
-                <button mat-icon-button
-                    matTooltip="Add a new Issue"
-                    color="accent"
-                    routerLink="/issues/create">
-                    <mat-icon aria-label="Add a new issue">playlist_add
-                    </mat-icon>
-                </button>
-                <button mat-icon-button
-                    matTooltip="Edit this Topic"
-                    color="accent"
-                    routerLink="/topics/edit/{{topic._id}}">
-                    <mat-icon aria-label="Edit the topic">edit</mat-icon>
-                </button>
-                <button mat-icon-button
-                    matTooltip="Delete this Topic"
-                    color="warn"
-                    (click)="admin.onDelete(topic, 'Topic', '/topics')">
-                    <mat-icon aria-label="Delete the topic forever">
-                        delete_forever</mat-icon>
-                </button>
-            </div>
-        </div>
+        <app-admin-panel
+            path="'/topics'"
+            [item]="topic"
+            model="Topic"
+            >
+
+        </app-admin-panel>
         <div fxLayout="row"
             fxFlex></div>
         <!-- <div fxLayout="column"

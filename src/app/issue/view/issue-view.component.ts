@@ -33,6 +33,8 @@ import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { MediaQuery } from '@app/core/http/media/media.query'
+import { RepQuery } from '@app/core/http/rep/rep.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-issue',
@@ -79,7 +81,9 @@ export class IssueViewComponent implements OnInit {
         private proposalService: ProposalService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        private mediaQuery: MediaQuery
+        private mediaQuery: MediaQuery,
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -193,7 +197,10 @@ export class IssueViewComponent implements OnInit {
                             image: issue.imageUrl || ''
                         })
                 },
-                (err) => err
+                (err) => {
+                    this.isLoading = false
+                    this.stateService.setLoadingState(AppState.error)
+                }
             )
     }
 

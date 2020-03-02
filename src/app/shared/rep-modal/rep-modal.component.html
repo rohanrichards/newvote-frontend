@@ -1,0 +1,82 @@
+<div class="tab-wrapper" fxLayout="column">
+    <mat-tab-group>
+        <mat-tab label="Manage Reps">
+            <!-- First Tab content -->
+            <h1 mat-dialog-title>NewVote Reps</h1>
+            <div class="content" mat-dialog-content>
+                <form class="example-form">
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                        <mat-form-field fxFlex="1 1 60%" class="example-full-width" >
+                            <input matInput placeholder="Add new Rep"
+                                [(ngModel)]="data.repEmail"
+                                [ngModelOptions]="{standalone: true}">
+                        </mat-form-field>
+                        <div>
+                            <button [disabled]="!data.repEmail" mat-flat-button color="primary" (click)="addRep()">
+                                Submit New Rep
+                            </button>
+                        </div>
+       
+                    </div>
+                </form>
+                <div>
+                    <h3>New Student Reps</h3>
+                    <app-rep-item-list 
+                        *ngFor="let newRep of data.newReps" 
+                        (updateRepTag)="updateRepTag($event)"
+                        newRep="true"
+                        [tags]="data.representativeTags"
+                        [rep]="newRep">
+                    </app-rep-item-list>
+                </div>
+                <div>
+                    <h3>Current Student Reps</h3>
+                        <app-rep-item-list 
+                            [newRep]="false"
+                            *ngFor="let rep of data.currentReps" 
+                            (updateRepTag)="updateRepTag($event)"
+                            [tags]="data.representativeTags"
+                            [rep]="rep">
+                        </app-rep-item-list>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Manage Tags">
+            <div class="container" fxFlex="90" fxLayout="column" >
+                <div class="modal-item">
+                    <h2 class="mat-title">Representative Tags</h2>
+                </div>
+                <form>
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <mat-form-field>
+                            <mat-label>Create Tag</mat-label>
+                            <input matInput placeholder="Ambassador..." [(ngModel)]="value" [ngModelOptions]="{standalone: true}"/>
+                            <button class="add-button" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <button mat-flat-button color="primary" (click)="add()">Add Tag</button>
+                    </div>
+                </form>
+    
+                <mat-list role="list">
+                    <mat-list-item role="listitem" *ngFor="let tag of data.representativeTags">
+                        <h3 matLine> {{ tag.name }} </h3>
+                        <button mat-icon-button color="accent"
+                            aria-label="Delete Tag"
+                            (click)="remove(tag)"
+                            >
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<div fxLayoutAlign="end end">
+    <button mat-raised-button
+        color="primary"
+        [mat-dialog-close]="data"
+        cdkFocusInitial>Submit</button>
+</div>

@@ -1,33 +1,33 @@
 @import "src/theme/theme-variables";
 
 :host {
-  display: flex;
-  flex: 1;
-  background-color: #ECEFF1;
-  height: calc(100% - 64px);
+    display: flex;
+    flex: 1;
+    background-color: #ECEFF1;
+    height: calc(100vh - 64px);
 }
 
 .inline-loader {
-  display: inline-block;
+    display: inline-block;
 }
 
 .remember-toggle {
-	margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .recaptcha {
-	margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .version {
-  margin: 0;
+    margin: 0;
 }
 
 .forgot-container,
 .mat-form-field {
-  width: 100%;
+    width: 100%;
 }
 
 .forgot-error {
-  color: mat-color($app-warn);
+    color: mat-color($app-warn);
 }

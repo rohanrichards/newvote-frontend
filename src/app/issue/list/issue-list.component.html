@@ -1,193 +1,190 @@
 <app-header-bar [headerTitle]="headerTitle"
-    [headerText]="headerText"
-    [buttons]="headerButtons">
+	[headerText]="headerText"
+	[buttons]="headerButtons"
+	>
 </app-header-bar>
 
 <app-loader [isLoading]="loadingState === 'loading'"
-	size="1.5"></app-loader>
-	
-<ng-template #customContent>	
-	<div style="width: 200px">
-		<p class="mat-subheading-2">{{stepsArray[3].description}}</p>
-	</div>
+    size="1.5"></app-loader>
+
+<ng-template #customContent>
+    <div style="width: 200px">
+        <p class="mat-subheading-2">{{stepsArray[3].description}}</p>
+    </div>
 </ng-template>
 <div class="container"
     fxLayout="row wrap"
     fxLayoutAlign="center start">
-	<div 
-		joyrideStep="issues1"
-		joyridePosition="center"
-		[title]="stepsArray[3].title"
-		[stepContent]="customContent"
-		fxFlex.lt-sm="80%"
-		fxFlex.sm="600px"
-		fxFlex.gt-sm="690px"
-	    fxFlex.gt-md="800px">
-		<div>
-			<ng-container [ngSwitch]="loadingState">
-				<div *ngSwitchCase="'loading'" class="skeleton-form-wrap">
-					<div class="skeleton-form">
-						<app-skeleton-text-bar 
-							[isSubtitle]=true [width]="110" 
-							[isMarginLess]=true> 
-						</app-skeleton-text-bar>
-					</div>
-				</div>
-				<div *ngSwitchCase="'complete'" >
-					<mat-form-field
-						*ngIf="allTopics.length > 0"
-						class="example-chip-list"
-						[@fadeIn]=true
-						fxFill>
-						<mat-chip-list #chipList>
-							<mat-chip *ngFor="let topic of selectedTopics"
-								[selectable]="false"
-								[removable]="true"
-								(removed)="topicRemoved(topic)">
-								{{topic.name}}
-								<mat-icon matChipRemove>cancel</mat-icon>
-							</mat-chip>
-							<input 
-								placeholder="Filter Topics"
-								#topicInput
-								[formControl]="topicFilter"
-								[matAutocomplete]="auto"
-								[matChipInputFor]="chipList"
-								[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-								[matChipInputAddOnBlur]="true">
-						</mat-chip-list>
-						<mat-autocomplete #auto="matAutocomplete"
-							(optionSelected)="topicSelected($event)">
-							<mat-option *ngFor="let topic of filteredTopics | async"
-								[value]="topic">
-								{{topic.name}}
-							</mat-option>
-						</mat-autocomplete>
-					</mat-form-field>
-				</div>
-			</ng-container>
-		
-			<ng-container [ngSwitch]="loadingState">
-				<div *ngSwitchCase="'loading'">
-					<div class="skeleton-topic-wrap">
-						<div class="skeleton-form">
-							<app-skeleton-text-bar 
-								[isHeading]=true [width]="75" 
-								[isMarginLess]=true> 
-							</app-skeleton-text-bar>
-						</div>
-						<div class="skeleton-card-list">
-							<div class="skeleton-card">
-								<div  class="skeleton-card-image">
-								</div>
-								<div class="skeleton-card-content">
-									<app-skeleton-text-bar [isHeading]=true [width]="115">
-									</app-skeleton-text-bar>
-									<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-									</app-skeleton-text-bar>
-								</div>
-							</div>
-							<div class="skeleton-card">
-								<div  class="skeleton-card-image">
-								</div>
-								<div class="skeleton-card-content">
-									<app-skeleton-text-bar [isHeading]=true [width]="115">
-									</app-skeleton-text-bar>
-									<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-									</app-skeleton-text-bar>
-								</div>
-							</div>
-						</div>
-						<div class="skeleton-form">
-							<app-skeleton-text-bar 
-								[isHeading]=true [width]="125" 
-								[isMarginLess]=true> 
-							</app-skeleton-text-bar>
-						</div>
-						<div class="skeleton-card-list">
-							<div class="skeleton-card">
-								<div  class="skeleton-card-image">
-								</div>
-								<div class="skeleton-card-content">
-									<app-skeleton-text-bar [isHeading]=true [width]="115">
-									</app-skeleton-text-bar>
-									<app-skeleton-text-bar [isSubtitle]=true [width]="145">
-									</app-skeleton-text-bar>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div *ngSwitchCase="'serverError'">
-					<app-error-card>
-					</app-error-card>
-				</div>
-				<div *ngSwitchCase="'complete'">
-					<ng-container *ngIf="allTopics.length === 0">
-						<mat-card class="empty-card-wrap">
-							<div class="item-card-row"
-								fxFlex="100%"
-								>
-								<div class="empty-card-blank">
-								</div>
-								<div class="empty-title-container">
-									<h2 class="mat-h2">Topics</h2>
-									<h4 class="mat-h4">There's no topics to review at the moment.</h4>
-								</div>
-							</div>
-						</mat-card>
-					</ng-container>		
-					<div [@fadeIn]=true 
-						*ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
-						<div class="topic-header">
-							<h2 class="mat-h1 no-margin">
-								{{topic.name}}
-							</h2>
-							<div class="button-panel"
-								*ngIf="auth.isModerator(topic)">
-								<button color="accent"
-									mat-icon-button
-									[routerLink]="['/topics/edit', topic._id]">
-											<mat-icon aria-label="Edit the content">edit </mat-icon>
-								</button>
-								<button color="accent"
-									mat-icon-button
-									(click)="admin.onSoftDelete(topic, 'Topic')">
-											<mat-icon aria-label="Remove the content">delete</mat-icon>
-								</button>
-								<button color="warn"
-									mat-icon-button
-									*ngIf="auth.isAdmin(topic)"
-									(click)="admin.onDelete(topic, 'Topic')">
-											<mat-icon aria-label="Delete the content forever">delete_forever</mat-icon>
-								</button>
-							</div>
-							<mat-divider></mat-divider>
-						</div>
-						<app-grid-list 
-							path="/issues"
-							[items]="filterIssues(topic, issues)"
-							model="Issue"
-							[titleCard]=true
-							(restore)="admin.onRestore($event, 'Issue')"
-							(softDelete)="admin.onSoftDelete($event, 'Issue')"
-							(delete)="admin.onDelete($event, 'Issue')">
-						</app-grid-list>
+    <div joyrideStep="issues1"
+        joyridePosition="center"
+        [title]="stepsArray[3].title"
+        [stepContent]="customContent"
+        fxFlex.lt-sm="80%"
+        fxFlex.sm="600px"
+        fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px">
+        <div>
+            <ng-container [ngSwitch]="loadingState">
+                <div *ngSwitchCase="'loading'"
+                    class="skeleton-form-wrap">
+                    <div class="skeleton-form">
+                        <app-skeleton-text-bar [isSubtitle]=true
+                            [width]="110"
+                            [isMarginLess]=true>
+                        </app-skeleton-text-bar>
                     </div>
-                    
-                    <!-- Orphaned Topics -->
-                    <div [@fadeIn]=true *ngIf="orphanedIssues.length">
-                        <div class="topic-header">
-                            <h2 class="mat-h1 no-margin">
-                                General Issues
+                </div>
+                <div *ngSwitchCase="'complete'">
+                    <mat-form-field *ngIf="allTopics.length && allTopics.length > 0"
+                        class="example-chip-list"
+                        [@fadeIn]=true
+                        fxFill>
+                        <mat-chip-list #chipList>
+                            <mat-chip *ngFor="let topic of selectedTopics"
+                                [selectable]="false"
+                                [removable]="true"
+                                (removed)="topicRemoved(topic)">
+                                {{topic.name}}
+                                <mat-icon matChipRemove>cancel</mat-icon>
+                            </mat-chip>
+                            <input placeholder="Filter Topics"
+                                #topicInput
+                                [formControl]="topicFilter"
+                                [matAutocomplete]="auto"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                [matChipInputAddOnBlur]="true">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete"
+                            (optionSelected)="topicSelected($event)">
+                            <mat-option
+                                *ngFor="let topic of filteredTopics | async"
+                                [value]="topic">
+                                {{topic.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+
+            <ng-container [ngSwitch]="loadingState">
+                <div *ngSwitchCase="'loading'">
+                    <div class="skeleton-topic-wrap">
+                        <div class="skeleton-form">
+                            <app-skeleton-text-bar [isHeading]=true
+                                [width]="75"
+                                [isMarginLess]=true>
+                            </app-skeleton-text-bar>
+                        </div>
+                        <div class="skeleton-card-list">
+                            <div class="skeleton-card">
+                                <div class="skeleton-card-image">
+                                </div>
+                                <div class="skeleton-card-content">
+                                    <app-skeleton-text-bar [isHeading]=true
+                                        [width]="115">
+                                    </app-skeleton-text-bar>
+                                    <app-skeleton-text-bar [isSubtitle]=true
+                                        [width]="145">
+                                    </app-skeleton-text-bar>
+                                </div>
+                            </div>
+                            <div class="skeleton-card">
+                                <div class="skeleton-card-image">
+                                </div>
+                                <div class="skeleton-card-content">
+                                    <app-skeleton-text-bar [isHeading]=true
+                                        [width]="115">
+                                    </app-skeleton-text-bar>
+                                    <app-skeleton-text-bar [isSubtitle]=true
+                                        [width]="145">
+                                    </app-skeleton-text-bar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skeleton-form">
+                            <app-skeleton-text-bar [isHeading]=true
+                                [width]="125"
+                                [isMarginLess]=true>
+                            </app-skeleton-text-bar>
+                        </div>
+                        <div class="skeleton-card-list">
+                            <div class="skeleton-card">
+                                <div class="skeleton-card-image">
+                                </div>
+                                <div class="skeleton-card-content">
+                                    <app-skeleton-text-bar [isHeading]=true
+                                        [width]="115">
+                                    </app-skeleton-text-bar>
+                                    <app-skeleton-text-bar [isSubtitle]=true
+                                        [width]="145">
+                                    </app-skeleton-text-bar>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngSwitchCase="'error'">
+                    <app-error-card>
+                    </app-error-card>
+                </div>
+                <div *ngSwitchCase="'complete'">
+                    <ng-container *ngIf="allTopics.length === 0">
+                        <mat-card class="empty-card-wrap">
+                            <div class="item-card-row"
+                                fxFlex="100%">
+                                <div class="empty-card-blank">
+                                </div>
+                                <div class="empty-title-container">
+                                    <h2 class="mat-h2">Topics</h2>
+                                    <h4 class="mat-h4">There's no topics to
+                                        review at the moment.</h4>
+                                </div>
+                            </div>
+                        </mat-card>
+                    </ng-container>
+                    <div
+                        *ngFor="let topic of (selectedTopics.length === 0 ? allTopics : selectedTopics);trackBy: trackByFn">
+                        <div *ngIf="topic.issues && topic.issues.length" class="topic-header">
+                            <h2 class="custom-headline no-margin">
+                                {{topic.name}}
                             </h2>
-                                <mat-divider></mat-divider>
+                            <app-admin-panel model="Topic"
+                                [item]="topic"
+                                path="/topics"
+                                isCard=true>
+                            </app-admin-panel>
+                            <mat-divider></mat-divider>
                         </div>
                         <app-grid-list 
+                            *ngIf="topic.issues && topic.issues.length"
                             path="/issues"
+                            [style.text-align]="'center'"
+                            [items]="topic.issues"
+                            model="Issue"
+                            [titleCard]=true
+                            [centerTitle]=true
+                            (restore)="admin.onRestore($event, 'Issue')"
+                            (softDelete)="admin.onSoftDelete($event, 'Issue')"
+                            (delete)="admin.onDelete($event, 'Issue')">
+                        </app-grid-list>
+                    </div>
+
+                    <!-- Orphaned Topics -->
+                    <div [@fadeIn]=true
+                        *ngIf="orphanedIssues.length">
+                        <div class="topic-header">
+                            <h2 class="custom-headline no-margin">
+                                General Issues
+                            </h2>
+                            <mat-divider></mat-divider>
+                        </div>
+                        <app-grid-list path="/issues"
+                            [style.text-align]="'center'"
                             [items]="orphanedIssues"
                             model="Issue"
                             [titleCard]=true
+                            [centerTitle]=true
                             (restore)="admin.onRestore($event, 'Issue')"
                             (softDelete)="admin.onSoftDelete($event, 'Issue')"
                             (delete)="admin.onDelete($event, 'Issue')">
@@ -195,42 +192,41 @@
                     </div>
                     <mat-accordion [style.margin-bottom.rem]="1"
                         [style.display]="'block'">
-                        <mat-expansion-panel class="accordion-header" [expanded]="suggestions && suggestions.length && suggestions.length > 0">
+                        <mat-expansion-panel class="accordion-header"
+                            [expanded]="suggestions && suggestions.length && suggestions.length > 0">
                             <mat-expansion-panel-header>
-                                <h3 class="mat-headline"
+                                <h2 class="custom-headline no-margin"
                                     [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
                                     Suggestions for Issues
-                                </h3>
+                                </h2>
                             </mat-expansion-panel-header>
-                            <app-card-list 
-                                path="/suggestions"
+                            <app-card-list path="/suggestions"
                                 [@fadeIn]=true
                                 [items$]=suggestions$
                                 model="Suggestion"
                                 (restore)="admin.onRestore($event, 'Suggestion')"
                                 (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
                                 (delete)="admin.onDelete($event, 'Suggestion')"
-                                (vote)="onVote($event, 'Suggestion')"
-                                >
+                                (vote)="onVote($event, 'Suggestion')">
                             </app-card-list>
                         </mat-expansion-panel>
                     </mat-accordion>
-					<div *ngIf="auth.isVerified()">
-						<mat-toolbar color="primary" fxLayoutAlign="center center" [style.margin-bottom]="'1rem'">
-							<h2 class="mat-headline center-text">Create your own Suggestion</h2>
-						</mat-toolbar>
-						<app-make-suggestion
-							parent="issue"
-							(submitForm)="handleSuggestionSubmit($event)"
-							>
-						</app-make-suggestion>
-					</div>
-				</div>
-			</ng-container>
-		</div>
-	</div>
+                    <div *ngIf="auth.isVerified()">
+                        <mat-toolbar class="wrap"
+                            color="primary"
+                            fxLayoutAlign="center center"
+                            [style.margin-bottom]="'1rem'">
+                            <span class="custom-headline no-margin">Create your
+                                own
+                                Suggestion
+                            </span>
+                        </mat-toolbar>
+                        <app-make-suggestion parent="issue"
+                            (submitForm)="handleSuggestionSubmit($event)">
+                        </app-make-suggestion>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
 </div>
-
-
-
-

@@ -13,6 +13,8 @@ export class CommunitiesComponent implements OnInit {
     organizations: Organization[];
     organizations$: Observable<Organization[]>;
 
+    opened: boolean;
+
     constructor(
         private organizationService: OrganizationService,
         private auth: AuthenticationService,

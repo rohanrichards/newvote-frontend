@@ -1,0 +1,32 @@
+<div *ngIf="item; else noItem"
+    class='mini-proposal point-area'
+    [ngClass]="{'soft-deleted': item.softDeleted}"
+    routerLink="/{{path}}/{{item.slug || item._id}}">
+    <div fxLayout="row"
+        fxLayout.xs="column"
+        fxLayoutAlign="start center">
+        <div class="mini-proposal-image"
+            *ngIf="item.imageUrl"
+            [defaultImage]="handleImageUrl(item.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(item.imageUrl)">
+        </div>
+        <div fxLayout="column">
+            <span class="mat-title text-left"
+                [innerHtml]="item.title || item.name"></span>
+            <app-vote-buttons *ngIf="!repCard"
+                class="buttons"
+                [item]="item"
+                (vote)=onVote($event)>
+            </app-vote-buttons>
+            <div class="description-box"
+                *ngIf="repCard">
+                <p [innerHtml]="item.description"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #noItem>
+    <div class='mini-proposal'>
+        <span class="mat-title text-left">No Items</span>
+    </div>
+</ng-template>

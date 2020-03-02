@@ -84,7 +84,7 @@ export class ProposalListComponent implements OnInit {
     subscribeToProposalStore() {
         this.proposalQuery.selectAll({})
             .subscribe((proposals) => {
-                if (!proposals) return false;
+                if (!proposals) return false
                 this.proposals = proposals
             })
     }
@@ -97,8 +97,7 @@ export class ProposalListComponent implements OnInit {
                 }),
             )
             .subscribe((suggestions) => {
-                if (!suggestions) return false;
-                console.log(suggestions, 'this is suggestions');
+                if (!suggestions) return false
                 this.suggestions = suggestions
             })
     }
@@ -112,7 +111,7 @@ export class ProposalListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 () => this.stateService.setLoadingState(AppState.complete),
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
 
         this.suggestionService.list({

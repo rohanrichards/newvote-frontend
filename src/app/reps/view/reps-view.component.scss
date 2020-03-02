@@ -1,0 +1,127 @@
+.container {
+    padding: 1em;
+}
+
+.logo {
+    width: 150px;
+    margin: 0 auto;
+}
+
+q {
+    font-style: italic;
+    solutions: "« "" »";
+}
+
+//global overrides for mat-toolbar
+.header-info-panel {
+    white-space: normal !important;
+    padding-top: 16px;
+    height: auto;
+    min-height: 32px;
+    line-height: 32px;
+    display: block;
+}
+
+.description-bar {
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+
+.image-container {
+    height: 350px !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    width: calc(100% + 32px);
+    margin: -16px -16px 0px -16px;
+}
+
+.divider {
+    margin-bottom: 1rem;
+}
+
+.admin-panel {
+    .button-panel {
+        background-color: rgba(0, 0, 0, 0.6);
+        border-bottom-left-radius: 15px;
+    }
+}
+
+.buttons {
+    margin-bottom: 16px;
+}
+
+.mat-expansion-panel {
+    background-color: #0277bd;
+    color: white;
+    text-align: center;
+}
+
+::ng-deep {
+    .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+        background-color: #0277bd;
+    }
+
+    .mat-expansion-panel-body {
+        margin-top: 1rem;
+        background: white;
+    }
+
+    .mat-expansion-panel-content {
+        background: white;
+    }
+}
+
+/* Skeleton Section */
+
+.skeleton-panel {
+    height: 23.5vh;
+    background-color: #039BE5;
+    padding: 2.5rem 1em;
+}
+
+.skeleton-chip {
+    display: block;
+    padding: 7px 12px;
+    border-radius: 16px;
+    align-items: center;
+    cursor: default;
+    min-height: 32px;
+    height: 1px;
+    background-color: #e0e0e0;
+    width: 64px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card-list {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-span {
+    text-align: center;
+    display: block;
+}
+
+.header-image-unblurred {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    object-fit: contain;
+    height: inherit;
+    z-index: 100;
+}
+
+.backdrop {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    backdrop-filter: blur(15px);
+}

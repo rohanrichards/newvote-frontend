@@ -4,10 +4,13 @@ import { AuthenticationService } from '@app/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
-import { MatSidenav } from '@angular/material'
+import { MatSidenav, MatSnackBar } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
-import { map, take } from 'rxjs/operators'
+import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
+import { RepQuery } from '@app/core/http/rep/rep.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -21,8 +24,14 @@ export class NavbarComponent implements OnInit {
 
     showSearch = false;
     hideVerify = false;
-
     routeLevel: string;
+    isAuthenticated: boolean;
+    showVerify: boolean;
+    isRep = false
+    userId: string;
+
+    VERIFYDELAY = 1000;
+    delayPassed: any;
 
     constructor(
         private meta: MetaService,
@@ -30,15 +39,49 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
+        public snackBar: MatSnackBar,
         private route: ActivatedRoute,
-        private location: Location
+        private location: Location,
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery,
     ) { }
 
     ngOnInit() {
+        this.authQuery.isLoggedIn$
+            .subscribe((loggedIn: boolean) => {
+                this.isAuthenticated = loggedIn
+                // need to delay the showing on the verification bar
+                // when a user is loggedin and visits the app for the first time, there's a moment whenn
+                // showVerify is false whilst user is loggedIn
+                if (loggedIn && !this.delayPassed) {
+                    setTimeout(() => {
+                        this.delayPassed = true
+                    }, this.VERIFYDELAY)
+                }
+            })
+
+        this.authQuery.isCommunityVerified()
+            .subscribe((verified) => {
+                this.showVerify = this.checkVerify(verified, this.isAuthenticated)
+            })
+
         this.meta.routeLevel$
             .subscribe((res) => {
                 this.routeLevel = res
             })
+
+        this.repQuery.getRepId()
+            .subscribe((rep: any) => {
+                if (!rep) return false
+                this.userId = rep._id
+            })
+
+        this.repQuery.isRep()
+            .subscribe((res: any) => {
+                if (!res) return false
+                this.isRep = res
+            })
+
     }
 
     toggleSearch() {
@@ -54,32 +97,11 @@ export class NavbarComponent implements OnInit {
         return this.meta.getAppBarTitle()
     }
 
-    get isAuthenticated(): boolean {
-        return this.auth.isAuthenticated()
-    }
-
-    get isVerified(): boolean {
-        // debugger;
-        if (this.isAuthenticated) {
-            return (this.auth.isVerified())
-        } else {
-            return true
-        }
-    }
-
-    get showVerify(): boolean {
-        if (this.isVerified) {
-            return false
-        }
-        if (!this.isVerified && !this.hideVerify) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    get isCommunityVerified(): boolean {
-        return this.auth.isCommunityVerified()
+    checkVerify(verified: boolean, loggedIn: boolean): boolean {
+        if (!loggedIn) return false
+        if (verified) return false
+        if (!verified && !this.hideVerify) return true
+        return false
     }
 
     get isMobile(): boolean {
@@ -115,5 +137,32 @@ export class NavbarComponent implements OnInit {
                 return this.location.back()
             })
 
+    }
+
+    toggleVerify() {
+        this.hideVerify = !this.hideVerify
+    }
+
+    handleVerify() {
+        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
+            return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+        }
+
+        return this.auth.verifyWithCommunity()
+            .subscribe(
+                (res) => {
+                    this.openSnackBar('You have successfully verified with this community.', 'OK')
+                },
+                (error) => {
+                    console.log(error, 'this is error')
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                })
+    }
+
+    openSnackBar(message: string, action: string) {
+        this.snackBar.open(message, action, {
+            duration: 4000,
+            horizontalPosition: 'right'
+        })
     }
 }

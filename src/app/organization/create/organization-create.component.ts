@@ -49,6 +49,7 @@ export class OrganizationCreateComponent implements OnInit {
         authUrl: new FormControl(''),
         authEntityId: new FormControl(''),
         privateOrg: new FormControl(false, [Validators.required]),
+        representativeTitle: new FormControl(''),
         voteRoles: new FormArray([
             new FormGroup({
                 role: new FormControl('student'),

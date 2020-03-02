@@ -4,7 +4,7 @@
     display: flex;
     flex: 1;
     background-color: #ECEFF1;
-    height: calc(100% - 64px);
+    height: calc(100vh - 64px);
 }
 
 .inline-loader {
@@ -34,6 +34,11 @@
 
 .verify-input-container {
     margin-bottom: 1rem;
+}
+
+.verify-button {
+    background-color: #f0932b;
+    color: rgb(36, 35, 35);
 }
 
 ::ng-deep international-phone-number .form-control {

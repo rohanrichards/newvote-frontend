@@ -48,12 +48,12 @@ export class SolutionService {
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(
+                catchError(handleError),
                 tap((data: any) => {
                     this.voteService.populateStore(data)
                     this.solutionStore.add(data)
                 }),
-                map((res: Array<any>) => res),
-                catchError(handleError),
+                map((res: Array<any>) => res)
             )
     }
 
@@ -68,12 +68,12 @@ export class SolutionService {
         return this.httpClient
             .get(routes.view(context), { params })
             .pipe(
+                catchError(handleError),
                 tap((res: any) => {
                     this.voteService.addEntityVote(res)
                     this.solutionStore.add(res)
                 }),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -81,9 +81,9 @@ export class SolutionService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.add(solution)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -91,9 +91,9 @@ export class SolutionService {
         return this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
+                catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.update(solution._id, solution)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 
@@ -101,9 +101,9 @@ export class SolutionService {
         return this.httpClient
             .delete(routes.delete(context))
             .pipe(
+                catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.remove(solution._id)),
-                map((res: any) => res),
-                catchError(handleError)
+                map((res: any) => res)
             )
     }
 

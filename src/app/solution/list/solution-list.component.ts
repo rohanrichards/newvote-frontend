@@ -120,7 +120,7 @@ export class SolutionListComponent implements OnInit {
         ])
             .subscribe(
                 () => this.stateService.setLoadingState(AppState.complete),
-                () => this.stateService.setLoadingState(AppState.serverError)
+                () => this.stateService.setLoadingState(AppState.error)
             )
     }
 
@@ -128,8 +128,8 @@ export class SolutionListComponent implements OnInit {
         this.solutions$ = this.solutionQuery.selectSolutions()
 
         this.solutions$.subscribe((res) => {
-            if (!res) return false;
-            this.solutions = res;
+            if (!res) return false
+            this.solutions = res
         })
     }
 
@@ -142,13 +142,12 @@ export class SolutionListComponent implements OnInit {
             )
 
         this.suggestions$.subscribe((res) => {
-            if (!res) return false;
-            this.suggestions = res;
+            if (!res) return false
+            this.suggestions = res
         })
     }
 
     onVote(voteData: any, model: string) {
-
         this.isLoading = true
         const { item, voteValue } = voteData
         const vote = new Vote(item._id, model, voteValue)

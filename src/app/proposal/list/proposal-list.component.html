@@ -36,7 +36,7 @@
                     </app-skeleton-wide-card>
                 </div>
             </div>
-            <app-error-card *ngSwitchCase="'serverError'">
+            <app-error-card *ngSwitchCase="'error'">
             </app-error-card>
 
             <mat-accordion [style.margin-bottom.rem]="1"
@@ -45,10 +45,10 @@
                 <mat-expansion-panel class="accordion-header"
                     [expanded]="proposals && !!proposals.length && proposals.length > 0">
                     <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
+                        <h2 class="custom-headline no-margin"
                             [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
                             Vote on Actions
-                        </h3>
+                        </h2>
                     </mat-expansion-panel-header>
                     <app-sort-bar model="Action"></app-sort-bar>
                     <app-card-list *ngSwitchCase="'complete'"
@@ -69,10 +69,10 @@
                 <mat-expansion-panel class="accordion-header"
                     [expanded]="suggestions.length && suggestions.length > 0">
                     <mat-expansion-panel-header>
-                        <h3 class="mat-headline"
+                        <h2 class="custom-headline no-margin"
                             [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
                             Suggestions for Actions
-                        </h3>
+                        </h2>
                     </mat-expansion-panel-header>
                     <app-card-list *ngSwitchCase="'complete'"
                         path="/suggestions"

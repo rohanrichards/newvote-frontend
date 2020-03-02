@@ -5,7 +5,7 @@
     <app-skeleton-panel *ngSwitchCase="'loading'"
         [hasVote]=true>
     </app-skeleton-panel>
-    <app-skeleton-panel *ngSwitchCase="'serverError'"
+    <app-skeleton-panel *ngSwitchCase="'error'"
         [hasVote]=true>
     </app-skeleton-panel>
     <mat-toolbar *ngSwitchCase="'complete'"
@@ -20,70 +20,13 @@
                 *ngIf="auth.isModerator() || auth.isCreator(suggestion)"
                 fxLayout="column"
                 fxLayoutAlign="center end">
-                <div class="button-panel">
-                    <!-- only show these buttons for admins/org owners -->
-                    <span *ngIf="auth.isModerator()">
-                        <button mat-icon-button
-                            matTooltip="Set Suggestion Approved"
-                            [color]="suggestion.status === 1 ? 'warn' : 'primary'"
-                            (click)="updateSuggestion(1)">
-                            <mat-icon aria-label="Add a new suggestion">
-                                check_circle</mat-icon>
-                        </button>
-                        <button mat-icon-button
-                            matTooltip="Set Suggestion Pending"
-                            [color]="suggestion.status === 0 ? 'warn' : 'primary'"
-                            (click)="updateSuggestion(0)">
-                            <mat-icon aria-label="Add a new suggestion">
-                                help_outline</mat-icon>
-                        </button>
-                        <button mat-icon-button
-                            matTooltip="Set Suggestion Denied"
-                            [color]="suggestion.status === -1 ? 'warn' : 'primary'"
-                            (click)="updateSuggestion(-1)">
-                            <mat-icon aria-label="Add a new suggestion">block
-                            </mat-icon>
-                        </button>
-                    </span>
-
-                    <button mat-icon-button
-                        matTooltip="Add a new Suggestion"
-                        color="accent"
-                        routerLink="/suggestions/create">
-                        <mat-icon aria-label="Add a new suggestion">playlist_add
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Edit this Suggestion"
-                        color="accent"
-                        routerLink="/suggestions/edit/{{suggestion._id}}">
-                        <mat-icon aria-label="Edit the suggestion">edit
-                        </mat-icon>
-                    </button>
-                    <button color="accent"
-                        *ngIf="suggestion.softDeleted"
-                        mat-icon-button
-                        (click)="admin.onRestore(suggestion, 'Suggestion', 'suggestions')">
-                        <mat-icon aria-label="Restore suggestion">restore
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Remove solution"
-                        *ngIf="!suggestion.softDeleted"
-                        color="accent"
-                        (click)="admin.onSoftDelete(suggestion, 'Suggestion', 'suggestions')">
-                        <mat-icon aria-label="Remove suggestion">delete
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="auth.isAdmin()"
-                        matTooltip="Delete this Suggestion"
-                        color="warn"
-                        (click)="admin.onDelete(suggestion, 'Suggestion', 'suggestions')">
-                        <mat-icon aria-label="Delete the suggestion forever">
-                            delete_forever</mat-icon>
-                    </button>
-                </div>
+                <app-admin-panel
+                    model="Suggestion"
+                    [item]="suggestion"
+                    path="/suggestions"
+                    (updateSuggestion)="updateSuggestion($event)"
+                >
+                </app-admin-panel>
             </div>
             <div fxLayout="row"
                 fxFlex></div>
@@ -138,7 +81,7 @@
             </app-skeleton-wide-card>
         </div>
     </div>
-    <div *ngSwitchCase="'serverError'"
+    <div *ngSwitchCase="'error'"
         class="container"
         fxLayout="column"
         fxLayoutAlign="center center">

@@ -6,6 +6,8 @@ export interface ITopic {
     user?: any;
     created?: Date;
     organizations: any;
+    slug: string;
+    issues: Array<any>;
 }
 
 export class Topic implements ITopic {
@@ -14,6 +16,8 @@ export class Topic implements ITopic {
         public name: string = '',
         public imageUrl: string = '',
         public description: string = '',
-        public organizations: any = {}
+        public organizations: any = {},
+        public slug: string = '',
+        public issues: Array<any> = []
     ) { }
 }

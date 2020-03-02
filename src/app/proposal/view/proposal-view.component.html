@@ -8,14 +8,20 @@
         <app-skeleton-panel [hasVote]=true>
         </app-skeleton-panel>
     </div>
-    <div *ngSwitchCase="'serverError'">
+    <div *ngSwitchCase="'error'">
         <app-skeleton-header [noLogo]=true>
         </app-skeleton-header>
         <app-skeleton-panel [hasVote]=true>
         </app-skeleton-panel>
-        <div class="error-container">
-            <app-error-card>
-            </app-error-card>
+        <div fxLayout="row wrap"
+            fxLayoutAlign="center center">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <div class="error-container">
+                    <app-error-card model="Action">
+                    </app-error-card>
+                </div>
+            </div>
         </div>
     </div>
     <mat-toolbar *ngSwitchCase="'complete'"
@@ -27,48 +33,11 @@
             fxLayout="column"
             [defaultImage]="handleImageUrl(proposal.imageUrl, true)"
             [lazyLoad]="handleImageUrl(proposal.imageUrl)">
-            <div class="admin-panel"
-                *ngIf="auth.isModerator(proposal)"
-                fxLayout="column"
-                fxLayoutAlign="center end">
-                <div class="button-panel">
-                    <button mat-icon-button
-                        matTooltip="Add a new Action"
-                        color="accent"
-                        routerLink="/proposals/create">
-                        <mat-icon aria-label="Add a new action">playlist_add
-                        </mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        matTooltip="Edit this Action"
-                        color="accent"
-                        routerLink="/proposals/edit/{{proposal.slug || proposal._id}}">
-                        <mat-icon aria-label="Edit the action">edit</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="proposal.softDeleted"
-                        matTooltip="Restore Action"
-                        color="accent"
-                        (click)="admin.onRestore(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Restore Action">restore</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="!proposal.softDeleted"
-                        matTooltip="Remove Action"
-                        color="accent"
-                        (click)="admin.onSoftDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Remove Action">delete</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                        *ngIf="auth.isAdmin()"
-                        matTooltip="Delete this Action"
-                        color="warn"
-                        (click)="admin.onDelete(proposal, 'Proposal', '/')">
-                        <mat-icon aria-label="Delete the action forever">
-                            delete_forever</mat-icon>
-                    </button>
-                </div>
-            </div>
+            <app-admin-panel path="/proposals"
+                [item]="proposal"
+                model="Proposal"
+                redirectRoute="''">
+            </app-admin-panel>
             <div fxLayout="row"
                 fxFlex></div>
             <!-- <div fxLayout="column"
@@ -108,11 +77,13 @@
                 </div>
                 <div *ngIf="auth.isVerified()"
                     [style.margin-bottom]="'1rem'">
-                    <h4 class="mat-subtitle-1">Make a Suggestion for this
+                    <h4 class="mat-subtitle-1">Make a Suggestion for
+                        this
                         action.</h4>
                     <button mat-flat-button
                         color="warn"
-                        (click)="populateSuggestion()">Make Suggestion</button>
+                        (click)="populateSuggestion()">Make
+                        Suggestion</button>
                 </div>
             </div>
         </div>
@@ -129,10 +100,10 @@
             [style.display]="'block'">
             <mat-expansion-panel class="accordion-header">
                 <mat-expansion-panel-header>
-                    <h3 class="mat-headline"
+                    <h2 class="custom-headline no-margin"
                         [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
                         Community Suggestions
-                    </h3>
+                    </h2>
                 </mat-expansion-panel-header>
                 <app-sort-bar model="Suggestion"></app-sort-bar>
                 <app-card-list path="/suggestions"
@@ -150,7 +121,8 @@
             <mat-toolbar color="primary"
                 fxLayoutAlign="center center"
                 [style.margin-bottom]="'1rem'">
-                <h2 class="mat-headline center-text">Create your own Suggestion
+                <h2 class="custom-headline center-text">Create your own
+                    Suggestion
                 </h2>
             </mat-toolbar>
             <app-make-suggestion parent="action"
