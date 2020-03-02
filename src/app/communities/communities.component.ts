@@ -14,6 +14,7 @@ export class CommunitiesComponent implements OnInit {
     organizations$: Observable<Organization[]>;
 
     opened: boolean;
+    isVisible = false
 
     constructor(
         private organizationService: OrganizationService,
@@ -66,5 +67,9 @@ export class CommunitiesComponent implements OnInit {
 
     trackByFn(index: any, item: any) {
         return index || item.id // or item.id
+    }
+
+    toggleSearch(event: any) {
+        this.isVisible = event || !this.isVisible
     }
 }

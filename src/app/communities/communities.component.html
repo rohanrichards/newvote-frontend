@@ -22,10 +22,17 @@
                 </button>
                 <span>Home</span>
                 <button class="search-button"
+                    (click)="toggleSearch()"
                     mat-icon-button>
                     <mat-icon>search</mat-icon>
                 </button>
             </mat-toolbar>
+            <app-search-bar 
+                [communitySearch]="true"
+                [isVisible]="isVisible"
+                (closeSearch)="toggleSearch(false)"
+                (isVisibleChange)="toggleSearch($event)"
+                ></app-search-bar>
             <div fxLayout="column"
                 fxLayoutAlign="start start">
                 <div class="header-container">
