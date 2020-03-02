@@ -21,6 +21,7 @@ export class ProgressFormComponent implements OnChanges {
     currentActiveState: string;
     showForm = false;
     showProgress = false;
+    showFeed = false
 
     ngOnInit() {
         this.setCurrentActiveState(this.progress)

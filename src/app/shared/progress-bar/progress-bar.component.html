@@ -1,19 +1,20 @@
 <div class="container">
     <div class="progress-header"
-        [style.padding-left.rem]="3"
-        fxLayout="row">
-        <div class="header-logo">
-        </div>
-        <h2 class="mat-headline">Progress News Feed</h2>
+        fxLayout="row"
+        fxLayoutAlign="center center">
+        <img class="header-logo" src="assets/progress-logo.png">
+        <h2 class="mat-display-1">Progress News Feed</h2>
     </div>
-    <div>
+    <div
+        [style.margin-top.rem]="2"
+        >
         <ul class="progress-bar">
             <li *ngFor="let state of getStates(progressState)"
                 [ngClass]="{
-                            'active': state.active,
-                            'progress-item': true
+                        'active': state.active,
+                        'progress-item': true
                     }">
-                {{ state.name }}
+                <p class="mat-title">{{ state.name }}</p>
             </li>
         </ul>
     </div>
