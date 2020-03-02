@@ -25,8 +25,12 @@
         fxLayout="column"
         fxLayoutAlign="center center"
         fxLayoutGap="24px">
-        <h4 class="mat-subheading">Update the Progress of the {{ item.name }}
-        </h4>
+        <div>
+            <h4 class="mat-title">Update the Progress of the {{ item.name }}
+            </h4>
+            <mat-divider></mat-divider>
+        </div>
+
         <mat-radio-group [style.width.%]="50"
             fxLayout="column"
             fxLayoutGap="12px"
@@ -41,9 +45,10 @@
                     [checked]="state.active === currentActiveState"
                     >
                     {{state.name}}
-                </mat-radio-button>
-                <hr />
+                </mat-radio-button> 
+                <mat-divider [style.margin-top.rem]="1" *ngIf="i < progress.states.length -1"></mat-divider> 
             </div>
+
         </mat-radio-group>
     </div>
 </div>
