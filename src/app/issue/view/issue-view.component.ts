@@ -154,12 +154,10 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToProgressStore(parentId: string) {
-        console.log(parentId, 'this is parentId')
         this.progressQuery.selectAll({
             filterBy: (entity) => entity.parent === parentId
         })
             .subscribe((res) => {
-                console.log(res, 'this is res')
                 if (!res.length) {
                     this.progress = this.defaultState
                     return false
