@@ -37,6 +37,7 @@ export class AccessControlQuery {
         return this.auth.isUserPartOfOrganization(user, organization)
     }
 
+    // Check for buttons
     canAccess(role: string) {
         const userHasRole = this.auth.hasRole(role)
         const { _id: userId } = this.auth.getValue()

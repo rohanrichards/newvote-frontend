@@ -49,7 +49,7 @@ export class IssueListComponent implements OnInit {
     @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
     issues: Array<Issue>;
-    allTopics: Array<Topic>;
+    allTopics: Array<Topic> = []
     filteredTopics: Observable<Topic[]>;
     selectedTopics: Array<Topic> = [];
     organization: Organization;
@@ -193,10 +193,6 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToTopicStore() {
-        // this.topicQuery.selectAll()
-        //     .subscribe((topics: Topic[]) => {
-        //         this.allTopics = topics
-        //     })
         this.entities.populateTopics()
             .subscribe(({topics, orphanedIssues}: any) => {
                 if (!topics.length) this.allTopics = []
