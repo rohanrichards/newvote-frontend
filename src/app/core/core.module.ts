@@ -56,6 +56,8 @@ import { AllEntityQuery } from './http/mediators/entity.query'
 import { AllEntityStore } from './http/mediators/entity.store'
 import { AccessControlQuery } from './http/mediators/access-control.query'
 import { AccessControlStore } from './http/mediators/access-control.store'
+import { EntityVotesQuery } from './http/mediators/entity-votes.query'
+import { EntityVotesStore } from './http/mediators/entity-votes.store'
 
 
 export function tokenGetter() {
@@ -135,6 +137,7 @@ export function tokenGetter() {
         AllEntityStore,
         AccessControlStore,
         AccessControlQuery,
+        EntityVotesQuery,
         {
             provide: HttpClient,
             useClass: HttpService

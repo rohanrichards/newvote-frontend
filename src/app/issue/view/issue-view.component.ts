@@ -12,7 +12,7 @@ import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
 import { IIssue, Issue } from '@app/core/models/issue.model'
-import { Solution } from '@app/core/models/solution.model'
+import { Solution, ISolution } from '@app/core/models/solution.model'
 import { Media } from '@app/core/models/media.model'
 import { Vote } from '@app/core/models/vote.model'
 
@@ -36,6 +36,7 @@ import { MediaQuery } from '@app/core/http/media/media.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-issue',
@@ -58,7 +59,7 @@ export class IssueViewComponent implements OnInit {
     isOpen = false;
     organization: any;
     suggestions: any;
-    solutions$: Observable<Solution[]>;
+    solutions$: Observable<ISolution[]>;
     suggestions$: Observable<Suggestion[]>;
     isVerified: boolean;
 
@@ -87,6 +88,7 @@ export class IssueViewComponent implements OnInit {
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         public access: AccessControlQuery,
+        private entityVotes: EntityVotesQuery
     ) { }
 
     ngOnInit() {
@@ -111,6 +113,11 @@ export class IssueViewComponent implements OnInit {
             })
 
         this.getSuggestions()
+        this.solutions$ = this.entityVotes.solutionVotes$()
+        // .subscribe((res) => {
+        //     console.log(res, 'this is res')
+        //     = 
+        // })
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -132,7 +139,7 @@ export class IssueViewComponent implements OnInit {
                     if (!issue) return issue
                     this.issue = issue
                     this.subscribeToSuggestionStore(issue._id)
-                    this.subscribeToSolutionStore(issue._id)
+                    // this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
@@ -140,15 +147,15 @@ export class IssueViewComponent implements OnInit {
                 (err) => err)
     }
 
-    subscribeToSolutionStore(issueId: string) {
-        this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+    // subscribeToSolutionStore(issueId: string) {
+    //     this.solutions$ = this.solutionQuery.selectSolutions(issueId)
 
-        this.solutions$.subscribe((res) => {
-            if (!res.length) return false
-            this.solutions = res
-            this.stateService.setLoadingState(AppState.complete)
-        })
-    }
+    //     this.solutions$.subscribe((res) => {
+    //         if (!res.length) return false
+    //         this.solutions = res
+    //         this.stateService.setLoadingState(AppState.complete)
+    //     })
+    // }
 
     subscribeToMediaStore(id: string) {
         this.mediaQuery.selectIssueMedia(id)

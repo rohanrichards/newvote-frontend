@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { MatSnackBar } from '@angular/material'
@@ -12,10 +12,10 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
     templateUrl: './vote-buttons.component.html',
     styleUrls: ['./vote-buttons.component.scss']
 })
-export class VoteButtonsComponent implements OnInit {
+export class VoteButtonsComponent implements OnInit, OnChanges {
 
-    voteMetaData$: Observable<VoteMetaData>;
-    storeVote: any;
+    // voteMetaData$: Observable<VoteMetaData>;
+    // storeVote: any;
 
     @Input() item: any;
     @Output() vote = new EventEmitter();
@@ -60,10 +60,14 @@ export class VoteButtonsComponent implements OnInit {
         ]
 
         // Get the total votes from the akita store
-        this.getVoteMetaData()
-            .subscribe((vote) => {
-                this.storeVote = vote
-            })
+        // this.getVoteMetaData()
+        //     .subscribe((vote) => {
+        //         this.storeVote = vote
+        //     })
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log(changes, 'this is changes')
     }
 
     getVoteMetaData() {
@@ -71,21 +75,21 @@ export class VoteButtonsComponent implements OnInit {
     }
 
     upVotesAsPercent() {
-        return this.getPercentage(this.storeVote || this.item) || 0
+        return this.getPercentage(this.item.votes) || 0
     }
 
     downVotesAsPercent() {
-        return 100 - this.getPercentage(this.storeVote || this.item.votes) || 0
+        return 100 - this.getPercentage(this.item.votes) || 0
     }
 
-    getPercentage(item: any) {
-        if (item.total === 0) {
+    getPercentage(votes: VoteMetaData) {
+        if (votes.total === 0) {
             // no votes yet
             return 0
         }
 
-        const numerator = item.up
-        const denominator = (item.up + item.down)
+        const numerator = votes.up
+        const denominator = (votes.up + votes.down)
 
         if (denominator === 0) {
             // stop divide by zero
