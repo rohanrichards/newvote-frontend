@@ -80,6 +80,7 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
     getProposals(id?: string | boolean | any[], asObject?: boolean) {
         // if no id is present return all solutions
         if (!id) {
+
             if (asObject) {
                 return this.selectAll({
                     filterBy: (entity: IProposal) => this.checkModerator(entity),

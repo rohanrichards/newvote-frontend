@@ -8,7 +8,7 @@ import { combineQueries } from "@datorama/akita";
 import { map } from "rxjs/operators";
 import { Solution, ISolution } from "@app/core/models/solution.model";
 import { Vote } from "@app/core/models/vote.model";
-import { IProposal } from "@app/core/models/proposal.model";
+import { IProposal, Proposal } from "@app/core/models/proposal.model";
 import { ISuggestion } from "@app/core/models/suggestion.model";
 import { orderBy } from 'lodash'
 import { IIssue } from "@app/core/models/issue.model";
@@ -55,18 +55,21 @@ export class EntityVotesQuery {
             )
     }
 
-    proposalVotes$(solutionId: string) {
+    proposalVotes$(solutionId?: string) {
         return combineQueries([
             this.proposals.getProposals(solutionId, false),
             this.votes.selectAll({ asObject: true }),
         ])
             .pipe(
                 map(([proposals, votes]) => {
-                    return proposals.slice().map((proposal: IProposal) => {
-                        return Object.assign({}, proposal, {
-                            votes: votes[proposal._id]
+                    if ((proposals as Proposal[]).length) {
+                        return (proposals as Proposal[]).slice().map((proposal: IProposal) => {
+                            return Object.assign({}, proposal, {
+                                votes: votes[proposal._id]
+                            })
                         })
-                    })
+                    }
+                    return proposals
                 })
             )
     }
