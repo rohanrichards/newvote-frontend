@@ -8,7 +8,7 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { Vote } from '@app/core/models/vote.model'
 import { trigger } from '@angular/animations'
 import { fadeIn } from '@app/shared/animations/fade-animations'
@@ -19,6 +19,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { assign } from 'lodash'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-suggestion',
@@ -30,8 +31,8 @@ import { assign } from 'lodash'
 })
 export class SuggestionViewComponent implements OnInit {
 
-    suggestion: Suggestion;
-    suggestions: Array<Suggestion>;
+    suggestion: ISuggestion;
+    suggestions: Array<ISuggestion>;
     isLoading: boolean;
     loadingState: string;
 
@@ -47,7 +48,8 @@ export class SuggestionViewComponent implements OnInit {
         private meta: MetaService,
         private voteQuery: VotesQuery,
         private admin: AdminService,
-        private suggestionQuery: SuggestionQuery
+        private suggestionQuery: SuggestionQuery,
+        private entityVotes: EntityVotesQuery,
     ) { }
 
     ngOnInit() {
@@ -66,10 +68,13 @@ export class SuggestionViewComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.getSuggestionWithSlug(id)
-            .subscribe((suggestion: Suggestion[]) => {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        const key = isObjectId ? '_id' : 'slug'
+        this.entityVotes.suggestionVotes$(id, key)
+            .subscribe((suggestion: ISuggestion[]) => {
                 if (!suggestion.length) return false
-                this.suggestion = suggestion[0]
+                const [entity, ...rest] = suggestion
+                this.suggestion = entity
                 this.stateService.setLoadingState(AppState.complete)
             })
     }
@@ -97,8 +102,8 @@ export class SuggestionViewComponent implements OnInit {
         this.suggestionService.update({ id: this.suggestion._id, entity })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                () => this.openSnackBar('Succesfully updated', 'OK'),
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                () => this.admin.openSnackBar('Succesfully updated', 'OK'),
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 
@@ -116,24 +121,16 @@ export class SuggestionViewComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 },
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     convertSuggestion() {
@@ -148,33 +145,6 @@ export class SuggestionViewComponent implements OnInit {
                 ...this.suggestion
             }
         })
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
     }
 
 }

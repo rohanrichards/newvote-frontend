@@ -22,7 +22,7 @@ import { trigger } from '@angular/animations'
 import { fadeIn } from '@app/shared/animations/fade-animations'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { OrganizationService } from '@app/core'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
@@ -60,7 +60,7 @@ export class IssueViewComponent implements OnInit {
     organization: any;
     suggestions: any;
     solutions$: Observable<ISolution[]>;
-    suggestions$: Observable<Suggestion[]>;
+    suggestions$: Observable<ISuggestion[]>;
     isVerified: boolean;
 
     constructor(
@@ -78,11 +78,8 @@ export class IssueViewComponent implements OnInit {
         public dialog: MatDialog,
         public snackBar: MatSnackBar,
         private meta: MetaService,
-        private suggestionQuery: SuggestionQuery,
         private issueQuery: IssueQuery,
-        private solutionQuery: SolutionQuery,
         private proposalService: ProposalService,
-        private voteQuery: VotesQuery,
         public admin: AdminService,
         private mediaQuery: MediaQuery,
         public repQuery: RepQuery,
@@ -116,9 +113,7 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestions$ = this.suggestionQuery.selectAll({
-            filterBy: entity => entity.parent === id
-        })
+        this.suggestions$ = this.entityVotes.suggestionVotes$(id, 'parent')
 
         this.suggestions$.subscribe((res) => {
             if (!res) return false
@@ -241,7 +236,7 @@ export class IssueViewComponent implements OnInit {
         })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                () => { },
+                (res) => res,
                 (err) => err
             )
     }

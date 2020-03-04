@@ -74,16 +74,19 @@ export class EntityVotesQuery {
             )
     }
 
-    suggestionVotes$() {
+    suggestionVotes$(id: string, key: string) {
         return combineQueries([
-            this.suggestions.selectAll(),
+            this.suggestions.selectAll({
+                filterBy: entity => entity[key] === id
+            }),
             this.votes.selectAll({ asObject: true }),
         ])
             .pipe(
                 map(([suggestions, votes]) => {
-                    return suggestions.slice().map((suggesiton: ISuggestion) => {
-                        suggesiton.votes = votes[suggesiton._id]
-                        return suggesiton
+                    return suggestions.slice().map((suggestion: ISuggestion) => {
+                        return Object.assign({}, suggestion, {
+                            votes: votes[suggestion._id]
+                        })
                     })
                 })
             )

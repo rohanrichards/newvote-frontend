@@ -14,6 +14,7 @@ import { MetaService } from '@app/core/meta.service'
 
 import { Suggestion } from '@app/core/models/suggestion.model'
 import { Organization } from '@app/core/models/organization.model'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -56,7 +57,8 @@ export class SuggestionCreateComponent implements OnInit {
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) {
         // this.filteredObjects = this.suggestionForm.get('parent').valueChanges
         //     .pipe(
@@ -157,20 +159,13 @@ export class SuggestionCreateComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (suggestion: Suggestion) => {
-                    this.openSnackBar('Succesfully created', 'OK')
+                    this.admin.openSnackBar('Succesfully created', 'OK')
                     this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
                 },
                 error => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     parentSelected(event: any) {

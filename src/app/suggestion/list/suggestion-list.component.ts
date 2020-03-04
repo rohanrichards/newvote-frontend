@@ -121,51 +121,16 @@ export class SuggestionListComponent implements OnInit {
         this.voteService.create({ entity: vote })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((res) => {
-                this.updateEntityVoteData(item, model, res.voteValue)
-                this.openSnackBar('Your vote was recorded', 'OK')
+                this.admin.openSnackBar('Your vote was recorded', 'OK')
             },
             (error) => {
                 if (error.status === 401) {
-                    this.openSnackBar('You must be logged in to vote', 'OK')
+                    this.admin.openSnackBar('You must be logged in to vote', 'OK')
                 } else {
-                    this.openSnackBar('There was an error recording your vote', 'OK')
+                    this.admin.openSnackBar('There was an error recording your vote', 'OK')
                 }
             }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
     }
 
 }

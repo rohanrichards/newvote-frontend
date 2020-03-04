@@ -11,6 +11,7 @@ import { Location } from '@angular/common'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -44,6 +45,7 @@ export class NavbarComponent implements OnInit {
         private location: Location,
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -151,17 +153,11 @@ export class NavbarComponent implements OnInit {
         return this.auth.verifyWithCommunity()
             .subscribe(
                 (res) => {
-                    this.openSnackBar('You have successfully verified with this community.', 'OK')
+                    this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
                 },
                 (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
 }

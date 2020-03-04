@@ -20,6 +20,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 import { cloneDeep } from 'lodash'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-solution',
@@ -61,7 +62,8 @@ export class SolutionEditComponent implements OnInit {
         private meta: MetaService,
         private issueQuery: IssueQuery,
         private solutionQuery: SolutionQuery,
-        private organizationQuery: OrganizationQuery
+        private organizationQuery: OrganizationQuery,
+        private admin: AdminService
     ) {
         this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
             startWith(''),
@@ -246,18 +248,11 @@ export class SolutionEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/solutions/${t.slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

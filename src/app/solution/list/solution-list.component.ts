@@ -17,7 +17,7 @@ import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { OrganizationService } from '@app/core'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { forkJoin, Observable } from 'rxjs'
@@ -145,16 +145,11 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.suggestions$
-            .pipe(
-                map((suggestions) => {
-                    return suggestions.filter((suggestion) => suggestion.type === 'solution')
-                }),
-            )
+        this.suggestions$ = this.entityVotes.suggestionVotes$('solution', 'type')
 
-        this.suggestions$.subscribe((res) => {
-            if (!res) return false
-            this.suggestions = res
+        this.suggestions$.subscribe((suggestions: ISuggestion[]) => {
+            if (!suggestions) return false
+            this.suggestions = suggestions
         })
     }
 
@@ -172,25 +167,17 @@ export class SolutionListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    // this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
 
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     handleSuggestionSubmit(formData: any) {
@@ -200,10 +187,10 @@ export class SolutionListComponent implements OnInit {
         this.suggestionService.create({ entity: suggestion })
             .subscribe(
                 () => {
-                    this.openSnackBar('Succesfully created', 'OK')
+                    this.admin.openSnackBar('Succesfully created', 'OK')
                 },
                 (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
     }

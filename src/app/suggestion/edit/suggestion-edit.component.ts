@@ -12,12 +12,14 @@ import { SearchService } from '@app/core/http/search/search.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { cloneDeep } from 'lodash'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -26,7 +28,7 @@ import { cloneDeep } from 'lodash'
 })
 export class SuggestionEditComponent implements OnInit {
 
-    suggestion: Suggestion;
+    suggestion: ISuggestion;
     organization: Organization;
     mediaList: Array<string> = [];
     separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
@@ -57,7 +59,9 @@ export class SuggestionEditComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
-        private suggestionQuery: SuggestionQuery
+        private suggestionQuery: SuggestionQuery,
+        private entityVotes: EntityVotesQuery,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -77,13 +81,16 @@ export class SuggestionEditComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestionQuery.getSuggestionWithSlug(id)
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        const key = isObjectId ? '_id' : 'slug'
+        this.entityVotes.suggestionVotes$(id, key)
             .subscribe(
-                (suggestion: Suggestion[]) => {
-                    if (!suggestion.length) return false
-                    this.suggestion = suggestion[0]
-                    this.updateForm(suggestion[0])
-                    this.updateTags(suggestion[0])
+                (suggestions: ISuggestion[]) => {
+                    if (!suggestions.length) return false
+                    const [suggestion, ...rest] = suggestions
+                    this.suggestion = suggestion
+                    this.updateForm(suggestion)
+                    this.updateTags(suggestion)
                 },
                 (err) => err
             )
@@ -97,7 +104,7 @@ export class SuggestionEditComponent implements OnInit {
             )
     }
 
-    updateForm(suggestion: Suggestion) {
+    updateForm(suggestion: ISuggestion) {
         this.mediaList = suggestion.media
 
         this.suggestionForm.patchValue({
@@ -110,7 +117,7 @@ export class SuggestionEditComponent implements OnInit {
         })
     }
 
-    updateTags(suggestion: Suggestion) {
+    updateTags(suggestion: ISuggestion) {
         this.meta.updateTags(
             {
                 title: `Edit ${suggestion.title}`,
@@ -131,18 +138,11 @@ export class SuggestionEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/suggestions/${t._slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     // imported data from query is read only, so need to copy / replace

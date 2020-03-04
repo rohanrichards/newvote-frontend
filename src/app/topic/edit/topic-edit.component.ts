@@ -13,6 +13,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-topic',
@@ -43,7 +44,8 @@ export class TopicEditComponent implements OnInit {
         public snackBar: MatSnackBar,
         private location: Location,
         private meta: MetaService,
-        private topicQuery: TopicQuery
+        private topicQuery: TopicQuery,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -182,20 +184,13 @@ export class TopicEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 () => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     // this.router.navigate(['/issues']);
                     this.location.back()
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
 }

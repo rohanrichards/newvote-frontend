@@ -19,6 +19,7 @@ import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-proposal',
@@ -61,7 +62,8 @@ export class ProposalEditComponent implements OnInit {
         private proposalQuery: ProposalQuery,
         private issueQuery: IssueQuery,
         private solutionQuery: SolutionQuery,
-        private organizationQuery: OrganizationQuery
+        private organizationQuery: OrganizationQuery,
+        private admin: AdminService
     ) {
         this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
             startWith(''),
@@ -254,18 +256,11 @@ export class ProposalEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/proposals/${t.slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     solutionSelected(event: any) {

@@ -17,6 +17,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ActivatedRoute } from '@angular/router'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-proposal',
@@ -59,7 +60,8 @@ export class ProposalListComponent implements OnInit {
         private suggestionQuery: SuggestionQuery,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private entityVotes: EntityVotesQuery
     ) { }
 
     ngOnInit() {
@@ -90,12 +92,7 @@ export class ProposalListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestionQuery.suggestions$
-            .pipe(
-                map((suggestions) => {
-                    return suggestions.filter((suggestion) => suggestion.type === 'action')
-                }),
-            )
+        this.entityVotes.suggestionVotes$('action', 'type')
             .subscribe((suggestions) => {
                 if (!suggestions) return false
                 this.suggestions = suggestions
@@ -142,55 +139,16 @@ export class ProposalListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-
-                    this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Proposal') {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
-    }
 }

@@ -168,16 +168,10 @@ export class HomeComponent implements OnInit {
             .subscribe(
                 () => {
                     this.auth.saveTourToLocalStorage()
-                    this.openSnackBar('Tour Complete', 'OK')
+                    this.admin.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err
             )
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
 }
