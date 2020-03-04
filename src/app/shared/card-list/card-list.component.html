@@ -72,7 +72,8 @@
                 <mat-divider></mat-divider>
             </mat-card-content>
             <mat-card-actions>
-                <app-vote-buttons [item]="item"
+                <app-vote-buttons 
+                    [item]="item"
                     (vote)=onVote($event)>
                 </app-vote-buttons>
             </mat-card-actions>

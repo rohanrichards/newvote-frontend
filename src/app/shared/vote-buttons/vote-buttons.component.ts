@@ -6,17 +6,15 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { Observable } from 'rxjs'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { IVote } from '@app/core/models/vote.model'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-vote-buttons',
     templateUrl: './vote-buttons.component.html',
     styleUrls: ['./vote-buttons.component.scss']
 })
-export class VoteButtonsComponent implements OnInit, OnChanges {
-
-    // voteMetaData$: Observable<VoteMetaData>;
-    // storeVote: any;
-
+export class VoteButtonsComponent implements OnInit {
     @Input() item: any;
     @Output() vote = new EventEmitter();
 
@@ -42,7 +40,8 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
     constructor(
         public snackBar: MatSnackBar,
         private votesQuery: VotesQuery,
-        public auth: AuthenticationQuery
+        public auth: AuthenticationQuery,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -58,16 +57,6 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
                 data: [this.downVotesAsPercent()]
             }
         ]
-
-        // Get the total votes from the akita store
-        // this.getVoteMetaData()
-        //     .subscribe((vote) => {
-        //         this.storeVote = vote
-        //     })
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        console.log(changes, 'this is changes')
     }
 
     getVoteMetaData() {
@@ -107,14 +96,7 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
 
     voteToRevealMessage(event: any) {
         event.stopPropagation()
-        this.openSnackBar('You have to vote to reveal the result', 'OK')
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
+        this.admin.openSnackBar('You have to vote to reveal the result', 'OK')
     }
 
     votesWidthFor() {

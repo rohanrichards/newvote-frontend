@@ -113,11 +113,6 @@ export class IssueViewComponent implements OnInit {
             })
 
         this.getSuggestions()
-        this.solutions$ = this.entityVotes.solutionVotes$()
-        // .subscribe((res) => {
-        //     console.log(res, 'this is res')
-        //     = 
-        // })
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -147,15 +142,15 @@ export class IssueViewComponent implements OnInit {
                 (err) => err)
     }
 
-    // subscribeToSolutionStore(issueId: string) {
-    //     this.solutions$ = this.solutionQuery.selectSolutions(issueId)
+    subscribeToSolutionStore(issueId: string) {
+        this.solutions$ = this.entityVotes.solutionVotes$()
 
-    //     this.solutions$.subscribe((res) => {
-    //         if (!res.length) return false
-    //         this.solutions = res
-    //         this.stateService.setLoadingState(AppState.complete)
-    //     })
-    // }
+        // this.solutions$.subscribe((res) => {
+        //     if (!res.length) return false
+        //     this.solutions = res
+        //     this.stateService.setLoadingState(AppState.complete)
+        // })
+    }
 
     subscribeToMediaStore(id: string) {
         this.mediaQuery.selectIssueMedia(id)
@@ -212,7 +207,7 @@ export class IssueViewComponent implements OnInit {
                             image: issue.imageUrl || ''
                         })
                 },
-                (err) => {
+                () => {
                     this.isLoading = false
                     this.stateService.setLoadingState(AppState.error)
                 }
@@ -258,40 +253,30 @@ export class IssueViewComponent implements OnInit {
     }
 
     onVote(voteData: any, model: string) {
-        this.isLoading = true
-        const { item, voteValue } = voteData
-        const vote = new Vote(item._id, model, voteValue)
-        const existingVote = item.votes.currentUser
 
-        if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        this.isLoading = true
+        const { item, item: { votes: { currentUser } }, voteValue } = voteData
+        let vote = new Vote(item._id, model, voteValue)
+
+        if (currentUser) {
+            vote = Object.assign({}, currentUser, {
+                voteValue: voteValue === currentUser.voteValue ? 0 : voteValue
+            })
         }
 
         this.voteService.create({ entity: vote })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error) {
-                        if (error.status === 401) {
-                            this.openSnackBar('You must be logged in to vote', 'OK')
-                        } else {
-                            this.openSnackBar('There was an error recording your vote', 'OK')
-                        }
+                        if (error.status === 401) this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right',
-            verticalPosition: 'bottom',
-        })
     }
 
     toggleHeader() {
@@ -325,51 +310,12 @@ export class IssueViewComponent implements OnInit {
         suggestion.parentTitle = this.issue.name
 
         this.suggestionService.create({ entity: suggestion })
-            .subscribe(() => {
-                this.openSnackBar('Succesfully created', 'OK')
-            },
-            (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
             .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Solution') {
-                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Proposal') {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Media') {
-                        return this.mediaService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
+                () => this.admin.openSnackBar('Succesfully created', 'OK'),
+                (error) => {
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
             )
-
     }
 
 }

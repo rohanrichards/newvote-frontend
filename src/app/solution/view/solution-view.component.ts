@@ -187,7 +187,6 @@ export class SolutionViewComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue)
                     this.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
@@ -224,41 +223,6 @@ export class SolutionViewComponent implements OnInit {
                     this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Solution') {
-                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Proposal') {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
     }
 
 }
