@@ -28,6 +28,8 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { FormControl } from '@angular/forms'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-solution',
@@ -83,7 +85,8 @@ export class SolutionListComponent implements OnInit {
         private proposalService: ProposalService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        private access: AccessControlQuery
+        private access: AccessControlQuery,
+        private entityVotes: EntityVotesQuery
     ) { }
 
     ngOnInit() {
@@ -133,7 +136,7 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSolutionStore() {
-        this.solutions$ = this.solutionQuery.selectSolutions()
+        this.solutions$ = this.entityVotes.solutionVotes$()
 
         this.solutions$.subscribe((res) => {
             if (!res) return false

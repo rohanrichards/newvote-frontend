@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { QueryEntity, combineQueries } from '@datorama/akita'
 import { SolutionState, SolutionStore } from './solution.store'
-import { Solution } from '@app/core/models/solution.model'
+import { Solution, ISolution } from '@app/core/models/solution.model'
 import { ProposalQuery } from '../proposal/proposal.query'
 import { map, filter } from 'rxjs/operators'
 import { IssueQuery } from '../issue/issue.query'
@@ -11,6 +11,7 @@ import { Proposal } from '@app/core/models/proposal.model'
 import { orderBy } from 'lodash'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { combineLatest } from 'rxjs'
+import { IIssue } from '@app/core/models/issue.model'
 
 @Injectable()
 export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
@@ -18,13 +19,7 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
     selectOrder$ = this.select(state => state.order);
 
     solutions$ = this.selectAll({
-        filterBy: (entity) => {
-            if (this.auth.isModerator()) {
-                return true
-            }
-
-            return !entity.softDeleted
-        }
+        filterBy: (entity) => this.checkModerator(entity)
     })
 
     // https://blog.angularindepth.com/plan-your-next-party-with-an-angular-invite-app-using-akita-422495351767
@@ -37,9 +32,6 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
 
     constructor(
         protected store: SolutionStore,
-        private proposalQuery: ProposalQuery,
-        private issueQuery: IssueQuery,
-        private voteQuery: VotesQuery,
         private auth: AuthenticationQuery
     ) {
         super(store)
@@ -52,73 +44,40 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
         })
     }
 
-    selectSolutions(issueId?: string) {
-        return combineQueries(
-            [
-                this.sortedSolutions$,
-                this.proposalQuery.proposals$,
+    getSolutions(id?: string | boolean | any[]) {
+        // if no id is present return all solutions
+        if (!id) {
+            return this.solutions$
+        }
+
+        return this.selectAll({
+            filterBy: [
+                (solution: ISolution) => {
+                    // Check each solution if it contains the issue id in it's
+                    // issues array
+                    // console.log(entity, 'this is entity')
+                    return solution.issues.some((issue: IIssue | string) => {
+                        if ((issue as IIssue)._id) {
+                            return (issue as IIssue)._id === id
+                        }
+                        return issue === id
+                    })
+                },
+                (entity: ISolution) => this.checkModerator(entity)
             ]
-        )
-            .pipe(
-                map((results) => {
-                    let [solutions, proposals] = results
-
-                    if (issueId) {
-                        solutions = solutions.filter((solution) => {
-                            return solution.issues.some((issue) => {
-                                if (typeof issue === 'string') {
-                                    return issue === issueId
-                                }
-
-                                return issue._id === issueId
-                            })
-                        })
-                    }
-
-                    return solutions.map((solution) => {
-
-                        // Backwards map proposals.solutions to solutions.proposals array
-                        // normally proposals would get attached on the backend
-                        const solutionProposals = proposals.filter((proposal: Proposal) => {
-                            return proposal.solutions.some((pSolution: any) => {
-                                if (typeof pSolution === 'string') {
-                                    return solution._id === pSolution
-                                }
-
-                                return solution._id === pSolution._id
-                            })
-                        })
-
-                        return {
-                            ...solution,
-                            proposals: solutionProposals,
-                            votes: solution.votes
-                        }
-                    })
-                })
-            )
+        })
     }
 
-    filterByProposalId(id: string) {
-        return this.solutions$
-            .pipe(
-                filter((entity: any) => {
-                    const includesSolutionId = entity.proposals.some((proposal: any) => {
-                        // New proposals return an array of string _id's instead of Objects with a property of
-                        // ._id
-                        if (typeof proposal === 'string') {
-                            return proposal === id
-                        }
+    // Filter softDeleted items for users below moderator
+    checkModerator(entity: any) {
+        if (this.auth.isModerator()) {
+            return true
+        }
 
-                        return proposal._id === id
-                    })
-
-                    return includesSolutionId
-                })
-            )
+        return !entity.softDeleted
     }
 
-    sortSolutions(filter: string, order: string, solutions: Solution[]) {
+    private sortSolutions(filter: string, order: string, solutions: Solution[]) {
         const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
 
         switch (filter) {

@@ -29,6 +29,7 @@ import { Observable } from 'rxjs'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-solution',
@@ -71,7 +72,8 @@ export class SolutionViewComponent implements OnInit {
         private proposalQuery: ProposalQuery,
         public authQuery: AuthenticationQuery,
         public repQuery: RepQuery,
-        private access: AccessControlQuery
+        private access: AccessControlQuery,
+        private entityVotes: EntityVotesQuery
     ) { }
 
     ngOnInit() {
@@ -165,7 +167,7 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposals$ = this.proposalQuery.filterBySolutionId(id)
+        this.proposals$ = this.entityVotes.proposalVotes$(id)
 
         this.proposals$.subscribe((res) => {
             if (!res) return false

@@ -11,6 +11,7 @@ import { Vote } from "@app/core/models/vote.model";
 import { IProposal } from "@app/core/models/proposal.model";
 import { ISuggestion } from "@app/core/models/suggestion.model";
 import { orderBy } from 'lodash'
+import { IIssue } from "@app/core/models/issue.model";
 
 @Injectable()
 export class EntityVotesQuery {
@@ -28,27 +29,21 @@ export class EntityVotesQuery {
         public proposals: ProposalQuery,
         public suggestions: SuggestionQuery) { }
 
-    solutionVotes$() {
+    solutionVotes$(issueId?: string) {
         return combineQueries([
-            this.solutions.solutions$,
+            this.solutions.getSolutions(issueId),
             this.votes.selectAll({ asObject: true }),
-            this.proposals.selectAll({ asObject: true })
+            this.proposals.getProposals(false, true)
         ])
             .pipe(
                 map(([solutions, votes, proposals]) => {
+                    // Map votes to proposals first, then add proposals to solutions
                     return solutions.slice().map((solution: ISolution) => {
                         let { proposals: sProposals } = solution
-                        if (!votes[solution._id]) {
-                            return solution
-                        }
 
+                        // proposals exist so repopulate the array with query proprosals
                         if (solution.proposals.length) {
-                            sProposals = sProposals.slice().map((item) => {
-                                if (typeof item === 'string') {
-                                    return proposals[item]
-                                }
-                                return item
-                            })
+                            sProposals = this.populateCollection(sProposals, proposals, votes)
                         }
 
                         return Object.assign({}, solution, {
@@ -60,16 +55,17 @@ export class EntityVotesQuery {
             )
     }
 
-    proposalVotes$() {
+    proposalVotes$(solutionId: string) {
         return combineQueries([
-            this.proposals.selectAll(),
+            this.proposals.getProposals(solutionId, false),
             this.votes.selectAll({ asObject: true }),
         ])
             .pipe(
                 map(([proposals, votes]) => {
                     return proposals.slice().map((proposal: IProposal) => {
-                        proposal.votes = votes[proposal._id]
-                        return proposal
+                        return Object.assign({}, proposal, {
+                            votes: votes[proposal._id]
+                        })
                     })
                 })
             )
@@ -103,5 +99,30 @@ export class EntityVotesQuery {
             case 'TITLE':
                 return orderBy(solutions, ['title'], sortedOrder)
         }
+    }
+
+    // Issue: Nested entities do not have the latest vote data
+    // breaks nested vote buttons on template
+
+    // Solution: Create a function which populates nested entities with vote data
+
+    // Primary collection should be from secondary entities from a collection
+    // i.e proposals on a Solution
+    // Secondary collection should be from the akita store & a hashmap
+    // Intended to populate the Primary collections with latest vote data
+    populateCollection(primaryCollection: any, secondaryCollection: any, votes: any) {
+        return primaryCollection.slice()
+            .filter((item: any) => {
+                const id = item._id ? item._id : item
+                return secondaryCollection[id]
+            })
+            .map((item: any) => {
+                // if item._id does not exist we have an unpopulated array
+                // of objectIds
+                const id = item._id ? item._id : item
+                return Object.assign({}, secondaryCollection[id], {
+                    votes: votes[id] || null
+                })
+            })
     }
 }

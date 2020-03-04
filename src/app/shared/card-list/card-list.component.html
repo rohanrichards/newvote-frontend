@@ -83,6 +83,7 @@
                     <app-child-card
                         [item]="child"
                         [path]="childPath"
+                        (vote)="onChildVote($event)"
                     >
                     </app-child-card>
                 </div>

@@ -134,7 +134,7 @@ export class IssueViewComponent implements OnInit {
                     if (!issue) return issue
                     this.issue = issue
                     this.subscribeToSuggestionStore(issue._id)
-                    // this.subscribeToSolutionStore(issue._id)
+                    this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
@@ -143,13 +143,7 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(issueId: string) {
-        this.solutions$ = this.entityVotes.solutionVotes$()
-
-        // this.solutions$.subscribe((res) => {
-        //     if (!res.length) return false
-        //     this.solutions = res
-        //     this.stateService.setLoadingState(AppState.complete)
-        // })
+        this.solutions$ = this.entityVotes.solutionVotes$(issueId)
     }
 
     subscribeToMediaStore(id: string) {
