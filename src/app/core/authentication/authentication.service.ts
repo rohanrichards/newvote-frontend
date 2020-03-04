@@ -365,7 +365,7 @@ export class AuthenticationService {
                     // the store will pull data from the data store on local store
                     // need to update local store with latest verification data
 
-                    let { user, token } = this._credentials;
+                    const { user, token } = this._credentials;
                     user.verified = verified;
                     user.organizations = organizations;
 
@@ -373,7 +373,7 @@ export class AuthenticationService {
                         user,
                         token
                     }
-                    
+
                     this.setCredentials(newCreds, true);
                 })
             )

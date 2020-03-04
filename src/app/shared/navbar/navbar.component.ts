@@ -11,6 +11,7 @@ import { Location } from '@angular/common'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -44,6 +45,8 @@ export class NavbarComponent implements OnInit {
         private location: Location,
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
+        public access: AccessControlQuery,
+        public orgQuery: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -144,18 +147,29 @@ export class NavbarComponent implements OnInit {
     }
 
     handleVerify() {
-        if (!this.authQuery.isUserVerified() || !this.authQuery.doesMobileNumberExist()) {
-            return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+        // If community is authType 0 
+        const { authType, url } = this.orgQuery.getValue()
+        if (authType === 0) {
+            if (!this.access.isCommunityVerified()) {
+                return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+            }
+
+            return this.auth.verifyWithCommunity()
+                .subscribe(
+                    (res) => {
+                        this.openSnackBar('You have successfully verified with this community.', 'OK')
+                    },
+                    (error) => {
+                        this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    })
         }
 
-        return this.auth.verifyWithCommunity()
-            .subscribe(
-                (res) => {
-                    this.openSnackBar('You have successfully verified with this community.', 'OK')
-                },
-                (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+        if (authType === 1) {
+            if (!this.access.isCommunityVerified()) {
+                return this.router.navigate(['/auth/login'], { replaceUrl: true })
+            }
+        }
+
     }
 
     openSnackBar(message: string, action: string) {
