@@ -1,0 +1,77 @@
+<div class="community-container container" fxLayoutAlign="center center">
+    <div fxFlex.gt-sm="690px" fxFlex.gt-md="800px" fxLayout="column">
+        <div class="mat-display-1 no-margin">
+            <span *ngIf="org">{{ org.name }}</span>
+        </div>
+        <div class="mat-h2" *ngIf="org">{{ org.description }}</div>
+        <div fxLayout="row" fxFlex>
+            <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
+                <span class="mat-h1" *ngIf="userCount">{{
+                    handleUserCount(userCount)
+                }}</span>
+                <span class="mat-h1" *ngIf="!userCount">0</span>
+                <span class="mat-h3">Members</span>
+            </div>
+            <mat-divider vertical="true"></mat-divider>
+            <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
+                <span
+                    [style.text-decoration]="'underline'"
+                    routerLink="/issues"
+                    class="mat-h1 pointer"
+                    *ngIf="issues"
+                    >{{ issues.length }}</span
+                >
+                <span class="mat-h1" *ngIf="!issues">0</span>
+                <span class="mat-h3">Issues</span>
+            </div>
+            <mat-divider vertical="true"></mat-divider>
+            <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
+                <span
+                    [style.text-decoration]="'underline'"
+                    class="mat-h1 pointer"
+                    routerLink="/solutions"
+                    *ngIf="proposals && solutions"
+                    >{{ proposals.length + solutions.length }}</span
+                >
+                <span class="mat-h1 pointer" *ngIf="!proposals || !solutions"
+                    >0</span
+                >
+                <span class="mat-h3">Solutions</span>
+            </div>
+        </div>
+        <div *ngIf="org" [style.margin-top]="'1rem'">
+            <div *ngIf="!org.owner">
+                <span class="mat-caption"
+                    >NewVote is not currently affiliated with
+                    {{ org.name }}.</span
+                >
+                <span class="mat-caption"
+                    >If you would like to claim leadership of the
+                    {{ org.name }} community
+                    <button
+                        mat-button
+                        [routerLink]="['/communities/claim/', org._id]"
+                        color="primary"
+                        class="mat-display-1"
+                    >
+                        CLAIM HERE
+                    </button>
+                </span>
+            </div>
+            <div *ngIf="org.owner">
+                <span *ngIf="org.organizationName" class="mat-caption"
+                    >{{ org.organizationName }} is the leader of this
+                    community.</span
+                >
+            </div>
+            <div>
+                <button routerLink="/issues" mat-raised-button color="primary">
+                    <span class="custom-headline issues-button"
+                        >Your Issues</span
+                    >
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

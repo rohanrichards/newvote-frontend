@@ -4,14 +4,20 @@ import { AuthenticationStore } from './authentication.store'
 import { Query, toBoolean, combineQueries } from '@datorama/akita'
 import { OrganizationQuery } from '../http/organization/organization.query'
 import { map } from 'rxjs/operators'
-import { Organization } from '../models/organization.model'
+import { Organization, IOrganization } from '../models/organization.model'
 import { Observable } from 'rxjs'
-import { RepQuery } from '../http/rep/rep.query'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
     isLoggedIn$ = this.select(state => !!state._id);
-    isCommunityVerified$: Observable<any>;
+    isCommunityVerified$: Observable<any> = combineQueries([
+        this.select(),
+        this.organizationQuery.select()
+    ]).pipe(
+        map(([user, organization]) => {
+            return this.isUserPartOfOrganization(user, organization)
+        })
+    )
 
     constructor(
         protected store: AuthenticationStore,
@@ -24,15 +30,18 @@ export class AuthenticationQuery extends Query<IUser> {
         return !!this.getValue()._id
     }
 
-    isCommunityVerified() {
-        return combineQueries([
-            this.select(),
-            this.organizationQuery.select()
-        ]).pipe(
-            map(([user, organization]) => {
-                return this.isUserPartOfOrganization(user, organization)
-            })
-        )
+    hasRole(role: string) {
+        return !!this.getValue().roles.includes(role)
+    }
+
+    isCommunityVerified(organization: any) {
+        const user = this.getValue()
+        return this.isUserPartOfOrganization(user, organization)
+    }
+
+    isAdmin() {
+        const user = this.getValue()
+        return !!this.getValue().roles.includes('admin')
     }
 
     isOwner() {
@@ -64,10 +73,41 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserPartOfOrganization(user: IUser, organization: Organization) {
+    // rewriting query to not import other queries
+    isModeratorNew(organization: IOrganization) {
+        if (this.isOwner()) {
+            return true
+        }
+
+        if (!organization.moderators.length) {
+            return false
+        }
+
+        return organization.moderators.some((moderator: any) => {
+            const userId = this.getValue()._id
+            if (typeof moderator === 'string') {
+                return moderator === userId
+            }
+
+            return moderator._id === userId
+        })
+    }
+
+    isUserPartOfOrganization(user: IUser, organization: IOrganization) {
+        const { authType } = organization
+        return authType === 0 ?
+            this.isLocalVerified(user, organization)
+            : this.isSSOVerified(user, organization)
+    }
+
+    isUserVerified() {
+        return toBoolean(this.getValue().verified)
+    }
+
+    isLocalVerified(user: IUser, organization: IOrganization) {
         if (!user.verified) return false
         if (user.roles.includes('guest')) return false
-        if (!user.mobileNumber && organization.authType === 0) return false
+        if (!user.mobileNumber) return false
         if (!user.organizations.length) return false
 
         return user.organizations.some((userOrganization: any) => {
@@ -76,8 +116,11 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserVerified() {
-        return toBoolean(this.getValue().verified)
+    isSSOVerified(user: IUser, organization: IOrganization) {
+        const { providerData } = user
+        const { url } = organization
+
+        return providerData && providerData[url]
     }
 
     doesMobileNumberExist() {

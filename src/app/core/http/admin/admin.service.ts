@@ -17,12 +17,8 @@ import { Proposal, IProposal } from '@app/core/models/proposal.model'
 import { TopicService } from '../topic/topic.service'
 import { Topic, ITopic } from '@app/core/models/topic.model'
 import { Router } from '@angular/router'
-import { HttpErrorResponse } from '@angular/common/http'
 import { IRep } from '@app/core/models/rep.model'
 import { RepService } from '../rep/rep.service'
-
-type EntityTypes = Topic | Issue | Organization | Solution | Media | Suggestion | Proposal
-    | ITopic | IIssue | IOrganization | ISolution | IMedia | ISuggestion | IProposal;
 
 type Entities = {
     Topic: ITopic;
@@ -49,7 +45,7 @@ type Services = {
     providedIn: 'root'
 })
 export class AdminService {
-
+    MAX_LENGTH = 40;
     services: Services = {
         Topic: this.topicService,
         Issue: this.issueService,
@@ -76,15 +72,19 @@ export class AdminService {
     ) { }
 
     getTitle(object: any, model: string): string {
-
         if (model === 'Issue' || model === 'Topic') {
-            return object.name
+            return object.name.length < this.MAX_LENGTH ?
+                object.name
+                : object.name.slice(0, this.MAX_LENGTH) + '...'
         }
 
         if (model === 'Rep') {
             return model
         }
-        return object.title
+
+        return object.title.length < this.MAX_LENGTH ?
+            object.title
+            : object.title.slice(0, this.MAX_LENGTH) + '...'
     }
 
     createEntity(data: any, model: string, softDelete: boolean) {

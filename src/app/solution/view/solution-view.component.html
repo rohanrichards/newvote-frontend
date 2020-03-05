@@ -51,7 +51,7 @@
                 <span class="mat-body">This is a solution for:
                     <span *ngFor="let parent of solution.issues; let i = index">
                         <a mat-button
-                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name}}</a>
+                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name | slice:0:30 }}</a>
                     </span>
                 </span>
                 <app-more-less [displayText]="solution.description"
@@ -63,13 +63,6 @@
                     <app-vote-buttons (vote)="onVote($event, 'Solution')"
                         [item]="solution">
                     </app-vote-buttons>
-                </div>
-                <div *ngIf="auth.isVerified()">
-                    <h4 class="mat-subheading-1">Do you have a suggestion that's
-                        not shown below? Click here to create one.</h4>
-                    <button mat-flat-button
-                        color="warn"
-                        (click)="populateSuggestion()">Make Suggestion</button>
                 </div>
             </div>
         </div>
@@ -163,7 +156,7 @@
                     </app-card-list>
                 </mat-expansion-panel>
             </mat-accordion>
-            <div *ngIf="auth.isVerified()">
+            <div *ngIf="isVerified">
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"
                     [style.margin-bottom]="'1rem'">

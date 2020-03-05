@@ -1,5 +1,5 @@
-<!-- <app-loader [isLoading]="loadingState === 'loading' || isLoading"
-    size="1.5"></app-loader> -->
+<app-loader [isLoading]="loadingState === 'loading' || isLoading"
+    size="1.5"></app-loader>
 
 <!-- App Page Header -->
 <ng-container [ngSwitch]="loadingState">
@@ -29,11 +29,23 @@
         class="header-info-panel">
         <div
             class="image-container"
-            fxLayout="column"
+            fxLayout="row"
             [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
             [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)"
             >
+            <div 
+            class="header-blurred-background"
+                fxFlex
+                [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
+                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+            </div>
             <img class="header-image-unblurred" [src]="rep.imageUrl" />
+            <div 
+                class="header-blurred-background"
+                fxFlex
+                [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
+                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+            </div>
             <div class="admin-panel"
                 *ngIf="repQuery.isRep()"
                 fxLayout="column"
@@ -48,14 +60,8 @@
                     </button>
                 </div>
             </div>
-            <div fxLayout="row"
-                fxFlex></div>
-                <div fxLayout="row wrap"
-                fxLayoutAlign="center center">
-                <div fxFlex.gt-sm="690px"
-                    fxFlex.gt-md="800px">
+            <div class="share-buttons">
                     <app-share-buttons></app-share-buttons>
-                </div>
             </div>
         </div>
         <div 

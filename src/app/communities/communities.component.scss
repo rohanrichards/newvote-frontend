@@ -6,6 +6,7 @@
 .community-wrap {
     display: block !important;
     overflow-y: auto;
+    min-height: 100vh;
 }
 
 .toolbar {
@@ -51,6 +52,7 @@
 }
 
 .header-container {
+    width: 100%;
     padding: 1rem;
     margin-bottom: 0;
 }
@@ -90,4 +92,19 @@
 
 .card-grid {
     padding: 0.5rem;
+}
+
+.header-logo {
+    display: block;
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 50px;
+    min-height: 50px;
+}
+
+@media screen and (max-width: 600px) {
+    .header-logo {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

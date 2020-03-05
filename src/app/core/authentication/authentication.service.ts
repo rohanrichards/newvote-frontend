@@ -189,6 +189,8 @@ export class AuthenticationService {
      * Checks is the user is authenticated.
      * @return True if the user is authenticated.
      */
+
+    // TODO: Update service isAuthenticated & JWT check to query
     isAuthenticated(): boolean {
         return !!this._credentials && !this.isTokenExpired()
     }
@@ -363,7 +365,7 @@ export class AuthenticationService {
                     // the store will pull data from the data store on local store
                     // need to update local store with latest verification data
 
-                    let { user, token } = this._credentials;
+                    const { user, token } = this._credentials;
                     user.verified = verified;
                     user.organizations = organizations;
 
@@ -371,7 +373,7 @@ export class AuthenticationService {
                         user,
                         token
                     }
-                    
+
                     this.setCredentials(newCreds, true);
                 })
             )

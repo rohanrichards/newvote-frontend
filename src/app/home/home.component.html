@@ -169,85 +169,16 @@
 			</div>
 		</div>
 	</div>
-	<div
-
-	*ngSwitchCase="'complete'"
-	 [@fadeIn]=true
-	 class="community-container container"
-	 fxLayoutAlign="center center">
-		<div
-			fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px"
-		 fxLayout="column">
-			<div class="mat-display-1 no-margin">
-				<span *ngIf="org">{{org.name}}</span>
-			</div>
-			<div class="mat-h2"
-			 *ngIf="org">{{org.description}}</div>
-			<div fxLayout="row">
-				<div fxFlex></div>
-				<div fxLayout="column">
-					<span class="mat-h1"
-					 *ngIf="userCount">{{ handleUserCount(userCount) }}</span>
-					<span class="mat-h1"
-					 *ngIf="!userCount">0</span>
-					<span class="mat-h3">Members</span>
-				</div>
-				<div fxFlex></div>
-				<mat-divider vertical="true"></mat-divider>
-				<div fxFlex></div>
-				<div fxLayout="column">
-					<span
-					[style.text-decoration]="'underline'"
-					routerLink="/issues" class="mat-h1 pointer"
-					 *ngIf="issues">{{issues.length}}</span>
-					<span class="mat-h1"
-					 *ngIf="!issues">0</span>
-					<span class="mat-h3">Issues</span>
-				</div>
-				<div fxFlex></div>
-				<mat-divider vertical="true"></mat-divider>
-				<div fxFlex></div>
-				<div fxLayout="column">
-					<span
-					[style.text-decoration]="'underline'"
-					class="mat-h1 pointer"
-					routerLink="/solutions"
-					 *ngIf="proposals && solutions">{{proposals.length + solutions.length}}</span>
-					<span class="mat-h1 pointer"
-					 *ngIf="!proposals || !solutions">0</span>
-					<span class="mat-h3">Solutions</span>
-				</div>
-				<div fxFlex></div>
-			</div>
-			<div *ngIf="org" [style.margin-top]="'1rem'">
-				<div *ngIf="!org.owner">
-					<span class="mat-caption">NewVote is not currently affiliated with {{org.name}}.</span>
-					<span class="mat-caption">If you would like to claim leadership of the {{org.name}} community
-						<button mat-button
-						 [routerLink]="['/communities/claim/', org._id]"
-						 color="primary"
-						 class="mat-display-1">
-							CLAIM HERE</button>
-					</span>
-				</div>
-				<div *ngIf="org.owner">
-					<span *ngIf="org.organizationName" class="mat-caption">{{org.organizationName }} is the leader of this community.</span>
-				</div>
-				<div>
-					<button routerLink="/issues" mat-raised-button color="primary"><span class="custom-headline issues-button">Your Issues</span></button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<app-home-info-panel
+		*ngSwitchCase="'complete'"
+		[userCount]="userCount"
+		[org]="org"
+		[solutions]="solutions"
+		[proposals]="proposals"
+		[issues]="issues"
+	>
+	</app-home-info-panel>
 </ng-container>
-
-<div class="about-community-container container text-center container-white" fxLayoutAlign="center center"
-	*ngIf="org && org.longDescription">
-	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
-	</div>
-</div>
 
 <ng-container [ngSwitch]="loadingState">
 	<div *ngSwitchCase="'loading'"
@@ -352,15 +283,8 @@
 	</ng-template>
 </ng-container>
 
-<ng-container *ngIf="loadingState !== 'complete';
-	then skeletonFooter;
-	else mainFooter">
-</ng-container>
-
-<!-- Templates -->
-
-<ng-template #skeletonFooter>
-	<div class="final-container container">
+<ng-container [ngSwitch]="loadingState">
+	<div *ngSwitchCase="'loading'" class="final-container container">
 		<div class="skeleton-footer">
 			<app-skeleton-button [width]="100"
 			 class="footer-button">
@@ -370,37 +294,8 @@
 			</app-skeleton-text-bar>
 		</div>
 	</div>
-</ng-template>
-
-<ng-template #mainFooter>
-	<div [@fadeIn]="isLoading"
-		*ngIf="!auth.isAuthenticated()"
-		class="final-container container text-center"
-		fxLayoutAlign="center center"
-		routerLink="/auth/signup">
-		<div fxFlex.gt-sm="690px"
-		 fxFlex.gt-md="800px">
-			<button *ngIf="!org.authType || org.authType===0"
-			 mat-button
-			 mat-raised-button
-			 routerLink="/auth/signup"
-			 color="warn"
-			 class="mat-display-1">
-				CREATE ACCOUNT</button>
-			<button *ngIf="org && org.authType && org.authType===1"
-			 mat-button
-			 mat-raised-button
-			 routerLink="/auth/login"
-			 color="warn"
-			 class="mat-display-1">
-				CREATE ACCOUNT</button>
-			<span class="mat-body-2">&nbsp; to begin!</span>
-			<br/>
-			<span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
-		</div>
-	</div>
-</ng-template>
-
-<div *ngIf="loadingState === 'complete'" class="powered-footer" fxLayoutAlign="center center">
-	<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
-</div>
+	<app-home-footer
+		[org]="org"
+		>
+	</app-home-footer>
+</ng-container>

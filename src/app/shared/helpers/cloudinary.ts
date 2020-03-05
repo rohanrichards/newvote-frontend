@@ -2,7 +2,7 @@
 
 function blurImage() {
     const param = 'e_blur:'
-    return param + 400
+    return param + 3000
 }
 
 function insertQualityParams(quality: string) {

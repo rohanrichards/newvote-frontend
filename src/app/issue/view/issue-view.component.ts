@@ -39,6 +39,7 @@ import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 
 @Component({
     selector: 'app-issue',
@@ -63,6 +64,7 @@ export class IssueViewComponent implements OnInit {
     suggestions: any;
     solutions$: Observable<Solution[]>;
     suggestions$: Observable<Suggestion[]>;
+
     progress: any;
 
     defaultState = {
@@ -86,6 +88,7 @@ export class IssueViewComponent implements OnInit {
         ]
     } as Progress
 
+    isVerified: boolean;
     constructor(
         private organizationService: OrganizationService,
         private suggestionService: SuggestionService,
@@ -112,7 +115,8 @@ export class IssueViewComponent implements OnInit {
         private progressQuery: ProgressQuery,
         private progressService: ProgressService,
         public repQuery: RepQuery,
-        public authQuery: AuthenticationQuery
+        public authQuery: AuthenticationQuery,
+        public access: AccessControlQuery,
     ) { }
 
     ngOnInit() {
@@ -130,6 +134,11 @@ export class IssueViewComponent implements OnInit {
             this.fetchData(ID)
             this.subscribeToIssueStore(ID)
         })
+
+        this.access.isCommunityVerified$
+            .subscribe((verified: boolean) => {
+                this.isVerified = verified
+            })
 
         this.getSuggestions()
     }
@@ -173,7 +182,7 @@ export class IssueViewComponent implements OnInit {
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
-                (err) => console.log(err))
+                (err) => err)
     }
 
     subscribeToSolutionStore(issueId: string) {
@@ -367,24 +376,6 @@ export class IssueViewComponent implements OnInit {
             (error) => {
                 this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             })
-    }
-
-    // Making a suggestion from issue - prepopulates the data so suggestion can be linked
-    // to parent
-    populateSuggestion() {
-        const { _id, name: title } = this.issue
-        const suggestionParentInfo = {
-            _id,
-            parentTitle: title,
-            parentType: 'Issue',
-            type: 'solution'
-        }
-
-        this.router.navigateByUrl('/suggestions/create', {
-            state: {
-                ...suggestionParentInfo
-            }
-        })
     }
 
     updateEntityVoteData(entity: any, model: string, voteValue: number) {
