@@ -55,7 +55,7 @@ export class RepsEditComponent implements OnInit {
     repForm = new FormGroup({
         displayName: new FormControl('', [Validators.required]),
         description: new FormControl(''),
-        position: new FormControl('', [Validators.required]),
+        position: new FormControl('', [Validators.required, Validators.maxLength(25)]),
         imageUrl: new FormControl('', [Validators.required]),
         proposals: new FormControl([]),
         solutions: new FormControl([]),
@@ -73,7 +73,8 @@ export class RepsEditComponent implements OnInit {
     @ViewChild('proposalAuto', { static: true }) proposalAuto: MatAutocomplete;
     @ViewChild('issueAuto', { static: true }) issueAuto: MatAutocomplete;
     resetImage: boolean
-
+    MAX_LENGTH = 500;
+    currentChars: number;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -164,6 +165,12 @@ export class RepsEditComponent implements OnInit {
             imageUrl: rep.imageUrl || this.DEFAULT_IMAGE,
             tags: rep.tags
         })
+
+        if (rep.description.length) {
+            const div = document.createElement('div')
+            div.innerHTML = rep.description
+            this.currentChars = div.textContent.length
+        }
     }
 
     updateTags(rep: any, org: any) {
@@ -447,6 +454,11 @@ export class RepsEditComponent implements OnInit {
         const newTags = [...tags.slice(0, index), ...tags.slice(index+1, tags.length-1)]
 
         this.repForm.patchValue({ tags: newTags })
+    }
+
+    handleChange(change: any) {
+        const text = change.text.trim()
+        this.currentChars = text.length ? text.length : 0
     }
 
     private _filter(value: any, entityArray: any[]): any[] {

@@ -29,23 +29,36 @@ q {
 
 .image-container {
     height: 350px !important;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
+    position: relative;
     width: calc(100% + 32px);
     margin: -16px -16px 0px -16px;
 }
 
-.divider {
-    margin-bottom: 1rem;
+.header-blurred-background {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .admin-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
     .button-panel {
         background-color: rgba(0, 0, 0, 0.6);
         border-bottom-left-radius: 15px;
     }
+}
+
+.share-buttons {
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    z-index: 100;
+}
+
+.divider {
+    margin-bottom: 1rem;
 }
 
 .buttons {
@@ -106,4 +119,21 @@ q {
 .center-span {
     text-align: center;
     display: block;
+}
+
+.header-image-unblurred {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    object-fit: contain;
+    height: inherit;
+    z-index: 100;
+}
+
+@media screen and (max-width: 600px) {
+    .share-buttons {
+        left: 0;
+    }
 }

@@ -21,10 +21,6 @@
 	// min-height: 320px;
 }
 
-.community-container {
-	text-align: center;
-}
-
 .hero-image {
 	position: absolute;
 	top: 0;
@@ -91,20 +87,10 @@
 	}
 }
 
-.issues-button {
-	font-weight: 800;
-	font-size: 1.4em;
-}
-
 .about-container {
 	background-color: #FFFFFF;
 }
 
-
-.final-container {
-	background-color: #FFFFFF;
-	cursor: pointer;
-}
 
 .skeleton-title-wrap {
 	display: flex;
@@ -208,15 +194,6 @@
 	margin: 0;
 	text-decoration: underline;
 	cursor: pointer;
-}
-
-.final-container {
-	padding-bottom: 0;
-}
-
-.powered-footer {
-	background-color: #FFFFFF;
-	padding-bottom: 2rem;
 }
 
 @media only screen and (max-width: 750px) {

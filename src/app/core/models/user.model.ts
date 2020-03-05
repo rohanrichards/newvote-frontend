@@ -1,6 +1,10 @@
-import { Organization } from "./organization.model";
-
-// TODO: complete this based off mongo
+interface IProvider {
+    [key: string]: {
+        edupersontargetedid: string;
+        edupersonscipedaffiliation: string;
+        edupersonprincipalname: string;
+    };
+}
 
 export interface IUser {
     _id?: string;
@@ -16,6 +20,7 @@ export interface IUser {
     roles: string[];
     completedTour?: boolean;
     organizations: string[];
+    providerData?: IProvider;
 }
 
 export class User implements IUser {

@@ -1,6 +1,14 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
 .community-wrap {
     display: block !important;
+    overflow-y: auto;
+    min-height: 100vh;
 }
+
 .toolbar {
     min-height: 64px;
 }
@@ -40,47 +48,63 @@
 }
 
 .container {
-    padding: 2rem;
+    padding: 1rem;
+}
+
+.header-container {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 0;
 }
 
 .footer {
+    display: block;
     background-color: #FAFAFA;
-    margin-top: auto;
 }
 
-.card-grid {
-    width: 90%;
-    margin: 0 auto;
-    max-width: 1200px;
-    margin-bottom: 2rem;
+.no-margin {
+    margin: 0;
 }
 
 .center-text {
     text-align: center;
 }
 
+.about-link {
+    font-weight: 800;
+    color: black;
+    font-size: 1.4em;
+}
 
-.organization-card {
-    .organization-image {
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        min-height: 300px;
-        height: auto;
-        display: flex;
-        justify-content: center;
-        align-items:center;
+.cta-button {
+    padding: 1rem 3rem;
+    font-size: 1.5em;
+}
 
-        .organization-icon {
-            min-width: 100px;
-            height: auto;
-            max-width: 200px;
-            object-fit: contain;
-        }
+.mat-sidenav {
+    min-width: 270px;
+    max-width: 28%;
+}
 
-        .circle-icon {
-            border-radius: 50%;
-        }
-	}
-	cursor: pointer;
+.search-button {
+    margin-left: auto;
+}
+
+.card-grid {
+    padding: 0.5rem;
+}
+
+.header-logo {
+    display: block;
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 50px;
+    min-height: 50px;
+}
+
+@media screen and (max-width: 600px) {
+    .header-logo {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

@@ -1,4 +1,7 @@
-<div class="button-container">
+<div class="button-container"
+    fxLayout="row wrap"
+    fxLayoutAlign="start center"
+    fxLayoutGap="2px">
     <!--Set color and icon-->
     <button mat-icon-button
         shareButton="facebook"
@@ -16,15 +19,6 @@
         url="getUrl()">
         <fa color="white"
             name="twitter"
-            size="1x"></fa>
-    </button>
-    <button mat-icon-button
-        shareButton="google"
-        [style.backgroundColor]="share.prop.google.color"
-        [style.color]="'white'"
-        [url]="getUrl()">
-        <fa color="white"
-            name="google"
             size="1x"></fa>
     </button>
     <button mat-icon-button

@@ -4,7 +4,7 @@
 	    fxLayoutAlign="center start">
 		<div fxFlex.gt-sm="690px"
 		    fxFlex.gt-md="800px">
-			<div class="mat-display-1"
+			<div class="custom-display1"
 			    translate
 			    [innerHtml]="headerTitle"></div>
 			<div class="mat-subheading-2"
@@ -13,7 +13,8 @@
 			<div>
 				<span *ngFor="let button of buttons">
 					<button mat-raised-button
-					 	*ngIf="auth.isModerator() || auth.hasRole(button.role)"
+						class="custom-button"
+					 	*ngIf="auth.isModerator() || access.canAccess(button.role)"
 					    [color]="button.color"
 						[routerLink]="button.routerLink"
 						[queryParams]="button.params"

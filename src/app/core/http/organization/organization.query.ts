@@ -12,4 +12,7 @@ export class OrganizationQuery extends Query<Organization> {
     constructor(protected store: OrganizationStore) {
         super(store)
     }
+
+
+        
 }

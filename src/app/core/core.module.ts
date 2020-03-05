@@ -52,6 +52,11 @@ import { RepGuard } from './authentication/rep.guard'
 import { RepOrgGuard } from './authentication/rep-org.guard'
 import { DataFetchService } from './http/data/data-fetch.service'
 import { RepService } from './http/rep/rep.service'
+import { AllEntityQuery } from './http/mediators/entity.query'
+import { AllEntityStore } from './http/mediators/entity.store'
+import { AccessControlQuery } from './http/mediators/access-control.query'
+import { AccessControlStore } from './http/mediators/access-control.store'
+
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -126,6 +131,10 @@ export function tokenGetter() {
         RepStore,
         RepService,
         DataFetchService,
+        AllEntityQuery,
+        AllEntityStore,
+        AccessControlStore,
+        AccessControlQuery,
         {
             provide: HttpClient,
             useClass: HttpService

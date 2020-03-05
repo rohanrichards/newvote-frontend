@@ -1,5 +1,10 @@
 // https://cloudinary.com/documentation/image_transformation_reference#quality_parameter
 
+function blurImage() {
+    const param = 'e_blur:'
+    return param + 3000
+}
+
 function insertQualityParams(quality: string) {
 
     const param = 'q_auto'
@@ -29,7 +34,7 @@ function insertDimensionParams(dimensions: any) {
 
 // EXAMPLE URL 'https://res.cloudinary.com/newvote/image/upload/v1557485661/yq3owxqczybbtjpuoaep.png';
 
-function createUrl(url: string, quality: string, dimensions: any) {
+function createUrl(url: string, quality: string, dimensions: any, blur?: any) {
     const removeHttps = url.slice().replace(/(^\w+:|^)\/\//, '')
     const splitUrl = removeHttps.split('/')
 
@@ -37,12 +42,16 @@ function createUrl(url: string, quality: string, dimensions: any) {
 
     paramsArray.push(insertQualityParams(quality))
     paramsArray.push(insertDimensionParams(dimensions))
+    
+    if (blur) {
+        paramsArray.push(blurImage())
+    }
 
     splitUrl[4] = paramsArray.join(',')
     return `https://${splitUrl.join('/')}`
 }
 
-export function optimizeImage(url: string, isLowQuality?: boolean, child?: boolean) {
+export function optimizeImage(url: string, isLowQuality?: boolean, child?: boolean, blur?: boolean) {
     if (!url) {
         return ''
     }
@@ -58,8 +67,8 @@ export function optimizeImage(url: string, isLowQuality?: boolean, child?: boole
     }
 
     if (isLowQuality) {
-        return createUrl(url, 'low', 'auto')
+        return createUrl(url, 'low', 'auto', blur)
     }
 
-    return createUrl(url, 'auto', 'auto')
+    return createUrl(url, 'auto', 'auto', blur)
 }

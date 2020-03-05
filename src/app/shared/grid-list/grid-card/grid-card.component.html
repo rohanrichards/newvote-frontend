@@ -1,0 +1,54 @@
+<ng-container>
+    <mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}"
+        (click)="handleUrl(item)">
+        <div mat-card-image class="image-container"
+            [defaultImage]="handleImageUrl(item.imageUrl, true)"
+            [lazyLoad]="handleImageUrl(item.imageUrl)">
+            <app-admin-panel [path]="path" [item]="item" [model]="model"
+                isCard=true>
+            </app-admin-panel>
+        </div>
+        <ng-container *ngIf="!titleCard; then noTitle; else isTitle">
+        </ng-container>
+        <ng-template #noTitle>
+            <mat-card-content>
+                <mat-card-title translate>
+                    <div class="truncate-container">
+                        <span class="truncate">{{item.name}}</span>
+                    </div>
+                </mat-card-title>
+            </mat-card-content>
+        </ng-template>
+        <ng-template #isTitle>
+            <mat-card-content>
+                <mat-card-title class="title-card-header">
+                    {{item.name || item.title}}
+                </mat-card-title>
+                <div class="title-card-subheader"
+                    [innerHtml]="item.description">
+                </div>
+            </mat-card-content>
+        </ng-template>
+    </mat-card>
+</ng-container>
+
+
+<!-- <div *ngIf="items.length < 1"
+        fxLayoutAlign="start start"
+        fxLayoutAlign.lt-sm="start stretch">
+        <div class="item-card-row"
+            fxFlex="0 0 calc(33.3% - 32px)"
+            fxFlex.lt-sm="0 0 100%">
+            <mat-card class="item-card placeholder-card">
+                <div mat-card-image
+                    class="image-container"
+                    [lazyLoad]="'assets/issue-default.png'">
+                </div>
+                <mat-card-content>
+                    <mat-card-title [style.text-align]="'center'">
+                        No issues for this Topic
+                    </mat-card-title>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div> -->

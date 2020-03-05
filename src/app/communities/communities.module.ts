@@ -8,6 +8,7 @@ import { CommunitiesRoutingModule } from './communities-routing.module'
 import { CommunitiesComponent } from './communities.component'
 import { MaterialModule } from '@app/material.module'
 import { FlexLayoutModule } from '@angular/flex-layout'
+import { SharedModule } from '@app/shared'
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { FlexLayoutModule } from '@angular/flex-layout'
         CommonModule,
         CommunitiesRoutingModule,
         MaterialModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        SharedModule
     ]
 })
 export class CommunitiesModule { }

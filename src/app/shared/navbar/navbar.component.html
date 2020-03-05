@@ -17,7 +17,7 @@
                 <mat-icon>arrow_back_ios</mat-icon>
             </button>
         </ng-template>
-        <span class="toolbar-title">{{title}}</span>
+        <span class="toolbar-title custom-headline">{{title}}</span>
         <div fxFlex></div>
         <button mat-icon-button
             (click)="toggleSearch()">
@@ -27,7 +27,7 @@
             class="account-create-menu-icon"
             mat-icon-button
             [matMenuTriggerFor]="loginMenu">
-            <mat-icon color="warn">account_box</mat-icon>
+            <mat-icon color="warn">person_add</mat-icon>
         </button>
         <mat-menu #loginMenu="matMenu">
             <mat-list

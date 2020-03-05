@@ -1,0 +1,30 @@
+<div
+    *ngIf="!auth.isAuthenticated()"
+    class="final-container container text-center"
+    fxLayoutAlign="center center"
+    routerLink="/auth/signup">
+    <div fxFlex.gt-sm="690px"
+        fxFlex.gt-md="800px">
+        <button *ngIf="!org.authType || org.authType===0"
+            mat-button
+            mat-raised-button
+            routerLink="/auth/signup"
+            color="warn"
+            class="mat-display-1">
+            CREATE ACCOUNT</button>
+        <button *ngIf="org && org.authType && org.authType===1"
+            mat-button
+            mat-raised-button
+            routerLink="/auth/login"
+            color="warn"
+            class="mat-display-1">
+            CREATE ACCOUNT</button>
+        <span class="mat-body-2">&nbsp; to begin!</span>
+        <br/>
+        <span class="mat-caption"><em>Welcome to {{org.name}}!</em></span>
+    </div>
+</div>
+
+<div class="powered-footer" fxLayoutAlign="center center">
+	<h4 class="mat-body-2" [style.margin]="0">Powered by NewVote</h4>
+</div>

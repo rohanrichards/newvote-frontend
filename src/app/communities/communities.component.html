@@ -1,101 +1,67 @@
-<div class="community-wrap">
-    <mat-toolbar class="toolbar"
-        color="primary">
-        <span>Welcome to NewVote</span>
-    </mat-toolbar>
-    <div class="home-hero">
-        <img class="hero-logo"
-            src="assets/logo-no-circle.png" />
-    </div>
-    <div class="about-section"
-        fxLayoutAlign="center center">
-        <div class="about-container"
-            fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px"
-            fxLayout="column">
-            <h1 class="mat-display-1 no-margin">
-                About NewVote
-            </h1>
-            <p class="mat-title">
-                NewVote is a democracy app, and it’s all about you.
-            </p>
-            <p class="mat-subheading-2">
-                Your communities, your issues, your ideas and your decisions.
-                Our mission is to rebuild the relationship between everyday
-                people and their leaders, so that we all have confidence in our
-                democracies and the decisions they make.
-            </p>
-            <p class="mat-subheading-2">
-                We’re doing this across all levels of government worldwide, as
-                well as “private” democratic communities, like unions,
-                businesses, community groups, political parties, student
-                councils, clubs and societies.
-            </p>
-            <p class="mat-subheading-2">
-                Connect with your community in a way that you can truly be heard
-                - easily and directly - whilst leaders get the data they need.
-            </p>
-            <p class="mat-body-2">
-                Let’s enhance democracy together.
-                Your voice matters, and all you need is a profile to start
-                voting!
-            </p>
-        </div>
-    </div>
-    <div class="container"
-        fxLayout="row wrap"
-        fxLayoutAlign="center start">
-        <div fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px"
-            class="center-text">
-            <span class="mat-headline center-span">
-                Pick Your Community
-            </span>
-        </div>
-    </div>
-    <div gdColumns.gt-md="1fr 1fr 1fr"
-        gdColumns.gt-xs="1fr 1fr"
-        class="card-grid"
-        gdColumns.xs="1fr"
-        gdRows="auto"
-        gdGap="20px">
-        <mat-card class="organization-card"
-            *ngFor="let org of organizations$ | async;trackBy trackByFn"
-            (click)="openCommunityURL($event, org.url)">
-            <div mat-card-image
-                class="organization-image"
-                [style.background-image]="'url(' + (org.imageUrl || 'assets/solution-default.png') + ')'">
-                <img *ngIf="org.iconUrl"
-                    class="organization-icon"
-                    [src]="org.iconUrl" />
+<mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav
+        [(opened)]="opened"
+        mode="push"
+        fixedInViewport="true">
+        <app-side-menu
+            (click)="sidenav.close()"
+            >
+
+        </app-side-menu>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="community-wrap"
+            fxFlexLayout="column">
+            <mat-toolbar class="toolbar"
+                color="primary"
+                fxLayout="row">
+                <button (click)="sidenav.toggle()"
+                    class="menu-button"
+                    mat-icon-button>
+                    <mat-icon>menu</mat-icon>
+                </button>
+                <span>Home</span>
+                <button class="search-button"
+                    mat-icon-button>
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div fxLayout="column"
+                fxLayoutAlign="start start">
+                <div class="header-container">
+                    <img class="header-logo" src="assets/logo-no-text.png" />
+                    <h4 [ngStyle]="{ 'margin': '0' }"
+                        class="custom-display1">
+                        Select Your Community
+                    </h4>
+                </div>
             </div>
-            <mat-card-content>
-                <mat-card-title>
-                    {{ org.name }}
-                </mat-card-title>
-                <mat-card-subtitle>
-                    By {{ org.organizationName || ''}}
-                </mat-card-subtitle>
-            </mat-card-content>
-        </mat-card>
-    </div>
-    <div class="footer container"
-        fxLayoutAlign="center center">
-        <div fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px"
-            fxLayout="column"
-            fxLayoutAlign="center center">
-            <h4 class="mat-subheading-1 ">Are you a leader that wants to start
-                your own NewVote community? Click here</h4>
-            <button mat-button
-                mat-raised-button
-                (click)="handleClick()"
-                color="warn"
-                class="mat-display-1">
-                Start Your Community
-            </button>
-            <h4 class="mat-body-2"
-                [style.margin]="0">Powered by NewVote</h4>
+            <div gdAlignColumns="start"
+                gdAlignColumns.lt-sm="center"
+                gdAlignRows="center"
+                gdColumns.gt-lg="400px 400px 400px"
+                gdColumns.gt-md="1fr 1fr 1fr"
+                gdColumns.gt-xs="1fr 1fr"
+                class="card-grid"
+                gdColumns.xs="100%"
+                gdRows="auto"
+                gdGap="20px"
+                gdGap.lt-sm="8px">
+                <app-community-card
+                    *ngFor="let org of organizations$ | async;trackBy trackByFn"
+                    (click)="openCommunityURL($event, org.url)"
+                    [organization]="org">
+                </app-community-card>
+            </div>
+            <div class="container">
+                <button mat-button
+                    mat-raised-button
+                    (click)="handleClick()"
+                    color="warn"
+                    class="custom-display1 cta-button">
+                    Create a community
+                </button>
+            </div>
         </div>
-    </div>
-</div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
