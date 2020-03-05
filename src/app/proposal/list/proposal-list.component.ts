@@ -92,7 +92,7 @@ export class ProposalListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.entityVotes.suggestionVotes$('action', 'type')
+        this.entityVotes.getManySuggestions('action', 'type')
             .subscribe((suggestions) => {
                 if (!suggestions) return false
                 this.suggestions = suggestions

@@ -8,7 +8,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { Solution } from '@app/core/models/solution.model'
+import { Solution, ISolution } from '@app/core/models/solution.model'
 import { Vote } from '@app/core/models/vote.model'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
 
@@ -18,7 +18,7 @@ import { fadeIn } from '@app/shared/animations/fade-animations'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { OrganizationService } from '@app/core'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
@@ -30,6 +30,7 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { IProposal } from '@app/core/models/proposal.model'
 
 @Component({
     selector: 'app-solution',
@@ -41,15 +42,15 @@ import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 })
 export class SolutionViewComponent implements OnInit {
 
-    solution: Solution;
+    solution: ISolution;
     isLoading: boolean;
     loadingState: string;
     handleImageUrl = optimizeImage;
     organization: any;
     suggestions: any[];
     proposals: any[];
-    proposals$: Observable<any>;
-    suggestions$: Observable<any>;
+    proposals$: Observable<IProposal[]>
+    suggestions$: Observable<any[]>
     isVerified: boolean
 
     constructor(
@@ -68,7 +69,7 @@ export class SolutionViewComponent implements OnInit {
         private suggestionQuery: SuggestionQuery,
         private solutionQuery: SolutionQuery,
         private voteQuery: VotesQuery,
-        private admin: AdminService,
+        public admin: AdminService,
         private proposalQuery: ProposalQuery,
         public authQuery: AuthenticationQuery,
         public repQuery: RepQuery,
@@ -145,18 +146,18 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.getSolutionWithSlug(id)
-            .subscribe((solutions: Solution[]) => {
-                if (!solutions.length) return false
-                this.solution = solutions[0]
-                this.subscribeToProposalStore(solutions[0]._id)
-                this.subscribeToSuggestionStore(solutions[0]._id)
+        this.entityVotes.getSolution(id)
+            .subscribe((solution: ISolution) => {
+                if (!solution) return false
+                this.solution = solution
+                this.subscribeToProposalStore(solution._id)
+                this.subscribeToSuggestionStore(solution._id)
                 this.stateService.setLoadingState(AppState.complete)
             })
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestions$ = this.entityVotes.suggestionVotes$(id, 'parent')
+        this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
         this.suggestions$.subscribe((res) => {
             if (!res) return false
@@ -165,10 +166,10 @@ export class SolutionViewComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposals$ = this.entityVotes.proposalVotes$(id)
+        this.proposals$ = this.entityVotes.getManyProposals(id)
 
         this.proposals$.subscribe((res) => {
-            if (!res) return false
+            if (!res) return
             this.proposals = res
         })
     }

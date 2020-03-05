@@ -210,7 +210,8 @@ export class OrganizationCreateComponent implements OnInit {
                         config.panelClass = ['warn-snack']
 
                         setTimeout(() => {
-                            this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                            this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                            // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
                         }, 3100)
                     }
 

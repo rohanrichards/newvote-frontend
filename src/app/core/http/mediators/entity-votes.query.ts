@@ -3,25 +3,15 @@ import { VotesQuery } from "../vote/vote.query";
 import { SolutionQuery } from "../solution/solution.query";
 import { ProposalQuery } from "../proposal/proposal.query";
 import { SuggestionQuery } from "../suggestion/suggestion.query";
-import { forkJoin, combineLatest } from "rxjs";
-import { combineQueries } from "@datorama/akita";
-import { map } from "rxjs/operators";
-import { Solution, ISolution } from "@app/core/models/solution.model";
-import { Vote } from "@app/core/models/vote.model";
+import { combineQueries, HashMap } from "@datorama/akita";
+import { map, mergeMap, filter } from "rxjs/operators";
+import { ISolution } from "@app/core/models/solution.model";
 import { IProposal, Proposal } from "@app/core/models/proposal.model";
 import { ISuggestion } from "@app/core/models/suggestion.model";
-import { orderBy } from 'lodash'
-import { IIssue } from "@app/core/models/issue.model";
+import { IVote } from "@app/core/models/vote.model";
 
 @Injectable()
 export class EntityVotesQuery {
-    // https://blog.angularindepth.com/plan-your-next-party-with-an-angular-invite-app-using-akita-422495351767
-    sortedSolutions$ = combineLatest(this.solutions.selectFilter$, this.solutions.selectOrder$, this.solutionVotes$)
-        .pipe(
-            map(([filter, order, solutions]: any) => {
-                return this.sortSolutions(filter, order, solutions)
-            })
-        )
 
     constructor(
         public votes: VotesQuery,
@@ -29,11 +19,38 @@ export class EntityVotesQuery {
         public proposals: ProposalQuery,
         public suggestions: SuggestionQuery) { }
 
-    solutionVotes$(issueId?: string) {
+    getSolution(id: string) {
+        // Send request to query to get the solution
+        return this.solutions.getSolution(id)
+            .pipe(
+                // query uses selectAll so returns either an empty array or
+                // an array with the single value
+                map((solutions: ISolution[]) => {
+                    const [solution] = solutions
+                    return solution
+                }),
+                mergeMap((solution: ISolution) => {
+                    // The original id could be a slug so we wait to get a single solution
+                    // before querying for vote data
+                    return this.votes.getVote(solution._id)
+                        .pipe(
+                            map((votes: any) => {
+                                const [vote] = votes
+                                // return a single solution & populate it with corresponding vote data
+                                return Object.assign({}, solution, {
+                                    votes: vote
+                                })
+                            })
+                        )
+                })
+            )
+    }
+
+    getManySolutions(issueId?: string) {
         return combineQueries([
             this.solutions.getSolutions(issueId),
             this.votes.selectAll({ asObject: true }),
-            this.proposals.getProposals(false, true)
+            this.proposals.getProposalsMap()
         ])
             .pipe(
                 map(([solutions, votes, proposals]) => {
@@ -51,30 +68,89 @@ export class EntityVotesQuery {
                             proposals: sProposals
                         })
                     })
+                }),
+                mergeMap((solutions: ISolution[]) => {
+                    return combineQueries([
+                        this.solutions.selectFilter$,
+                        this.solutions.selectOrder$
+                    ]).pipe(
+                        map(([filter, order]) => {
+                            return this.solutions.sortSolutions(filter, order, solutions)
+                        })
+                    )
                 })
             )
     }
 
-    proposalVotes$(solutionId?: string) {
+    getProposal(id: string) {
+        return this.proposals.getProposal(id)
+            .pipe(
+                map((proposals: IProposal[]) => {
+                    const [proposal] = proposals
+                    return proposal
+                }),
+                mergeMap((proposal: IProposal) => {
+                    return this.votes.getVote(proposal._id)
+                        .pipe(
+                            map((votes: any) => {
+                                const [vote] = votes
+                                return Object.assign({}, proposal, {
+                                    votes: vote
+                                })
+                            })
+                        )
+                })
+            )
+    }
+
+    getManyProposals(solutionId?: string) {
         return combineQueries([
-            this.proposals.getProposals(solutionId, false),
+            this.proposals.getProposals(solutionId),
             this.votes.selectAll({ asObject: true }),
         ])
             .pipe(
                 map(([proposals, votes]) => {
-                    if ((proposals as Proposal[]).length) {
-                        return (proposals as Proposal[]).slice().map((proposal: IProposal) => {
-                            return Object.assign({}, proposal, {
-                                votes: votes[proposal._id]
-                            })
+                    return proposals.slice().map((proposal: any) => {
+                        return Object.assign({}, proposal, {
+                            votes: votes[proposal._id]
                         })
-                    }
-                    return proposals
+                    })
+                }),
+                mergeMap((proposals: IProposal[]) => {
+                    return combineQueries([
+                        this.proposals.selectFilter$,
+                        this.proposals.selectOrder$
+                    ]).pipe(
+                        map(([filter, order]) => {
+                            return this.proposals.sortProposals(filter, order, proposals)
+                        })
+                    )
                 })
             )
     }
 
-    suggestionVotes$(id: string, key: string) {
+    getSuggestion(id: string) {
+        return this.suggestions.getSuggestion(id)
+            .pipe(
+                map((suggestions: ISuggestion[]) => {
+                    const [suggestion] = suggestions
+                    return suggestion
+                }),
+                mergeMap((suggestion: ISuggestion) => {
+                    return this.votes.getVote(suggestion._id)
+                        .pipe(
+                            map((votes: any) => {
+                                const [vote] = votes
+                                return Object.assign({}, suggestion, {
+                                    votes: vote
+                                })
+                            })
+                        )
+                })
+            )
+    }
+
+    getManySuggestions(id: string, key: string) {
         return combineQueries([
             this.suggestions.selectAll({
                 filterBy: entity => entity[key] === id
@@ -88,23 +164,19 @@ export class EntityVotesQuery {
                             votes: votes[suggestion._id]
                         })
                     })
+                }),
+                mergeMap((suggestions: ISuggestion[]) => {
+                    console.log(suggestions, 'suggestions on merge map')
+                    return combineQueries([
+                        this.suggestions.selectFilter$,
+                        this.suggestions.selectOrder$
+                    ]).pipe(
+                        map(([filter, order]) => {
+                            return this.suggestions.sortSuggestions(filter, order, suggestions)
+                        })
+                    )
                 })
             )
-    }
-
-    sortSolutions(filter: string, order: string, solutions: Solution[]) {
-        const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
-
-        switch (filter) {
-            case 'SHOW_ALL':
-                return solutions
-            case 'VOTES':
-                return orderBy(solutions, ['votes.total'], sortedOrder)
-            case 'ACTIONS':
-                return orderBy(solutions, ['proposals.length'], sortedOrder)
-            case 'TITLE':
-                return orderBy(solutions, ['title'], sortedOrder)
-        }
     }
 
     // Issue: Nested entities do not have the latest vote data

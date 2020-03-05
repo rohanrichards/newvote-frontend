@@ -70,7 +70,7 @@ export class SuggestionViewComponent implements OnInit {
     subscribeToSuggestionStore(id: string) {
         const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
         const key = isObjectId ? '_id' : 'slug'
-        this.entityVotes.suggestionVotes$(id, key)
+        this.entityVotes.getManySuggestions(id, key)
             .subscribe((suggestion: ISuggestion[]) => {
                 if (!suggestion.length) return false
                 const [entity, ...rest] = suggestion

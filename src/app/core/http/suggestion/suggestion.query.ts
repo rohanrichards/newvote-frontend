@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { QueryEntity } from '@datorama/akita'
 import { SuggestionState, SuggestionStore } from './suggestion.store'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { combineLatest } from 'rxjs'
 import { orderBy } from 'lodash'
@@ -52,7 +52,7 @@ export class SuggestionQuery extends QueryEntity<SuggestionState, Suggestion> {
             )
     }
 
-    sortSuggestions(filter: string, order: string, suggestions: Suggestion[]) {
+    sortSuggestions(filter: string, order: string, suggestions: ISuggestion[]) {
         const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
 
         switch (filter) {
@@ -65,10 +65,10 @@ export class SuggestionQuery extends QueryEntity<SuggestionState, Suggestion> {
         }
     }
 
-    getSuggestionWithSlug(id: string) {
+    getSuggestion(id: string) {
         const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
         return this.selectAll({
-            filterBy: (entity: Suggestion) => isObjectId ? entity._id === id : entity.slug === id
+            filterBy: (entity: ISuggestion) => isObjectId ? entity._id === id : entity.slug === id
         })
     }
 }

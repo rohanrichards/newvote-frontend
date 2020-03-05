@@ -150,7 +150,7 @@ export class ProposalEditComponent implements OnInit {
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposalQuery.getProposalWithSlug(id)
+        this.proposalQuery.getProposal(id)
             .subscribe((proposal: Proposal[]) => {
                 if (!proposal) return false
                 this.proposal = proposal[0]

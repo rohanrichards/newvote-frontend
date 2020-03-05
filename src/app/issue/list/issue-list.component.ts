@@ -186,7 +186,7 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.entityVotes.suggestionVotes$('issue', 'type')
+        this.suggestions$ = this.entityVotes.getManySuggestions('issue', 'type')
     }
 
     subscribeToTopicStore() {

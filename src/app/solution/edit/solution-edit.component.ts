@@ -153,7 +153,7 @@ export class SolutionEditComponent implements OnInit {
     }
 
     subscribeToSolutionStore(id: string) {
-        this.solutionQuery.getSolutionWithSlug(id)
+        this.solutionQuery.getSolution(id)
             .subscribe(
                 (solution: Solution[]) => {
                     if (!solution.length) return false

@@ -136,7 +136,7 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSolutionStore() {
-        this.solutions$ = this.entityVotes.solutionVotes$()
+        this.solutions$ = this.entityVotes.getManySolutions()
 
         this.solutions$.subscribe((res) => {
             if (!res) return false
@@ -145,7 +145,7 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.entityVotes.suggestionVotes$('solution', 'type')
+        this.suggestions$ = this.entityVotes.getManySuggestions('solution', 'type')
 
         this.suggestions$.subscribe((suggestions: ISuggestion[]) => {
             if (!suggestions) return false

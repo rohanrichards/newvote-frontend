@@ -8,7 +8,7 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { MetaService } from '@app/core/meta.service'
 
-import { Proposal } from '@app/core/models/proposal.model'
+import { Proposal, IProposal } from '@app/core/models/proposal.model'
 import { Vote } from '@app/core/models/vote.model'
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
 
@@ -40,7 +40,7 @@ import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 })
 export class ProposalViewComponent implements OnInit {
 
-    proposal: Proposal;
+    proposal: IProposal;
     proposals: Array<Proposal>;
     isLoading: boolean;
     loadingState: string;
@@ -96,15 +96,15 @@ export class ProposalViewComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestions$ = this.entityVotes.suggestionVotes$(id, 'parent')
+        this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
     }
 
     subscribeToProposalStore(id: string) {
-        this.proposalQuery.getProposalWithSlug(id)
-            .subscribe((proposal: Proposal[]) => {
-                if (!proposal.length) return false
-                this.proposal = proposal[0]
-                this.subscribeToSuggestionStore(proposal[0]._id)
+        this.entityVotes.getProposal(id)
+            .subscribe((proposal: IProposal) => {
+                if (!proposal) return false
+                this.proposal = proposal
+                this.subscribeToSuggestionStore(proposal._id)
                 return this.stateService.setLoadingState(AppState.complete)
             })
     }

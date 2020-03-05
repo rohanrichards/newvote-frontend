@@ -323,7 +323,8 @@ export class OrganizationEditComponent implements OnInit {
                     config.panelClass = ['warn-snack']
 
                     setTimeout(() => {
-                        this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                        // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                        this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
                     }, 3100)
                 }
 

@@ -147,7 +147,6 @@
                         </h2>
                     </mat-expansion-panel-header>
                     <app-card-list path="/suggestions"
-                        [@fadeIn]=true
                         [items$]=suggestions$
                         model="Suggestion"
                         (restore)="admin.onRestore($event, 'Suggestion')"

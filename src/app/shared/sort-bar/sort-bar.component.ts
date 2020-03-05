@@ -11,7 +11,7 @@ import { entityOptions } from '../helpers/order'
 export class SortBarComponent implements OnInit {
 
     sort: string = 'SHOW_ALL';
-    order: string = 'ASCENDING';
+    order: string = 'DESCENDING';
     orderOptions = entityOptions;
 
     @Input() model: string;
@@ -30,8 +30,8 @@ export class SortBarComponent implements OnInit {
         this.sortService.orderEntityBy(this.model, order);
     }
 
-    toggleOrder() {
-        this.order = this.order === 'ASCENDING' ? 'DESCENDING' : 'ASCENDING';
+    toggleOrder(order: string) {
+        this.order = order
         this.handleOrder(this.order);
     }
 }

@@ -7,4 +7,10 @@ export class VotesQuery extends QueryEntity<VoteMetaDataState, VoteMetaData> {
     constructor(protected store: VoteStore) {
         super(store)
     }
+
+    getVote(id: any) {
+        return this.selectAll({
+            filterBy: (vote: any) => vote._id === id
+        })
+    }
 }

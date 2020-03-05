@@ -27,7 +27,7 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
     sortedProposals$ = combineLatest(this.selectFilter$, this.selectOrder$, this.proposals$)
         .pipe(
             map(([filter, order, proposals]) => {
-                return this.sortProposals$(filter, order, proposals)
+                return this.sortProposals(filter, order, proposals)
             })
         )
 
@@ -38,36 +38,6 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         super(store)
     }
 
-    getProposalWithSlug(id: string) {
-        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
-        return this.selectAll({
-            filterBy: (entity: Proposal) => isObjectId ? entity._id === id : entity.slug === id
-        })
-    }
-
-    // filterBySolutionId(id: string) {
-    //     return this.sortedProposals$
-    //         .pipe(
-    //             map(
-    //                 (entity) => {
-    //                     return entity.filter((proposal: Proposal) => {
-    //                         const includesSolutionId = proposal.solutions.some((solution: any) => {
-    //                             // newly created proposals will return with a solutions array with just the object id
-    //                             // instead of populated object
-    //                             if (typeof solution === 'string') {
-    //                                 return solution === id
-    //                             }
-
-    //                             return solution._id === id
-    //                         })
-
-    //                         return includesSolutionId
-    //                     })
-    //                 }
-    //             )
-    //         )
-    // }
-
     // Filter softDeleted items for users below moderator
     checkModerator(entity: any) {
         if (this.auth.isModerator()) {
@@ -77,16 +47,16 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         return !entity.softDeleted
     }
 
-    getProposals(id?: string | boolean | any[], asObject?: boolean) {
+    getProposal(id: string) {
+        const isObjectId = id.match(/^[0-9a-fA-F]{24}$/)
+        return this.selectAll({
+            filterBy: (entity: Proposal) => isObjectId ? entity._id === id : entity.slug === id
+        })
+    }
+
+    getProposals(id?: string | boolean | any[]) {
         // if no id is present return all solutions
         if (!id) {
-
-            if (asObject) {
-                return this.selectAll({
-                    filterBy: (entity: IProposal) => this.checkModerator(entity),
-                    asObject: true
-                })
-            }
             return this.proposals$
         }
 
@@ -108,7 +78,34 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
         })
     }
 
-    sortProposals$(filter: string, order: string, proposals: Proposal[]) {
+    getProposalsMap(id?: string) {
+        if (!id) {
+            return this.selectAll({
+                filterBy: (entity: IProposal) => this.checkModerator(entity),
+                asObject: true
+            })
+        }
+
+        return this.selectAll({
+            asObject: true,
+            filterBy: [
+                (proposal: IProposal) => {
+                    // Check each solution if it contains the issue id in it's
+                    // issues array
+                    // console.log(entity, 'this is entity')
+                    return proposal.solutions.some((solution: ISolution | string) => {
+                        if ((solution as ISolution)._id) {
+                            return (solution as ISolution)._id === id
+                        }
+                        return solution === id
+                    })
+                },
+                (entity: IProposal) => this.checkModerator(entity)
+            ]
+        })
+    }
+
+    sortProposals(filter: string, order: string, proposals: IProposal[]) {
         const sortedOrder: any = order === 'ASCENDING' ? ['asc', 'desc'] : ['desc', 'asc']
 
         switch (filter) {

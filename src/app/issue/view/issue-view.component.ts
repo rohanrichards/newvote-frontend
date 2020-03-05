@@ -113,10 +113,11 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToSuggestionStore(id: string) {
-        this.suggestions$ = this.entityVotes.suggestionVotes$(id, 'parent')
+        this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
         this.suggestions$.subscribe((res) => {
             if (!res) return false
+            console.log(res, 'this is all the suggestions')
             this.suggestions = res
         })
     }
@@ -138,7 +139,7 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToSolutionStore(issueId: string) {
-        this.solutions$ = this.entityVotes.solutionVotes$(issueId)
+        this.solutions$ = this.entityVotes.getManySolutions(issueId)
     }
 
     subscribeToMediaStore(id: string) {

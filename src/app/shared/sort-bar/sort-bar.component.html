@@ -11,15 +11,15 @@
     <div>
         <button mat-icon-button
             [disabled]="sort === 'SHOW_ALL'"
-            [style.color]="order === 'ASCENDING' ? '#ffca28' : 'black'"
-            (click)="toggleOrder()"
+            [ngClass]="{ disabled: sort === 'SHOW_ALL', active: order === 'ASCENDING', inactive: order === 'DESCENDING'}"
+            (click)="toggleOrder('ASCENDING')"
             aria-label="Sorting Direction">
             <mat-icon>arrow_upward</mat-icon>
         </button>
         <button mat-icon-button
             [disabled]="sort === 'SHOW_ALL'"
-            [style.color]="order === 'DESCENDING' ? '#ffca28' : 'black'"
-            (click)="toggleOrder()"
+            [ngClass]="{ disabled: sort === 'SHOW_ALL', active: order === 'DESCENDING', inactive: order === 'ASCENDING'}"
+            (click)="toggleOrder('DESCENDING')"
             aria-label="Sorting Direction">
             <mat-icon>arrow_downward</mat-icon>
         </button>

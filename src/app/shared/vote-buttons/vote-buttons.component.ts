@@ -37,9 +37,24 @@ export class VoteButtonsComponent implements OnInit {
 
     public dataSetOverride: any;
 
+    defaultValues: VoteMetaData = {
+        _id: '',
+        up: 0,
+        down: 0,
+        total: 0,
+    }
+
+    defaultUser = {
+        _id: '',
+        object: '',
+        objectType: '',
+        voteValue: 0,
+        created: '',
+        user: ''
+    }
+
     constructor(
         public snackBar: MatSnackBar,
-        private votesQuery: VotesQuery,
         public auth: AuthenticationQuery,
         private admin: AdminService
     ) { }
@@ -59,16 +74,14 @@ export class VoteButtonsComponent implements OnInit {
         ]
     }
 
-    getVoteMetaData() {
-        return this.votesQuery.selectEntity(this.item._id)
-    }
-
     upVotesAsPercent() {
-        return this.getPercentage(this.item.votes) || 0
+        const vote = this.item.votes || this.defaultValues
+        return this.getPercentage(vote) || 0
     }
 
     downVotesAsPercent() {
-        return 100 - this.getPercentage(this.item.votes) || 0
+        const vote = this.item.votes || this.defaultValues
+        return 100 - this.getPercentage(vote) || 0
     }
 
     getPercentage(votes: VoteMetaData) {
@@ -99,28 +112,11 @@ export class VoteButtonsComponent implements OnInit {
         this.admin.openSnackBar('You have to vote to reveal the result', 'OK')
     }
 
-    votesWidthFor() {
-        const { up, down } = this.item.votes
-        const totalVotes = up + down
-
-        const percentageOfUpVotes = (up / totalVotes) * 100
-        return Math.round(percentageOfUpVotes)
-    }
-
-    votesWidthAgainst(vote: any) {
-
-        const { up, down } = vote
-        const totalVotes = up + down
-
-        const percentageOfDownVotes = (down / totalVotes) * 100
-        return Math.round(percentageOfDownVotes) || 0
-    }
-
     totalVotes() {
-        const { up, down } = this.item.votes
+        const { up, down, currentUser = false } = this.item.votes || this.defaultValues
         const totalVotes = up + down
 
-        if (!(this.item.votes.currentUser && this.item.votes.currentUser.voteValue)) {
+        if (!(currentUser && currentUser.voteValue)) {
             return ''
         }
 
@@ -136,11 +132,15 @@ export class VoteButtonsComponent implements OnInit {
     }
 
     userHasVoted() {
+        const { votes = false, votes: { currentUser = false } } = this.item 
         // If a user votes logs off and logs in on another account they will still be able to see votes
         // if (!this.item.currentUser || !this.auth.credentials || !this.auth.credentials.user) {
         //     return false;
         // }
-
-        return this.item.votes.currentUser && this.item.votes.currentUser.voteValue
+        console.log(this.item, 'this is item')
+        // console.log(votes)
+        // console.log(currentUser)
+        if (!votes || !currentUser) return false
+        return !!this.item.votes.currentUser && !!this.item.votes.currentUser.voteValue
     }
 }
