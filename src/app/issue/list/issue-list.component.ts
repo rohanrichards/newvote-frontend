@@ -33,6 +33,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 
 @Component({
     selector: 'app-issue',
@@ -53,8 +54,8 @@ export class IssueListComponent implements OnInit {
     organization: Organization;
     separatorKeysCodes: number[] = [ENTER, COMMA];
     isLoading: boolean;
-    headerTitle = 'Browse By Issue';
-    headerText = 'Issues can be any problem or topic in your community that you think needs to be addressed.';
+    headerTitle = '';
+    headerText = 'Issues can be any problem in your community that you think needs to be addressed.';
     headerButtons = [{
         text: 'New Issue',
         color: 'warn',
@@ -106,12 +107,10 @@ export class IssueListComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private topicQuery: TopicQuery,
-        private cdR: ChangeDetectorRef,
         private voteQuery: VotesQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        public entities: AllEntityQuery
     ) {
-
-        this.subscribeToIssueStore()
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
 
@@ -186,43 +185,16 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToTopicStore() {
-        this.topicQuery.selectAll()
-            .subscribe((topics: Topic[]) => {
+        // this.topicQuery.selectAll()
+        //     .subscribe((topics: Topic[]) => {
+        //         this.allTopics = topics
+        //     })
+        this.entities.populateTopics()
+            .subscribe(({topics, orphanedIssues}: any) => {
+                if (!topics.length) this.allTopics = []
                 this.allTopics = topics
+                this.orphanedIssues = orphanedIssues || []
             })
-    }
-
-    subscribeToIssueStore() {
-        this.issueQuery.issues$
-            .subscribe((issues: Issue[]) => {
-                this.issues = issues
-                this.orphanedIssues = this.filterIssues(null, issues)
-            })
-    }
-
-    // filter the issue list for matching topicId's
-    filterIssues(topic: Topic | null, issues: Issue[]) {
-        const issuesCopy = issues.slice()
-
-        if (!topic) {
-            return issuesCopy.filter((issue) => {
-                return !issue.topics.length
-            })
-        }
-
-        return issuesCopy.filter((issue) => {
-            const topicExists = issue.topics.some((ele) => {
-                // If a new issue is created the topics array will be populated
-                // with objectId's / strings instead of objects with an ._id key
-                if (typeof ele === 'string') {
-                    return ele === topic._id
-                }
-
-                return ele._id === topic._id
-            })
-
-            return topicExists
-        })
     }
 
     topicSelected(event: any) {

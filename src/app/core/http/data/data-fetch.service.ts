@@ -33,7 +33,7 @@ export class DataFetchService {
         const getIssues = this.issueService.list({ params })
         const getTopics = this.topicService.list({ params })
         const getSuggestions = this.suggestionService.list({ params })
-        const getReps = this.repService.list({ params })
+        const getReps = this.repService.list()
 
         return forkJoin({
             topics: getTopics,

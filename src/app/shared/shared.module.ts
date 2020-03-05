@@ -39,15 +39,20 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
-import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component'
+import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 import { ProgressFormComponent } from './progress-form/progress-form.component'
-import { RepModalComponent } from './rep-modal/rep-modal.component'
-import { ChildCardComponent } from './child-card/child-card.component'
-import { RepCardComponent } from './rep-card/rep-card.component'
-import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component'
-import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
+import { RepModalComponent } from './rep-modal/rep-modal.component';
+import { ChildCardComponent } from './child-card/child-card.component';
+import { RepCardComponent } from './rep-card/rep-card.component';
+import { SkeletonRepCardComponent } from './skeleton/skeleton-card/skeleton-rep-card/skeleton-rep-card.component';
+import { CommunityCardComponent } from './community-card/community-card.component'
+import { RepItemListComponent } from './rep-item-list/rep-item-list.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { GridCardComponent } from './grid-list/grid-card/grid-card.component';
+import { RepCardChildComponent } from './rep-card-child/rep-card-child.component';
+import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-list.component'
 
 @NgModule({
     imports: [
@@ -100,7 +105,12 @@ import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
         ChildCardComponent,
         RepCardComponent,
         SkeletonRepCardComponent,
-        RepItemListComponent
+        CommunityCardComponent,
+        RepItemListComponent,
+        AdminPanelComponent,
+        GridCardComponent,
+        RepCardChildComponent,
+        RepChildCardListComponent,
     ],
     exports: [
         LoaderComponent,
@@ -133,7 +143,9 @@ import { RepItemListComponent } from './rep-item-list/rep-item-list.component'
         RepModalComponent,
         ChildCardComponent,
         RepCardComponent,
-        SkeletonRepCardComponent
+        SkeletonRepCardComponent,
+        CommunityCardComponent,
+        AdminPanelComponent,
     ]
 })
 export class SharedModule { }

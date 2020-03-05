@@ -1,0 +1,19 @@
+<mat-card class="organization-card"
+    fxFlexLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="16px"
+    >
+    <div
+        class="community-image"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        [style.background-image]="'url(' + (organization.imageUrl || 'assets/solution-default.png') + ')'">
+        <img *ngIf="organization.iconUrl"
+            class="organization-icon"
+            [src]="organization.iconUrl" />
+    </div>
+    <div class="header-wrap">
+        <h4 class="custom-display1 org-title">{{organization.name}}</h4>
+        <h4 class="custom-title org-subtitle">By {{ organization.organizationName || ''}}</h4>
+    </div>
+</mat-card>

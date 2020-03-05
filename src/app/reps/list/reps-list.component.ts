@@ -137,18 +137,29 @@ export class RepsListComponent implements OnInit {
         const params = { softDeleted: isModerator ? true : '' }
 
         this.proposalService.list({ orgs: [], params })
-            .subscribe((res) => res)
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
 
-        this.repsService.list({ orgs: [], params })
-            .subscribe((res) => {
-                this.subscribeToRepStore()
-            })
+        this.repsService.list()
+            .subscribe(
+                () => this.subscribeToRepStore(),
+                (err) => err
+            )
+
 
         this.solutionService.list({ orgs: [], params })
-            .subscribe((res) => res)
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
 
         this.issueService.list({ orgs: [], params })
-            .subscribe((res) => res)
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
     openDialog(): void {

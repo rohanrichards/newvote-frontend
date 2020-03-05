@@ -20,7 +20,11 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
         }
     })
 
-    constructor(protected store: IssueStore, private topicQuery: TopicQuery, private auth: AuthenticationQuery) {
+    constructor(
+        protected store: IssueStore,
+        private topicQuery: TopicQuery,
+        private auth: AuthenticationQuery
+    ) {
         super(store)
     }
 

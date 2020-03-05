@@ -8,6 +8,7 @@ import { MetaService } from '@app/core/meta.service'
 
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-organization',
@@ -35,7 +36,8 @@ export class OrganizationListComponent implements OnInit {
         private voteService: VoteService,
         public auth: AuthenticationService,
         private route: ActivatedRoute,
-        private meta: MetaService
+        private meta: MetaService,
+        public admin: AdminService
     ) { }
 
     ngOnInit() {

@@ -3,19 +3,59 @@
  * Framework overrides and customization goes here.
  */
 // stylelint-disable-next-line selector-max-universal
+@import "theme-variables";
+
+@font-face {
+  font-family: "Proxima-Nova";
+  src: url("/assets/fonts/proxima-nova-reg.otf") format("opentype");
+}
+
+// @font-face {
+//   font-family: "Condensed Din";
+//   src: url("/assets/fonts/DINCondensed-Bold.ttf") format("truetype");
+//   font-weight: bold;
+//   font-style: normal;
+// }
+
+@font-face {
+  font-family: "Condensed Din";
+  src: url("/assets/fonts/DINCond-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Condensed Din";
+  src: url("/assets/fonts/DINCond-Light.otf") format("opentype");
+  font-weight: light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Condensed Din";
+  src: url("/assets/fonts/DINCond-Medium.otf") format("opentype");
+  font-weight: medium;
+  font-style: normal;
+}
+
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
+  // font-family: 'Proxima-Nova';
 }
 
 body,
 html {
 	// height: 100%;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	margin: 0;
-	overflow: auto;
-	-webkit-overflow-scrolling: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: auto;
+}
+
+.header-font {
+  font-family: "Condensed Din";
 }
 
 .content {
@@ -30,4 +70,4 @@ html {
 .item-wrapper {
 	width: 100%;
 	padding: 0.25rem 0.5rem;
-  }
+}

@@ -40,22 +40,96 @@
 // Theme customization
 @import "theme/theme";
 
-$app-typography: mat-typography-config(
-   $font-family: '"Source Sans Pro", "Helvetica Neue", sans-serif',
-   $display-4:     mat-typography-level(112px, 112px, 600),
-   $display-3:     mat-typography-level(56px, 56px, 600),
-   $display-2:     mat-typography-level(45px, 48px, 600),
-   $display-1:     mat-typography-level(34px, 40px, 600),
-   $headline:      mat-typography-level(24px, 32px, 300),
-   $title:         mat-typography-level(20px, 32px, 300),
-   $subheading-2:  mat-typography-level(16px, 28px, 300),
-   $subheading-1:  mat-typography-level(15px, 24px, 300),
-   $body-2:        mat-typography-level(14px, 24px, 600),
-   $body-1:        mat-typography-level(14px, 20px, 300),
-   $caption:       mat-typography-level(12px, 20px, 300),
-   $button:        mat-typography-level(14px, 14px, 300),
-	 // Line-height must be unit-less fraction of the font-size.
-   $input:         mat-typography-level(16px, 1.25, 300)
- );
+// 100    Extra Light or Ultra Light
+// 200    Light or Thin
+// 300    Book or Demi
+// 400    Normal or Regular
+// 500    Medium
+// 600    Semibold, Demibold
+// 700    Bold
+// 800    Black, Extra Bold or Heavy
+// 900    Extra Black, Fat, Poster or Ultra Black
 
-@include angular-material-typography($app-typography);
+$custom-typography: mat-typography-config(
+    $font-family: 'Proxima-Nova, "Helvetica Neue", sans-serif',
+    $display-4:     mat-typography-level(112px, 112px, 200),
+    $display-3:     mat-typography-level(56px, 56px, 200),
+    $display-2:     mat-typography-level(45px, 48px, 400),
+    $display-1:     mat-typography-level(34px, 40px, 400),
+    $headline:      mat-typography-level(24px, 32px, 400),
+    $title:         mat-typography-level(20px, 32px, 500),
+    $subheading-2:  mat-typography-level(16px, 28px, 400),
+    $subheading-1:  mat-typography-level(15px, 24px, 500),
+    $body-2:        mat-typography-level(14px, 24px, 400),
+    $body-1:        mat-typography-level(14px, 20px, 400),
+    $caption:       mat-typography-level(12px, 20px, 400),
+    $button:        mat-typography-level(14px, 14px, 500),
+    // Line-height must be unit-less fraction of the font-size.
+    $input:         mat-typography-level(16px, 1.25, 300)
+);
+
+$custom-header: mat-typography-config(
+    $font-family: 'Condensed Din',
+);
+
+.custom-display4 {
+  @include mat-typography-level-to-styles($custom-header, display-4);
+}
+
+.custom-display3 {
+  @include mat-typography-level-to-styles($custom-header, display-3);
+}
+
+.custom-display2 {
+  @include mat-typography-level-to-styles($custom-header, display-2);
+}
+
+.custom-display1 {
+  @include mat-typography-level-to-styles($custom-header, display-1);
+}
+
+.custom-subheading2 {
+  @include mat-typography-level-to-styles($custom-header, subheading-2);
+}
+
+.custom-subheading1 {
+  @include mat-typography-level-to-styles($custom-header, subheading-1);
+}
+
+.custom-title {
+  @include mat-typography-level-to-styles($custom-header, title);
+}
+
+.custom-headline {
+  @include mat-typography-level-to-styles($custom-header, headline);
+}
+
+.custom-button {
+  @include mat-typography-level-to-styles($custom-header, button);
+}
+
+
+// $app-typography: mat-typography-config(
+//    $font-family: '"Source Sans Pro", "Helvetica Neue", sans-serif',
+//    $display-4:     mat-typography-level(112px, 112px, 600),
+//    $display-3:     mat-typography-level(56px, 56px, 600),
+//    $display-2:     mat-typography-level(45px, 48px, 600),
+//    $display-1:     mat-typography-level(34px, 40px, 600),
+//    $headline:      mat-typography-level(24px, 32px, 300),
+//    $title:         mat-typography-level(20px, 32px, 300),
+//    $subheading-2:  mat-typography-level(16px, 28px, 300),
+//    $subheading-1:  mat-typography-level(15px, 24px, 300),
+//    $body-2:        mat-typography-level(14px, 24px, 600),
+//    $body-1:        mat-typography-level(14px, 20px, 300),
+//    $caption:       mat-typography-level(12px, 20px, 300),
+//    $button:        mat-typography-level(14px, 14px, 300),
+// 	 // Line-height must be unit-less fraction of the font-size.
+//    $input:         mat-typography-level(16px, 1.25, 300)
+//  );
+
+@include angular-material-typography($custom-typography);
+
+// Custom
+// @include mat-base-typography($custom-typography);
+// @include angular-material-typography($custom-typography);
+// @include mat-core($custom-typography);
