@@ -39,25 +39,26 @@
                 <span class="mat-h3">Solutions</span>
             </div>
         </div>
-        <div *ngIf="org" [style.margin-top]="'1rem'">
-            <div *ngIf="!org.owner">
-                <span class="mat-caption"
+        <div *ngIf="org">
+            <div *ngIf="!org.owner" class="owner-wrap">
+                <span class="mat-caption spacer"
                     >NewVote is not currently affiliated with
                     {{ org.name }}.</span
                 >
-                <span class="mat-caption"
+                <span class="mat-caption space"
                     >If you would like to claim leadership of the
                     {{ org.name }} community
-                    <button
-                        mat-button
-                        [routerLink]="['/communities/claim/', org._id]"
-                        color="primary"
-                        class="mat-display-1"
-                    >
-                        CLAIM HERE
-                    </button>
                 </span>
             </div>
+            <button
+                class=""
+                mat-button
+                [routerLink]="['/communities/claim/', org._id]"
+                color="primary"
+                class="mat-display-1 claim-button"
+                >
+                    CLAIM HERE
+            </button>
             <div *ngIf="org.owner">
                 <span *ngIf="org.organizationName" class="mat-caption"
                     >{{ org.organizationName }} is the leader of this
@@ -73,5 +74,12 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="about-community-container container text-center container-white" fxLayoutAlign="center center"
+	*ngIf="org && org.longDescription">
+	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
+		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+	</div>
 </div>
 
