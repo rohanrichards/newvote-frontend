@@ -57,12 +57,7 @@ export class IssueListComponent implements OnInit {
     isLoading: boolean;
     headerTitle = '';
     headerText = 'Issues can be any problem in your community that you think needs to be addressed.';
-    headerButtons = [{
-        text: 'New Issue',
-        color: 'warn',
-        routerLink: '/issues/create',
-        role: 'rep'
-    },
+    headerButtons = [
     {
         text: 'New Topic',
         color: 'warn',
@@ -76,11 +71,10 @@ export class IssueListComponent implements OnInit {
         role: 'admin'
     },
     {
-        text: 'Make Suggestion',
+        text: 'New Issue',
         color: 'warn',
-        routerLink: '/suggestions/create',
-        role: 'user',
-        params: { type: 'issue' }
+        routerLink: '/issues/create',
+        role: 'rep'
     }];
 
     stepsArray = [...JoyRideSteps];
