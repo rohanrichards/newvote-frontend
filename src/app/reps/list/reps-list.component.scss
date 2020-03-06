@@ -29,3 +29,13 @@
 .container {
   padding: 0.5rem;
 }
+
+.no-margin {
+  margin: 0;
+}
+
+::ng-deep {
+  .mat-divider {
+    border-top-width: 2px;
+  }
+}
