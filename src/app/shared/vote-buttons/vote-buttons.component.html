@@ -1,4 +1,6 @@
-<div fxLayoutGap="5px"
+<div 
+   
+    fxLayoutGap="5px grid"
     fxLayout.xs="row wrap"
     fxLayout.sm="row-reverse"
     fxLayout.gt-sm="row"
@@ -11,7 +13,7 @@
             fxLayoutGap="5px">
             <button mat-raised-button
                 fxFlex="1 1 100%"
-                [color]="(item && item.votes && item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
+                [ngClass]="{ inactive: (item.votes.currentUser && item.votes.currentUser.voteValue === -1)}"
                 class="vote-button vote-up"
                 
                 (click)="onVote(item, 1, $event)"><span fxHide="true"
@@ -21,7 +23,7 @@
 
             <button fxFlex="1 1 100%"
                 mat-raised-button
-                [color]="(item && item.votes && item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
+                [ngClass]="{ inactive: (item.votes.currentUser && item.votes.currentUser.voteValue === 1)}"
                 class="vote-button vote-down"
                 (click)="onVote(item, -1, $event)"><span fxHide="true"
                     fxShow.gt-xs="true">VOTE DOWN</span>
@@ -30,37 +32,43 @@
         </div>
     </div>
     <div fxLayout="column"
+        fxFlexAlign="flex-end"
         fxFlex.xs="1 1 100%"
         fxFlex.gt-xs="1 1 100%">
-        <h6 class="mat-body-2"
-            [style.margin]="0">RESULTS <span *ngIf="auth.isAdmin() || userHasVoted()"
-                class="mat-body-2">
-                {{ item && item.votes && item.votes.total || 0 }}</span>
+        <h6 
+            *ngIf="auth.isAdmin() == true || userHasVoted()"
+            class="mat-body-2 no-margin"
+            fxLayoutAlign="space-between center"
+            [style.margin]="0">RESULTS
+            <span >
+                {{ item && item.votes && item.votes.total || 0 }}
+            </span>
         </h6>
-        <ng-container *ngIf="auth.isAdmin() || userHasVoted(); else elseBlock"
+        <div
+            *ngIf="auth.isAdmin() == true || userHasVoted(); else elseBlock"
             class="chart-container">
             <div class="chart-score"
                 fxLayout="row">
-                dasdas
-                <!-- <div class="vote-overlay"
+                <div class="vote-overlay"
                     fxLayout="row"
                     fxLayoutAlign="space-between center">
                     <p>{{upVotesAsPercent()}}%</p>
                     <p>{{downVotesAsPercent()}}%</p>
                 </div>
+               
                 <div class="votes-for"
                     [style.width.%]="upVotesAsPercent()">
-                </div> -->
+                </div>
             </div>
-        </ng-container>
-        <ng-template #elseBlock>
-
+        </div>
+   
+        <ng-template #elseBlock >
             <button mat-raised-button
-                [style.margin-right]="'0.5em'"
+                [style.margin-right.rem]="0.5"
                 (click)="voteToRevealMessage($event)">
                 VOTE TO REVEAL
             </button>
-        </ng-template>
+         </ng-template>
     </div>
 </div>
 

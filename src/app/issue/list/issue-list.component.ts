@@ -237,14 +237,13 @@ export class IssueListComponent implements OnInit {
     }
 
     onVote(voteData: any, model: string) {
-
         this.isLoading = true
-        const { item, voteValue } = voteData
+        // when a new entity is dynamically added, the votes section returns as null.
+        // Assign votes & currentUser to false as safe default values to prevent errors
+        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
         const vote = new Vote(item._id, model, voteValue)
-        const existingVote = item.votes.currentUser
-
-        if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        if (currentUser) {
+            vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })

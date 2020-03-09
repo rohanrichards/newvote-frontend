@@ -16,7 +16,10 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 })
 export class VoteButtonsComponent implements OnInit {
     @Input() item: any;
+    isAdmin = false;
+
     @Output() vote = new EventEmitter();
+    showComponent = false;
 
     // Radar
     public chartLabels: any = [];
@@ -55,11 +58,14 @@ export class VoteButtonsComponent implements OnInit {
 
     constructor(
         public snackBar: MatSnackBar,
-        public auth: AuthenticationQuery,
-        private admin: AdminService
+        private admin: AdminService,
+        public auth: AuthenticationQuery
     ) { }
 
     ngOnInit() {
+        // setTimeout(() => {
+        //     this.showComponent = true
+        // }, 100)
         this.dataSetOverride = [
             {
                 borderWidth: 0,
@@ -103,6 +109,7 @@ export class VoteButtonsComponent implements OnInit {
     }
 
     onVote(item: any, voteValue: number, event: any) {
+        console.log('VOTING')
         event.stopPropagation()
         this.vote.emit({ item, voteValue })
     }
@@ -131,13 +138,12 @@ export class VoteButtonsComponent implements OnInit {
         return `${totalVotes} votes`
     }
 
-    userHasVoted() {
-        const { votes = false, votes: { currentUser = false } } = this.item 
+    userHasVoted(item: any) {
+        const { votes = false, votes: { currentUser = false } = false } = this.item
         // If a user votes logs off and logs in on another account they will still be able to see votes
         // if (!this.item.currentUser || !this.auth.credentials || !this.auth.credentials.user) {
         //     return false;
         // }
-        console.log(this.item, 'this is item')
         // console.log(votes)
         // console.log(currentUser)
         if (!votes || !currentUser) return false
