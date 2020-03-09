@@ -14,8 +14,8 @@
     border-radius: 5px;
     background-size: cover;
     background-repeat: no-repeat;
-    width: 125px;
-    height: 125px;
+    min-width: 125px;
+    min-height: 125px;
 
     .organization-icon {
         object-fit: contain;
