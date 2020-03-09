@@ -30,7 +30,7 @@
             fxFlex.sm="600px"
             fxFlex.gt-sm="690px"
             fx.Flex.md="800px"
-            fxFlex.gt-md="100">
+            fxFlex.gt-lg="100">
             <!-- <div class="form-wrap"> -->
             <mat-form-field class="example-chip-list" fxFill>
                 <mat-chip-list #chipList>
@@ -81,15 +81,25 @@
                      gdAuto="row"
                      gdGap="16px"
                      gdColumns.lt-sm="100%"
-                     gdColumns.gt-md="375px 375px 375px"
+                     gdColumns.lt-md="50% 50%"
+                     gdColumns.md="50% 50%"
+                     gdColumns.gt-md="450px 450px 450px"
                      >
-                     <app-rep-card 
-                         *ngFor="let rep of filterReps(allReps, tag)"
-                         (delete)="admin.onDelete($event, 'Rep')"
-                         path="/reps" 
-                         [tags]="organization.representativeTags"
-                         [item]="rep">
-                     </app-rep-card>
+                    <!-- <app-rep-card 
+                        *ngFor="let rep of filterReps(allReps, tag)"
+                        (delete)="admin.onDelete($event, 'Rep')"
+                        path="/reps" 
+                        [tags]="organization.representativeTags"
+                        [item]="rep">
+                    </app-rep-card> -->
+                    <app-rep-card-v2
+                        *ngFor="let rep of filterReps(allReps, tag)"
+                        [rep]="rep"
+                        (delete)="admin.onDelete($event, 'Rep')"
+                        path="/reps" 
+                        [tags]="organization.representativeTags"
+                        >
+                    </app-rep-card-v2>
                  </div>
             </div> 
         </div>
@@ -139,16 +149,25 @@
                     gdAlignRows="start"
                     gdAuto="row"
                     gdGap="16px"
-                    gdColumns.lt-sm="100%"
-                    gdColumns.gt-md="375px 375px 375px"
+                   
+                    gdColumns.lt-md="100%"
+                    gdColumns.gt-lg="375px 375px 375px"
                     >
-                    <app-rep-card 
+                    <!-- <app-rep-card 
                         *ngFor="let rep of filterReps(allReps, tag)"
                         (delete)="admin.onDelete($event, 'Rep')"
                         path="/reps" 
                         [tags]="organization.representativeTags"
                         [item]="rep">
-                    </app-rep-card>
+                    </app-rep-card> -->
+                    <app-rep-card-v2
+                        *ngFor="let rep of filterReps(allReps, tag)"
+                        [rep]="rep"
+                        (delete)="admin.onDelete($event, 'Rep')"
+                        path="/reps" 
+                        [tags]="organization.representativeTags"
+                        >
+                    </app-rep-card-v2>
                 </div>
            </div> 
        </div>
