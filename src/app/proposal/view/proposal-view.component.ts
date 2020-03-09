@@ -144,12 +144,10 @@ export class ProposalViewComponent implements OnInit {
 
     onVote(voteData: any, model: string) {
         this.isLoading = true
-        const { item, voteValue } = voteData
-        const vote = new Vote(item._id, 'Proposal', voteValue)
-        const existingVote = item.votes.currentUser
-
-        if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
+        const vote = new Vote(item._id, model, voteValue)
+        if (currentUser) {
+            vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })

@@ -244,7 +244,7 @@ export class IssueViewComponent implements OnInit {
     onVote(voteData: any, model: string) {
 
         this.isLoading = true
-        const { item, item: { votes: { currentUser } }, voteValue } = voteData
+        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
         let vote = new Vote(item._id, model, voteValue)
 
         if (currentUser) {

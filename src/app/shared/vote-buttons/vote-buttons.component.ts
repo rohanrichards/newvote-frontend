@@ -16,10 +16,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 })
 export class VoteButtonsComponent implements OnInit {
     @Input() item: any;
-    isAdmin = false;
-
     @Output() vote = new EventEmitter();
-    showComponent = false;
 
     // Radar
     public chartLabels: any = [];
@@ -47,15 +44,6 @@ export class VoteButtonsComponent implements OnInit {
         total: 0,
     }
 
-    defaultUser = {
-        _id: '',
-        object: '',
-        objectType: '',
-        voteValue: 0,
-        created: '',
-        user: ''
-    }
-
     constructor(
         public snackBar: MatSnackBar,
         private admin: AdminService,
@@ -63,9 +51,6 @@ export class VoteButtonsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        // setTimeout(() => {
-        //     this.showComponent = true
-        // }, 100)
         this.dataSetOverride = [
             {
                 borderWidth: 0,
