@@ -117,7 +117,6 @@ export class IssueViewComponent implements OnInit {
 
         this.suggestions$.subscribe((res) => {
             if (!res) return false
-            console.log(res, 'this is all the suggestions')
             this.suggestions = res
         })
     }

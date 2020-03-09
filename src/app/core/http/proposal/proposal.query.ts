@@ -65,7 +65,6 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
                 (proposal: IProposal) => {
                     // Check each solution if it contains the issue id in it's
                     // issues array
-                    // console.log(entity, 'this is entity')
                     return proposal.solutions.some((solution: ISolution | string) => {
                         if ((solution as ISolution)._id) {
                             return (solution as ISolution)._id === id
@@ -92,7 +91,6 @@ export class ProposalQuery extends QueryEntity<ProposalState, Proposal> {
                 (proposal: IProposal) => {
                     // Check each solution if it contains the issue id in it's
                     // issues array
-                    // console.log(entity, 'this is entity')
                     return proposal.solutions.some((solution: ISolution | string) => {
                         if ((solution as ISolution)._id) {
                             return (solution as ISolution)._id === id

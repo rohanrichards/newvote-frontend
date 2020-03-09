@@ -48,7 +48,6 @@ export class SolutionQuery extends QueryEntity<SolutionState, Solution> {
                 (solution: ISolution) => {
                     // Check each solution if it contains the issue id in it's
                     // issues array
-                    // console.log(entity, 'this is entity')
                     return solution.issues.some((issue: IIssue | string) => {
                         if ((issue as IIssue)._id) {
                             return (issue as IIssue)._id === id

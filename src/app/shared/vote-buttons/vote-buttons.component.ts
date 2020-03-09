@@ -109,7 +109,6 @@ export class VoteButtonsComponent implements OnInit {
     }
 
     onVote(item: any, voteValue: number, event: any) {
-        console.log('VOTING')
         event.stopPropagation()
         this.vote.emit({ item, voteValue })
     }
@@ -138,14 +137,12 @@ export class VoteButtonsComponent implements OnInit {
         return `${totalVotes} votes`
     }
 
-    userHasVoted(item: any) {
+    userHasVoted() {
         const { votes = false, votes: { currentUser = false } = false } = this.item
         // If a user votes logs off and logs in on another account they will still be able to see votes
         // if (!this.item.currentUser || !this.auth.credentials || !this.auth.credentials.user) {
         //     return false;
         // }
-        // console.log(votes)
-        // console.log(currentUser)
         if (!votes || !currentUser) return false
         return !!this.item.votes.currentUser && !!this.item.votes.currentUser.voteValue
     }

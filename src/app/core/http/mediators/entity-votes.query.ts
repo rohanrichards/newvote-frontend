@@ -166,7 +166,6 @@ export class EntityVotesQuery {
                     })
                 }),
                 mergeMap((suggestions: ISuggestion[]) => {
-                    console.log(suggestions, 'suggestions on merge map')
                     return combineQueries([
                         this.suggestions.selectFilter$,
                         this.suggestions.selectOrder$
