@@ -256,7 +256,7 @@ export class RepsListComponent implements OnInit {
     }
 
     filterReps(reps: any[], tagName: string) {
-        if (!reps.length) return false
+        if (!reps || !reps.length) return []
         const filteredReps = reps.filter((rep: any) => {
             const { tags = [] } = rep
             if (!tags.length) return false
