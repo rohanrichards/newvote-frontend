@@ -40,25 +40,27 @@
             </div>
         </div>
         <div *ngIf="org">
-            <div *ngIf="!org.owner" class="owner-wrap">
-                <span class="mat-caption spacer"
+            <div *ngIf="!org.owner">
+                <div class="container">
+                    <span class="mat-caption spacer"
                     >NewVote is not currently affiliated with
                     {{ org.name }}.</span
-                >
-                <span class="mat-caption space"
-                    >If you would like to claim leadership of the
-                    {{ org.name }} community
-                </span>
+                    >
+                    <span class="mat-caption space"
+                        >If you would like to claim leadership of the
+                        {{ org.name }} community
+                    </span>
+                </div>
+                <button
+                    class=""
+                    mat-button
+                    [routerLink]="['/communities/claim/', org._id]"
+                    color="primary"
+                    class="mat-display-1 claim-button"
+                    >
+                        CLAIM HERE
+                    </button>
             </div>
-            <button
-                class=""
-                mat-button
-                [routerLink]="['/communities/claim/', org._id]"
-                color="primary"
-                class="mat-display-1 claim-button"
-                >
-                    CLAIM HERE
-            </button>
             <div *ngIf="org.owner">
                 <span *ngIf="org.organizationName" class="mat-caption"
                     >{{ org.organizationName }} is the leader of this
