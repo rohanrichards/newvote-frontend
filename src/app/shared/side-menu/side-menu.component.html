@@ -12,7 +12,7 @@
         <ng-container *ngIf="organization; else communityBlock">
             <a mat-list-item
                 (click)="redirectToLanding()">
-                <span translate>{{ organization.name }}</span>
+                <span translate>{{ organization.name  }}</span>
             </a>
             <mat-divider></mat-divider>
 
@@ -60,7 +60,7 @@
                 (click)="visitOrganizationUrl($event)"
                 target="_blank">
                 <span translate
-                    matLine>About {{organization.name}}</span>
+                    >About {{organization.name}}</span>
             </a>
 
         </ng-container>
