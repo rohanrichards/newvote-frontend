@@ -65,7 +65,7 @@ export class IssueListComponent implements OnInit {
             role: 'admin'
         },
         {
-            text: 'All Topics',
+            text: 'View Topics',
             color: 'warn',
             routerLink: '/topics',
             role: 'admin'
