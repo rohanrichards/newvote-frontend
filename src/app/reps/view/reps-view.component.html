@@ -34,15 +34,15 @@
             <div 
             class="header-blurred-background"
                 fxFlex
-                [defaultImage]="handleImageUrl(rep.imageUrl === 'assets/', true, false, true)"
-                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+                [defaultImage]="handleImageUrl(checkDefaultImage(rep.imageUrl), true, false, true)"
+                [lazyLoad]="handleImageUrl(checkDefaultImage(rep.imageUrl), false, false, true)">
             </div>
             <img class="header-image-unblurred" [src]="rep.imageUrl" />
             <div 
                 class="header-blurred-background"
                 fxFlex
-                [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
-                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+                [defaultImage]="handleImageUrl(checkDefaultImage(rep.imageUrl), true, false, true)"
+                [lazyLoad]="handleImageUrl(checkDefaultImage(rep.imageUrl), false, false, true)">
             </div>
             <div class="admin-panel"
                 *ngIf="repQuery.isRep()"

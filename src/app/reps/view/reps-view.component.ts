@@ -29,6 +29,7 @@ import { IRep } from '@app/core/models/rep.model';
     styleUrls: ['./reps-view.component.scss']
 })
 export class RepsViewComponent implements OnInit {
+    defaultImage = "assets/logo-no-text.png"
     isLoading: boolean;
     loadingState: any;
     handleImageUrl = optimizeImage;
@@ -196,6 +197,13 @@ export class RepsViewComponent implements OnInit {
                     // return this.stateService.setLoadingState(AppState.error)
                 }
             )
+    }
+
+    // if using default image don't add the image as background
+    // blur is added by cloudinary so if using default, don't display as background
+    checkDefaultImage(image: string) {
+        if (image === this.defaultImage) return false
+        return image
     }
 
 }
