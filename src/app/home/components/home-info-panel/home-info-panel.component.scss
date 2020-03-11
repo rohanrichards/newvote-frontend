@@ -1,10 +1,7 @@
 .container {
-	padding: 2em;
+	padding: 1rem;
 }
 
-.container ~ .container {
-	padding-top: 2em;
-}
 
 .no-margin {
 	margin: 0;
@@ -25,6 +22,31 @@
 
 .info-block {
     padding: 1rem;
+}
+
+.container-white {
+	background-color: #FFFFFF;
+}
+
+.container-grey {
+	background-color: #FAFAFA;
+}
+
+.community-container {
+	background-color: #FAFAFA;
+
+	// .claim-button {
+	// 	margin-top: 1rem;
+	// 	margin-bottom: 1rem;
+	// }
+
+	// button {
+	// 	margin-bottom: 1rem;
+	// }
+}
+
+.about-community-container {
+	text-align: center;
 }
 
 @media screen and (max-width: 600px) {

@@ -48,7 +48,7 @@ export class IssueListComponent implements OnInit {
     @ViewChild('topicInput', { static: false }) topicInput: ElementRef<HTMLInputElement>;
     @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
-    issues: Array<Issue>;
+    issues: Array<Issue> = [];
     allTopics: Array<Topic> = []
     filteredTopics: Observable<Topic[]>;
     selectedTopics: Array<Topic> = [];
@@ -57,31 +57,25 @@ export class IssueListComponent implements OnInit {
     isLoading: boolean;
     headerTitle = '';
     headerText = 'Issues can be any problem in your community that you think needs to be addressed.';
-    headerButtons = [{
-        text: 'New Issue',
-        color: 'warn',
-        routerLink: '/issues/create',
-        role: 'rep'
-    },
-    {
-        text: 'New Topic',
-        color: 'warn',
-        routerLink: '/topics/create',
-        role: 'admin'
-    },
-    {
-        text: 'All Topics',
-        color: 'warn',
-        routerLink: '/topics',
-        role: 'admin'
-    },
-    {
-        text: 'Make Suggestion',
-        color: 'warn',
-        routerLink: '/suggestions/create',
-        role: 'user',
-        params: { type: 'issue' }
-    }];
+    headerButtons = [
+        {
+            text: 'New Topic',
+            color: 'warn',
+            routerLink: '/topics/create',
+            role: 'admin'
+        },
+        {
+            text: 'View Topics',
+            color: 'warn',
+            routerLink: '/topics',
+            role: 'admin'
+        },
+        {
+            text: 'New Issue',
+            color: 'warn',
+            routerLink: '/issues/create',
+            role: 'rep'
+        }];
 
     stepsArray = [...JoyRideSteps];
 
@@ -91,7 +85,7 @@ export class IssueListComponent implements OnInit {
     loadingState: string;
     suggestions: any[];
     suggestions$: Observable<Suggestion[]>;
-    orphanedIssues: any[];
+    orphanedIssues: any[] = [];
     isVerified: boolean;
 
     constructor(
@@ -150,7 +144,8 @@ export class IssueListComponent implements OnInit {
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
 
-        this.fetchData()
+        // this.fetchData()
+        this.stateService.setLoadingState(AppState.complete)
     }
 
     fetchData() {
@@ -195,7 +190,7 @@ export class IssueListComponent implements OnInit {
     subscribeToTopicStore() {
         this.entities.populateTopics()
             .subscribe(({topics, orphanedIssues}: any) => {
-                if (!topics.length) this.allTopics = []
+                if (!topics || !topics.length) return false
                 this.allTopics = topics
                 this.orphanedIssues = orphanedIssues || []
             })

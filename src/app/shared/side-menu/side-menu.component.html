@@ -11,10 +11,8 @@
     <mat-list>
         <ng-container *ngIf="organization; else communityBlock">
             <a mat-list-item
-            
-                routerLink="/home"
-                routerLinkActive="active">
-                <span translate>{{ organization.name }}</span>
+                (click)="redirectToLanding()">
+                <span translate>{{ organization.name  }}</span>
             </a>
             <mat-divider></mat-divider>
 
@@ -25,6 +23,12 @@
                 <span translate>Home</span>
             </a>
 
+            <a mat-list-item
+                routerLink="/issues"
+                routerLinkActive="active"
+                (click)="isMobile && handleClick()">
+                <span translate>Issues</span>
+            </a>
 
             <a mat-list-item
             routerLink="/reps"
@@ -32,12 +36,7 @@
                 <span>{{ organization.representativeTitle || 'Rep'}}</span>
             </a>
 
-            <a mat-list-item
-                routerLink="/issues"
-                routerLinkActive="active"
-                (click)="isMobile && handleClick()">
-                <span translate>Issues</span>
-            </a>
+            
 
 
             <!-- <a mat-list-item
@@ -61,7 +60,7 @@
                 (click)="visitOrganizationUrl($event)"
                 target="_blank">
                 <span translate
-                    matLine>About This Community</span>
+                    >About {{organization.name}}</span>
             </a>
 
         </ng-container>

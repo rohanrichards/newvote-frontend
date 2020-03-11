@@ -150,9 +150,9 @@
 		</div>
 	</div>
 	<div *ngSwitchCase="'error'"
-	 class="community-container container"
-	 fxLayoutAlign="center center">
-		<div fxFlex.gt-sm="690px"
+	 class="community-container container">
+		<div 
+		 fxFlex.gt-sm="690px"
 		 fxFlex.gt-md="800px"
 		 fxLayout="column">
 			<div class="mat-display-1 no-margin">
@@ -233,7 +233,17 @@
 		</div>
 	</ng-template>
 
-	<div *ngSwitchCase="'complete'"
+	<app-issues-panel
+		*ngSwitchCase="'complete'"
+		joyrideStep="step3"
+		[title]="stepsArray[2].title"
+		[stepContent]="customContent"
+		stepPosition="center"
+		(done)="onDone()"
+		[issues]="issues"
+		>
+	</app-issues-panel>
+	<!-- <div *ngSwitchCase="'complete'"
 		joyrideStep="step3"
 		[title]="stepsArray[2].title"
 		[stepContent]="customContent"
@@ -280,7 +290,7 @@
 			 routerLink="/issues">
 				SEE ALL ></button>
 		</div>
-	</ng-template>
+	</ng-template> -->
 </ng-container>
 
 <ng-container [ngSwitch]="loadingState">

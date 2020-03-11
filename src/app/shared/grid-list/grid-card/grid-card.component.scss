@@ -1,3 +1,10 @@
+// :host {
+// 	display: flex;
+// 	height: 100%;
+// }
+* { outline: none; }
+
+
 .mat-progress-spinner {
 	display: inline-block;
 	vertical-align: middle;
@@ -8,6 +15,8 @@
 }
 
 .item-card {
+	height:100%;
+	outline: none;
 	.image-container {
 		min-height: 200px;
 		background-position: center;
@@ -16,6 +25,10 @@
 	}
 
 	cursor: pointer;
+}
+
+.item-card:focus {
+	outline: red;
 }
 
 .button-panel {
@@ -46,16 +59,14 @@
 .title-card-header {
 	font-size: 1.2em;
 	font-weight: 600;
-	height: 52px;
+	max-height: 33px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .title-card-subheader {
-	max-height: 48px;
-	height: 28px;
+	height: 41px;
 	overflow: hidden;
-	max-width: 60vw;
 	margin: 0;
 
 	p {
