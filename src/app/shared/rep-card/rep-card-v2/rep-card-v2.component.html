@@ -22,8 +22,8 @@
                 <img class="avatar" [src]="rep.imageUrl" />
             </div>
             <div class="rep-info" fxLayout="column">
-                <h5 class="mat-headline no-margin"><strong>{{rep.position || 'Rep Position'}}</strong></h5>
-                <h5 class="mat-title">{{rep.displayName || 'Rep name'}}</h5>
+                <h5 class="mat-subheading-2 no-margin"><strong>{{rep.position || 'Rep Position'}}</strong></h5>
+                <h5 class="mat-subheading-2">{{rep.displayName || 'Rep name'}}</h5>
                 <mat-chip-list *ngIf="rep.tags && rep.tags.length" aria-label="User Tags">
                     <mat-chip *ngFor="let tag of filterTags(rep.tags)">{{tag}}</mat-chip>
                 </mat-chip-list>
