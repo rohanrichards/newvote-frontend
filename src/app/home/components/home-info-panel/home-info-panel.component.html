@@ -1,55 +1,54 @@
 <div class="community-container container" fxLayoutAlign="center center">
     <div fxFlex.gt-sm="690px" fxFlex.gt-md="800px" fxLayout="column" [style.width.%]="100">
-        <div class="mat-display-1 no-margin">
-            <span *ngIf="org">{{ org.name }}</span>
-        </div>
-        <div class="mat-h2" *ngIf="org">{{ org.description }}</div>
-        <div fxLayout="row" fxFlex>
+
+        <h1 class="mat-display-1 no-margin" *ngIf="org">{{ org.name }}</h1>
+        <h2 class="mat-h2" *ngIf="org">{{ org.description }}</h2>
+        <div fxLayout="row">
             <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
-                <span class="mat-h1" *ngIf="userCount">{{
+                <h1 class="mat-h1" *ngIf="userCount">{{
                     handleUserCount(userCount)
-                }}</span>
-                <span class="mat-h1" *ngIf="!userCount">0</span>
-                <span class="mat-h3">Members</span>
+                }}</h1>
+                <h1 class="mat-h1" *ngIf="!userCount">0</h1>
+                <h3 class="mat-h3">Members</h3>
             </div>
             <mat-divider vertical="true"></mat-divider>
             <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
-                <span
+                <h1
                     [style.text-decoration]="'underline'"
                     routerLink="/issues"
                     class="mat-h1 pointer"
                     *ngIf="issues"
-                    >{{ issues.length }}</span
+                    >{{ issues.length }}</h1
                 >
-                <span class="mat-h1" *ngIf="!issues">0</span>
-                <span class="mat-h3">Issues</span>
+                <h1 class="mat-h1" *ngIf="!issues">0</h1>
+                <h3 class="mat-h3">Issues</h3>
             </div>
             <mat-divider vertical="true"></mat-divider>
             <div class="info-block" fxFlex fxLayout="column" fxLayoutAlign="center center">
-                <span
+                <h1
                     [style.text-decoration]="'underline'"
                     class="mat-h1 pointer"
                     routerLink="/solutions"
                     *ngIf="proposals && solutions"
-                    >{{ proposals.length + solutions.length }}</span
+                    >{{ proposals.length + solutions.length }}</h1
                 >
-                <span class="mat-h1 pointer" *ngIf="!proposals || !solutions"
-                    >0</span
+                <h1 class="mat-h1 pointer" *ngIf="!proposals || !solutions"
+                    >0</h1
                 >
-                <span class="mat-h3">Solutions</span>
+                <h3 class="mat-h3">Solutions</h3>
             </div>
         </div>
         <div *ngIf="org">
             <div *ngIf="!org.owner">
                 <div class="container">
-                    <span class="mat-caption spacer"
+                    <small class="mat-caption spacer"
                     >NewVote is not currently affiliated with
-                    {{ org.name }}.</span
+                    {{ org.name }}.</small
                     >
-                    <span class="mat-caption space"
+                    <small class="mat-caption space"
                         >If you would like to claim leadership of the
                         {{ org.name }} community
-                    </span>
+                    </small>
                 </div>
                 <button
                     class=""
@@ -62,16 +61,15 @@
                     </button>
             </div>
             <div *ngIf="org.owner">
-                <span *ngIf="org.organizationName" class="mat-caption"
+                <p *ngIf="org.organizationName" class="mat-caption"
                     >{{ org.organizationName }} is the leader of this
-                    community.</span
+                    community.</p
                 >
             </div>
             <div>
                 <button routerLink="/issues" mat-raised-button color="primary">
-                    <span class="custom-headline issues-button"
-                        >Your Issues</span
-                    >
+                    <h1 class="custom-headline issues-button no-margin"
+                        >Your Issues</h1>
                 </button>
             </div>
         </div>
@@ -81,7 +79,7 @@
 <div class="about-community-container container text-center container-white" fxLayoutAlign="center center"
 	*ngIf="org && org.longDescription">
 	<div fxFlex.gt-sm="690px" fxFlex.gt-md="800px">
-		<span class='mat-body' [innerHtml]="org.longDescription"></span>
+		<p class='mat-body' [innerHtml]="org.longDescription"></p>
 	</div>
 </div>
 
