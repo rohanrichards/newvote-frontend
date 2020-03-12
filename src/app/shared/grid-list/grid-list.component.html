@@ -1,12 +1,47 @@
-<div fxLayout="column">
+<ng-container *ngIf="centerCards; else startBlock">
+    <div fxLayout="row wrap" fxLayoutGap="16px grid" fxLayoutAlign="center stretch">
+        <app-grid-card
+            fxFlex="1 1 30"
+            fxFlex.sm="1 1 45"
+            fxFlex.lt-sm="100"
+            *ngFor="let item of getItems();trackBy: trackByFn"
+            routerLink='{{path}}/{{item._id}}'
+            [item]="item"
+            [model]="model"
+            [path]="path"
+            [titleCard]="titleCard"
+            >
+        </app-grid-card>
+    </div>
+</ng-container>
+
+<ng-template #startBlock>
+    <div fxLayout="row wrap" fxLayoutGap="16px grid" fxLayoutAlign="start stretch">
+        <app-grid-card
+            fxFlex="1 1 30"
+            fxFlex.sm="1 1 45"
+            fxFlex.lt-sm="100"
+            *ngFor="let item of getItems();trackBy: trackByFn"
+            routerLink='{{path}}/{{item._id}}'
+            [item]="item"
+            [model]="model"
+            [path]="path"
+            [titleCard]="titleCard"
+            >
+        </app-grid-card>
+    </div>
+</ng-template>
+
+
+<!-- <div fxLayout="column">
     <div fxLayout="row wrap"
         *ngIf="items"
         fxLayoutAlign="start start"
         fxLayoutAlign.lt-sm="start stretch"
         fxLayoutGap="16px">
         <div class="item-card-row"
-            fxFlex="0 0 calc(33.3% - 16px)"
-            fxFlex.lt-sm="0 0 100%"
+            fxFlex="1 1 30%"
+            fxFlexGap="16px"
             *ngFor="let item of getItems();trackBy: trackByFn">
             <app-grid-card
                 routerLink='{{path}}/{{item._id}}'
@@ -18,4 +53,4 @@
             </app-grid-card>
         </div>
     </div>
-</div>
+</div> -->

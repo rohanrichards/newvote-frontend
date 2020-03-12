@@ -39,15 +39,15 @@ export class RepsListComponent implements OnInit {
     loadingState: any;
     proposals$: Observable<Proposal[]>;
     handleImageUrl = optimizeImage;
-    proposals: Proposal[];
-    solutions: Solution[];
-    issues: Issue[];
-    suggestions: Suggestion[];
+    proposals: Proposal[] = [];
+    solutions: Solution[] = [];
+    issues: Issue[] = [];
+    suggestions: Suggestion[] = [];
     organization: Organization;
 
     tagCtrl = new FormControl('')
-    allTags: any[];
-    allReps: any[];
+    allTags: any[] = []
+    allReps: any[] = []
     tags: string[] = []
     filteredTags: Observable<any[]>;
     filteredReps: Observable<any[]>;
@@ -256,7 +256,7 @@ export class RepsListComponent implements OnInit {
     }
 
     filterReps(reps: any[], tagName: string) {
-        if (!reps.length) return false
+        if (!reps || !reps.length) return []
         const filteredReps = reps.filter((rep: any) => {
             const { tags = [] } = rep
             if (!tags.length) return false

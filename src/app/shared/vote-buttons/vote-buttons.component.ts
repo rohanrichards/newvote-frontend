@@ -1,9 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
-
-import { AuthenticationService } from '@app/core/authentication/authentication.service'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
-import { VotesQuery } from '@app/core/http/vote/vote.query'
-import { Observable } from 'rxjs'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { IVote } from '@app/core/models/vote.model'

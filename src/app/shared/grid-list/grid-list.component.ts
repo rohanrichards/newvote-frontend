@@ -20,6 +20,7 @@ export class GridListComponent {
     @Input() titleCard: boolean;
     @Input() centerTitle: boolean;
     @Input() repCard: boolean;
+    @Input() centerCards: boolean;
 
     handleImageUrl = optimizeImage;
 

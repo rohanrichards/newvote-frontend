@@ -101,7 +101,10 @@
                 </div>
                 <div class="empty-title-container">
                     <h2 class="mat-h2">{{ model }}s</h2>
-                    <h4 class="mat-h4">There are no
+                    <h4 *ngIf="model === 'Suggestion'"
+                        class="mat-h4">No one has added a suggestion yet. Be the first</h4>
+                    <h4 *ngIf="model !== 'Suggestion'"
+                        class="mat-h4">There are no
                         {{ model + 's' | lowercase }} added by
                         {{ organizationName || 'this community'}} yet.</h4>
                 </div>

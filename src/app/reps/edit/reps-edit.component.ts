@@ -1,31 +1,31 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material';
-import { finalize, startWith, map } from 'rxjs/operators';
-import { IRep, Rep } from '@app/core/models/rep.model';
-import { Observable, forkJoin } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material'
+import { finalize, startWith, map } from 'rxjs/operators'
+import { IRep, Rep } from '@app/core/models/rep.model'
+import { Observable, forkJoin } from 'rxjs'
 import { cloneDeep, merge } from 'lodash'
-import { ActivatedRoute, Router } from '@angular/router';
-import { MetaService } from '@app/core/meta.service';
-import { Organization } from '@app/core/models/organization.model';
-import { ISolution } from '@app/core/models/solution.model';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { ProposalService } from '@app/core/http/proposal/proposal.service';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { IProposal } from '@app/core/models/proposal.model';
-import { IIssue } from '@app/core/models/issue.model';
-import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
-import { SolutionQuery } from '@app/core/http/solution/solution.query';
-import { IssueQuery } from '@app/core/http/issue/issue.query';
-import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { RepService } from '@app/core/http/rep/rep.service';
+import { ActivatedRoute, Router } from '@angular/router'
+import { MetaService } from '@app/core/meta.service'
+import { Organization } from '@app/core/models/organization.model'
+import { ISolution } from '@app/core/models/solution.model'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { IssueService } from '@app/core/http/issue/issue.service'
+import { IProposal } from '@app/core/models/proposal.model'
+import { IIssue } from '@app/core/models/issue.model'
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
+import { SolutionQuery } from '@app/core/http/solution/solution.query'
+import { IssueQuery } from '@app/core/http/issue/issue.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { RepService } from '@app/core/http/rep/rep.service'
 import { RepQuery } from '@app/core/http/rep/rep.query'
-import { OrganizationQuery } from '@app/core/http/organization/organization.query';
-import { AdminService } from '@app/core/http/admin/admin.service';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-reps-edit',
@@ -56,7 +56,7 @@ export class RepsEditComponent implements OnInit {
     repForm = new FormGroup({
         displayName: new FormControl('', [Validators.required]),
         description: new FormControl(''),
-        position: new FormControl('', [Validators.required, Validators.maxLength(25)]),
+        position: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         imageUrl: new FormControl('', [Validators.required]),
         proposals: new FormControl([]),
         solutions: new FormControl([]),
@@ -74,7 +74,7 @@ export class RepsEditComponent implements OnInit {
     @ViewChild('proposalAuto', { static: true }) proposalAuto: MatAutocomplete;
     @ViewChild('issueAuto', { static: true }) issueAuto: MatAutocomplete;
     resetImage: boolean
-    MAX_LENGTH = 500;
+    MAX_LENGTH = 1000;
     currentChars: number;
     constructor(
         private route: ActivatedRoute,
@@ -95,6 +95,7 @@ export class RepsEditComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.isLoading = true
         // this.isLoading = true
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
@@ -103,7 +104,9 @@ export class RepsEditComponent implements OnInit {
             this.initiateFilters()
             this.repService.view({ id: ID, orgs: [] })
                 .subscribe(
-                    (res) => res,
+                    (res) => {
+                        this.isLoading = false
+                    },
                     (err) => err
                 )
 
@@ -188,7 +191,7 @@ export class RepsEditComponent implements OnInit {
         })
             .subscribe((repArray: any) => {
                 if (!repArray.length) return false
-                const [rep, ...rest ] = repArray
+                const [rep, ...rest] = repArray
                 this.rep = rep
                 this.updateForm(rep)
                 this.subscribeToOrgStore(rep)
@@ -323,16 +326,17 @@ export class RepsEditComponent implements OnInit {
     // }
 
     setDefaultImage() {
-        this.newImage = false;
-        this.imageUrl = this.DEFAULT_IMAGE;
-        this.resetImage = true;
-        this.fileInput.nativeElement.value = null;
+        this.newImage = false
+        this.imageUrl = this.DEFAULT_IMAGE
+        this.resetImage = true
+        this.fileInput.nativeElement.value = null
     }
 
     onSave() {
         const rep = cloneDeep(this.rep)
         merge(rep, this.repForm.value as IRep)
         // merge(rep, this.repForm.value) as IRep
+        this.isLoading = true
 
         // this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -343,7 +347,7 @@ export class RepsEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 rep.imageUrl = res.secure_url
-                this.resetImage = false;
+                this.resetImage = false
                 this.updateWithApi(rep)
             }
         }
@@ -356,6 +360,7 @@ export class RepsEditComponent implements OnInit {
     }
 
     updateWithApi(newRep: any) {
+        this.isLoading = true
         newRep.solutions = this.solutions
         newRep.proposals = this.proposals
         newRep.issues = this.issues
@@ -461,7 +466,7 @@ export class RepsEditComponent implements OnInit {
 
         const filterVal = entityArray.filter((item: any) => {
             const { title, name } = item
-            let itemTitle;
+            let itemTitle
 
             if (title) {
                 itemTitle = title.toLowerCase()
