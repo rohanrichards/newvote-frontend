@@ -71,3 +71,13 @@ html {
 	width: 100%;
 	padding: 0.25rem 0.5rem;
 }
+
+.tab-wrapper {
+    position: relative;
+}
+
+.close-button-wrapper {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+}
