@@ -93,10 +93,21 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserPartOfOrganization(user: IUser, organization: Organization) {
+    isUserPartOfOrganization(user: IUser, organization: IOrganization) {
+        const { authType } = organization
+        return authType === 0 ?
+            this.isLocalVerified(user, organization)
+            : this.isSSOVerified(user, organization)
+    }
+
+    isUserVerified() {
+        return toBoolean(this.getValue().verified)
+    }
+
+    isLocalVerified(user: IUser, organization: IOrganization) {
         if (!user.verified) return false
         if (user.roles.includes('guest')) return false
-        if (!user.mobileNumber && organization.authType === 0) return false
+        if (!user.mobileNumber) return false
         if (!user.organizations.length) return false
 
         return user.organizations.some((userOrganization: any) => {
@@ -105,8 +116,11 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
-    isUserVerified() {
-        return toBoolean(this.getValue().verified)
+    isSSOVerified(user: IUser, organization: IOrganization) {
+        const { providerData } = user
+        const { url } = organization
+
+        return providerData && providerData[url]
     }
 
     doesMobileNumberExist() {

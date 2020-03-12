@@ -1,0 +1,41 @@
+<mat-card routerLink="{{path}}{{'/'}}{{rep._id}}">
+    <div class="button-panel"   
+        *ngIf="auth.isModerator()">
+        <button color="accent"
+            mat-icon-button
+            (click)="$event.stopPropagation()"
+            routerLink='{{path}}/edit/{{rep._id}}'>
+            <mat-icon aria-label="Edit the content">edit
+            </mat-icon>
+        </button>
+        <button
+            color="warn"
+            mat-icon-button
+            (click)="onDelete(rep, $event)">
+            <mat-icon aria-label="Delete content forever">
+                delete_forever</mat-icon>
+        </button>
+    </div>
+    <div fxLayout="column">
+        <div fxLayout="row" [style.margin-bottom.rem]="1" fxLayoutGap="8px grid" fxFlex="1 0 50%">
+            <div>
+                <img class="avatar" [src]="rep.imageUrl" />
+            </div>
+            <div class="rep-info" fxLayout="column">
+                <h5 class="mat-subheading-2 no-margin"><strong>{{rep.position || 'Rep Position'}}</strong></h5>
+                <h5 class="mat-subheading-2">{{rep.displayName || 'Rep name'}}</h5>
+                <mat-chip-list *ngIf="rep.tags && rep.tags.length" aria-label="User Tags">
+                    <mat-chip *ngFor="let tag of filterTags(rep.tags)">{{tag}}</mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+        <div class="mat-h4 line-clamp" [innerHTML]="rep.description">
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button aria-label="icon-button with an expand icon">
+            <mat-icon>expand_more</mat-icon>
+          </button>
+    </div>
+</mat-card>
+

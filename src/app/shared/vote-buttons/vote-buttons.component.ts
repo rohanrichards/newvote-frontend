@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-
-import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { MatSnackBar } from '@angular/material'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { Observable } from 'rxjs'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-vote-buttons',
@@ -39,9 +38,9 @@ export class VoteButtonsComponent implements OnInit {
     public dataSetOverride: any;
 
     constructor(
-        private auth: AuthenticationService,
         public snackBar: MatSnackBar,
-        private votesQuery: VotesQuery
+        private votesQuery: VotesQuery,
+        public auth: AuthenticationQuery
     ) { }
 
     ngOnInit() {

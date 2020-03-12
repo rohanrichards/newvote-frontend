@@ -5,15 +5,14 @@
     class="container parent-wrap">
     <div fxFlex="1 1 100%"
         fxLayout="column">
-        <span class="mat-body-2">BE HEARD</span>
+        <span class="mat-body-2">VOTE</span>
         <div fxLayout="row"
             fxFlex="1 1 100%"
             fxLayoutGap="5px">
             <button mat-raised-button
                 fxFlex="1 1 100%"
-                [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === 1) ? 'warn' : 'primary'"
                 class="vote-button vote-up"
-                
+                [ngClass]="{ inactive: (item.votes.currentUser && item.votes.currentUser.voteValue === -1)}"
                 (click)="onVote(item, 1, $event)"><span fxHide="true"
                     fxShow.gt-xs="true">VOTE UP</span>
                 <mat-icon>thumb_up</mat-icon>
@@ -21,7 +20,7 @@
 
             <button fxFlex="1 1 100%"
                 mat-raised-button
-                [color]="(item.votes.currentUser && item.votes.currentUser.voteValue === -1) ? 'warn' : 'primary'"
+                [ngClass]="{ inactive: (item.votes.currentUser && item.votes.currentUser.voteValue === 1)}"
                 class="vote-button vote-down"
                 (click)="onVote(item, -1, $event)"><span fxHide="true"
                     fxShow.gt-xs="true">VOTE DOWN</span>
@@ -32,12 +31,12 @@
     <div fxLayout="column"
         fxFlex.xs="1 1 100%"
         fxFlex.gt-xs="1 1 100%">
-        <h6 class="mat-body-2"
-            [style.margin]="0">RESULTS <span *ngIf="userHasVoted()"
+        <h6 class="mat-body-2" fxLayout="row" fxLayoutAlign="space-between center"
+            [style.margin]="0">RESULTS <span *ngIf="auth.isAdmin() || userHasVoted()"
                 class="mat-body-2">
                 {{ storeVote.total || item.votes.total }}</span>
         </h6>
-        <div *ngIf="userHasVoted(); else elseBlock"
+        <div *ngIf="auth.isAdmin() ||userHasVoted(); else elseBlock"
             class="chart-container">
             <div class="chart-score"
                 fxLayout="row">

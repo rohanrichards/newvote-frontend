@@ -55,7 +55,7 @@ export class RepsEditComponent implements OnInit {
     repForm = new FormGroup({
         displayName: new FormControl('', [Validators.required]),
         description: new FormControl(''),
-        position: new FormControl('', [Validators.required, Validators.maxLength(25)]),
+        position: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         imageUrl: new FormControl('', [Validators.required]),
         proposals: new FormControl([]),
         solutions: new FormControl([]),
@@ -73,7 +73,7 @@ export class RepsEditComponent implements OnInit {
     @ViewChild('proposalAuto', { static: true }) proposalAuto: MatAutocomplete;
     @ViewChild('issueAuto', { static: true }) issueAuto: MatAutocomplete;
     resetImage: boolean
-    MAX_LENGTH = 500;
+    MAX_LENGTH = 1000;
     currentChars: number;
     constructor(
         private route: ActivatedRoute,
@@ -94,6 +94,7 @@ export class RepsEditComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.isLoading = true
         // this.isLoading = true
         this.route.paramMap.subscribe(params => {
             const ID = params.get('id')
@@ -102,7 +103,9 @@ export class RepsEditComponent implements OnInit {
             this.initiateFilters()
             this.repService.view({ id: ID, orgs: [] })
                 .subscribe(
-                    (res) => res,
+                    (res) => {
+                        this.isLoading = false
+                    },
                     (err) => err
                 )
 
@@ -332,6 +335,7 @@ export class RepsEditComponent implements OnInit {
         const rep = cloneDeep(this.rep)
         merge(rep, this.repForm.value as IRep)
         // merge(rep, this.repForm.value) as IRep
+        this.isLoading = true
 
         // this.isLoading = true
         this.uploader.onCompleteAll = () => {
@@ -355,6 +359,7 @@ export class RepsEditComponent implements OnInit {
     }
 
     updateWithApi(newRep: any) {
+        this.isLoading = true
         newRep.solutions = this.solutions
         newRep.proposals = this.proposals
         newRep.issues = this.issues
@@ -368,10 +373,14 @@ export class RepsEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
+                    this.isLoading = false
                     this.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/reps/${t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => {
+                    this.isLoading = false
+                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                }
             )
     }
 

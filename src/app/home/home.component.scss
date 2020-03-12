@@ -1,14 +1,8 @@
-.container {
-	padding: 2em;
-}
-
-.container ~ .container {
-	padding-top: 2em;
-}
-
 // .container:last-of-type {
 // 	padding-bottom: 2em;
 // }
+
+
 
 .text-center {
 	text-align: center;
@@ -77,20 +71,6 @@
 .hot-issues-container {
 	background-color: #FFFFFF;
 }
-
-.community-container {
-	background-color: #FAFAFA;
-
-	button {
-		margin-top: 16px;
-		margin-bottom: 16px;
-	}
-}
-
-.about-container {
-	background-color: #FFFFFF;
-}
-
 
 .skeleton-title-wrap {
 	display: flex;
