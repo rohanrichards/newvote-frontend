@@ -17,7 +17,8 @@ import { UserService } from '@app/core/http/user/user.service'
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
 import { JoyrideModule } from 'ngx-joyride';
 import { HomeInfoPanelComponent } from './components/home-info-panel/home-info-panel.component';
-import { FooterComponent } from './components/footer/footer.component'
+import { FooterComponent } from './components/footer/footer.component';
+import { IssuesPanelComponent } from './components/issues-panel/issues-panel.component'
 
 @NgModule({
     imports: [
@@ -38,6 +39,7 @@ import { FooterComponent } from './components/footer/footer.component'
         HomeComponent,
         HomeInfoPanelComponent,
         FooterComponent,
+        IssuesPanelComponent,
     ],
     providers: [
         IssueService,

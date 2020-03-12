@@ -30,21 +30,19 @@
         <div
             class="image-container"
             fxLayout="row"
-            [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
-            [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)"
             >
             <div 
             class="header-blurred-background"
                 fxFlex
-                [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
-                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+                [defaultImage]="handleImageUrl(checkDefaultImage(rep.imageUrl), true, false, true)"
+                [lazyLoad]="handleImageUrl(checkDefaultImage(rep.imageUrl), false, false, true)">
             </div>
             <img class="header-image-unblurred" [src]="rep.imageUrl" />
             <div 
                 class="header-blurred-background"
                 fxFlex
-                [defaultImage]="handleImageUrl(rep.imageUrl, true, false, true)"
-                [lazyLoad]="handleImageUrl(rep.imageUrl, false, false, true)">
+                [defaultImage]="handleImageUrl(checkDefaultImage(rep.imageUrl), true, false, true)"
+                [lazyLoad]="handleImageUrl(checkDefaultImage(rep.imageUrl), false, false, true)">
             </div>
             <div class="admin-panel"
                 *ngIf="repQuery.isRep()"
@@ -70,25 +68,26 @@
             fxLayoutAlign.lt-sm="start start"
             class="description-bar">
             <div *ngIf="rep" 
-                fxFlex.sm="400px" 
+                fxFlex.lt-sm="400"
+                fxFlex.sm="500px" 
                 fxFlex.gt-sm="690px"
                 fxFlex.gt-md="800px">
                 <div class="mat-title" translate>Name:
                     {{ rep.displayName }}</div>
                 <div class="mat-title" translate>Position:
                     {{ rep.position }}</div>
-                <h2 class="mat-subtitle">
-                    Description:
-                </h2>
-                <app-more-less [displayText]="rep.description"
-                    maxHeight="200">
-                </app-more-less>
-                <div>
+                <div [style.margin-bottom.rem]="1">
                     <h2 class="mat-title">Tags</h2>
                     <mat-chip-list aria-label="User Tags">
                         <mat-chip *ngFor="let tag of rep.tags">{{tag}}</mat-chip>
                     </mat-chip-list>
                 </div>
+                <h2 class="mat-subtitle" [style.margin-bottom.rem]="-1">
+                    Description:
+                </h2>
+                <app-more-less [displayText]="rep.description"
+                    maxHeight="150">
+                </app-more-less>
             </div>
         </div>
     </mat-toolbar>

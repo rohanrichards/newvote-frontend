@@ -27,5 +27,15 @@
 }
 
 .container {
-  padding: 0.5rem;
+  padding: 1rem;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+::ng-deep {
+  .mat-divider {
+    border-top-width: 2px;
+  }
 }
