@@ -87,6 +87,7 @@ export class IssueListComponent implements OnInit {
     suggestions$: Observable<Suggestion[]>;
     orphanedIssues: any[] = [];
     isVerified: boolean;
+    isOpen: boolean;
 
     constructor(
         private suggestionQuery: SuggestionQuery,
@@ -185,11 +186,22 @@ export class IssueListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'issue')
                 }),
             )
+
+        this.suggestions$.subscribe(
+            (res: any[]) => {
+                if (!res.length) {
+                    this.isOpen = false
+                }
+                this.suggestions = res
+                this.isOpen = true
+            },
+            (err) => err
+        )
     }
 
     subscribeToTopicStore() {
         this.entities.populateTopics()
-            .subscribe(({topics, orphanedIssues}: any) => {
+            .subscribe(({ topics, orphanedIssues }: any) => {
                 if (!topics || !topics.length) return false
                 this.allTopics = topics
                 this.orphanedIssues = orphanedIssues || []
