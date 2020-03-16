@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
-import { TopicQuery } from "../topic/topic.query";
-import { IssueQuery } from "../issue/issue.query";
-import { combineQueries } from "@datorama/akita";
-import { map } from "rxjs/operators";
-import { ITopic } from "@app/core/models/topic.model";
-import { Issue, IIssue } from "@app/core/models/issue.model";
+import { Injectable } from '@angular/core'
+import { TopicQuery } from '../topic/topic.query'
+import { IssueQuery } from '../issue/issue.query'
+import { combineQueries } from '@datorama/akita'
+import { map } from 'rxjs/operators'
+import { ITopic } from '@app/core/models/topic.model'
+import { Issue, IIssue } from '@app/core/models/issue.model'
 
 @Injectable()
 
@@ -15,7 +15,7 @@ export class AllEntityQuery {
         return combineQueries(
             [
                 this.Topics.selectAll({}),
-                this.Issues.selectAll({})
+                this.Issues.issues$
             ]
         )
             .pipe(
@@ -67,7 +67,7 @@ export class AllEntityQuery {
                             }
                             // check whether issue exists on the topics issue list
                             // otherwise, akita will return an array with duplicates
-                            const oldTopic = topics[topicIndex];
+                            const oldTopic = topics[topicIndex]
                             const issueExists = oldTopic.issues.some((item) => {
                                 if (item._id === issue._id) return true
                                 return false

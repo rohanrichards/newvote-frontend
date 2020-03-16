@@ -67,7 +67,7 @@
                      >
                      <div class="tag-header">
                          <h2 class="custom-headline no-margin">
-                             {{tag | titlecase}}
+                             {{tag}}
                          </h2>
                      </div>
                  </div>
@@ -81,9 +81,9 @@
                      gdAuto="row"
                      gdGap="16px"
                      gdColumns.lt-sm="100%"
-                     gdColumns.lt-md="50% 50%"
                      gdColumns.md="50% 50%"
-                     gdColumns.gt-md="350px 350px 350px"
+                     gdColumns.lg="32% 32% 32%"
+                     gdColumns.gt-lg="repeat( auto-fill, minmax(350px, 1fr) )"
                      >
                     <!-- <app-rep-card 
                         *ngFor="let rep of filterReps(allReps, tag)"
@@ -136,7 +136,7 @@
                     >
                     <div class="tag-header">
                         <h2 class="custom-headline no-margin">
-                            {{tag | titlecase}}
+                            {{tag}}
                         </h2>
                     </div>
                 </div>
@@ -149,9 +149,11 @@
                     gdAlignRows="start"
                     gdAuto="row"
                     gdGap="16px"
-                    gdColumns.lt-md="100%"
-                    gdColumns.gt-md="30% 30% 30%"
-                    gdColumns.gt-lg="350px 350px 350px"
+                    gdColumns.lt-sm="100%"
+                    gdColumns.lt-md="50% 50%"
+                    gdColumns.md="50% 50%"
+                    gdColumns.lg="31% 31% 31%"
+                    gdColumns.gt-lg="repeat( auto-fill, minmax(350px, 1fr) )"
                     >
                     <!-- <app-rep-card 
                         *ngFor="let rep of filterReps(allReps, tag)"
