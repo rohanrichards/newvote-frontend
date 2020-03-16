@@ -46,6 +46,7 @@
             </div>
             <app-error-card *ngSwitchCase="'error'">
             </app-error-card>
+            <app-sort-bar model="Suggestion"></app-sort-bar>
             <app-card-list *ngSwitchCase="'complete'"
                 path="/suggestions"
                 [@fadeIn]="loadingState === 'complete'"

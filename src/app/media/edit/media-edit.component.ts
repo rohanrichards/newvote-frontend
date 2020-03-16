@@ -16,6 +16,7 @@ import { IssueService } from '@app/core/http/issue/issue.service'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-media',
@@ -55,7 +56,8 @@ export class MediaEditComponent implements OnInit {
         public snackBar: MatSnackBar,
         private router: Router,
         private location: Location,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) {
         this.filteredIssues = this.mediaForm.get('issues').valueChanges.pipe(
             startWith(''),
@@ -194,19 +196,12 @@ export class MediaEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((t) => {
                 if (t.error) {
-                    this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                 } else {
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.location.back()
                 }
             })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

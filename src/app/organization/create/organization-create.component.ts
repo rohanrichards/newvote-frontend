@@ -13,6 +13,7 @@ import { UserService } from '@app/core/http/user/user.service'
 import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-organization',
@@ -102,7 +103,8 @@ export class OrganizationCreateComponent implements OnInit {
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) {
         this.filteredUsers = this.organizationForm.get('owner').valueChanges.pipe(
             startWith(''),
@@ -200,7 +202,7 @@ export class OrganizationCreateComponent implements OnInit {
             this.organizationService.create({ entity: this.organization })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(res => {
-                    this.openSnackBar('Succesfully created', 'OK')
+                    this.admin.openSnackBar('Succesfully created', 'OK')
 
                     if (res.moderators.length) {
                         const config = new MatSnackBarConfig()
@@ -208,14 +210,15 @@ export class OrganizationCreateComponent implements OnInit {
                         config.panelClass = ['warn-snack']
 
                         setTimeout(() => {
-                            this.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                            this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                            // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
                         }, 3100)
                     }
 
                     this.router.navigate(['/organizations'])
                 },
                 (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
         }
 
@@ -235,15 +238,6 @@ export class OrganizationCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string, config?: any) {
-        const defaultConfig = {
-            duration: 3000,
-            horizontalPosition: 'right'
-        }
-
-        this.snackBar.open(message, action, config || defaultConfig)
     }
 
     userSelected(event: any) {

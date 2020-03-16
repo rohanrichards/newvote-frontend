@@ -93,4 +93,12 @@ export class TopicService {
             )
     }
 
+    updateFilter(filter: string) {
+        this.topicStore.update({ filter })
+    }
+
+    updateOrder(order: string) {
+        this.topicStore.update({ order });
+    }
+
 }
