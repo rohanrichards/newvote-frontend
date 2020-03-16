@@ -11,6 +11,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-organization',
@@ -33,7 +34,8 @@ export class OrganizationViewComponent implements OnInit {
         private router: Router,
         public dialog: MatDialog,
         public snackBar: MatSnackBar,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -81,17 +83,10 @@ export class OrganizationViewComponent implements OnInit {
         dialogRef.afterClosed().subscribe((confirm: boolean) => {
             if (confirm) {
                 this.organizationService.delete({ id: this.organization._id }).subscribe(() => {
-                    this.openSnackBar('Succesfully deleted', 'OK')
+                    this.admin.openSnackBar('Succesfully deleted', 'OK')
                     this.router.navigate(['/organizations'])
                 })
             }
-        })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
         })
     }
 

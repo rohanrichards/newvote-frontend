@@ -149,7 +149,6 @@
     </div>
     <div *ngSwitchCase="'complete'"
         class="container"
-        [@fadeIn]=true
         fxLayout="row wrap"
         fxLayoutAlign="center start">
         <div fxFlex.gt-sm="690px"
@@ -160,6 +159,7 @@
                 <span class="custom-headline center-span"
                     [style.margin]="'0'">Vote on Solutions</span>
             </mat-toolbar>
+            <app-sort-bar model="Solution"></app-sort-bar>
             <app-card-list path="/solutions"
                 [items$]=solutions$
                 model="Solution"

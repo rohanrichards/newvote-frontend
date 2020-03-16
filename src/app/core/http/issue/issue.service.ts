@@ -96,4 +96,12 @@ export class IssueService {
             )
     }
 
+    updateFilter(filter: string) {
+        this.issueStore.update({ filter })
+    }
+
+    updateOrder(order: string) {
+        this.issueStore.update({ order });
+    }
+
 }

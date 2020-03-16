@@ -108,7 +108,7 @@ export class MediaService {
             )
     }
 
-    updateSuggestionVote(id: string, media: any) {
+    updateMediaVote(id: string, media: any) {
         this.mediaStore.update(id, media)
     }
 

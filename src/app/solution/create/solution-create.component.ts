@@ -15,6 +15,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-solution',
@@ -54,7 +55,8 @@ export class SolutionCreateComponent implements OnInit {
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) {
         this.filteredIssues = this.solutionForm.get('issues').valueChanges.pipe(
             startWith(''),
@@ -191,10 +193,10 @@ export class SolutionCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.admin.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/solutions/${t.slug || t._id}`])
                     },
-                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 )
         }
 
@@ -207,22 +209,15 @@ export class SolutionCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(
                         t => {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.admin.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${t.slug || t._id}`])
                         },
-                        (err) => this.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
+                        (err) => this.admin.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     )
             }
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     issueSelected(event: any) {

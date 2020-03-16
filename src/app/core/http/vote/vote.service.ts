@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { map, catchError, tap } from 'rxjs/operators'
 
 import { Vote } from '@app/core/models/vote.model'
 import { handleError } from '@app/core/http/errors'
@@ -80,6 +80,11 @@ export class VoteService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                tap((res: any) => {
+                    // votes are assigned via their parent id instread of unique _id
+                    // so when updating, update the vote object via it's parent object id
+                    this.voteStore.upsert(res.object, { currentUser: res })
+                }),
                 catchError(handleError),
                 map((res: any) => res),
             )
