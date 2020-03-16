@@ -195,7 +195,7 @@
                         [style.margin-top.rem]="1"
                         >
                         <mat-expansion-panel class="accordion-header"
-                            [expanded]="suggestions && suggestions.length && suggestions.length > 0">
+                            [expanded]="isOpen && suggestions.length >= 1">
                             <mat-expansion-panel-header>
                                 <h2 class="custom-headline no-margin"
                                     [ngStyle]="{ 'margin-bottom': '0px', 'text-align': 'center', 'width': '100%'}">
