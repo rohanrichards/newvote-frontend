@@ -18,6 +18,7 @@ import { MetaService } from '@app/core/meta.service'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { AppState } from '@app/core/models/state.model'
 import { StateService } from '@app/core/http/state/state.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-issue',
@@ -43,6 +44,7 @@ export class IssueEditComponent implements OnInit {
         topics: new FormControl(''),
         imageUrl: new FormControl('', [Validators.required])
     });
+
     resetImage: boolean
 
     @ViewChild('topicInput', { static: true }) topicInput: ElementRef<HTMLInputElement>;
@@ -58,7 +60,8 @@ export class IssueEditComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
-        private stateService: StateService
+        private stateService: StateService,
+        private admin: AdminService
     ) {
         this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
             startWith(''),
@@ -229,18 +232,11 @@ export class IssueEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading)
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/issues/${t.slug || t._id}`])
                 },
-                (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     topicSelected(event: any) {

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
-import { VotesQuery } from '@app/core/http/vote/vote.query'
-import { Observable } from 'rxjs'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { IVote } from '@app/core/models/vote.model'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-vote-buttons',
@@ -11,10 +11,6 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
     styleUrls: ['./vote-buttons.component.scss']
 })
 export class VoteButtonsComponent implements OnInit {
-
-    voteMetaData$: Observable<VoteMetaData>;
-    storeVote: any;
-
     @Input() item: any;
     @Output() vote = new EventEmitter();
 
@@ -37,9 +33,16 @@ export class VoteButtonsComponent implements OnInit {
 
     public dataSetOverride: any;
 
+    defaultValues: VoteMetaData = {
+        _id: '',
+        up: 0,
+        down: 0,
+        total: 0,
+    }
+
     constructor(
         public snackBar: MatSnackBar,
-        private votesQuery: VotesQuery,
+        private admin: AdminService,
         public auth: AuthenticationQuery
     ) { }
 
@@ -56,34 +59,26 @@ export class VoteButtonsComponent implements OnInit {
                 data: [this.downVotesAsPercent()]
             }
         ]
-
-        // Get the total votes from the akita store
-        this.getVoteMetaData()
-            .subscribe((vote) => {
-                this.storeVote = vote
-            })
-    }
-
-    getVoteMetaData() {
-        return this.votesQuery.selectEntity(this.item._id)
     }
 
     upVotesAsPercent() {
-        return this.getPercentage(this.storeVote || this.item) || 0
+        const vote = this.item.votes || this.defaultValues
+        return this.getPercentage(vote) || 0
     }
 
     downVotesAsPercent() {
-        return 100 - this.getPercentage(this.storeVote || this.item.votes) || 0
+        const vote = this.item.votes || this.defaultValues
+        return 100 - this.getPercentage(vote) || 0
     }
 
-    getPercentage(item: any) {
-        if (item.total === 0) {
+    getPercentage(votes: VoteMetaData) {
+        if (votes.total === 0) {
             // no votes yet
             return 0
         }
 
-        const numerator = item.up
-        const denominator = (item.up + item.down)
+        const numerator = votes.up
+        const denominator = (votes.up + votes.down)
 
         if (denominator === 0) {
             // stop divide by zero
@@ -101,38 +96,14 @@ export class VoteButtonsComponent implements OnInit {
 
     voteToRevealMessage(event: any) {
         event.stopPropagation()
-        this.openSnackBar('You have to vote to reveal the result', 'OK')
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
-    votesWidthFor() {
-        const { up, down } = this.item.votes
-        const totalVotes = up + down
-
-        const percentageOfUpVotes = (up / totalVotes) * 100
-        return Math.round(percentageOfUpVotes)
-    }
-
-    votesWidthAgainst(vote: any) {
-
-        const { up, down } = vote
-        const totalVotes = up + down
-
-        const percentageOfDownVotes = (down / totalVotes) * 100
-        return Math.round(percentageOfDownVotes) || 0
+        this.admin.openSnackBar('You have to vote to reveal the result', 'OK')
     }
 
     totalVotes() {
-        const { up, down } = this.item.votes
+        const { up, down, currentUser = false } = this.item.votes || this.defaultValues
         const totalVotes = up + down
 
-        if (!(this.item.votes.currentUser && this.item.votes.currentUser.voteValue)) {
+        if (!(currentUser && currentUser.voteValue)) {
             return ''
         }
 
@@ -148,11 +119,12 @@ export class VoteButtonsComponent implements OnInit {
     }
 
     userHasVoted() {
+        const { votes = false, votes: { currentUser = false } = false } = this.item
         // If a user votes logs off and logs in on another account they will still be able to see votes
         // if (!this.item.currentUser || !this.auth.credentials || !this.auth.credentials.user) {
         //     return false;
         // }
-
-        return this.item.votes.currentUser && this.item.votes.currentUser.voteValue
+        if (!votes || !currentUser) return false
+        return !!this.item.votes.currentUser && !!this.item.votes.currentUser.voteValue
     }
 }

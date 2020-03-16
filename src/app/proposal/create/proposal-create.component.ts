@@ -15,6 +15,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-proposal',
@@ -55,7 +56,8 @@ export class ProposalCreateComponent implements OnInit {
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        private admin: AdminService
     ) {
         this.filteredSolutions = this.proposalForm.get('solutions').valueChanges.pipe(
             startWith(''),
@@ -187,10 +189,10 @@ export class ProposalCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.openSnackBar('Succesfully created', 'OK')
+                        this.admin.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/proposals/${t.slug || t._id}`])
                     },
-                    (error) => this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
                 )
         }
@@ -209,9 +211,9 @@ export class ProposalCreateComponent implements OnInit {
                         }
 
                         if (t.error) {
-                            this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.openSnackBar('Succesfully created', 'OK')
+                            this.admin.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${this.proposal.solutions[0].slug || this.proposal.solutions[0]._id}`])
                         }
                     })
@@ -225,13 +227,6 @@ export class ProposalCreateComponent implements OnInit {
         this.userImageUpload = false;
         this.imageUrl = false;
         this.fileInput.nativeElement.value = null;
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     solutionSelected(event: any) {

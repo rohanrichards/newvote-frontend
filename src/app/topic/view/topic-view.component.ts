@@ -102,11 +102,4 @@ export class TopicViewComponent implements OnInit {
             )
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
 }

@@ -10,6 +10,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { TopicService } from '@app/core/http/topic/topic.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-topic',
@@ -37,7 +38,8 @@ export class TopicCreateComponent implements OnInit {
         public snackBar: MatSnackBar,
         private router: Router,
         private meta: MetaService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -123,9 +125,9 @@ export class TopicCreateComponent implements OnInit {
                     .subscribe(
                         t => {
                             if (t.error) {
-                                this.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                                this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                             } else {
-                                this.openSnackBar('Succesfully created', 'OK')
+                                this.admin.openSnackBar('Succesfully created', 'OK')
                                 this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } })
                             }
                         },
@@ -135,13 +137,6 @@ export class TopicCreateComponent implements OnInit {
         }
 
         this.uploader.uploadAll()
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
 }

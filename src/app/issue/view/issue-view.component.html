@@ -147,7 +147,20 @@
             </div>
         </div>
     </div>
-    <div *ngSwitchCase="'complete'" class="container"
+    <div *ngSwitchCase="'error'">
+        <div class="container"
+            [@fadeIn]=true
+            fxLayout="row wrap"
+            fxLayoutAlign="center start">
+            <div fxFlex.gt-sm="690px"
+                fxFlex.gt-md="800px">
+                <app-error-card model="Issue">
+                </app-error-card>
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchCase="'complete'"
+        class="container"
         fxLayout="row wrap"
         fxLayoutAlign="center start">
         <div fxFlex.gt-sm="690px"
@@ -169,6 +182,7 @@
                 <span class="mat-headline center-span"
                     [style.margin-bottom]="'0'">Vote on Solutions</span>
             </mat-toolbar>
+            <app-sort-bar model="Solution"></app-sort-bar>
             <app-card-list path="/solutions"
                 [items$]=solutions$
                 model="Solution"
