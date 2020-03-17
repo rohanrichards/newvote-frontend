@@ -8,17 +8,18 @@ import { OrganizationService } from '../organization/organization.service'
 import { assign } from 'lodash'
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
-import { Issue, IIssue } from '@app/core/models/issue.model'
-import { Media, IMedia } from '@app/core/models/media.model'
-import { Organization, IOrganization } from '@app/core/models/organization.model'
-import { Solution, ISolution } from '@app/core/models/solution.model'
-import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
-import { Proposal, IProposal } from '@app/core/models/proposal.model'
+import { IIssue } from '@app/core/models/issue.model'
+import { IMedia } from '@app/core/models/media.model'
+import { IOrganization } from '@app/core/models/organization.model'
+import { ISolution } from '@app/core/models/solution.model'
+import { ISuggestion } from '@app/core/models/suggestion.model'
+import { IProposal } from '@app/core/models/proposal.model'
 import { TopicService } from '../topic/topic.service'
-import { Topic, ITopic } from '@app/core/models/topic.model'
+import { ITopic } from '@app/core/models/topic.model'
 import { Router } from '@angular/router'
 import { IRep } from '@app/core/models/rep.model'
 import { RepService } from '../rep/rep.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 type Entities = {
     Topic: ITopic;
@@ -66,9 +67,9 @@ export class AdminService {
         private mediaService: MediaService,
         private topicService: TopicService,
         private dialog: MatDialog,
-        private snackBar: MatSnackBar,
         private router: Router,
-        private repService: RepService
+        private repService: RepService,
+        private toast: ToastService,
     ) { }
 
     getTitle(object: any, model: string): string {
@@ -122,7 +123,7 @@ export class AdminService {
 
                 service.subscribe(
                     () => {
-                        this.openSnackBar('Succesfully deleted', 'OK')
+                        this.toast.openSnackBar('Succesfully deleted', 'OK')
                         if (redirectRoute) {
                             this.router.navigate([`/${redirectRoute}`])
                         }
@@ -153,7 +154,7 @@ export class AdminService {
 
                 service.subscribe(
                     () => {
-                        this.openSnackBar('Succesfully removed', 'OK')
+                        this.toast.openSnackBar('Succesfully removed', 'OK')
 
                         if (redirectRoute) {
                             this.router.navigate([`/${redirectRoute}`])
@@ -184,7 +185,7 @@ export class AdminService {
 
                 service.subscribe(
                     () => {
-                        this.openSnackBar('Succesfully restored', 'OK')
+                        this.toast.openSnackBar('Succesfully restored', 'OK')
 
                         if (redirectRoute) {
                             this.router.navigate([`/${redirectRoute}`])
@@ -193,14 +194,6 @@ export class AdminService {
                     (err: any) => err
                 )
             }
-        })
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right',
-            verticalPosition: 'bottom',
         })
     }
 }

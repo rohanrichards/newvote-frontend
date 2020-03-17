@@ -25,6 +25,7 @@ import { startWith, map, filter } from 'rxjs/operators';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ToastService } from '@app/core/toast/toast.service';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -70,7 +71,8 @@ export class RepsListComponent implements OnInit {
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
         private organizationService: OrganizationService,
-        private stateService: StateService
+        private stateService: StateService,
+        private toast: ToastService
     ) {
         this.filteredTags = this.tagCtrl.valueChanges.pipe(
             startWith(''),
@@ -148,7 +150,6 @@ export class RepsListComponent implements OnInit {
                 (err) => err
             )
 
-
         this.solutionService.list({ orgs: [], params })
             .subscribe(
                 (res) => res,
@@ -194,11 +195,11 @@ export class RepsListComponent implements OnInit {
             .subscribe(
                 (res) => {
                     const { invalidReps } = res
-                    this.admin.openSnackBar('Reps added successfully', 'OK')
+                    this.toast.openSnackBar('Reps added successfully', 'OK')
                     if (invalidReps.length) {
                         setTimeout(() => {
                             const message = `These emails could not be created as reps, ${invalidReps.join(', ')}.`
-                            this.admin.openSnackBar(message, 'OK')
+                            this.toast.openSnackBar(message, 'OK')
                         }, 5000)
                     }
                 },
@@ -211,10 +212,10 @@ export class RepsListComponent implements OnInit {
             .subscribe(
                 (res) => {
                     const message = 'Update Successfull.'
-                    this.admin.openSnackBar(message, 'OK')
+                    this.toast.openSnackBar(message, 'OK')
                 },
                 (err) => {
-                    this.admin.openSnackBar(err.message, 'OK')
+                    this.toast.openSnackBar(err.message, 'OK')
                 }
             )
     }
@@ -227,7 +228,7 @@ export class RepsListComponent implements OnInit {
                     if (res.length > 1) {
                         message = 'Rep\'s successfully removed'
                     }
-                    this.admin.openSnackBar(message, 'OK')
+                    this.toast.openSnackBar(message, 'OK')
                 },
                 (err) => err
             )

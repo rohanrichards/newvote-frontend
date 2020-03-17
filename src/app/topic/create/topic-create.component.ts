@@ -11,6 +11,7 @@ import { TopicService } from '@app/core/http/topic/topic.service'
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-topic',
@@ -35,7 +36,7 @@ export class TopicCreateComponent implements OnInit {
     constructor(
         private topicService: TopicService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private route: ActivatedRoute,
@@ -125,9 +126,9 @@ export class TopicCreateComponent implements OnInit {
                     .subscribe(
                         t => {
                             if (t.error) {
-                                this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                                this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                             } else {
-                                this.admin.openSnackBar('Succesfully created', 'OK')
+                                this.toast.openSnackBar('Succesfully created', 'OK')
                                 this.router.navigate(['/topics'], { queryParams: { forceUpdate: true } })
                             }
                         },

@@ -58,6 +58,7 @@ import { AccessControlQuery } from './http/mediators/access-control.query'
 import { AccessControlStore } from './http/mediators/access-control.store'
 import { EntityVotesQuery } from './http/mediators/entity-votes.query'
 import { EntityVotesStore } from './http/mediators/entity-votes.store'
+import { ToastService } from './toast/toast.service'
 
 
 export function tokenGetter() {
@@ -135,9 +136,13 @@ export function tokenGetter() {
         DataFetchService,
         AllEntityQuery,
         AllEntityStore,
+<<<<<<< HEAD
         AccessControlStore,
         AccessControlQuery,
         EntityVotesQuery,
+=======
+        ToastService,
+>>>>>>> changes from feature/storing-vote
         {
             provide: HttpClient,
             useClass: HttpService

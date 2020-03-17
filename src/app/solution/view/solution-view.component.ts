@@ -31,6 +31,7 @@ import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { IProposal } from '@app/core/models/proposal.model'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-solution',
@@ -64,7 +65,7 @@ export class SolutionViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private meta: MetaService,
         private suggestionQuery: SuggestionQuery,
         private solutionQuery: SolutionQuery,
@@ -188,13 +189,13 @@ export class SolutionViewComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
@@ -211,10 +212,10 @@ export class SolutionViewComponent implements OnInit {
         this.suggestionService.create({ entity: suggestion })
             .subscribe(
                 () => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
+                    this.toast.openSnackBar('Succesfully created', 'OK')
                 },
                 (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
     }

@@ -18,6 +18,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ActivatedRoute } from '@angular/router'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-proposal',
@@ -54,7 +55,7 @@ export class ProposalListComponent implements OnInit {
         private voteService: VoteService,
         public auth: AuthenticationService,
         private suggestionService: SuggestionService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private meta: MetaService,
         private proposalQuery: ProposalQuery,
         private suggestionQuery: SuggestionQuery,
@@ -137,13 +138,13 @@ export class ProposalListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )

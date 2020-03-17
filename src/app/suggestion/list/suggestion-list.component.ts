@@ -20,6 +20,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -55,7 +56,7 @@ export class SuggestionListComponent implements OnInit {
         private stateService: StateService,
         private voteService: VoteService,
         public auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private meta: MetaService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
@@ -121,13 +122,13 @@ export class SuggestionListComponent implements OnInit {
         this.voteService.create({ entity: vote })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((res) => {
-                this.admin.openSnackBar('Your vote was recorded', 'OK')
+                this.toast.openSnackBar('Your vote was recorded', 'OK')
             },
             (error) => {
                 if (error.status === 401) {
-                    this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                    this.toast.openSnackBar('You must be logged in to vote', 'OK')
                 } else {
-                    this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                    this.toast.openSnackBar('There was an error recording your vote', 'OK')
                 }
             }
             )

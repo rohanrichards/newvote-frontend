@@ -26,6 +26,7 @@ import { RepService } from '@app/core/http/rep/rep.service'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-reps-edit',
@@ -90,8 +91,9 @@ export class RepsEditComponent implements OnInit {
         private stateService: StateService,
         private repService: RepService,
         private repQuery: RepQuery,
-        private org: OrganizationQuery,
-        private admin: AdminService
+        private admin: AdminService,
+        public toast: ToastService,
+        private org: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -374,10 +376,10 @@ export class RepsEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/reps/${t._id}`])
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 

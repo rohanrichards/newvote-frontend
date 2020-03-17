@@ -17,6 +17,7 @@ import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-organization',
@@ -125,7 +126,7 @@ export class OrganizationEditComponent implements OnInit {
         private organizationService: OrganizationService,
         public auth: AuthenticationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private location: Location,
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
@@ -315,7 +316,7 @@ export class OrganizationEditComponent implements OnInit {
         this.organizationService.update({ id: organization._id, entity: organization })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((res) => {
-                this.admin.openSnackBar('Succesfully updated', 'OK')
+                this.toast.openSnackBar('Succesfully updated', 'OK')
 
                 if (res.moderators.length) {
                     const config = new MatSnackBarConfig()
@@ -323,15 +324,14 @@ export class OrganizationEditComponent implements OnInit {
                     config.panelClass = ['warn-snack']
 
                     setTimeout(() => {
-                        // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
-                        this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
+                        this.toast.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
                     }, 3100)
                 }
 
                 this.location.back()
             },
             (error) => {
-                this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             })
     }
 
@@ -409,9 +409,9 @@ export class OrganizationEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe((t) => {
                 if (t.error) {
-                    this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                 } else {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     // this.location.back();
                 }
             })

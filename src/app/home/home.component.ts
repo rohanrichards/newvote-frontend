@@ -29,6 +29,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-home',
@@ -62,7 +63,7 @@ export class HomeComponent implements OnInit {
         private proposalService: ProposalService,
         private userService: UserService,
         private meta: MetaService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         public admin: AdminService,
         private proposalQuery: ProposalQuery,
         private solutionQuery: SolutionQuery,
@@ -168,7 +169,7 @@ export class HomeComponent implements OnInit {
             .subscribe(
                 () => {
                     this.auth.saveTourToLocalStorage()
-                    this.admin.openSnackBar('Tour Complete', 'OK')
+                    this.toast.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err
             )

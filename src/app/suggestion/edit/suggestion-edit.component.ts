@@ -20,6 +20,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { cloneDeep } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -54,7 +55,7 @@ export class SuggestionEditComponent implements OnInit {
         private organizationService: OrganizationService,
         private searchService: SearchService,
         private location: Location,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
@@ -138,10 +139,10 @@ export class SuggestionEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/suggestions/${t._slug || t._id}`])
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 

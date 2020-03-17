@@ -13,6 +13,7 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -41,7 +42,7 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private route: ActivatedRoute,
         private location: Location,
         public repQuery: RepQuery,
@@ -159,10 +160,10 @@ export class NavbarComponent implements OnInit {
             return this.auth.verifyWithCommunity()
                 .subscribe(
                     (res) => {
-                        this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
+                        this.toast.openSnackBar('You have successfully verified with this community.', 'OK')
                     },
                     (error) => {
-                        this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                        this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                     })
         }
 
@@ -175,10 +176,10 @@ export class NavbarComponent implements OnInit {
         return this.auth.verifyWithCommunity()
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
+                    this.toast.openSnackBar('You have successfully verified with this community.', 'OK')
                 },
                 (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
     }
 
