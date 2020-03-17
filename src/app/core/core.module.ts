@@ -60,7 +60,6 @@ import { EntityVotesQuery } from './http/mediators/entity-votes.query'
 import { EntityVotesStore } from './http/mediators/entity-votes.store'
 import { ToastService } from './toast/toast.service'
 
-
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
     if (savedCredentials) {
@@ -136,13 +135,10 @@ export function tokenGetter() {
         DataFetchService,
         AllEntityQuery,
         AllEntityStore,
-<<<<<<< HEAD
         AccessControlStore,
         AccessControlQuery,
         EntityVotesQuery,
-=======
         ToastService,
->>>>>>> changes from feature/storing-vote
         {
             provide: HttpClient,
             useClass: HttpService

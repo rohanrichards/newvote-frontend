@@ -107,6 +107,10 @@ export class SolutionService {
             )
     }
 
+    updateSolutionVote(id: string, solution: any) {
+        this.solutionStore.update(id, solution)
+    }
+
     updateFilter(filter: string) {
         this.solutionStore.update({ filter })
     }
