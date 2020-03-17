@@ -72,38 +72,6 @@
             </div>
         </div>
     </div>
-    <div *ngSwitchCase="'complete'"
-        [@fadeIn]=true
-        class="container"
-        fxLayout="row wrap"
-        fxLayoutAlign="center center">
-        <div fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px"
-            [style.width.%]="100"
-            *ngIf="media && !headingEdit">
-            <mat-accordion>
-                <mat-expansion-panel class="accordion-header">
-                    <mat-expansion-panel-header>
-                        <h2 class="custom-headline no-margin"
-                            [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
-                            {{ this.issue.mediaHeading || "Third Party Media"}}
-                        </h2>
-                    </mat-expansion-panel-header>
-                    <app-swiper-wrapper [@fadeIn]=true
-                        path="/media"
-                        [items]="media"
-                        model="Media"
-                        parent="Issue"
-                        [organization]="issue.organizations.name"
-                        (restore)="admin.onRestore($event, 'Media')"
-                        (softDelete)="admin.onSoftDelete($event, 'Media')"
-                        (delete)="admin.onDelete($event, 'Media')"
-                        (vote)="onVote($event, 'Media')">
-                    </app-swiper-wrapper>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </div>
-    </div>
 </ng-container>
 
 
@@ -163,19 +131,38 @@
         class="container"
         fxLayout="row wrap"
         fxLayoutAlign="center start">
+        
         <div fxFlex.gt-sm="690px"
             fxFlex.gt-md="800px">
-                <mat-toolbar color="primary"
-                fxLayoutAlign="center center"
-                [style.margin-bottom]="'1rem'">
-                <span class="mat-headline center-span"
-                    [style.margin-bottom]="'0'">Issue Progress</span>
-                </mat-toolbar>
-                <app-progress-bar [progressState]="progress">
-                </app-progress-bar>
-                <app-progress-form *ngIf="auth.isOwner()" [progress]="progress"
-                    (updateProgressState)="updateProgress($event)">
-                </app-progress-form>
+            <app-progress-bar [progressState]="progress">
+            </app-progress-bar>
+            <app-progress-form *ngIf="auth.isOwner()" [progress]="progress"
+                (updateProgressState)="updateProgress($event)">
+            </app-progress-form>
+                <div 
+                    *ngIf="media && !headingEdit">
+                    <mat-accordion>
+                        <mat-expansion-panel class="accordion-header">
+                            <mat-expansion-panel-header>
+                                <h2 class="custom-headline no-margin"
+                                    [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
+                                    {{ this.issue.mediaHeading || "Third Party Media"}}
+                                </h2>
+                            </mat-expansion-panel-header>
+                            <app-swiper-wrapper [@fadeIn]=true
+                                path="/media"
+                                [items]="media"
+                                model="Media"
+                                parent="Issue"
+                                [organization]="issue.organizations.name"
+                                (restore)="admin.onRestore($event, 'Media')"
+                                (softDelete)="admin.onSoftDelete($event, 'Media')"
+                                (delete)="admin.onDelete($event, 'Media')"
+                                (vote)="onVote($event, 'Media')">
+                            </app-swiper-wrapper>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
             <mat-toolbar color="primary"
                 fxLayoutAlign="center center"
                 [style.margin-bottom]="'1rem'">
