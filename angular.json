@@ -28,7 +28,7 @@
 							"src/robots.txt",
 							"src/manifest.json",
 							"src/assets",
-							"src/.well-known"
+							{ "glob": "assetlinks.json", "input": "src/.well-known", "output": "/.well-known"}
 						],
 						"styles": [
 							"src/main.scss",
