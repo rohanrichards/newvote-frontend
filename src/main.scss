@@ -49,9 +49,9 @@
 // 700    Bold
 // 800    Black, Extra Bold or Heavy
 // 900    Extra Black, Fat, Poster or Ultra Black
-
+$proxima: "Proxima-nova", "Helvetica Neue" sans-serif;
 $custom-typography: mat-typography-config(
-    $font-family: 'Proxima-Nova, "Helvetica Neue", sans-serif',
+    $font-family:   $proxima,
     $display-4:     mat-typography-level(112px, 112px, 200),
     $display-3:     mat-typography-level(56px, 56px, 200),
     $display-2:     mat-typography-level(45px, 48px, 400),
@@ -69,7 +69,7 @@ $custom-typography: mat-typography-config(
 );
 
 $custom-header: mat-typography-config(
-    $font-family: 'Condensed Din',
+    $font-family: "Condensed Din"
 );
 
 .custom-display4 {

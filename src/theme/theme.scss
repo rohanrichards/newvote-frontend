@@ -6,8 +6,11 @@
 @import "theme-variables";
 
 @font-face {
-  font-family: "Proxima-Nova";
+  font-family: Proxima-Nova;
+  src: local("Proxima-Nova");
   src: url("/assets/fonts/proxima-nova-reg.otf") format("opentype");
+  font-display: swap;
+  unicode-range: U+000-5FF;
 }
 
 // @font-face {
@@ -19,23 +22,32 @@
 
 @font-face {
   font-family: "Condensed Din";
+  src: local("Din Condensed Regular");
   src: url("/assets/fonts/DINCond-Regular.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+000-5FF;
 }
 
 @font-face {
   font-family: "Condensed Din";
+  src: local("Din Condensed Light");
   src: url("/assets/fonts/DINCond-Light.otf") format("opentype");
   font-weight: light;
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+000-5FF;
 }
 
 @font-face {
   font-family: "Condensed Din";
+  src: local("Din Condensed Medium");
   src: url("/assets/fonts/DINCond-Medium.otf") format("opentype");
   font-weight: medium;
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+000-5FF;
 }
 
 * {

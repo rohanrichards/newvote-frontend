@@ -87,11 +87,12 @@ export class AuthenticationService {
 
         this.checkStatus()
             .subscribe(
-                (res) => {
+                (res: any) => {
                     return this.setCredentials(res, true)
                 },
-                (err) => {
+                (err: any) => {
                     if (err.status === 400) {
+                        console.log('handling error')
                         this.authenticationStore.update(createInitialState())
                         return this.setCredentials()
                     }
@@ -117,7 +118,7 @@ export class AuthenticationService {
             )
     }
 
-    checkStatus(): Observable<Credentials> {
+    checkStatus() {
         return this.httpClient
             .get<Credentials>(routes.checkAuth())
             .pipe(

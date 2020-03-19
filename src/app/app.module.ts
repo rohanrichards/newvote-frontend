@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule, HttpClientJsonpModule, HttpClientXsrfModule } from '@angular/common/http'
-import { ServiceWorkerModule } from '@angular/service-worker'
+import { ServiceWorkerModule, SwRegistrationOptions } from '@angular/service-worker'
 import { TranslateModule } from '@ngx-translate/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from './material.module'
@@ -50,7 +50,7 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
     imports: [
         ScrollingModule,
         BrowserModule,
-        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('ngsw-worker.js'),
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -84,6 +84,7 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
         AppRoutingModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     ],
     declarations: [
         AppComponent
@@ -97,6 +98,10 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
         {
             provide: SWIPER_CONFIG,
             useValue: DEFAULT_SWIPER_CONFIG
+        },
+        {
+            provide: SwRegistrationOptions,
+            useFactory: () => ({ enabled: location.search.includes('sw=true') })
         }
     ],
     bootstrap: [AppComponent]

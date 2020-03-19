@@ -27,6 +27,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
         if (!environment.production) {
             // Do something with the error
             log.error('Request error', response)
+            // return response
         }
         // unauthorized
         if (response instanceof HttpErrorResponse) {

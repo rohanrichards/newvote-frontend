@@ -28,7 +28,8 @@
 							"src/robots.txt",
 							"src/manifest.json",
 							"src/assets",
-							{ "glob": "assetlinks.json", "input": "src/.well-known", "output": "/.well-known"}
+							{ "glob": "assetlinks.json", "input": "src/.well-known", "output": "/.well-known"},
+							"src/manifest.webmanifest"
 						],
 						"styles": [
 							"src/main.scss",
@@ -50,7 +51,8 @@
 							"fileReplacements": [{
 								"replace": "src/environments/environment.ts",
 								"with": "src/environments/environment.prod.ts"
-							}]
+							}],
+							"ngswConfigPath": "ngsw-config.json"
 						},
 						"stage": {
 							"optimization": true,
@@ -103,7 +105,8 @@
 							"src/apple-touch-icon.png",
 							"src/robots.txt",
 							"src/manifest.json",
-							"src/assets"
+							"src/assets",
+							"src/manifest.webmanifest"
 						]
 					}
 				},

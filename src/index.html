@@ -2,30 +2,23 @@
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8" />
+		<meta charset="utf-8"/>
 		<title>NewVote</title>
-		<base href="/" />
-		<meta name="viewport"
-		    content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<meta name="msapplication-tap-highlight"
-		    content="no" />
-		<meta name="theme-color"
-		    content="#4e8ef7" />
-		<link rel="manifest"
-		    href="manifest.json" />
-		<link rel="icon"
-		    type="image/x-icon"
-		    href="favicon.png" />
-		<link rel="apple-touch-icon"
-		    sizes="180x180"
-		    href="apple-touch-icon.png" />
+		<base href="/"/>
+		<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+		<meta name="msapplication-tap-highlight" content="no"/>
+		<meta name="theme-color" content="#4e8ef7"/>
+		<link rel="manifest" href="manifest.json"/>
+		<link rel="icon" type="image/x-icon" href="favicon.png"/>
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
 
-		<link rel='manifest' href='/manifest.json'>
-		<script type="text/javascript" src="cordova.js"></script>
+		<link rel="manifest" href="/manifest.json">
+		<!-- <script type="text/javascript" src="cordova.js"></script> -->
 
-		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600"
-		    rel="stylesheet">
-	</head>
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600&font-display=swap" rel="stylesheet">
+	  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1976d2">
+</head>
 
 	<body>
 		<!-- prerender tag -->
@@ -84,7 +77,7 @@
 				document.removeEventListener = function () {
 					EventTarget.prototype.removeEventListener.apply(this, arguments);
 				};
-				document.write('<script src="cordova.js"><\/script>');
+				// document.write('<script src="cordova.js"><\/script>');
 			}
 		</script>
 		<app-root></app-root>

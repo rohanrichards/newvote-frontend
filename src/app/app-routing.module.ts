@@ -5,19 +5,18 @@ import { Landing } from '@app/landing/landing.service'
 
 const routes: Routes = [
     Shell.childRoutes([
-        { path: 'auth', loadChildren: 'app/auth/auth.module#AuthModule' },
-        { path: 'about', loadChildren: 'app/about/about.module#AboutModule' },
-        { path: 'topics', loadChildren: 'app/topic/topic.module#TopicModule' },
-        { path: 'issues', loadChildren: 'app/issue/issue.module#IssueModule' },
-        { path: 'solutions', loadChildren: 'app/solution/solution.module#SolutionModule' },
-        { path: 'suggestions', loadChildren: 'app/suggestion/suggestion.module#SuggestionModule' },
-        { path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
-        { path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
-        { path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' },
-        { path: 'reps', loadChildren: 'app/reps/reps.module#RepsModule' }
+        { path: 'auth', loadChildren: () => import('app/auth/auth.module').then(m => m.AuthModule) },
+        { path: 'topics', loadChildren: () => import('app/topic/topic.module').then(m => m.TopicModule) },
+        { path: 'issues', loadChildren: () => import('app/issue/issue.module').then(m => m.IssueModule) },
+        { path: 'solutions', loadChildren: () => import('app/solution/solution.module').then(m => m.SolutionModule) },
+        { path: 'proposals', loadChildren: () => import('app/proposal/proposal.module').then(m => m.ProposalModule) },
+        { path: 'suggestions', loadChildren: () => import('app/suggestion/suggestion.module').then(m => m.SuggestionModule) },
+        { path: 'media', loadChildren: () => import('app/media/media.module').then(m => m.MediaModule) },
+        { path: 'reps', loadChildren: () => import('app/reps/reps.module').then(m => m.RepsModule) },
+        { path: 'communities', loadChildren: () => import('app/organization/organization.module').then(m => m.OrganizationModule) },
     ]),
     Landing.childRoutes([
-        { path: 'landing', loadChildren: 'app/communities/communities.module#CommunitiesModule' },
+        { path: 'landing', loadChildren: () => import('app/communities/communities.module').then(m => m.CommunitiesModule) },
     ]),
 
     // Fallback when no prior route is matched
