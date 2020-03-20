@@ -6,6 +6,16 @@ export interface VoteMetaData {
     up: number;
     down: number;
     total: number;
+    currentUser?: UserVoteData | null;
+}
+
+export interface UserVoteData {
+    _id: string;
+    object: string;
+    objectType: string;
+    voteValue: number;
+    created: string;
+    user: string;
 }
 
 export interface VoteMetaDataState extends EntityState<VoteMetaData> { };

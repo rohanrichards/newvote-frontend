@@ -4,10 +4,15 @@ import { Injectable } from '@angular/core'
 
 export interface SuggestionState extends EntityState<Suggestion> { };
 
+const initialState = {
+    filter: 'SHOW_ALL',
+    sort: 'ASCENDING'
+}
+
 @Injectable()
 @StoreConfig({ name: 'suggestions', idKey: '_id' })
 export class SuggestionStore extends EntityStore<SuggestionState> {
     constructor() {
-        super()
+        super(initialState)
     }
 }

@@ -39,6 +39,7 @@ import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
+import { SortBarComponent } from './sort-bar/sort-bar.component'
 import { MakeSuggestionComponent } from './make-suggestion/make-suggestion.component';
 import { RepModalComponent } from './rep-modal/rep-modal.component';
 import { ChildCardComponent } from './child-card/child-card.component';
@@ -97,6 +98,7 @@ import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component
         ErrorCardComponent,
         NavbarComponent,
         MakeSuggestionComponent,
+        SortBarComponent,
         RepModalComponent,
         ChildCardComponent,
         RepCardComponent,
@@ -135,6 +137,7 @@ import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component
         ErrorCardComponent,
         NavbarComponent,
         MakeSuggestionComponent,
+        SortBarComponent,
         RepModalComponent,
         ChildCardComponent,
         RepCardComponent,

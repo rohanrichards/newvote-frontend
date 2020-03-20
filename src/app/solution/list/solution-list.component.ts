@@ -17,7 +17,7 @@ import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { OrganizationService } from '@app/core'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { forkJoin, Observable } from 'rxjs'
@@ -26,7 +26,10 @@ import { ProposalService } from '@app/core/http/proposal/proposal.service'
 import { Proposal } from '@app/core/models/proposal.model'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { FormControl } from '@angular/forms'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-solution',
@@ -63,6 +66,7 @@ export class SolutionListComponent implements OnInit {
 
     suggestions: Array<any>;
     organization: any;
+    sort: string;
     isVerified: boolean
 
     constructor(
@@ -81,7 +85,8 @@ export class SolutionListComponent implements OnInit {
         private proposalService: ProposalService,
         private voteQuery: VotesQuery,
         public admin: AdminService,
-        private access: AccessControlQuery
+        private access: AccessControlQuery,
+        private entityVotes: EntityVotesQuery
     ) { }
 
     ngOnInit() {
@@ -131,7 +136,7 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSolutionStore() {
-        this.solutions$ = this.solutionQuery.selectSolutions()
+        this.solutions$ = this.entityVotes.getManySolutions()
 
         this.solutions$.subscribe((res) => {
             if (!res) return false
@@ -140,52 +145,37 @@ export class SolutionListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.suggestions$
-            .pipe(
-                map((suggestions) => {
-                    return suggestions.filter((suggestion) => suggestion.type === 'solution')
-                }),
-            )
+        this.suggestions$ = this.entityVotes.getManySuggestions('solution', 'type')
 
-        this.suggestions$.subscribe((res) => {
-            if (!res) return false
-            this.suggestions = res
+        this.suggestions$.subscribe((suggestions: ISuggestion[]) => {
+            if (!suggestions) return false
+            this.suggestions = suggestions
         })
     }
 
     onVote(voteData: any, model: string) {
         this.isLoading = true
-        const { item, voteValue } = voteData
+        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
         const vote = new Vote(item._id, model, voteValue)
-        const existingVote = item.votes.currentUser
-
-        if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        if (currentUser) {
+            vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
 
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     handleSuggestionSubmit(formData: any) {
@@ -195,46 +185,16 @@ export class SolutionListComponent implements OnInit {
         this.suggestionService.create({ entity: suggestion })
             .subscribe(
                 () => {
-                    this.openSnackBar('Succesfully created', 'OK')
+                    this.admin.openSnackBar('Succesfully created', 'OK')
                 },
                 (error) => {
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
     }
 
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Solution') {
-                        return this.solutionService.updateSolutionVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Proposal') {
-                        return this.proposalService.updateProposalVote(entity._id, updatedEntity)
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
+    sortSolutionsBy(event: any) {
+        const { value } = event;
+        this.solutionService.updateFilter(value);
     }
 }

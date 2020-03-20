@@ -22,13 +22,20 @@
                 </button>
                 <span>Home</span>
                 <button class="search-button"
+                    (click)="toggleSearch($event)"
                     mat-icon-button>
                     <mat-icon>search</mat-icon>
                 </button>
             </mat-toolbar>
+            <app-search-bar 
+                [communitySearch]="true"
+                [isVisible]="isVisible"
+                (closeSearch)="toggleSearch(false)"
+                (isVisibleChange)="toggleSearch($event)"
+                ></app-search-bar>
             <div fxLayout="column"
-                fxLayoutAlign="start start">
-                <div class="header-container">
+                >
+                <div class="header-container" fxLayout="column" fxLayoutAlign="center center">
                     <img class="header-logo" src="assets/logo-no-text.png" />
                     <h4 [ngStyle]="{ 'margin': '0' }"
                         class="custom-display1">
@@ -53,7 +60,7 @@
                     [organization]="org">
                 </app-community-card>
             </div>
-            <div class="container" fxFlex.sm="100">
+            <div class="container" fxFlex.sm="100" fxLayoutAlign="center center">
                 <button mat-button
                     fxFlex.lt-sm="100"
                     mat-raised-button

@@ -1,30 +1,31 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material';
-import { finalize, startWith, map } from 'rxjs/operators';
-import { IRep, Rep } from '@app/core/models/rep.model';
-import { Observable, forkJoin } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material'
+import { finalize, startWith, map } from 'rxjs/operators'
+import { IRep, Rep } from '@app/core/models/rep.model'
+import { Observable, forkJoin } from 'rxjs'
 import { cloneDeep, merge } from 'lodash'
-import { ActivatedRoute, Router } from '@angular/router';
-import { MetaService } from '@app/core/meta.service';
-import { Organization } from '@app/core/models/organization.model';
-import { ISolution } from '@app/core/models/solution.model';
-import { SolutionService } from '@app/core/http/solution/solution.service';
-import { ProposalService } from '@app/core/http/proposal/proposal.service';
-import { IssueService } from '@app/core/http/issue/issue.service';
-import { IProposal } from '@app/core/models/proposal.model';
-import { IIssue } from '@app/core/models/issue.model';
-import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
-import { SolutionQuery } from '@app/core/http/solution/solution.query';
-import { IssueQuery } from '@app/core/http/issue/issue.query';
-import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
-import { StateService } from '@app/core/http/state/state.service';
-import { AppState } from '@app/core/models/state.model';
-import { RepService } from '@app/core/http/rep/rep.service';
+import { ActivatedRoute, Router } from '@angular/router'
+import { MetaService } from '@app/core/meta.service'
+import { Organization } from '@app/core/models/organization.model'
+import { ISolution } from '@app/core/models/solution.model'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { IssueService } from '@app/core/http/issue/issue.service'
+import { IProposal } from '@app/core/models/proposal.model'
+import { IIssue } from '@app/core/models/issue.model'
+import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
+import { SolutionQuery } from '@app/core/http/solution/solution.query'
+import { IssueQuery } from '@app/core/http/issue/issue.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
+import { RepService } from '@app/core/http/rep/rep.service'
 import { RepQuery } from '@app/core/http/rep/rep.query'
-import { OrganizationQuery } from '@app/core/http/organization/organization.query';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 @Component({
     selector: 'app-reps-edit',
@@ -89,8 +90,8 @@ export class RepsEditComponent implements OnInit {
         private stateService: StateService,
         private repService: RepService,
         private repQuery: RepQuery,
-        public snackBar: MatSnackBar,
-        private org: OrganizationQuery
+        private org: OrganizationQuery,
+        private admin: AdminService
     ) { }
 
     ngOnInit() {
@@ -190,7 +191,7 @@ export class RepsEditComponent implements OnInit {
         })
             .subscribe((repArray: any) => {
                 if (!repArray.length) return false
-                const [rep, ...rest ] = repArray
+                const [rep, ...rest] = repArray
                 this.rep = rep
                 this.updateForm(rep)
                 this.subscribeToOrgStore(rep)
@@ -325,10 +326,10 @@ export class RepsEditComponent implements OnInit {
     // }
 
     setDefaultImage() {
-        this.newImage = false;
-        this.imageUrl = this.DEFAULT_IMAGE;
-        this.resetImage = true;
-        this.fileInput.nativeElement.value = null;
+        this.newImage = false
+        this.imageUrl = this.DEFAULT_IMAGE
+        this.resetImage = true
+        this.fileInput.nativeElement.value = null
     }
 
     onSave() {
@@ -346,7 +347,7 @@ export class RepsEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 rep.imageUrl = res.secure_url
-                this.resetImage = false;
+                this.resetImage = false
                 this.updateWithApi(rep)
             }
         }
@@ -373,22 +374,11 @@ export class RepsEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.isLoading = false
-                    this.openSnackBar('Succesfully updated', 'OK')
+                    this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/reps/${t._id}`])
                 },
-                (error) => {
-                    this.isLoading = false
-                    this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                }
+                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
-    }
-
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
     }
 
     solutionSelected(event: any) {
@@ -476,7 +466,7 @@ export class RepsEditComponent implements OnInit {
 
         const filterVal = entityArray.filter((item: any) => {
             const { title, name } = item
-            let itemTitle;
+            let itemTitle
 
             if (title) {
                 itemTitle = title.toLowerCase()

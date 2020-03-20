@@ -1,0 +1,27 @@
+<div [style.width.%]="100"
+    fxLayoutAlign="flex-end center">
+    <mat-form-field>
+        <mat-label>Sort By</mat-label>
+        <mat-select [(ngModel)]="sort"
+            (selectionChange)="handleSort($event)">
+            <mat-option *ngFor="let option of orderOptions[model]"
+                [value]="option.value">{{ option.display }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <button mat-icon-button
+            [disabled]="sort === 'SHOW_ALL'"
+            [ngClass]="{ disabled: sort === 'SHOW_ALL', active: order === 'ASCENDING', inactive: order === 'DESCENDING'}"
+            (click)="toggleOrder('ASCENDING')"
+            aria-label="Sorting Direction">
+            <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button mat-icon-button
+            [disabled]="sort === 'SHOW_ALL'"
+            [ngClass]="{ disabled: sort === 'SHOW_ALL', active: order === 'DESCENDING', inactive: order === 'ASCENDING'}"
+            (click)="toggleOrder('DESCENDING')"
+            aria-label="Sorting Direction">
+            <mat-icon>arrow_downward</mat-icon>
+        </button>
+    </div>
+</div>

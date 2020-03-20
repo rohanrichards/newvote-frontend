@@ -24,7 +24,7 @@ import { AppState } from '@app/core/models/state.model'
 import { StateService } from '@app/core/http/state/state.service'
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
-import { Suggestion } from '@app/core/models/suggestion.model'
+import { Suggestion, ISuggestion } from '@app/core/models/suggestion.model'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { Vote } from '@app/core/models/vote.model'
 import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
@@ -35,6 +35,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-issue',
@@ -84,9 +85,10 @@ export class IssueListComponent implements OnInit {
 
     loadingState: string;
     suggestions: any[];
-    suggestions$: Observable<Suggestion[]>;
+    suggestions$: Observable<ISuggestion[]>;
     orphanedIssues: any[] = [];
     isVerified: boolean;
+    isOpen: boolean;
 
     constructor(
         private suggestionQuery: SuggestionQuery,
@@ -107,6 +109,7 @@ export class IssueListComponent implements OnInit {
         public admin: AdminService,
         public entities: AllEntityQuery,
         public access: AccessControlQuery,
+        private entityVotes: EntityVotesQuery
     ) {
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
@@ -185,11 +188,22 @@ export class IssueListComponent implements OnInit {
                     return suggestions.filter((suggestion) => suggestion.type === 'issue')
                 }),
             )
+
+        this.suggestions$.subscribe(
+            (res: any[]) => {
+                if (!res.length) {
+                    this.isOpen = false
+                }
+                this.suggestions = res
+                this.isOpen = true
+            },
+            (err) => err
+        )
     }
 
     subscribeToTopicStore() {
         this.entities.populateTopics()
-            .subscribe(({topics, orphanedIssues}: any) => {
+            .subscribe(({ topics, orphanedIssues }: any) => {
                 if (!topics || !topics.length) return false
                 this.allTopics = topics
                 this.orphanedIssues = orphanedIssues || []
@@ -223,73 +237,37 @@ export class IssueListComponent implements OnInit {
 
         this.suggestionService.create({ entity: suggestion })
             .subscribe(() => {
-                this.openSnackBar('Succesfully created', 'OK')
+                this.admin.openSnackBar('Succesfully created', 'OK')
             },
             (error) => {
-                this.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             })
     }
 
-    openSnackBar(message: string, action: string) {
-        this.snackBar.open(message, action, {
-            duration: 4000,
-            horizontalPosition: 'right'
-        })
-    }
-
     onVote(voteData: any, model: string) {
-
         this.isLoading = true
-        const { item, voteValue } = voteData
+        // when a new entity is dynamically added, the votes section returns as null.
+        // Assign votes & currentUser to false as safe default values to prevent errors
+        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
         const vote = new Vote(item._id, model, voteValue)
-        const existingVote = item.votes.currentUser
-
-        if (existingVote) {
-            vote.voteValue = existingVote.voteValue === voteValue ? 0 : voteValue
+        if (currentUser) {
+            vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
         this.voteService.create({ entity: vote })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.updateEntityVoteData(item, model, res.voteValue)
-                    this.openSnackBar('Your vote was recorded', 'OK')
+                    this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
-    }
-
-    updateEntityVoteData(entity: any, model: string, voteValue: number) {
-        this.voteQuery.selectEntity(entity._id)
-            .pipe(
-                take(1)
-            )
-            .subscribe(
-                (voteObj) => {
-                    // Create a new entity object with updated vote values from
-                    // vote object on store + voteValue from recent vote
-                    const updatedEntity = {
-                        votes: {
-                            ...voteObj,
-                            currentUser: {
-                                voteValue: voteValue === 0 ? false : voteValue
-                            }
-                        }
-                    }
-
-                    if (model === 'Suggestion') {
-                        return this.suggestionService.updateSuggestionVote(entity._id, updatedEntity)
-                    }
-                },
-                (err) => err
-            )
-
     }
 
     private _filter(value: any): Topic[] {
