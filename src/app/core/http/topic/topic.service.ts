@@ -6,6 +6,7 @@ import { map, catchError, tap } from 'rxjs/operators'
 import { ITopic, Topic } from '@app/core/models/topic.model'
 import { handleError } from '@app/core/http/errors'
 import { TopicStore } from './topic.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/topics',
@@ -43,54 +44,54 @@ export class TopicService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
                 tap((topics: Topic[]) => this.topicStore.add(topics)),
-                map((res: Array<any>) => res),
             )
+
+        return cacheable(this.topicStore, request$)
     }
 
     view(context: TopicContext): Observable<any> {
-
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
                 tap((topic: Topic) => this.topicStore.add(topic)),
-                map((res: any) => res),
             )
+        return cacheable(this.topicStore, request$)
     }
 
     create(context: TopicContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((topic: Topic) => this.topicStore.add(topic)),
-                map((res: any) => res),
             )
+        return cacheable(this.topicStore, request$)
     }
 
     update(context: TopicContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((topic: Topic) => this.topicStore.upsert(topic._id, topic)),
-                map((res: any) => res),
             )
+        return cacheable(this.topicStore, request$)
     }
 
     delete(context: TopicContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
                 tap((topic: Topic) => this.topicStore.remove(topic._id)),
-                map((res: any) => res),
             )
+        return cacheable(this.topicStore, request$)
     }
 
     updateFilter(filter: string) {

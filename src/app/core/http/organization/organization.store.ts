@@ -29,7 +29,12 @@ export function createInitialStore(): Organization {
 }
 
 @Injectable()
-@StoreConfig({ name: 'organization' })
+@StoreConfig({ 
+    name: 'organization',
+    cache: {
+        ttl: 3600000
+    }
+})
 export class OrganizationStore extends Store<Organization> {
     constructor() {
         super(createInitialStore())
@@ -39,7 +44,13 @@ export class OrganizationStore extends Store<Organization> {
 export interface CommunityState extends EntityState<Organization> { }
 
 @Injectable()
-@StoreConfig({ name: 'communities', idKey: '_id' })
+@StoreConfig({ 
+    name: 'communities',
+    idKey: '_id',
+    cache: {
+        ttl: 3600000
+    }
+})
 export class CommunityStore extends EntityStore<CommunityState> {
     constructor() {
         super()

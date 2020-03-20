@@ -7,6 +7,7 @@ import { IProposal, Proposal } from '@app/core/models/proposal.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
 import { ProposalStore } from './proposal.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/proposals',
@@ -45,7 +46,7 @@ export class ProposalService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
@@ -53,12 +54,13 @@ export class ProposalService {
                     this.voteService.populateStore(data)
                     this.proposalStore.add(data)
                 }),
-                map((res: Array<any>) => res),
             )
+
+        return cacheable(this.proposalStore, request$)
     }
 
     view(context: ProposalContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
@@ -68,36 +70,41 @@ export class ProposalService {
                 }),
                 map((res: any) => res),
             )
+        
+        return cacheable(this.proposalStore, request$)
     }
 
     create(context: ProposalContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((res: Proposal) => this.proposalStore.add(res)),
                 map((res: any) => res)
             )
+        return cacheable(this.proposalStore, request$)
     }
 
     update(context: ProposalContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((proposal: Proposal) => this.proposalStore.upsert(proposal._id, proposal)),
                 map((res: any) => res),
             )
+        return cacheable(this.proposalStore, request$)
     }
 
     delete(context: ProposalContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
                 tap((proposal: Proposal) => this.proposalStore.remove(proposal._id)),
                 map((res: any) => res)
             )
+        return cacheable(this.proposalStore, request$)
     }
 
     updateProposalVote(id: string, proposal: any) {

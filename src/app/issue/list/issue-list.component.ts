@@ -1,11 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
-import { Observable, forkJoin } from 'rxjs'
+import { Observable } from 'rxjs'
 
-import { finalize, startWith, map, take } from 'rxjs/operators'
+import { finalize, startWith, map } from 'rxjs/operators'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { IssueService } from '@app/core/http/issue/issue.service'
@@ -36,6 +36,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { DataFetchService } from '@app/core/http/data/data-fetch.service'
 
 @Component({
     selector: 'app-issue',
@@ -94,7 +95,6 @@ export class IssueListComponent implements OnInit {
         private suggestionQuery: SuggestionQuery,
         private issueQuery: IssueQuery,
         private voteService: VoteService,
-        public snackBar: MatSnackBar,
         private suggestionService: SuggestionService,
         public stateService: StateService,
         private issueService: IssueService,
@@ -109,8 +109,14 @@ export class IssueListComponent implements OnInit {
         public admin: AdminService,
         public entities: AllEntityQuery,
         public access: AccessControlQuery,
-        private entityVotes: EntityVotesQuery
+        private entityVotes: EntityVotesQuery,
+        private data: DataFetchService
     ) {
+
+    }
+
+    ngOnInit() {
+
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
 
@@ -122,10 +128,7 @@ export class IssueListComponent implements OnInit {
         this.filteredTopics = this.topicFilter.valueChanges.pipe(
             startWith(''),
             map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()))
-    }
-
-    ngOnInit() {
-
+    
         this.organizationService.get()
             .subscribe((org) => {
                 this.organization = org
@@ -147,38 +150,12 @@ export class IssueListComponent implements OnInit {
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
 
-        // this.fetchData()
+        this.fetchData()
         this.stateService.setLoadingState(AppState.complete)
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
-        const params = { showDeleted: isModerator ? true : '' }
-
-        const issueObs: Observable<any[]> = this.issueService.list({ params })
-        const topicObs: Observable<any[]> = this.topicService.list({ params })
-        const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
-
-        forkJoin({
-            issues: issueObs,
-            topics: topicObs,
-            suggestions: suggestionObs
-        })
-            .subscribe(
-                () => {
-                    if (this.topicParam) {
-                        const topic = this._filter(this.topicParam)
-                        if (topic.length) {
-                            this.selectedTopics.push(topic[0])
-                        }
-                    }
-
-                    this.stateService.setLoadingState(AppState.complete)
-                },
-                () => {
-                    return this.stateService.setLoadingState(AppState.error)
-                }
-            )
+        this.data.getIssues()
     }
 
     subscribeToSuggestionStore() {

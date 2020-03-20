@@ -7,6 +7,7 @@ import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
 import { SuggestionStore } from './suggestion.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/suggestions',
@@ -42,7 +43,7 @@ export class SuggestionService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
@@ -51,10 +52,12 @@ export class SuggestionService {
                     this.suggestionStore.add(data)
                 })
             )
+
+        return cacheable(this.suggestionStore, request$)
     }
 
     view(context: SuggestionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
@@ -62,38 +65,40 @@ export class SuggestionService {
                     this.voteService.addEntityVote(res)
                     this.suggestionStore.add(res)
                 }),
-                map((res: any) => res)
             )
+        return cacheable(this.suggestionStore, request$)
     }
 
     create(context: SuggestionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((res: Suggestion) => this.suggestionStore.add(res)),
-                map((res: any) => res)
             )
+        return cacheable(this.suggestionStore, request$)
     }
 
     update(context: SuggestionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((res: Suggestion) => this.suggestionStore.update(res._id, res)),
                 map((res: any) => res)
             )
+        return cacheable(this.suggestionStore, request$)
     }
 
     delete(context: SuggestionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
                 tap((res: any) => this.suggestionStore.remove(res._id)),
                 map((res: any) => res),
             )
+        return cacheable(this.suggestionStore, request$)
     }
 
     populateStoreMetaData(serverData: any) {

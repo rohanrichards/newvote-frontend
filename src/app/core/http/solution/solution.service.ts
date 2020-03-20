@@ -7,6 +7,7 @@ import { ISolution, Solution } from '@app/core/models/solution.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
 import { SolutionStore } from './solution.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/solutions',
@@ -45,7 +46,7 @@ export class SolutionService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
@@ -53,8 +54,9 @@ export class SolutionService {
                     this.voteService.populateStore(data)
                     this.solutionStore.add(data)
                 }),
-                map((res: Array<any>) => res)
             )
+        return cacheable(this.solutionStore, request$)
+
     }
 
     view(context: SolutionContext): Observable<any> {
@@ -65,7 +67,7 @@ export class SolutionService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context), { params })
             .pipe(
                 catchError(handleError),
@@ -73,38 +75,40 @@ export class SolutionService {
                     this.voteService.addEntityVote(res)
                     this.solutionStore.add(res)
                 }),
-                map((res: any) => res)
             )
+        return cacheable(this.solutionStore, request$)
     }
 
     create(context: SolutionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.add(solution)),
                 map((res: any) => res)
             )
+        return cacheable(this.solutionStore, request$)
     }
 
     update(context: SolutionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.update(solution._id, solution)),
                 map((res: any) => res)
             )
+        return cacheable(this.solutionStore, request$)
     }
 
     delete(context: SolutionContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
                 tap((solution: Solution) => this.solutionStore.remove(solution._id)),
-                map((res: any) => res)
             )
+        return cacheable(this.solutionStore, request$)
     }
 
     updateFilter(filter: string) {

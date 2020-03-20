@@ -7,6 +7,7 @@ import { Organization, IOrganization } from '@app/core/models/organization.model
 import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/organizations',
@@ -86,40 +87,41 @@ export class OrganizationService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
                 tap((res: Organization[]) => this.communityStore.add(res)),
                 map((res: Array<any>) => res)
             )
+        return cacheable(this.communityStore, request$)
     }
 
     view(context: OrganizationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
                 tap((res: Organization) => {
                     this.organizationStore.update(res)
                     this.communityStore.add(res)
-                }),
-                map((res: any) => res)
+                })
             )
+        return cacheable(this.organizationStore, request$)
     }
 
     create(context: OrganizationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((res: any) => this.communityStore.add(res.organization)),
-                map((res: any) => res)
             )
+        return cacheable(this.communityStore, request$)
     }
 
     update(context: OrganizationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
@@ -133,10 +135,11 @@ export class OrganizationService {
                 }),
                 map((res: any) => res)
             )
+        return cacheable(this.organizationStore, request$)
     }
 
     setFutureOwner(context: OrganizationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.updateOwner(context), context.entity)
             .pipe(
                 catchError(handleError),
@@ -146,16 +149,19 @@ export class OrganizationService {
                 }),
                 map((res: any) => res)
             )
+        
+        return cacheable(this.organizationStore, request$)
     }
 
     delete(context: OrganizationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
                 tap((res: Organization) => this.communityStore.remove(res._id)),
                 map((res: any) => res)
             )
+        return cacheable(this.communityStore, request$)
     }
 
     patch(context: OrganizationContext): Observable<any> {

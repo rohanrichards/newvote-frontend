@@ -6,6 +6,7 @@ import { map, catchError, tap } from 'rxjs/operators'
 import { IMedia, Media } from '@app/core/models/media.model'
 import { MediaStore } from './media.store'
 import { VoteService } from '../vote/vote.service'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/media',
@@ -44,7 +45,7 @@ export class MediaService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError((e) => of([{ error: e }])),
@@ -54,10 +55,11 @@ export class MediaService {
                 }),
                 map((res: Array<any>) => res),
             )
+        return cacheable(this.mediaStore, request$)
     }
 
     view(context: MediaContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 catchError((e) => of([{ error: e }])),
@@ -67,36 +69,42 @@ export class MediaService {
                 }),
                 map((res: any) => res)
             )
+        return cacheable(this.mediaStore, request$)
     }
 
     create(context: MediaContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.add(res)),
                 map((res: any) => res),
             )
+        return cacheable(this.mediaStore, request$)
     }
 
     update(context: MediaContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.update(res._id, res)),
                 map((res: any) => res)
             )
+
+        return cacheable(this.mediaStore, request$)
     }
 
     delete(context: MediaContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError((e) => of([{ error: e }])),
                 tap((res: Media) => this.mediaStore.remove(res._id)),
                 map((res: any) => res)
             )
+        
+        return cacheable(this.mediaStore, request$)
     }
 
     meta(context: MediaContext): Observable<any> {

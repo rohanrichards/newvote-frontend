@@ -5,6 +5,7 @@ import { map, catchError, tap } from 'rxjs/operators'
 import { handleError } from '@app/core/http/errors'
 import { RepStore } from './rep.store'
 import { IRep, Rep } from '@app/core/models/rep.model'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/reps',
@@ -45,31 +46,31 @@ export class RepService {
         //     params = new HttpParams({ fromObject: context.params })
         // }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list())
             .pipe(
                 tap((data: Rep[]) => {
                     this.store.add(data)
                 }),
-                map((res: Array<any>) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     view(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context))
             .pipe(
                 tap((res: Rep) => {
                     this.store.add(res)
                 }),
-                map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     create(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 tap((res: any) => {
@@ -78,40 +79,44 @@ export class RepService {
                 map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     update(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 tap((rep: Rep) => this.store.upsert(rep._id, rep)),
                 map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     updateMany(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.updateMany(), context.entity)
             .pipe(
                 tap((reps: any[]) => this.store.upsertMany(reps)),
                 map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     delete(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 tap((rep: Rep) => this.store.remove(rep._id)),
                 map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 
     deleteMany(context: RepContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.deleteMany(), context.entity)
             .pipe(
                 tap((reps: any) => {
@@ -120,8 +125,8 @@ export class RepService {
                     })
                     this.store.remove(deletedIds)
                 }),
-                map((res: any) => res),
                 catchError(handleError)
             )
+        return cacheable(this.store, request$)
     }
 }

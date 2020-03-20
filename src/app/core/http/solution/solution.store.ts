@@ -12,7 +12,13 @@ const initialState = {
 }
 
 @Injectable()
-@StoreConfig({ name: 'solutions', idKey: '_id' })
+@StoreConfig({ 
+    name: 'solutions',
+    idKey: '_id',
+    cache: {
+        ttl: 3600000
+    }
+})
 export class SolutionStore extends EntityStore<SolutionState, Solution> {
     constructor() {
         super(initialState)

@@ -84,6 +84,7 @@ export class DataFetchService {
         const params = isModerator ? { showDeleted: isModerator } : {}
 
         const serviceObj = {
+            topics: this.topicService.list({ params }),
             issues: this.issueService.list({ params }),
             suggestions: this.suggestionService.list({ params })
         }

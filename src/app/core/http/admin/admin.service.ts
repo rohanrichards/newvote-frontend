@@ -30,6 +30,7 @@ type Entities = {
     Organization: IOrganization;
     Rep: IRep;
 }
+
 type Services = {
     Topic: TopicService;
     Issue: IssueService;
