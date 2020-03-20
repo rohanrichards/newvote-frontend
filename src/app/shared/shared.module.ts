@@ -36,7 +36,7 @@ import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-me
 import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component'
 import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, intersectionObserverPreset, scrollPreset } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { SortBarComponent } from './sort-bar/sort-bar.component'
@@ -70,7 +70,7 @@ import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component
         RouterModule,
         QuillModule.forRoot(MinimalQuillSettings),
         LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
+            preset: scrollPreset
         })
     ],
     declarations: [

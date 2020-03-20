@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core'
-import { optimizeImage } from '../../helpers/cloudinary'
+import { optimizeChild } from '../../helpers/cloudinary'
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ export class GridCardComponent {
   @Input() isCard: boolean;
   @Input() horizontalCard: boolean;
 
-  handleImageUrl = optimizeImage;
+  handleImageUrl = optimizeChild;
 
   constructor(private router: Router) { }
 

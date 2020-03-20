@@ -14,7 +14,6 @@
                 <div mat-card-image
                     class="image-container"
                     [ngStyle]="{'min-height': item.imageUrl ? '200px' : '0px'}"
-                    [defaultImage]="handleImageUrl(item.imageUrl, true)"
                     [lazyLoad]="handleImageUrl(item.imageUrl)">
                     <app-admin-panel
                         [path]="path"

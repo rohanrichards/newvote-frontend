@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { Router } from '@angular/router'
-import { optimizeImage } from '../helpers/cloudinary'
 
 @Component({
     selector: 'app-grid-list',
@@ -21,8 +20,6 @@ export class GridListComponent {
     @Input() centerTitle: boolean;
     @Input() repCard: boolean;
     @Input() centerCards: boolean;
-
-    handleImageUrl = optimizeImage;
 
     constructor(private router: Router, public dialog: MatDialog, public auth: AuthenticationService) { }
 

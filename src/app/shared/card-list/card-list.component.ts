@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatDialog } from '@angular/material'
-
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
-import { optimizeImage } from '@app/shared/helpers/cloudinary'
+import { optimizeChild } from '@app/shared/helpers/cloudinary'
 import { MetaService } from '@app/core/meta.service'
 import { Observable } from 'rxjs'
 
@@ -30,7 +29,7 @@ export class CardListComponent implements OnInit {
     @Output() delete = new EventEmitter();
     @Output() vote = new EventEmitter();
     @Output() childVote = new EventEmitter();
-    handleImageUrl = optimizeImage;
+    handleImageUrl = optimizeChild;
     organizationName: string;
 
     constructor(

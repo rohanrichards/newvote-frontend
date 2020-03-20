@@ -2,7 +2,6 @@
     <mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}"
         (click)="handleUrl(item)">
         <div mat-card-image class="image-container"
-            [defaultImage]="handleImageUrl(item.imageUrl, true)"
             [lazyLoad]="handleImageUrl(item.imageUrl)">
             <app-admin-panel [path]="path" [item]="item" [model]="model"
                 isCard=true>

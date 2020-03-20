@@ -18,7 +18,6 @@ import { forkJoin } from 'rxjs'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyrideService } from 'ngx-joyride'
-import { MatSnackBar } from '@angular/material'
 
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
@@ -29,6 +28,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { DataFetchService } from '@app/core/http/data/data-fetch.service'
 
 @Component({
     selector: 'app-home',
@@ -62,13 +62,13 @@ export class HomeComponent implements OnInit {
         private proposalService: ProposalService,
         private userService: UserService,
         private meta: MetaService,
-        public snackBar: MatSnackBar,
         public admin: AdminService,
         private proposalQuery: ProposalQuery,
         private solutionQuery: SolutionQuery,
         private issueQuery: IssueQuery,
         private organizationQuery: OrganizationQuery,
-        private communityQuery: CommunityQuery
+        private communityQuery: CommunityQuery,
+        private data: DataFetchService
     ) { }
 
     ngOnInit() {
@@ -88,25 +88,13 @@ export class HomeComponent implements OnInit {
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
-        const params = { showDeleted: isModerator ? true : ' ' }
-
         this.isLoading = true
         this.stateService.setLoadingState(AppState.loading)
 
-        const getSolutions = this.solutionService.list({ params })
-        const getProposals = this.proposalService.list({ params })
-        const getIssues = this.issueService.list({ params })
-        const getUsers = this.userService.count()
-
-        forkJoin({
-            solutions: getSolutions,
-            proposals: getProposals,
-            count: getUsers,
-            issues: getIssues
-        })
+        this.data.getHome()
+        this.userService.count()
             .subscribe(
-                ({ count }) => {
+                (count: any) => {
                     this.userCount = count
                     this.stateService.setLoadingState(AppState.complete)
                 },

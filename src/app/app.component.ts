@@ -81,16 +81,6 @@ export class AppComponent implements OnInit {
                 this.router.navigate(['/landing'])
             }
         })
-
-        this.fetchData()
-    }
-
-    fetchData() {
-        this.dataFetch.get()
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
     }
 
 }

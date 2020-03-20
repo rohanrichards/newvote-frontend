@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IRep } from '@app/core/models/rep.model';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
-import { optimizeImage } from '../../helpers/cloudinary';
+import { optimizeChild } from '../../helpers/cloudinary';
 
 @Component({
   selector: 'app-rep-card-v2',
@@ -15,7 +15,7 @@ export class RepCardV2Component implements OnInit {
 
   @Output() delete = new EventEmitter();
 
-  handleImageUrl = optimizeImage
+  handleImageUrl = optimizeChild
   DEFAULT_IMAGE = 'assets/logo-no-text.png'
 
   constructor(public auth: AuthenticationQuery) { }

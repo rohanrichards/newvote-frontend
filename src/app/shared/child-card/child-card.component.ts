@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
-import { optimizeImage } from '@app/shared/helpers/cloudinary'
-import { IIssue } from '@app/core/models/issue.model';
+import { optimizeChild } from '@app/shared/helpers/cloudinary'
 
 @Component({
     selector: 'app-child-card',
@@ -15,7 +13,7 @@ export class ChildCardComponent implements OnInit {
   @Input() repCard: boolean;
 
   @Output() vote = new EventEmitter();
-  handleImageUrl = optimizeImage
+  handleImageUrl = optimizeChild
 
   constructor() { }
 

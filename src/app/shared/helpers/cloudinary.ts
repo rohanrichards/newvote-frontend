@@ -1,5 +1,10 @@
 // https://cloudinary.com/documentation/image_transformation_reference#quality_parameter
 
+type Dimension = {
+    width: number;
+    height: number;
+}
+
 function blurImage() {
     const param = 'e_blur:'
     return param + 3000
@@ -8,7 +13,7 @@ function blurImage() {
 function insertQualityParams(quality: string) {
 
     const param = 'q_auto'
-    const qualityOptions = ['best', 'good', 'evo', 'low', 'jpegmini']
+    const qualityOptions = ['best', 'good', 'eco', 'low', 'jpegmini']
     let newUrlString
 
     if (!qualityOptions.includes(quality)) {
@@ -26,15 +31,16 @@ function insertDimensionParams(dimensions: any) {
     // const height = 'h_';
 
     if (typeof dimensions !== 'object') {
-        return param + 'auto'
+        return param + 'auto' + ',' + 'dpr_auto'
     }
-
-    return param + 'auto'
+    
+    const { width, height } = dimensions
+    return `w_${width},h_${height},dpr_auto`
 }
 
 // EXAMPLE URL 'https://res.cloudinary.com/newvote/image/upload/v1557485661/yq3owxqczybbtjpuoaep.png';
 
-function createUrl(url: string, quality: string, dimensions: any, blur?: any) {
+function createUrl(url: string, quality: string, dimensions: string | Dimension, blur?: any) {
     const removeHttps = url.slice().replace(/(^\w+:|^)\/\//, '')
     const splitUrl = removeHttps.split('/')
 
@@ -70,5 +76,22 @@ export function optimizeImage(url: string, isLowQuality?: boolean, child?: boole
         return createUrl(url, 'low', 'auto', blur)
     }
 
-    return createUrl(url, 'auto', 'auto', blur)
+    return createUrl(url, 'low', 'auto', blur)
+}
+
+export const optimizeChild = (url: string) => {
+    const dimensions = {
+        width: 0.5,
+        height: 0.5
+    }
+    if (!url) {
+        return ''
+    }
+
+    // For child cards we remove the image
+    if (url.includes('assets')) {
+        return url
+    }
+
+    return createUrl(url, 'low', dimensions)
 }
