@@ -184,7 +184,6 @@
                     </h2>
                 </mat-toolbar>
                 <app-card-list path="/suggestions"
-                    [@fadeIn]=true
                     [items$]=suggestions$
                     model="Suggestion"
                     (restore)="admin.onRestore($event, 'Suggestion')"
