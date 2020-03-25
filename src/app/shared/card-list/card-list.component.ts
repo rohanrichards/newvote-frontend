@@ -5,6 +5,7 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
 import { MetaService } from '@app/core/meta.service'
 import { Observable } from 'rxjs'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-card-list',
@@ -35,12 +36,16 @@ export class CardListComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
-        private auth: AuthenticationService,
-        private meta: MetaService
+        private org: OrganizationQuery,
     ) { }
 
     ngOnInit() {
-        this.organizationName = this.meta.organization.name
+        this.org.select()
+            .subscribe(
+                (res) => {
+                    this.organizationName = res.name
+                }
+            )
     }
 
     hasDefaultImage(url: string) {

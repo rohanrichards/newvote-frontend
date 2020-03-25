@@ -193,7 +193,7 @@ export class IssueViewComponent implements OnInit {
                             title: issue.name || '',
                             appBarTitle: 'View Issue',
                             description: issue.description || '',
-                            image: issue.imageUrl || ''
+                            image: issue.imageUrl
                         })
                 },
                 () => {

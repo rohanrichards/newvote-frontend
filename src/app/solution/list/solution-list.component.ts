@@ -110,7 +110,7 @@ export class SolutionListComponent implements OnInit {
         this.meta.updateTags(
             {
                 title: 'All Solutions',
-                description: 'Solutions are the decisions that you think your community should make.'
+                description: 'Solutions are the decisions that you think your community should make.',
             })
 
         this.fetchData()
