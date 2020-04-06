@@ -63,6 +63,9 @@ export class IssueViewComponent implements OnInit {
     suggestions$: Observable<ISuggestion[]>;
     isVerified: boolean;
 
+    solutionAccordion = false
+    suggestionAccordion = false
+
     constructor(
         private organizationService: OrganizationService,
         private suggestionService: SuggestionService,
@@ -116,8 +119,12 @@ export class IssueViewComponent implements OnInit {
         this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
         this.suggestions$.subscribe((res) => {
-            if (!res) return false
+            if (!res.length) {
+                this.suggestionAccordion = false
+                return false
+            }
             this.suggestions = res
+            this.suggestionAccordion = true
         })
     }
 
@@ -139,6 +146,14 @@ export class IssueViewComponent implements OnInit {
 
     subscribeToSolutionStore(issueId: string) {
         this.solutions$ = this.entityVotes.getManySolutions(issueId)
+
+        this.solutions$.subscribe((items: ISolution[]) => {
+            if (!items.length) {
+                this.solutionAccordion = false
+                return false
+            }
+            this.solutionAccordion = true
+        })
     }
 
     subscribeToMediaStore(id: string) {

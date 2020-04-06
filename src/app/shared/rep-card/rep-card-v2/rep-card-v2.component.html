@@ -17,8 +17,8 @@
         </button>
     </div>
     <div fxLayout="column">
-        <div fxLayout="row" [style.margin-bottom.rem]="1" fxLayoutGap="8px grid" fxFlex="1 0 50%">
-            <div>
+        <div fxLayout="row" fxLayout.sm="column" [style.margin-bottom.rem]="1" fxLayoutGap="8px grid" fxFlex="1 1 calc(50% - 16px)">
+            <div fxFlexAlign.lt-md="center">
                 <img class="avatar" [src]="rep.imageUrl" />
             </div>
             <div class="rep-info" fxLayout="column">
