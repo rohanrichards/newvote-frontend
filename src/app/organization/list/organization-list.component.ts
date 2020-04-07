@@ -9,6 +9,7 @@ import { MetaService } from '@app/core/meta.service'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { CommunityQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-organization',
@@ -37,7 +38,8 @@ export class OrganizationListComponent implements OnInit {
         public auth: AuthenticationService,
         private route: ActivatedRoute,
         private meta: MetaService,
-        public admin: AdminService
+        public admin: AdminService,
+        private communities: CommunityQuery
     ) { }
 
     ngOnInit() {
@@ -55,6 +57,7 @@ export class OrganizationListComponent implements OnInit {
                 description: 'The list of all available communities on the NewVote platform.'
             })
 
+        this.subscribeToCommunitiesStore()
     }
 
     fetchData(force?: boolean) {
@@ -71,11 +74,20 @@ export class OrganizationListComponent implements OnInit {
         })
             .subscribe(
                 organizations => {
-                    this.organizations = organizations
                     return this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
                     return this.stateService.setLoadingState(AppState.error)
+                }
+            )
+    }
+
+    subscribeToCommunitiesStore() {
+        this.communities.selectAll()
+            .subscribe(
+                (res) => {
+                    if (!res.length) return false
+                    this.organizations = res
                 }
             )
     }

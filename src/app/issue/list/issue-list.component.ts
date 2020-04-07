@@ -182,12 +182,7 @@ export class IssueListComponent implements OnInit {
     }
 
     subscribeToSuggestionStore() {
-        this.suggestions$ = this.suggestionQuery.suggestions$
-            .pipe(
-                map((suggestions) => {
-                    return suggestions.filter((suggestion) => suggestion.type === 'issue')
-                }),
-            )
+        this.suggestions$ = this.entityVotes.getManySuggestions('issue', 'type')
 
         this.suggestions$.subscribe(
             (res: any[]) => {

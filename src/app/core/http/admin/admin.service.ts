@@ -72,7 +72,7 @@ export class AdminService {
     ) { }
 
     getTitle(object: any, model: string): string {
-        if (model === 'Issue' || model === 'Topic') {
+        if (model === 'Issue' || model === 'Topic' || model === 'Organization') {
             return object.name.length < this.MAX_LENGTH ?
                 object.name
                 : object.name.slice(0, this.MAX_LENGTH) + '...'
