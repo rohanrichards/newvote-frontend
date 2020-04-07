@@ -80,6 +80,13 @@
                         playlist_add
                     </mat-icon>
                 </button>
+                    <button mat-icon-button
+                    matTooltip="Add Media to this Issue"
+                    color="accent"
+                    routerLink="/media/create/{{item._id}}">
+                    <mat-icon aria-label="Add new media">add_a_photo
+                </mat-icon>
+            </button>
             </ng-container>
 
             <ng-container *ngIf="model === 'Solution'">

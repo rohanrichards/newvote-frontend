@@ -102,7 +102,6 @@
 						],
 						"assets": [
 							"src/favicon.png",
-							"src/apple-touch-icon.png",
 							"src/robots.txt",
 							"src/manifest.json",
 							"src/assets",

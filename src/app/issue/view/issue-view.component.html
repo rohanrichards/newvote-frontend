@@ -150,49 +150,72 @@
     <div *ngSwitchCase="'complete'"
         class="container"
         fxLayout="row wrap"
-        fxLayoutAlign="center start">
+        fxLayoutAlign="center center">
         <div fxFlex.gt-sm="690px"
-            fxFlex.gt-md="800px">
-            <mat-toolbar color="primary"
-                fxLayoutAlign="center center"
-                [style.margin-bottom]="'1rem'">
-                <span class="custom-headline center-span"
-                    [style.margin]="'0'">Vote on Solutions</span>
-            </mat-toolbar>
-            <app-sort-bar model="Solution"></app-sort-bar>
-            <app-card-list path="/solutions"
-                [items$]=solutions$
-                model="Solution"
-                [showChildren]="true"
-                childPath="proposals"
-                childName="Actions"
-                [showParent]="true"
-                parentPath="/issues"
-                parentPropName="issues"
-                (restore)="admin.onRestore($event, 'Solution')"
-                (delete)="admin.onDelete($event, 'Solution')"
-                (softDelete)="admin.onSoftDelete($event, 'Solution')"
-                (vote)="onVote($event, 'Solution')"
-                (childVote)="onVote($event, 'Proposal')">
-            </app-card-list>
-            <div>
-                <mat-toolbar color="primary"
-                    fxLayoutAlign="center center"
-                    [style.margin-bottom]="'1rem'">
-                    <h2 class="custom-headline center-text">Community
-                        Suggestions
-                    </h2>
-                </mat-toolbar>
-                <app-card-list path="/suggestions"
-                    [@fadeIn]=true
-                    [items$]=suggestions$
-                    model="Suggestion"
-                    (restore)="admin.onRestore($event, 'Suggestion')"
-                    (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
-                    (delete)="admin.onDelete($event, 'Suggestion')"
-                    (vote)="onVote($event, 'Suggestion')">
-                </app-card-list>
-            </div>
+            fxFlex.gt-md="800px"
+            [style.width.%]="100">
+            <mat-accordion [multi]="true">
+                <mat-expansion-panel [expanded]="solutionAccordion" class="accordion-header">
+                    <mat-expansion-panel-header>
+                        <h2 class="custom-headline no-margin"
+                            [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
+                            Vote on Solutions
+                        </h2>
+                    </mat-expansion-panel-header>
+                    <app-sort-bar model="Solution"></app-sort-bar>
+                    <app-card-list path="/solutions"
+                        [items$]=solutions$
+                        model="Solution"
+                        [showChildren]="true"
+                        childPath="proposals"
+                        childName="Actions"
+                        [showParent]="true"
+                        parentPath="/issues"
+                        parentPropName="issues"
+                        (restore)="admin.onRestore($event, 'Solution')"
+                        (delete)="admin.onDelete($event, 'Solution')"
+                        (softDelete)="admin.onSoftDelete($event, 'Solution')"
+                        (vote)="onVote($event, 'Solution')"
+                        (childVote)="onVote($event, 'Proposal')">
+                    </app-card-list>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="suggestionAccordion" class="accordion-header">
+                    <mat-expansion-panel-header>
+                        <h2 class="custom-headline no-margin"
+                            [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
+                            Community Suggestions
+                        </h2>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/suggestions"
+                        [items$]=suggestions$
+                        model="Suggestion"
+                        (restore)="admin.onRestore($event, 'Suggestion')"
+                        (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                        (delete)="admin.onDelete($event, 'Suggestion')"
+                        (vote)="onVote($event, 'Suggestion')">
+                    </app-card-list>
+                </mat-expansion-panel>
+            </mat-accordion>
+<!-- 
+            <mat-accordion>
+                <mat-expansion-panel class="accordion-header">
+                    <mat-expansion-panel-header>
+                        <h2 class="custom-headline no-margin"
+                            [ngStyle]="{ 'margin': '0', 'text-align': 'center', 'width': '100%'}">
+                            Community Suggestions
+                        </h2>
+                    </mat-expansion-panel-header>
+                    <app-card-list path="/suggestions"
+                        [items$]=suggestions$
+                        model="Suggestion"
+                        (restore)="admin.onRestore($event, 'Suggestion')"
+                        (softDelete)="admin.onSoftDelete($event, 'Suggestion')"
+                        (delete)="admin.onDelete($event, 'Suggestion')"
+                        (vote)="onVote($event, 'Suggestion')">
+                    </app-card-list>
+                </mat-expansion-panel>
+            </mat-accordion> -->
+
             <div *ngIf="isVerified">
                 <mat-toolbar color="primary"
                     fxLayoutAlign="center center"
