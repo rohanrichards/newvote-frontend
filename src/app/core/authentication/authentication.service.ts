@@ -10,6 +10,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { Organization } from '@app/core/models/organization.model'
 import { handleError } from '../http/errors'
 import { AuthenticationStore, createInitialState } from './authentication.store'
+import { IUser } from '../models/user.model'
 
 export interface Credentials {
     // Customize received credentials here
@@ -331,23 +332,39 @@ export class AuthenticationService {
         this._credentials = credentials
     }
 
+    // User sends mobile number to backend and is sent a verification code
     sendVerificationCode(number: number): Observable<any> {
         return this.httpClient
             .post(routes.sms(), number)
-            .pipe(
-                map((res) => {
-                    return res
-                })
-            )
     }
 
+    // User sends verification code to register as user
     verifyMobile(code: number): Observable<any> {
         return this.httpClient
             .post(routes.verify(), code)
             .pipe(
-                map((res) => {
-                    return res
-                })
+                tap((res: any) => {
+                    const { verified, organizations, roles, mobileNumber } = res.user
+                    this.authenticationStore.update(state => ({
+                        verified,
+                        organizations,
+                        mobileNumber,
+                        roles
+                    }))
+
+                    const { user, token } = this._credentials
+                    user.verified = verified
+                    user.organizations = organizations
+                    user.mobileNumber = mobileNumber
+                    user.roles = roles
+
+                    const newCreds = {
+                        user,
+                        token
+                    }
+
+                    this.setCredentials(newCreds, true);
+                }),
             )
     }
 

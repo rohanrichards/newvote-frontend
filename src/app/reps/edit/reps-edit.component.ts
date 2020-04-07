@@ -163,12 +163,12 @@ export class RepsEditComponent implements OnInit {
     }
 
     updateForm(rep: any) {
-        this.imageUrl = rep.imageUrl || this.DEFAULT_IMAGE
+        this.imageUrl = rep.imageUrl
         this.repForm.patchValue({
             position: rep.position,
             displayName: rep.displayName,
             description: rep.description,
-            imageUrl: rep.imageUrl || this.DEFAULT_IMAGE,
+            imageUrl: rep.imageUrl,
             tags: rep.tags
         })
 

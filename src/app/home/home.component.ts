@@ -77,10 +77,6 @@ export class HomeComponent implements OnInit {
             this.loadingState = state
         })
 
-        this.meta.updateTags(
-            {
-                title: 'Community Home'
-            })
         this.subscribeToOrgStore()
         this.subscribeToIssueStore()
         this.subscribeToProposalStore()
@@ -109,7 +105,6 @@ export class HomeComponent implements OnInit {
             .subscribe(
                 ({ count }) => {
                     this.userCount = count
-                    this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
                     return this.stateService.setLoadingState(AppState.error)
@@ -120,7 +115,17 @@ export class HomeComponent implements OnInit {
     subscribeToOrgStore() {
         this.organizationQuery.select()
             .subscribe((res) => {
+                if (!res._id) return false
                 this.org = res
+
+                this.meta.updateTags(
+                    {
+                        title: 'Community Home',
+                        image: res.imageUrl,
+                        description: res.description
+                    })
+
+                this.stateService.setLoadingState(AppState.complete)
             })
     }
 

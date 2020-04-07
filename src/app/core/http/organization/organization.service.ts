@@ -7,6 +7,7 @@ import { Organization, IOrganization } from '@app/core/models/organization.model
 import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
+import { MetaService } from '@app/core/meta.service'
 
 const routes = {
     list: () => '/organizations',
@@ -39,7 +40,8 @@ export class OrganizationService {
         private socket: Socket,
         private httpClient: HttpClient,
         private organizationStore: OrganizationStore,
-        private communityStore: CommunityStore
+        private communityStore: CommunityStore,
+        private meta: MetaService
     ) {
         this._host = document.location.host
         this._subdomain = this._host.split('.')[0]
@@ -65,6 +67,13 @@ export class OrganizationService {
                         this._org = org
                         this.$org.next(org)
                         this.joinWebSocketRoom(org.url)
+                        // Set meta tags on load
+                        this.meta.setOrganizationUrl(org)
+                        this.meta.updateTags({
+                            title: org.name,
+                            description: org.description,
+                            image: org.imageUrl
+                        })
                     }
                 )
         }

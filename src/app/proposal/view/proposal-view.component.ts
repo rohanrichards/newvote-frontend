@@ -106,7 +106,23 @@ export class ProposalViewComponent implements OnInit {
                 if (!proposal) return false
                 this.proposal = proposal
                 this.subscribeToSuggestionStore(proposal._id)
+                this.updateTags(proposal)
                 return this.stateService.setLoadingState(AppState.complete)
+            })
+    }
+
+    updateTags(proposal: IProposal) {
+        // meta url tags do not recognize relative paths like 'assets/solution.png'
+        // check if the image is from a relative url if so retrieve absolute url
+        const imageUrl = proposal.imageUrl.includes('assets') ? 
+            'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/action-icon-min.png'
+            : proposal.imageUrl
+        this.meta.updateTags(
+            {
+                title: `${proposal.title}`,
+                appBarTitle: 'View Action',
+                description: proposal.description,
+                image: imageUrl
             })
     }
 
@@ -129,13 +145,8 @@ export class ProposalViewComponent implements OnInit {
         this.proposalService.view({ id: id, orgs: [] })
             .subscribe(
                 (proposal: Proposal) => {
-                    this.meta.updateTags(
-                        {
-                            title: `${proposal.title}`,
-                            appBarTitle: 'View Action',
-                            description: proposal.description,
-                            image: proposal.imageUrl
-                        })
+
+                    return proposal
                 },
                 () => {
                     return this.stateService.setLoadingState(AppState.error)
