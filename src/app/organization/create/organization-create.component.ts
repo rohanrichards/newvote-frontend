@@ -14,6 +14,7 @@ import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-organization',
@@ -100,7 +101,7 @@ export class OrganizationCreateComponent implements OnInit {
         private userService: UserService,
         private organizationService: OrganizationService,
         public auth: AuthenticationService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
@@ -202,7 +203,7 @@ export class OrganizationCreateComponent implements OnInit {
             this.organizationService.create({ entity: this.organization })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(res => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
+                    this.toast.openSnackBar('Succesfully created', 'OK')
 
                     if (res.moderators.length) {
                         const config = new MatSnackBarConfig()
@@ -210,15 +211,14 @@ export class OrganizationCreateComponent implements OnInit {
                         config.panelClass = ['warn-snack']
 
                         setTimeout(() => {
-                            this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
-                            // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                            this.toast.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
                         }, 3100)
                     }
 
                     this.router.navigate(['/organizations'])
                 },
                 (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
         }
 

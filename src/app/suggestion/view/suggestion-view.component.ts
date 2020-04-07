@@ -20,6 +20,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { assign } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -44,7 +45,7 @@ export class SuggestionViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private meta: MetaService,
         private voteQuery: VotesQuery,
         private admin: AdminService,
@@ -102,8 +103,8 @@ export class SuggestionViewComponent implements OnInit {
         this.suggestionService.update({ id: this.suggestion._id, entity })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
-                () => this.admin.openSnackBar('Succesfully updated', 'OK'),
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                () => this.toast.openSnackBar('Succesfully updated', 'OK'),
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 
@@ -121,13 +122,13 @@ export class SuggestionViewComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 },
             )

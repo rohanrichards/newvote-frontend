@@ -58,7 +58,7 @@ import { AccessControlQuery } from './http/mediators/access-control.query'
 import { AccessControlStore } from './http/mediators/access-control.store'
 import { EntityVotesQuery } from './http/mediators/entity-votes.query'
 import { EntityVotesStore } from './http/mediators/entity-votes.store'
-
+import { ToastService } from './toast/toast.service'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -138,6 +138,7 @@ export function tokenGetter() {
         AccessControlStore,
         AccessControlQuery,
         EntityVotesQuery,
+        ToastService,
         {
             provide: HttpClient,
             useClass: HttpService

@@ -15,6 +15,7 @@ import { MetaService } from '@app/core/meta.service'
 import { Suggestion } from '@app/core/models/suggestion.model'
 import { Organization } from '@app/core/models/organization.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-suggestion',
@@ -54,7 +55,7 @@ export class SuggestionCreateComponent implements OnInit {
         private organizationService: OrganizationService,
         private searchService: SearchService,
         private location: Location,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
@@ -159,11 +160,11 @@ export class SuggestionCreateComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (suggestion: Suggestion) => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
+                    this.toast.openSnackBar('Succesfully created', 'OK')
                     this.router.navigate([`/suggestions/${suggestion.slug || suggestion._id}`], { replaceUrl: true, queryParams: { forceUpdate: true } })
                 },
                 error => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
     }

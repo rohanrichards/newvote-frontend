@@ -20,6 +20,7 @@ import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-proposal',
@@ -56,7 +57,7 @@ export class ProposalEditComponent implements OnInit {
         private solutionService: SolutionService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private proposalQuery: ProposalQuery,
@@ -207,16 +208,16 @@ export class ProposalEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.proposalForm.get('imageUrl').value
-        this.resetImage = false;
-        this.fileInput.nativeElement.value = null;
+        this.resetImage = false
+        this.fileInput.nativeElement.value = null
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/action-default.png';
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
-        this.fileInput.nativeElement.value = null;
+        const DEFAULT_IMAGE = 'assets/action-default.png'
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
+        this.fileInput.nativeElement.value = null
     }
 
     onSave() {
@@ -232,7 +233,7 @@ export class ProposalEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 proposal.imageUrl = res.secure_url
-                this.resetImage = false;
+                this.resetImage = false
                 this.updateWithApi(proposal)
             }
         }
@@ -249,17 +250,17 @@ export class ProposalEditComponent implements OnInit {
         proposal.solutions = this.solutions
 
         if (this.resetImage) {
-            proposal.imageUrl = this.imageUrl;
+            proposal.imageUrl = this.imageUrl
         }
 
         this.proposalService.update({ id: proposal._id, entity: proposal })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/proposals/${t.slug || t._id}`])
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 

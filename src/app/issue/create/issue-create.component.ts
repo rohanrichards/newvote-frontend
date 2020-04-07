@@ -17,6 +17,7 @@ import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -53,7 +54,7 @@ export class IssueCreateComponent implements OnInit {
         private issueService: IssueService,
         private topicService: TopicService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private router: Router,
         private route: ActivatedRoute,
         private meta: MetaService,
@@ -157,12 +158,11 @@ export class IssueCreateComponent implements OnInit {
     }
 
     setDefaultImage() {
-        this.userImageUpload = false;
-        this.imageUrl = false;
+        this.userImageUpload = false
+        this.imageUrl = false
         // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
-        this.fileInput.nativeElement.value = null;
+        this.fileInput.nativeElement.value = null
     }
-
 
     onSave() {
         this.isLoading = true
@@ -179,7 +179,7 @@ export class IssueCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            this.issue.imageUrl = 'assets/issue-default.png';
+            this.issue.imageUrl = 'assets/issue-default.png'
             return this.issueService.create({ entity: this.issue })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -188,11 +188,11 @@ export class IssueCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.admin.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/issues/${t.slug || t._id}`])
                     },
                     (err) => {
-                        this.admin.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
+                        this.toast.openSnackBar(`Something went wrong: ${err.status} - ${err.statusText}`, 'OK')
                     }
                 )
         }
@@ -206,9 +206,9 @@ export class IssueCreateComponent implements OnInit {
                     .pipe(finalize(() => { this.isLoading = false }))
                     .subscribe(t => {
                         if (t.error) {
-                            this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.admin.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate(['/issues'])
                         }
                     })

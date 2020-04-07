@@ -19,6 +19,7 @@ import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { AppState } from '@app/core/models/state.model'
 import { StateService } from '@app/core/http/state/state.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -56,7 +57,7 @@ export class IssueEditComponent implements OnInit {
         private topicService: TopicService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
@@ -181,16 +182,16 @@ export class IssueEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.issueForm.get('imageUrl').value
-        this.fileInput.nativeElement.value = null;
+        this.fileInput.nativeElement.value = null
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/issue-default.png';
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
+        const DEFAULT_IMAGE = 'assets/issue-default.png'
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
         // For chrome browsers the input needs to have value reset or same files cannot be uploaded after one another
-        this.fileInput.nativeElement.value = null;
+        this.fileInput.nativeElement.value = null
     }
 
     onSave() {
@@ -207,7 +208,7 @@ export class IssueEditComponent implements OnInit {
                 merge(issue, this.issueForm.value as IIssue)
                 const res = JSON.parse(response)
                 issue.imageUrl = res.secure_url
-                this.resetImage = false;
+                this.resetImage = false
                 this.updateWithApi(issue)
             }
         }
@@ -224,7 +225,7 @@ export class IssueEditComponent implements OnInit {
         issue.topics = this.topics
 
         if (this.resetImage) {
-            issue.imageUrl = this.imageUrl;
+            issue.imageUrl = this.imageUrl
         }
 
         this.issueService.update({ id: issue._id, entity: issue })
@@ -232,10 +233,10 @@ export class IssueEditComponent implements OnInit {
             .subscribe(
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading)
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/issues/${t.slug || t._id}`])
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 

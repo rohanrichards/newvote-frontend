@@ -4,6 +4,8 @@ import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { IVote } from '@app/core/models/vote.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
 
 @Component({
     selector: 'app-vote-buttons',
@@ -43,7 +45,9 @@ export class VoteButtonsComponent implements OnInit {
     constructor(
         public snackBar: MatSnackBar,
         private admin: AdminService,
-        public auth: AuthenticationQuery
+        public auth: AuthenticationQuery,
+        public toast: ToastService,
+        private votesQuery: VotesQuery
     ) { }
 
     ngOnInit() {
@@ -96,7 +100,24 @@ export class VoteButtonsComponent implements OnInit {
 
     voteToRevealMessage(event: any) {
         event.stopPropagation()
-        this.admin.openSnackBar('You have to vote to reveal the result', 'OK')
+        this.toast.openSnackBar('You have to vote to reveal the result', 'OK')
+    }
+
+    votesWidthFor() {
+        const { up, down } = this.item.votes
+        const totalVotes = up + down
+
+        const percentageOfUpVotes = (up / totalVotes) * 100
+        return Math.round(percentageOfUpVotes)
+    }
+
+    votesWidthAgainst(vote: any) {
+
+        const { up, down } = vote
+        const totalVotes = up + down
+
+        const percentageOfDownVotes = (down / totalVotes) * 100
+        return Math.round(percentageOfDownVotes) || 0
     }
 
     totalVotes() {

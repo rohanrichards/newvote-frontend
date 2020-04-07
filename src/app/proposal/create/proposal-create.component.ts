@@ -16,6 +16,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-proposal',
@@ -53,7 +54,7 @@ export class ProposalCreateComponent implements OnInit {
         private proposalService: ProposalService,
         private solutionService: SolutionService,
         private organizationService: OrganizationService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
@@ -180,7 +181,7 @@ export class ProposalCreateComponent implements OnInit {
         }
 
         if (!this.userImageUpload) {
-            this.proposal.imageUrl = 'assets/action-default.png';
+            this.proposal.imageUrl = 'assets/action-default.png'
             return this.proposalService.create({ entity: this.proposal })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -189,10 +190,10 @@ export class ProposalCreateComponent implements OnInit {
                             this.hideSuggestion()
                         }
 
-                        this.admin.openSnackBar('Succesfully created', 'OK')
+                        this.toast.openSnackBar('Succesfully created', 'OK')
                         this.router.navigate([`/proposals/${t.slug || t._id}`])
                     },
-                    (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
                 )
         }
@@ -211,9 +212,9 @@ export class ProposalCreateComponent implements OnInit {
                         }
 
                         if (t.error) {
-                            this.admin.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
+                            this.toast.openSnackBar(`Something went wrong: ${t.error.status} - ${t.error.statusText}`, 'OK')
                         } else {
-                            this.admin.openSnackBar('Succesfully created', 'OK')
+                            this.toast.openSnackBar('Succesfully created', 'OK')
                             this.router.navigate([`/solutions/${this.proposal.solutions[0].slug || this.proposal.solutions[0]._id}`])
                         }
                     })
@@ -224,9 +225,9 @@ export class ProposalCreateComponent implements OnInit {
     }
 
     setDefaultImage() {
-        this.userImageUpload = false;
-        this.imageUrl = false;
-        this.fileInput.nativeElement.value = null;
+        this.userImageUpload = false
+        this.imageUrl = false
+        this.fileInput.nativeElement.value = null
     }
 
     solutionSelected(event: any) {

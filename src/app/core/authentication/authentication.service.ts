@@ -16,6 +16,7 @@ export interface Credentials {
     // Customize received credentials here
     user?: any;
     token: string;
+    voted?: any | boolean;
 }
 
 export interface LoginContext {

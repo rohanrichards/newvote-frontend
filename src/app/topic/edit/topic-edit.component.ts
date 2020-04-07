@@ -14,6 +14,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { MetaService } from '@app/core/meta.service'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-topic',
@@ -41,7 +42,7 @@ export class TopicEditComponent implements OnInit {
         private topicService: TopicService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private location: Location,
         private meta: MetaService,
         private topicQuery: TopicQuery,
@@ -184,11 +185,11 @@ export class TopicEditComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 () => {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     // this.router.navigate(['/issues']);
                     this.location.back()
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
 
             )
     }

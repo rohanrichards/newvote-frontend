@@ -36,6 +36,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-issue',
@@ -94,7 +95,7 @@ export class IssueListComponent implements OnInit {
         private suggestionQuery: SuggestionQuery,
         private issueQuery: IssueQuery,
         private voteService: VoteService,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private suggestionService: SuggestionService,
         public stateService: StateService,
         private issueService: IssueService,
@@ -232,10 +233,10 @@ export class IssueListComponent implements OnInit {
 
         this.suggestionService.create({ entity: suggestion })
             .subscribe(() => {
-                this.admin.openSnackBar('Succesfully created', 'OK')
+                this.toast.openSnackBar('Succesfully created', 'OK')
             },
             (error) => {
-                this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             })
     }
 
@@ -253,13 +254,13 @@ export class IssueListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )

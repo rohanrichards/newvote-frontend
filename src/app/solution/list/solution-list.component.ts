@@ -30,6 +30,7 @@ import { FormControl } from '@angular/forms'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-solution',
@@ -78,7 +79,7 @@ export class SolutionListComponent implements OnInit {
         public auth: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private meta: MetaService,
         private suggestionQuery: SuggestionQuery,
         private solutionQuery: SolutionQuery,
@@ -165,14 +166,14 @@ export class SolutionListComponent implements OnInit {
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => {
-                    this.admin.openSnackBar('Your vote was recorded', 'OK')
+                    this.toast.openSnackBar('Your vote was recorded', 'OK')
                 },
                 (error) => {
 
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.toast.openSnackBar('You must be logged in to vote', 'OK')
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.toast.openSnackBar('There was an error recording your vote', 'OK')
                     }
                 }
             )
@@ -185,16 +186,16 @@ export class SolutionListComponent implements OnInit {
         this.suggestionService.create({ entity: suggestion })
             .subscribe(
                 () => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
+                    this.toast.openSnackBar('Succesfully created', 'OK')
                 },
                 (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                    this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 }
             )
     }
 
     sortSolutionsBy(event: any) {
-        const { value } = event;
-        this.solutionService.updateFilter(value);
+        const { value } = event
+        this.solutionService.updateFilter(value)
     }
 }

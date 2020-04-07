@@ -21,6 +21,7 @@ import { OrganizationQuery } from '@app/core/http/organization/organization.quer
 
 import { cloneDeep } from 'lodash'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { ToastService } from '@app/core/toast/toast.service'
 
 @Component({
     selector: 'app-solution',
@@ -57,7 +58,7 @@ export class SolutionEditComponent implements OnInit {
         private issueService: IssueService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
+        public toast: ToastService,
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
@@ -199,16 +200,16 @@ export class SolutionEditComponent implements OnInit {
     onResetImage() {
         this.newImage = false
         this.imageUrl = this.solutionForm.get('imageUrl').value
-        this.resetImage = false;
-        this.fileInput.nativeElement.value = null;
+        this.resetImage = false
+        this.fileInput.nativeElement.value = null
     }
 
     setDefaultImage() {
-        const DEFAULT_IMAGE = 'assets/solution-default.png';
-        this.newImage = false;
-        this.imageUrl = DEFAULT_IMAGE;
-        this.resetImage = true;
-        this.fileInput.nativeElement.value = null;
+        const DEFAULT_IMAGE = 'assets/solution-default.png'
+        this.newImage = false
+        this.imageUrl = DEFAULT_IMAGE
+        this.resetImage = true
+        this.fileInput.nativeElement.value = null
     }
 
     onSave() {
@@ -224,7 +225,7 @@ export class SolutionEditComponent implements OnInit {
             if (status === 200 && item.isSuccess) {
                 const res = JSON.parse(response)
                 solution.imageUrl = res.secure_url
-                this.resetImage = false;
+                this.resetImage = false
                 this.updateWithApi(solution)
             }
         }
@@ -241,17 +242,17 @@ export class SolutionEditComponent implements OnInit {
         solution.issues = this.issues
 
         if (this.resetImage) {
-            solution.imageUrl = this.imageUrl;
+            solution.imageUrl = this.imageUrl
         }
 
         this.solutionService.update({ id: solution._id, entity: solution })
             .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (t) => {
-                    this.admin.openSnackBar('Succesfully updated', 'OK')
+                    this.toast.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate([`/solutions/${t.slug || t._id}`])
                 },
-                (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
+                (error) => this.toast.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
     }
 
