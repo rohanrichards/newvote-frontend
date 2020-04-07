@@ -203,12 +203,16 @@ export class IssueViewComponent implements OnInit {
         return this.issueService.view({ id: id, orgs: [] })
             .subscribe(
                 (issue) => {
+                    const imageUrl = issue.imageUrl.includes('assets') ?
+                        'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/issue-icon-min.png'
+                        : issue.imageUrl
+
                     this.meta.updateTags(
                         {
                             title: issue.name || '',
                             appBarTitle: 'View Issue',
                             description: issue.description || '',
-                            image: issue.imageUrl || ''
+                            image: imageUrl
                         })
                 },
                 () => {
