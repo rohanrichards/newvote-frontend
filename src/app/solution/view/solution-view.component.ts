@@ -111,13 +111,7 @@ export class SolutionViewComponent implements OnInit {
         })
             .subscribe(
                 (solution: Solution) => {
-                    this.meta.updateTags(
-                        {
-                            title: solution.title,
-                            appBarTitle: 'View Solution',
-                            description: solution.description,
-                            image: solution.imageUrl
-                        })
+                    return solution
                 },
                 () => this.stateService.setLoadingState(AppState.error)
             )
@@ -153,6 +147,23 @@ export class SolutionViewComponent implements OnInit {
                 this.subscribeToProposalStore(solution._id)
                 this.subscribeToSuggestionStore(solution._id)
                 this.stateService.setLoadingState(AppState.complete)
+                this.updateTags(solution)
+            })
+    }
+
+    updateTags(solution: ISolution) {
+        // meta url tags do not recognize relative paths like 'assets/solution.png'
+        // check if the image is from a relative url if so retrieve absolute url
+        const imageUrl = solution.imageUrl.includes('assets') ? 
+            'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/solution-icon-min.png'
+            : solution.imageUrl
+        
+        this.meta.updateTags(
+            {
+                title: solution.title,
+                appBarTitle: 'View Solution',
+                description: solution.description,
+                image: imageUrl
             })
     }
 

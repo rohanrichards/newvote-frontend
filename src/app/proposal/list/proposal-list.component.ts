@@ -74,7 +74,7 @@ export class ProposalListComponent implements OnInit {
         this.meta.updateTags(
             {
                 title: 'All Actions',
-                description: 'List all actions.'
+                description: 'List all actions.',
             })
 
         this.fetchData()
