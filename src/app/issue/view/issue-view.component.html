@@ -72,6 +72,76 @@
             </div>
         </div>
     </div>
+    <div *ngSwitchCase="'complete'"
+        [@fadeIn]=true
+        class="container"
+        fxLayout="row wrap"
+        fxLayoutAlign="center center">
+        <div fxFlex.gt-sm="690px"
+            fxFlex.gt-md="800px"
+            [style.width.%]="100"
+            *ngIf="media">
+            <mat-accordion>
+                <mat-expansion-panel class="accordion-header">
+                    <mat-expansion-panel-header>
+                        <div [ngStyle]="{ 'width': '100%' }" fxLayout="row" fxLayoutAlign="center center">
+                            <h2 class="custom-headline no-margin"
+                                [ngStyle]="{ 'margin': '0', 'text-align': 'center'}">
+                                {{ this.issue.mediaHeading || "Third Party Media"}}
+                            </h2>
+                            <button 
+                                *ngIf="auth.isModerator()"
+                                mat-icon-button
+                                matTooltip="Edit this Issue"
+                                color="accent"
+                                (click)="toggleHeader($event)"
+                                >
+                                <mat-icon aria-label="Edit the issue">edit</mat-icon>
+                            </button>
+                        </div>
+                    </mat-expansion-panel-header>
+                    <div 
+                        *ngIf="headingEdit && auth.isModerator()"
+                        fxLayout="row"
+                        fxLayoutAlign="center center"
+                        [ngStyle]="{ 'width': '100%'}"
+                        >
+                        <mat-form-field 
+                            appearance="standard"
+                            class="example-full-width">
+                            <input 
+                                [ngStyle]="{'color': 'black'}"
+                                #newHeading 
+                                matInput 
+                                placeholder="Heading Name"
+                                (keyup.enter)="handleSubmit(newHeading.value)"
+                                >
+                            <button 
+                                mat-icon-button
+                                matSuffix
+                                color="accent"
+                                (click)="handleSubmit(newHeading.value)"
+                                >
+                                <mat-icon >send</mat-icon>
+                            </button>
+                            
+                        </mat-form-field>
+                    </div>
+                    <app-swiper-wrapper
+                        path="/media"
+                        [items]="media"
+                        model="Media"
+                        parent="Issue"
+                        [organization]="issue.organizations.name"
+                        (restore)="admin.onRestore($event, 'Media')"
+                        (softDelete)="admin.onSoftDelete($event, 'Media')"
+                        (delete)="admin.onDelete($event, 'Media')"
+                        (vote)="onVote($event, 'Media')">
+                    </app-swiper-wrapper>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
 </ng-container>
 
 
