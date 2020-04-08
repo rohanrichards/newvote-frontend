@@ -12,25 +12,19 @@
         <button mat-raised-button
             color="primary"
             (click)="toggleProgressForm()"
-            fxFlex="40%">Progress Update</button>
+            fxFlex="40%">Update Progress</button>
     </div>
 
-    <div *ngIf="showForm"
+    <!-- <div *ngIf="showForm"
         class="quill-editor-container cf">
         <quill-editor [(ngModel)]="progressForm.description"></quill-editor>
-    </div>
+    </div> -->
 
     <div class="progress-form"
         *ngIf="showProgress"
         fxLayout="column"
         fxLayoutAlign="center center"
         fxLayoutGap="24px">
-        <div>
-            <h4 class="mat-title">Update the Progress of the {{ item.name }}
-            </h4>
-            <mat-divider></mat-divider>
-        </div>
-
         <mat-radio-group [style.width.%]="50"
             fxLayout="column"
             fxLayoutGap="12px"
