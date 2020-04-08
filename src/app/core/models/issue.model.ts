@@ -13,6 +13,7 @@ export interface IIssue {
     suggestionTemplate?: string;
     slug: string;
     progressState?: any;
+    notifications: Array<any>;
 }
 
 export class Issue implements IIssue {
@@ -25,6 +26,7 @@ export class Issue implements IIssue {
         public topics: Array<any> = [],
         public softDeleted: boolean = false,
         public slug: string = '',
-        public progressState: any = {}
+        public progressState: any = {},
+        public notifications: Array<any> = []
     ) { }
 }
