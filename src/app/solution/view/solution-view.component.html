@@ -51,7 +51,8 @@
                 <span class="mat-body">This is a solution for:
                     <span *ngFor="let parent of solution.issues; let i = index">
                         <a mat-button
-                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name | slice:0:30 }}</a>
+                            [title]="parent.name || parent.title"
+                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name | slice:0:30 }}{{ (parent.title || parent.name).length > 30 ? '...' : ''}}</a>
                     </span>
                 </span>
                 <app-more-less [displayText]="solution.description"
