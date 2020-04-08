@@ -41,6 +41,8 @@ import { Progress } from '@app/core/models/progress.model'
 import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { NotificationService } from '@app/core/http/notifications/notification.service'
+import { INotification } from '@app/core/models/notification.model'
 
 @Component({
     selector: 'app-issue',
@@ -118,6 +120,7 @@ export class IssueViewComponent implements OnInit {
         private progressQuery: ProgressQuery,
         private progressService: ProgressService,
         private entityVotes: EntityVotesQuery,
+        private notificationService: NotificationService
     ) { }
 
     ngOnInit() {
@@ -391,6 +394,18 @@ export class IssueViewComponent implements OnInit {
         this.updateState(updatedProgress, state)
         return this.progressService.update({ id: this.progress._id, entity: updatedProgress })
             .subscribe((res) => res)
+    }
+
+    addNotification(description: any) {
+        const notification = {
+            parent: this.issue._id,
+            parentType: 'Issue',
+            imageUrl: '',
+            description,
+            organizations: this.organization._id,
+            user: this.authQuery.getValue()._id
+        } as INotification
+        return this.notificationService.create({ entity: notification })
     }
 
     updateState(progressState: any, newState: any) {

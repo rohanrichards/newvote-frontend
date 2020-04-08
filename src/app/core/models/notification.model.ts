@@ -1,7 +1,7 @@
 
 export interface INotification {
     _id?: string;
-    createdAt: string;
+    createdAt?: string;
     parent: any;
     parentType: string;
     imageUrl: string;
@@ -13,7 +13,6 @@ export interface INotification {
 export class Notification implements INotification {
     public constructor(
         public _id: string = '',
-        public createdAt: string = '',
         public parent: string = '',
         public parentType: string = '',
         public imageUrl: string = '',

@@ -3,22 +3,27 @@
         fxLayout="row-reverse"
         fxLayoutGap="8px">
         <button
-            *ngIf="showFeed"
             mat-raised-button
             color="warn"
-            (click)="toggleUpdateForm()"
-            fxFlex>Add Update</button
+            (click)="toggleNotificationForm()"
+            fxFlex>Add Notification</button
             >
         <button mat-raised-button
             color="primary"
             (click)="toggleProgressForm()"
-            fxFlex="40%">Update Progress</button>
+            fxFlex
+            >Update Progress</button>
     </div>
 
-    <!-- <div *ngIf="showForm"
+    <div *ngIf="showForm"
         class="quill-editor-container cf">
-        <quill-editor [(ngModel)]="progressForm.description"></quill-editor>
-    </div> -->
+        <quill-editor [(ngModel)]="description"></quill-editor>
+        <button 
+            color="primary" 
+            mat-raised-button 
+            (click)="submitNotification()"
+            >Submit Notification</button>
+    </div>
 
     <div class="progress-form"
         *ngIf="showProgress"

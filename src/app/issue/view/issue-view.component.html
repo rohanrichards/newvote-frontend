@@ -130,8 +130,12 @@
             [style.width.%]="100">
             <app-progress-bar [progressState]="progress">
             </app-progress-bar>
-            <app-progress-form *ngIf="auth.isOwner()" [progress]="progress"
-                (updateProgressState)="updateProgress($event)">
+            <app-progress-form 
+                *ngIf="auth.isOwner()" 
+                [progress]="progress"
+                (updateProgressState)="updateProgress($event)"
+                (updateNotifications)="addNotification($event)"
+                >
             </app-progress-form>
             <mat-accordion [multi]="true">
                 <mat-expansion-panel class="accordion-header">

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core'
 import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms'
 import { Progress } from '@app/core/models/progress.model'
+import { NotificationService } from '@app/core/http/notifications/notification.service';
 
 @Component({
     selector: 'app-progress-form',
@@ -9,7 +10,7 @@ import { Progress } from '@app/core/models/progress.model'
 })
 export class ProgressFormComponent implements OnChanges {
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private notificationService: NotificationService) {}
 
     @Input() item: any = {
         name: 'Issue'
@@ -17,11 +18,13 @@ export class ProgressFormComponent implements OnChanges {
 
     @Input() progress: Progress;
     @Output() updateProgressState = new EventEmitter();
+    @Output() updateNotifications = new EventEmitter();
 
     currentActiveState: string;
     showForm = false;
     showProgress = false;
     showFeed = false
+    description = ''
 
     ngOnInit() {
         this.setCurrentActiveState(this.progress)
@@ -48,7 +51,7 @@ export class ProgressFormComponent implements OnChanges {
         this.showProgress = !this.showProgress
     }
 
-    toggleUpdateForm() {
+    toggleNotificationForm() {
         if (this.showProgress) {
             this.showProgress = false
         }
@@ -76,6 +79,10 @@ export class ProgressFormComponent implements OnChanges {
         }
 
         this.currentActiveState = filteredState[filteredState.length - 1].name || ''
+    }
+
+    submitNotification() {
+        this.updateNotifications.emit(this.description)
     }
 
     checkState(state: any) {

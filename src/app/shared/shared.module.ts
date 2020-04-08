@@ -55,7 +55,8 @@ import { SideMenuComponent } from './side-menu/side-menu.component'
 import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component'
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
-import { ProgressFormComponent } from './progress-form/progress-form.component'
+import { ProgressFormComponent } from './progress-form/progress-form.component';
+import { NotificationFeedComponent } from './notification-feed/notification-feed.component'
 
 @NgModule({
     imports: [
@@ -116,7 +117,8 @@ import { ProgressFormComponent } from './progress-form/progress-form.component'
         RepCardV2Component,
         ProgressBarComponent,
         ProgressFeedComponent,
-        ProgressFormComponent
+        ProgressFormComponent,
+        NotificationFeedComponent
     ],
     exports: [
         LoaderComponent,
@@ -154,7 +156,8 @@ import { ProgressFormComponent } from './progress-form/progress-form.component'
         RepCardV2Component,
         ProgressBarComponent,
         ProgressFeedComponent,
-        ProgressFormComponent
+        ProgressFormComponent,
+        NotificationFeedComponent
     ]
 })
 export class SharedModule { }
