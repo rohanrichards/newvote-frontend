@@ -5,23 +5,50 @@
 
 .progress-item {
     width: 100%;
-    height: 200px;
-    border: 2px solid lightgray;
-    padding: 1rem 3rem;
-    margin-bottom: 1.5rem;
+    border: 1px solid lightgray;
+    padding: 0.5rem 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .feed-footer {
     justify-self: end;
+
+    p {
+        margin-bottom: 0;
+    }
 }
 
-.feed-main:before {
+.main-content {
+    p {
+        margin: 0;
+    }
+}
+
+.block-quote {
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+}
+.block-quote:before {
     content: '\201C';
     font-size: 5rem;
     // transform: translate(-50%, -50%);
     width: 3rem;
     height: 2rem;
-    color: #666;
+    color: black;
     text-align: center;
-    font-family: 'Arial'
+    font-family: 'Proxima-Nova';
+}
+
+.date-text {
+    color: lightgray;
+
+    strong {
+        color: black;
+    }
+}
+
+.mat-title {
+    p {
+        margin-top: 0;
+    }
 }

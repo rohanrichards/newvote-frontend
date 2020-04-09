@@ -137,6 +137,10 @@
                 (updateNotifications)="addNotification($event)"
                 >
             </app-progress-form>
+            <app-notification-feed 
+                [notifications]="notifications"
+                >
+            </app-notification-feed>
             <mat-accordion [multi]="true">
                 <mat-expansion-panel class="accordion-header">
                     <mat-expansion-panel-header>

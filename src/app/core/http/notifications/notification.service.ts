@@ -7,7 +7,7 @@ import { INotification, Notification } from '@app/core/models/notification.model
 import { NotificationStore } from './notification.store'
 
 const routes = {
-    list: () => '/solutions',
+    list: () => '/notifications',
     view: (c: NotificationContext) => `/notifications/${c.id}`,
     create: () => '/notifications',
     update: (c: NotificationContext) => `/notifications/${c.id}`,

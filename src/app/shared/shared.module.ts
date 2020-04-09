@@ -57,7 +57,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component'
 import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 import { ProgressFormComponent } from './progress-form/progress-form.component';
 import { NotificationFeedComponent } from './notification-feed/notification-feed.component'
-
+import { MomentModule } from 'ngx-moment';
 @NgModule({
     imports: [
         FlexLayoutModule,
@@ -72,6 +72,7 @@ import { NotificationFeedComponent } from './notification-feed/notification-feed
         MatBadgeModule,
         ClipboardModule,
         RouterModule,
+        MomentModule,
         QuillModule.forRoot(MinimalQuillSettings),
         LazyLoadImageModule.forRoot({
             preset: intersectionObserverPreset

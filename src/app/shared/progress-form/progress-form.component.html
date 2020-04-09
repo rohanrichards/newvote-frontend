@@ -1,12 +1,12 @@
-<div class="container">
+<div [ngStyle]="{'margin-bottom': '1rem'}">
     <div class=""
-        fxLayout="row-reverse"
+        fxLayout="row"
         fxLayoutGap="8px">
         <button
             mat-raised-button
             color="warn"
             (click)="toggleNotificationForm()"
-            fxFlex>Add Notification</button
+            fxFlex>Add Update</button
             >
         <button mat-raised-button
             color="primary"
@@ -15,14 +15,18 @@
             >Update Progress</button>
     </div>
 
-    <div *ngIf="showForm"
+    <div 
+        fxLayout="column"
+        *ngIf="showForm"
         class="quill-editor-container cf">
         <quill-editor [(ngModel)]="description"></quill-editor>
         <button 
+            fxFlex
+            [ngStyle]="{'margin-top': '0.5rem'}"
             color="primary" 
             mat-raised-button 
             (click)="submitNotification()"
-            >Submit Notification</button>
+            >Post Update</button>
     </div>
 
     <div class="progress-form"

@@ -1,7 +1,7 @@
 
 export interface INotification {
     _id?: string;
-    createdAt?: string;
+    created_at?: string;
     parent: any;
     parentType: string;
     imageUrl: string;

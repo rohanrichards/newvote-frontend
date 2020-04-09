@@ -62,6 +62,7 @@
         "ngx-international-phone-number": "^1.0.4",
         "ngx-joyride": "^2.2.10",
         "ngx-material-file-input": "^1.1.0",
+        "ngx-moment": "^3.5.0",
         "ngx-quill": "^7.1.2",
         "ngx-socket-io": "^3.0.1",
         "ngx-swiper-wrapper": "^7.2.1",

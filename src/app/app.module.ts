@@ -46,6 +46,7 @@ import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 import { FeedModule } from './feed/feed.module'
+import { MomentModule } from 'ngx-moment'
 
 @NgModule({
     imports: [
@@ -85,6 +86,7 @@ import { FeedModule } from './feed/feed.module'
             }
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
+        MomentModule,
         AppRoutingModule,
     ],
     declarations: [

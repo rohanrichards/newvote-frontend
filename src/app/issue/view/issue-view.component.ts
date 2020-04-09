@@ -42,7 +42,8 @@ import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { NotificationService } from '@app/core/http/notifications/notification.service'
-import { INotification } from '@app/core/models/notification.model'
+import { INotification, Notification } from '@app/core/models/notification.model'
+import { NotificationQuery } from '@app/core/http/notifications/notification.query'
 
 @Component({
     selector: 'app-issue',
@@ -69,6 +70,7 @@ export class IssueViewComponent implements OnInit {
     suggestions$: Observable<ISuggestion[]>;
     isVerified: boolean;
     progress: any;
+    notifications: INotification[];
 
     defaultState = {
         _id: '',
@@ -120,7 +122,8 @@ export class IssueViewComponent implements OnInit {
         private progressQuery: ProgressQuery,
         private progressService: ProgressService,
         private entityVotes: EntityVotesQuery,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private notificationQuery: NotificationQuery
     ) { }
 
     ngOnInit() {
@@ -173,6 +176,15 @@ export class IssueViewComponent implements OnInit {
             })
     }
 
+    subscribeToNotificationStore(parentId: string) {
+        this.notificationQuery.getNotifications(parentId)
+            .subscribe((res: any) => {
+                console.log(res, 'this is res')
+                if (!res.length) return false
+                this.notifications = res
+            })
+    }
+
     subscribeToIssueStore(id: string) {
 
         this.issueQuery.getIssueWithTopic(id)
@@ -185,6 +197,7 @@ export class IssueViewComponent implements OnInit {
                     this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
                     this.subscribeToProgressStore(issue._id)
+                    this.subscribeToNotificationStore(issue._id)
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
@@ -217,6 +230,7 @@ export class IssueViewComponent implements OnInit {
         this.getSuggestions()
         this.getTopics()
         this.getProgress()
+        this.getNotifications()
     }
 
     getTopics() {
@@ -235,6 +249,14 @@ export class IssueViewComponent implements OnInit {
     getProgress() {
         this.progressService.get({})
             .subscribe((res) => res)
+    }
+
+    getNotifications() {
+        this.notificationService.list({})
+            .subscribe(
+                res => res,
+                err => err
+            )
     }
 
     getSuggestions() {
@@ -406,6 +428,12 @@ export class IssueViewComponent implements OnInit {
             user: this.authQuery.getValue()._id
         } as INotification
         return this.notificationService.create({ entity: notification })
+            .subscribe(
+                (res) => {
+                    console.log(res, 'this is res')
+                },
+                (err) => err
+            )
     }
 
     updateState(progressState: any, newState: any) {
