@@ -22,7 +22,6 @@ import { ApiPrefixInterceptor } from './http/api-prefix.interceptor'
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor'
 import { OganizationHeaderInterceptor } from './http/organization-header.interceptor'
 import { CacheInterceptor } from './http/cache.interceptor'
-import { JwtModule } from '@auth0/angular-jwt'
 import { VoteStore } from './http/vote/vote.store'
 import { VotesQuery } from './http/vote/vote.query'
 import { VoteService } from './http/vote/vote.service'
@@ -58,6 +57,9 @@ import { AccessControlQuery } from './http/mediators/access-control.query'
 import { AccessControlStore } from './http/mediators/access-control.store'
 import { EntityVotesQuery } from './http/mediators/entity-votes.query'
 import { EntityVotesStore } from './http/mediators/entity-votes.store'
+import { SolutionService } from './http/solution/solution.service'
+import { ProposalService } from './http/proposal/proposal.service'
+import { UserService } from './http/user/user.service'
 
 
 export function tokenGetter() {
@@ -75,13 +77,7 @@ export function tokenGetter() {
         CommonModule,
         HttpClientModule,
         TranslateModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: tokenGetter,
-                whitelistedDomains: ['api.newvote.org', 'newvote-staging.herokuapp.com', 'api.staging.newvote.org']
-            }
-        }),
-        RouterModule
+        RouterModule,
     ],
     providers: [
         AuthenticationService,
@@ -104,6 +100,7 @@ export function tokenGetter() {
         ErrorHandlerInterceptor,
         CacheInterceptor,
         OganizationHeaderInterceptor,
+        UserService,
         VoteStore,
         VotesQuery,
         VoteService,
@@ -118,8 +115,10 @@ export function tokenGetter() {
         TopicService,
         SolutionQuery,
         SolutionStore,
+        SolutionService,
         ProposalQuery,
         ProposalStore,
+        ProposalService,
         MediaService,
         AdminService,
         OrganizationService,
