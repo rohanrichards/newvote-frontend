@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-// import { CoreModule } from '@app/core';
 // import { SharedModule } from '@app/shared';
 // import { FlexLayoutModule } from '@angular/flex-layout';
 // import { MaterialModule } from '@app/material.module';
@@ -9,6 +8,7 @@ import { CommunitiesComponent } from './communities.component'
 import { MaterialModule } from '@app/material.module'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { SharedModule } from '@app/shared'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
     declarations: [
@@ -16,10 +16,11 @@ import { SharedModule } from '@app/shared'
     ],
     imports: [
         CommonModule,
-        CommunitiesRoutingModule,
         MaterialModule,
         FlexLayoutModule,
-        SharedModule
+        SharedModule,
+        RouterModule,
+        CommunitiesRoutingModule,
     ]
 })
 export class CommunitiesModule { }

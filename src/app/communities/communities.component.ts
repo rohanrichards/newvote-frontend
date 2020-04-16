@@ -20,7 +20,9 @@ export class CommunitiesComponent implements OnInit {
         private organizationService: OrganizationService,
         private auth: AuthenticationService,
         private communityQuery: CommunityQuery
-    ) { }
+    ) {
+        console.log('Communities init')
+    }
 
     ngOnInit() {
         this.subscribeToCommunitiesStore()

@@ -56,7 +56,7 @@
                 gdGap.lt-sm="8px">
                 <app-community-card
                     *ngFor="let org of organizations$ | async;trackBy trackByFn"
-                    (click)="openCommunityURL($event, org.url)"
+                    routerLink="/communities/{{org.url}}"
                     [organization]="org">
                 </app-community-card>
             </div>
