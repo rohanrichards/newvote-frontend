@@ -26,12 +26,11 @@ export const cloudinaryLib = {
 }
 
 import { environment } from '@env/environment'
-import { CoreModule } from '@app/core'
+import { CoreModule, tokenGetter } from '@app/core'
 import { SharedModule } from '@app/shared'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { ShareModule } from '@ngx-share/core'
 import { AngularFontAwesomeModule } from 'angular-font-awesome'
-import { HomeModule } from './home/home.module'
 import { ShellModule } from './shell/shell.module'
 import { AppComponent } from './app.component'
 import { AppRoutingModule } from './app-routing.module'
@@ -45,6 +44,7 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
+import { JwtModule } from '@auth0/angular-jwt'
 
 @NgModule({
     imports: [
@@ -61,7 +61,6 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
         CoreModule,
         SharedModule,
         ShellModule,
-        HomeModule,
         ShareModule,
         InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
@@ -80,6 +79,12 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
             url: environment.socketUrl,
             options: {
                 transports: ['websocket']
+            }
+        }),
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                whitelistedDomains: ['api.newvote.org', 'newvote-staging.herokuapp.com', 'api.staging.newvote.org']
             }
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),

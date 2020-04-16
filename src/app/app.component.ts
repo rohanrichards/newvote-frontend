@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private dataFetch: DataFetchService) { }
+    ) { }
 
     ngOnInit() {
         // Setup logger
@@ -75,22 +75,22 @@ export class AppComponent implements OnInit {
                 }
             })
 
-        this.organizationService.get().subscribe((org: Organization) => {
-            if (!org) {
-                // debugger;
-                this.router.navigate(['/landing'])
-            }
-        })
+        // this.organizationService.get().subscribe((org: Organization) => {
+        //     if (!org) {
+        //         // debugger;
+        //         this.router.navigate(['/landing'])
+        //     }
+        // })
 
-        this.fetchData()
+        // this.fetchData()
     }
 
-    fetchData() {
-        this.dataFetch.get()
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-    }
+    // fetchData() {
+    //     this.dataFetch.get()
+    //         .subscribe(
+    //             (res) => res,
+    //             (err) => err
+    //         )
+    // }
 
 }
