@@ -3,7 +3,7 @@ import {
     Component, OnInit, Output, EventEmitter,
     ViewChild
 } from '@angular/core'
-import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router'
+import { Event, NavigationEnd, NavigationStart, Router, ActivatedRoute } from '@angular/router'
 import { MediaObserver } from '@angular/flex-layout'
 
 import { OrganizationService } from '@app/core/http/organization/organization.service'
@@ -15,6 +15,7 @@ import { filter, observeOn } from 'rxjs/operators'
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay'
 import { ScrollService } from '@app/core/scroll/scroll.service'
 import { I18nService, AuthenticationService } from '@app/core'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 interface ScrollPositionRestore {
     event: Event;
@@ -50,7 +51,9 @@ export class ShellComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private media: MediaObserver
+        private media: MediaObserver,
+        private route: ActivatedRoute,
+        private orgQuery: OrganizationQuery
     ) {
         // Subscribe to the route data from service,
         // Due to outlet not reusing routes, multiple instances of the scroll handlers are listened
@@ -127,12 +130,15 @@ export class ShellComponent implements OnInit {
                     return this.sidenavContainer.scrollable.scrollTo({ left: 0, top: this.oldRouteState.topOffset, behavior: 'auto' })
                 }
             })
+
+        this.orgQuery.select()
+            .subscribe((res) => {
+                if (!res._id) return false
+                this.organization = res
+            })
     }
 
     ngOnInit() {
-        this.organizationService.get().subscribe(org => {
-            this.organization = org
-        })
 
     }
 

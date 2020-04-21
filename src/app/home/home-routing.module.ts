@@ -13,7 +13,11 @@ const routes: Routes = [
                 component: HomeComponent,
                 data: {
                     title: extract('NewVote')
-                } 
+                }
+            },
+            {
+                path: 'home',
+                component: HomeComponent,
             },
             {
                 path: 'topics', loadChildren: 'app/topic/topic.module#TopicModule'
@@ -35,7 +39,6 @@ const routes: Routes = [
             }
         ]
     },
-    { path: '', redirectTo: '/communities', pathMatch: 'full' },
 ]
 
 @NgModule({

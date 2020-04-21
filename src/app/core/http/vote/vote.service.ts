@@ -39,7 +39,7 @@ export class VoteService {
         private orgService: OrganizationService,
         private voteStore: VoteStore,
     ) {
-        this.orgService.get().subscribe(org => { this._org = org })
+        // this.orgService.get().subscribe(org => { this._org = org })
 
         this.socket.fromEvent('vote')
             .subscribe((vote: any) => {

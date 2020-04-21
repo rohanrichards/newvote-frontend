@@ -9,7 +9,7 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 import { MetaService } from '@app/core/meta.service'
 
 import { Issue } from '@app/core/models/issue.model'
-import { Organization } from '@app/core/models/organization.model'
+import { Organization, IOrganization } from '@app/core/models/organization.model'
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
 
 import { trigger } from '@angular/animations'
@@ -29,6 +29,8 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { ActivatedRoute } from '@angular/router'
+import { OrganizationStore } from '@app/core/http/organization/organization.store'
 
 @Component({
     selector: 'app-home',
@@ -68,7 +70,9 @@ export class HomeComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private issueQuery: IssueQuery,
         private organizationQuery: OrganizationQuery,
-        private communityQuery: CommunityQuery
+        private communityQuery: CommunityQuery,
+        private route: ActivatedRoute,
+        private orgQuery: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -76,26 +80,46 @@ export class HomeComponent implements OnInit {
             this.loadingState = state
         })
 
-        this.subscribeToOrgStore()
+        this.route.params.subscribe(
+            (res: any) => {
+                const { id } = res
+                if (!id) return false
+                this.communityQuery.selectAll({
+                    filterBy: (entity: any) => { return entity.url === id }
+                })
+                    .subscribe((res: Organization[]) => {
+                        if (!res.length) return false
+                        const [organization, ...rest] = res
+                        this.org = organization
+                        this.fetchData(id)
+                        this.stateService.setLoadingState(AppState.complete)
+                    })
+            },
+            (err: any) => {
+                console.log(err)
+            }
+        )
+
+        // this.subscribeToOrgStore()
         this.subscribeToIssueStore()
         this.subscribeToProposalStore()
         this.subscribeToSolutionStore()
-        this.fetchData()
     }
 
-    fetchData() {
+    fetchData(organization: any) {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true
-        this.stateService.setLoadingState(AppState.loading)
 
-        const getSolutions = this.solutionService.list({ params })
-        const getProposals = this.proposalService.list({ params })
-        const getIssues = this.issueService.list({ params })
+        const getOrganization = this.organizationService.view({ id: this.org._id, params })
+        const getSolutions = this.solutionService.list({ orgs: [organization], params })
+        const getProposals = this.proposalService.list({ orgs: [organization], params })
+        const getIssues = this.issueService.list({ orgs: [organization], params })
         const getUsers = this.userService.count()
 
         forkJoin({
+            organization: getOrganization,
             solutions: getSolutions,
             proposals: getProposals,
             count: getUsers,
@@ -103,7 +127,7 @@ export class HomeComponent implements OnInit {
         })
             .subscribe(
                 ({ count }) => {
-                    this.userCount = count
+                    this.userCount = count || 5
                 },
                 () => {
                     return this.stateService.setLoadingState(AppState.error)
@@ -124,7 +148,7 @@ export class HomeComponent implements OnInit {
                         description: res.description
                     })
 
-                this.stateService.setLoadingState(AppState.complete)
+                // this.stateService.setLoadingState(AppState.complete)
             })
     }
 

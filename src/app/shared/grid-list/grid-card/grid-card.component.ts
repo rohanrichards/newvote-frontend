@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { optimizeImage } from '../../helpers/cloudinary'
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-grid-card',
@@ -21,21 +21,17 @@ export class GridCardComponent {
 
   handleImageUrl = optimizeImage;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   handleUrl(item: any) {
-
       if (this.model !== 'Organization') {
-          return this.router.navigate([`/${this.path}/${item.slug || item._id}`])
+        const link = this.path ? [this.path, `${item.slug || item._id}`]
+            : [`${item.slug || item._id}`]
+        const options = this.path ? {} : { relativeTo: this.route } 
+
+        return this.router.navigate(link, options)
       }
 
-      const { hostname } = window.location
-
-      // separate the current hostname into subdomain and main site
-      const splitHostname = hostname.split('.')
-      splitHostname[0] = item.url
-
-      const newHostName = splitHostname.join('.')
-      window.location.href = `http://${newHostName}:${window.location.port}`
+    return this.router.navigate([`/communities/${item.slug || item._id}`])
   }
 }

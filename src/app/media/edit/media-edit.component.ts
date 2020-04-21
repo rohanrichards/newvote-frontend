@@ -139,8 +139,6 @@ export class MediaEditComponent implements OnInit {
 
         this.issueService.list({})
             .subscribe(issues => { this.allIssues = issues })
-
-        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     onFileChange(event: any) {

@@ -84,7 +84,7 @@ export class AuthenticationService {
             }
         }
 
-        this.organizationService.get().subscribe(org => { this._org = org })
+        // this.organizationService.get().subscribe(org => { this._org = org })
 
         this.checkStatus()
             .subscribe(
@@ -135,7 +135,6 @@ export class AuthenticationService {
      * @return The user credentials.
      */
     signup(context: LoginContext, verificationCode?: string): Observable<Credentials> {
-        context.organizations = [this.organizationService.org]
         return this.httpClient
             .post<Credentials>(routes.signup(verificationCode), context)
             .pipe(

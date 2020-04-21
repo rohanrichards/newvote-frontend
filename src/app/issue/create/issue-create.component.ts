@@ -110,8 +110,6 @@ export class IssueCreateComponent implements OnInit {
                 (err) => err
             )
 
-        this.organizationService.get().subscribe(org => { this.organization = org })
-
         this.meta.updateTags(
             {
                 title: 'Create Issue',

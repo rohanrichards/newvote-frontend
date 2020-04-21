@@ -15,7 +15,7 @@ const routes: Routes = [
     ]),
 
     // Fallback when no prior route is matched
-    { path: '**', redirectTo: '', pathMatch: 'full' }
+    // { path: '**', redirectTo: '', pathMatch: 'full' }
 ]
 
 @NgModule({

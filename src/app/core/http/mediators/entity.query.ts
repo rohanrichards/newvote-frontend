@@ -20,6 +20,8 @@ export class AllEntityQuery {
         )
             .pipe(
                 map((results) => {
+                    console.log(results, 'this is results')
+
                     // On first load of the topicStore values, issues is an empty array
                     // when populateTopics reaches the component, the issues array is populated with
                     // issues.

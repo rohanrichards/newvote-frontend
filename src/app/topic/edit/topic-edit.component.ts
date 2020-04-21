@@ -39,7 +39,6 @@ export class TopicEditComponent implements OnInit {
 
     constructor(
         private topicService: TopicService,
-        private organizationService: OrganizationService,
         private route: ActivatedRoute,
         public snackBar: MatSnackBar,
         private location: Location,
@@ -95,7 +94,6 @@ export class TopicEditComponent implements OnInit {
             return { fileItem, form }
         }
 
-        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     subscribeToTopicStore(id: string) {

@@ -6,6 +6,7 @@ import { optimizeImage } from '@app/shared/helpers/cloudinary'
 import { MetaService } from '@app/core/meta.service'
 import { Observable } from 'rxjs'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-card-list',
@@ -37,6 +38,8 @@ export class CardListComponent implements OnInit {
     constructor(
         public dialog: MatDialog,
         private org: OrganizationQuery,
+        private route: ActivatedRoute,
+        private router: Router
     ) { }
 
     ngOnInit() {
@@ -92,6 +95,16 @@ export class CardListComponent implements OnInit {
 
         const iconIndex = iconType.findIndex((item) => item === suggestionType)
         return `${suggestionIcons[iconIndex]}.png`
+    }
+
+    handleUrl(item: any) {
+          const link = this.path ? [this.path, `${item.slug || item._id}`]
+              : [`${item.slug || item._id}`]
+          const options = { relativeTo: this.route }
+  
+          return this.router.navigate(link, options)
+  
+    //   return this.router.navigate([`/communities/${item.slug || item._id}`])
     }
 
     trackByFn(index: any, item: any) {

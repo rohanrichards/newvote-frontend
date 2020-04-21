@@ -17,21 +17,21 @@
             <mat-divider></mat-divider>
 
             <a mat-list-item
-                routerLink="/home"
+                routerLink="./home"
                 routerLinkActive="active"
                 (click)="isMobile && handleClick()">
                 <span translate>{{ organization.name  }}</span>
             </a>
 
             <a mat-list-item
-                routerLink="/issues"
+                routerLink="./issues"
                 routerLinkActive="active"
                 (click)="isMobile && handleClick()">
                 <span translate>Issues</span>
             </a>
 
             <a mat-list-item
-            routerLink="/reps"
+            routerLink="./reps"
             routerLinkActive="active">
                 <span>{{ organization.representativeTitle || 'Rep'}}</span>
             </a>
@@ -40,7 +40,7 @@
 
 
             <!-- <a mat-list-item
-                routerLink="/solutions"
+                routerLink="./solutions"
                 routerLinkActive="active"
                 (click)="isMobile && sidenav.close()">
                 <span translate>Solutions</span>
@@ -48,7 +48,7 @@
 
             <a mat-list-item
                 *ngIf="isVerified"
-                routerLink="/suggestions"
+                routerLink="./suggestions"
                 routerLinkActive="active"
                 (click)="isMobile && handleClick()">
                 <span translate>Your Suggestions</span>

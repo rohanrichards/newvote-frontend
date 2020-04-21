@@ -36,6 +36,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-issue',
@@ -104,12 +105,11 @@ export class IssueListComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
-        private topicQuery: TopicQuery,
-        private voteQuery: VotesQuery,
         public admin: AdminService,
         public entities: AllEntityQuery,
         public access: AccessControlQuery,
-        private entityVotes: EntityVotesQuery
+        private entityVotes: EntityVotesQuery,
+        private orgQuery: OrganizationQuery
     ) {
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
@@ -126,11 +126,6 @@ export class IssueListComponent implements OnInit {
 
     ngOnInit() {
 
-        this.organizationService.get()
-            .subscribe((org) => {
-                this.organization = org
-            })
-
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -138,7 +133,13 @@ export class IssueListComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
+            const id = params.get('id')
             this.topicParam = params.get('topic')
+            const _id = this.orgQuery.getValue()._id
+            if (!_id) {
+                // query the organization
+            }
+            this.fetchData(id)
         })
 
         this.meta.updateTags(
@@ -147,16 +148,20 @@ export class IssueListComponent implements OnInit {
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
 
-        // this.fetchData()
+        // 
         this.stateService.setLoadingState(AppState.complete)
+
+        this.orgQuery.select().subscribe((res) => {
+            console.log(res, 'this is res on issue list')
+        })
     }
 
-    fetchData() {
+    fetchData(url: string) {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : '' }
 
-        const issueObs: Observable<any[]> = this.issueService.list({ params })
-        const topicObs: Observable<any[]> = this.topicService.list({ params })
+        const issueObs: Observable<any[]> = this.issueService.list({ orgs: [url], params })
+        const topicObs: Observable<any[]> = this.topicService.list({ orgs: [url], params })
         const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
 
         forkJoin({
@@ -166,6 +171,7 @@ export class IssueListComponent implements OnInit {
         })
             .subscribe(
                 () => {
+                    // if navigating from an issue can have a topic param
                     if (this.topicParam) {
                         const topic = this._filter(this.topicParam)
                         if (topic.length) {

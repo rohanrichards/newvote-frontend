@@ -92,12 +92,6 @@ export class IssueViewComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.organizationService.get()
-            .subscribe(
-                (org) => { this.organization = org },
-                (err) => err
-            )
-
         this.stateService.loadingState$.subscribe((state) => { this.loadingState = state })
         this.stateService.setLoadingState(AppState.loading)
 

@@ -84,8 +84,6 @@ export class IssueEditComponent implements OnInit {
         this.topicService.list({})
             .subscribe(topics => { this.allTopics = topics })
 
-        this.organizationService.get().subscribe(org => { this.organization = org })
-
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
             url: 'https://api.cloudinary.com/v1_1/newvote/upload',

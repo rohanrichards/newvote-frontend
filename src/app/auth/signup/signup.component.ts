@@ -35,9 +35,6 @@ export class SignupComponent implements OnInit {
         private organizationService: OrganizationService
     ) {
         this.createForm()
-        this.organizationService.get().subscribe(org => {
-            this.org = org
-        })
     }
 
     @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;

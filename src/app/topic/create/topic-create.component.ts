@@ -83,7 +83,6 @@ export class TopicCreateComponent implements OnInit {
             return { fileItem, form }
         }
 
-        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     onFileChange(event: any) {

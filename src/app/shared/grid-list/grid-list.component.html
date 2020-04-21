@@ -5,7 +5,6 @@
             fxFlex.sm="1 1 45"
             fxFlex.lt-sm="100"
             *ngFor="let item of getItems();trackBy: trackByFn"
-            routerLink='{{path}}/{{item._id}}'
             [item]="item"
             [model]="model"
             [path]="path"
@@ -22,7 +21,6 @@
             fxFlex.sm="1 1 45"
             fxFlex.lt-sm="100"
             *ngFor="let item of getItems();trackBy: trackByFn"
-            routerLink='{{path}}/{{item._id}}'
             [item]="item"
             [model]="model"
             [path]="path"
@@ -31,26 +29,3 @@
         </app-grid-card>
     </div>
 </ng-template>
-
-
-<!-- <div fxLayout="column">
-    <div fxLayout="row wrap"
-        *ngIf="items"
-        fxLayoutAlign="start start"
-        fxLayoutAlign.lt-sm="start stretch"
-        fxLayoutGap="16px">
-        <div class="item-card-row"
-            fxFlex="1 1 30%"
-            fxFlexGap="16px"
-            *ngFor="let item of getItems();trackBy: trackByFn">
-            <app-grid-card
-                routerLink='{{path}}/{{item._id}}'
-                [item]="item"
-                [model]="model"
-                [path]="path"
-                [titleCard]="titleCard"
-                >
-            </app-grid-card>
-        </div>
-    </div>
-</div> -->

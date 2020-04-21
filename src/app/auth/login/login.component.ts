@@ -35,9 +35,6 @@ export class LoginComponent implements OnInit {
         private cookieService: CookieService
     ) {
         this.createForm()
-        this.organizationService.get().subscribe(org => {
-            this.org = org
-        })
     }
 
     ngOnInit() {

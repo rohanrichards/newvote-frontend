@@ -73,9 +73,6 @@ export class ProposalViewComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.organizationService.get()
-            .subscribe((org) => { this.organization = org })
-
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })

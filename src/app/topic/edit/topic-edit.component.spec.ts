@@ -5,11 +5,9 @@ import { FlexLayoutModule } from '@angular/flex-layout'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Angulartics2Module } from 'angulartics2'
 
-import { CoreModule } from '@app/core'
 import { SharedModule } from '@app/shared'
 import { MaterialModule } from '@app/material.module'
 import { TopicEditComponent } from './topic-edit.component'
-import { TopicService } from '@app/core/http/topic/topic.service'
 
 describe('TopicComponent', () => {
     let component: TopicEditComponent
@@ -23,12 +21,11 @@ describe('TopicComponent', () => {
                 MaterialModule,
                 RouterTestingModule,
                 Angulartics2Module.forRoot([]),
-                CoreModule,
                 SharedModule,
                 HttpClientTestingModule
             ],
             declarations: [TopicEditComponent],
-            providers: [TopicService]
+            providers: []
         })
             .compileComponents()
     }))

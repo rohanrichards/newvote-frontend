@@ -6,7 +6,7 @@
         *ngFor="let item of items$ | async; trackBy: trackByFn">
         <mat-card class="item-card"
             [ngClass]="{'soft-deleted': item.softDeleted}"
-            routerLink="{{path}}/{{item.slug || item._id}}">
+            (click)="handleUrl(item)">
             <ng-container
                 *ngIf="hasDefaultImage(item.imageUrl); then withImage; else noImage">
             </ng-container>
@@ -51,15 +51,6 @@
                         translate>
                         {{item.title}}
                         <mat-card-subtitle class="item-subtitle">
-                            <!-- <p *ngIf="showParent">This is a {{model}} for:
-                                <span
-                                    *ngFor="let parent of item[parentPropName]; let i = index">
-                                    <a (click)="$event.stopPropagation()"
-                                        routerLink="{{parentPath}}/{{parent.slug || parent._id}}">{{parent.title || parent.name}}</a>
-                                    <span
-                                        *ngIf="item[parentPropName].length > 1 && i !== item[parentPropName].length - 1">,&nbsp;</span>
-                                </span>
-                            </p> -->
                             <p class="status"
                                 *ngIf="item && item.status && item.status != null">
                                 Suggestion

@@ -151,14 +151,13 @@
                             </h2>
                             <app-admin-panel model="Topic"
                                 [item]="topic"
-                                path="/topics"
+                                path="../topics"
                                 isCard=true>
                             </app-admin-panel>
                             <mat-divider></mat-divider>
                         </div>
                         <app-grid-list 
                             *ngIf="topic.issues && topic.issues.length"
-                            path="/issues"
                             [style.text-align]="'center'"
                             [items]="topic.issues"
                             model="Issue"
@@ -179,7 +178,7 @@
                             </h2>
                             <mat-divider></mat-divider>
                         </div>
-                        <app-grid-list path="/issues"
+                        <app-grid-list 
                             [style.text-align]="'center'"
                             [items]="orphanedIssues"
                             model="Issue"
@@ -202,7 +201,8 @@
                                     Suggestions for Issues
                                 </h2>
                             </mat-expansion-panel-header>
-                            <app-card-list path="/suggestions"
+                            <app-card-list 
+                                path="../../../suggestions"
                                 [@fadeIn]=true
                                 [items$]=suggestions$
                                 model="Suggestion"

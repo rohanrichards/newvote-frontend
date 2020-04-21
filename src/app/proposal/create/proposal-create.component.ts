@@ -133,8 +133,6 @@ export class ProposalCreateComponent implements OnInit {
 
         this.solutionService.list({})
             .subscribe(solutions => { this.allSolutions = solutions })
-
-        this.organizationService.get().subscribe(org => { this.organization = org })
     }
 
     populateSolution(ID: string) {

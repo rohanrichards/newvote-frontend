@@ -90,7 +90,6 @@ export class SuggestionCreateComponent implements OnInit {
         //     }
         // });
 
-        this.organizationService.get().subscribe(org => { this.organization = org })
         this.isLoading = false
 
         // if there is a suggestion type

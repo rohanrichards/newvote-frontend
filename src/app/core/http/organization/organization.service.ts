@@ -8,6 +8,7 @@ import { handleError } from '@app/core/http/errors'
 import { Socket } from 'ngx-socket-io'
 import { OrganizationStore, CommunityStore } from './organization.store'
 import { MetaService } from '@app/core/meta.service'
+import { ActivatedRoute } from '@angular/router'
 
 const routes = {
     list: () => '/organizations',
@@ -31,57 +32,37 @@ export interface OrganizationContext {
 @Injectable()
 export class OrganizationService {
 
-    private _host: string;
-    private _subdomain: string;
-    private _org: Organization;
-    private $org: BehaviorSubject<any>;
-
     constructor(
         private socket: Socket,
         private httpClient: HttpClient,
         private organizationStore: OrganizationStore,
         private communityStore: CommunityStore,
-        private meta: MetaService
+        private meta: MetaService,
+        private route: ActivatedRoute
     ) {
-        this._host = document.location.host
-        this._subdomain = this._host.split('.')[0]
 
         // let params = new HttpParams();
         // const paramObject = { 'url': this._subdomain };
         // params = new HttpParams({ fromObject: paramObject });
 
-        if (!this.$org) {
-            this.$org = new BehaviorSubject({}) as BehaviorSubject<any>
+        this.httpClient
+            .get('/organizations')
+            .pipe(
+                catchError(handleError)
+            ).subscribe(
+                (organizations: Organization[]) => {
+                    this.communityStore.add(organizations)
+                    // this.joinWebSocketRoom(org.url)
+                    // Set meta tags on load
+                    // this.meta.setOrganizationUrl(org)
+                    // this.meta.updateTags({
+                    //     title: org.name,
+                    //     description: org.description,
+                    //     image: org.imageUrl
+                    // })
+                }
+            )
 
-            this.httpClient
-                .get('/organizations/' + this._subdomain)
-                .pipe(
-                    catchError((err) => {
-                        this.$org.next(null)
-                        return handleError(err)
-                    })
-                ).subscribe(
-                    (org: Organization) => {
-                        this.communityStore.add(org)
-                        this.organizationStore.update(org)
-                        this._org = org
-                        this.$org.next(org)
-                        this.joinWebSocketRoom(org.url)
-                        // Set meta tags on load
-                        this.meta.setOrganizationUrl(org)
-                        this.meta.updateTags({
-                            title: org.name,
-                            description: org.description,
-                            image: org.imageUrl
-                        })
-                    }
-                )
-        }
-    }
-
-    // gets the current organization from the url
-    get(): Observable<any> {
-        return this.$org.asObservable()
     }
 
     list(context: OrganizationContext): Observable<any[]> {
@@ -99,7 +80,9 @@ export class OrganizationService {
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
-                tap((res: Organization[]) => this.communityStore.add(res)),
+                tap((res: Organization[]) => {
+                    this.communityStore.add(res)
+                }),
                 map((res: Array<any>) => res)
             )
     }
@@ -134,9 +117,9 @@ export class OrganizationService {
                 catchError(handleError),
                 tap((res: any) => {
                     // since there are two stores we need to check whether to update both
-                    if (res._id === this._org._id) {
-                        this.organizationStore.update(res.organization)
-                    }
+                    // if (res._id === this._org._id) {
+                    //     this.organizationStore.update(res.organization)
+                    // }
 
                     this.communityStore.update(res._id, res.organization)
                 }),
@@ -176,14 +159,6 @@ export class OrganizationService {
                     this.organizationStore.update({ representativeTags: res.representativeTags })
                 })
             )
-    }
-
-    get org() {
-        return this._org || null
-    }
-
-    get subdomain() {
-        return this._subdomain
     }
 
     joinWebSocketRoom(room: string) {
