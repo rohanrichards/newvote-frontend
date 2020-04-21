@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
-
+        this.stateService.setLoadingState(AppState.loading)
         this.subscribeToOrgStore()
         this.subscribeToIssueStore()
         this.subscribeToProposalStore()
@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true
-        this.stateService.setLoadingState(AppState.loading)
+        
 
         const getSolutions = this.solutionService.list({ params })
         const getProposals = this.proposalService.list({ params })
