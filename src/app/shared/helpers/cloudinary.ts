@@ -1,5 +1,7 @@
 // https://cloudinary.com/documentation/image_transformation_reference#quality_parameter
 
+import { FileUploader } from 'ng2-file-upload'
+
 function blurImage() {
     const param = 'e_blur:'
     return param + 3000

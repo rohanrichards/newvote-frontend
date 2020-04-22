@@ -26,6 +26,9 @@ const routes: Routes = [
                 path: 'issues', loadChildren: 'app/issue/issue.module#IssueModule'
             },
             {
+                path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule'
+            },
+            {
                 path: 'solutions', loadChildren: 'app/solution/solution.module#SolutionModule'
             },
             {

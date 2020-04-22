@@ -98,12 +98,11 @@ export class CardListComponent implements OnInit {
     }
 
     handleUrl(item: any) {
-          const link = this.path ? [this.path, `${item.slug || item._id}`]
-              : [`${item.slug || item._id}`]
-          const options = { relativeTo: this.route }
-  
-          return this.router.navigate(link, options)
-  
+        const link = this.path ? [this.path, `${item.slug || item._id}`]
+            : [`${item.slug || item._id}`]
+        const options = { relativeTo: this.route }
+
+        return this.router.navigate(link, options)
     //   return this.router.navigate([`/communities/${item.slug || item._id}`])
     }
 

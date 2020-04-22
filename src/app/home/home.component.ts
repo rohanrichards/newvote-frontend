@@ -84,6 +84,7 @@ export class HomeComponent implements OnInit {
             (res: any) => {
                 const { id } = res
                 if (!id) return false
+                this.fetchData(id)
                 this.communityQuery.selectAll({
                     filterBy: (entity: any) => { return entity.url === id }
                 })
@@ -91,7 +92,7 @@ export class HomeComponent implements OnInit {
                         if (!res.length) return false
                         const [organization, ...rest] = res
                         this.org = organization
-                        this.fetchData(id)
+                       
                         this.stateService.setLoadingState(AppState.complete)
                     })
             },
@@ -112,7 +113,7 @@ export class HomeComponent implements OnInit {
 
         this.isLoading = true
 
-        const getOrganization = this.organizationService.view({ id: this.org._id, params })
+        const getOrganization = this.organizationService.view({ id: organization, params })
         const getSolutions = this.solutionService.list({ orgs: [organization], params })
         const getProposals = this.proposalService.list({ orgs: [organization], params })
         const getIssues = this.issueService.list({ orgs: [organization], params })

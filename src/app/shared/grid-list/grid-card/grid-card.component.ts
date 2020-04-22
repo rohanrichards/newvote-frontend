@@ -27,7 +27,7 @@ export class GridCardComponent {
       if (this.model !== 'Organization') {
         const link = this.path ? [this.path, `${item.slug || item._id}`]
             : [`${item.slug || item._id}`]
-        const options = this.path ? {} : { relativeTo: this.route } 
+        const options = { relativeTo: this.route } 
 
         return this.router.navigate(link, options)
       }

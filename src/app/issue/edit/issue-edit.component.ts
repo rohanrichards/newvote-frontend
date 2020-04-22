@@ -1,10 +1,10 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
-import { Observable } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs'
 import { map, startWith, finalize } from 'rxjs/operators'
 import { merge, cloneDeep } from 'lodash'
 
@@ -19,6 +19,8 @@ import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { AppState } from '@app/core/models/state.model'
 import { StateService } from '@app/core/http/state/state.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { TopicQuery } from '@app/core/http/topic/topic.query'
 
 @Component({
     selector: 'app-issue',
@@ -56,12 +58,13 @@ export class IssueEditComponent implements OnInit {
         private topicService: TopicService,
         private organizationService: OrganizationService,
         private route: ActivatedRoute,
-        public snackBar: MatSnackBar,
         private router: Router,
         private meta: MetaService,
         private issueQuery: IssueQuery,
         private stateService: StateService,
-        private admin: AdminService
+        private admin: AdminService,
+        private auth: AuthenticationQuery,
+        private topicQuery: TopicQuery
     ) {
         this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
             startWith(''),
@@ -81,8 +84,7 @@ export class IssueEditComponent implements OnInit {
                 )
         })
 
-        this.topicService.list({})
-            .subscribe(topics => { this.allTopics = topics })
+        
 
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
@@ -120,6 +122,21 @@ export class IssueEditComponent implements OnInit {
             fileItem.withCredentials = false
             return { fileItem, form }
         }
+    }
+
+    fetchData(url: string) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+        const getOrganization = this.organizationService.view({ id: url, params })
+        const topics = this.topicService.list({ orgs: [url], params })
+        forkJoin({
+            organizations: getOrganization,
+            topics
+        })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
     subscribeToIssueStore(id: string) {

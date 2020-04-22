@@ -152,7 +152,7 @@ export class IssueListComponent implements OnInit {
         this.stateService.setLoadingState(AppState.complete)
 
         this.orgQuery.select().subscribe((res) => {
-            console.log(res, 'this is res on issue list')
+            // console.log(res, 'this is res on issue list')
         })
     }
 
@@ -160,11 +160,13 @@ export class IssueListComponent implements OnInit {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : '' }
 
+        const getOrganization = this.organizationService.view({ id: url, params })
         const issueObs: Observable<any[]> = this.issueService.list({ orgs: [url], params })
         const topicObs: Observable<any[]> = this.topicService.list({ orgs: [url], params })
         const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
 
         forkJoin({
+            organizations: getOrganization,
             issues: issueObs,
             topics: topicObs,
             suggestions: suggestionObs
