@@ -9,7 +9,7 @@ import { map, startWith, finalize } from 'rxjs/operators'
 import { merge, cloneDeep } from 'lodash'
 
 import { IIssue, Issue } from '@app/core/models/issue.model'
-import { ITopic } from '@app/core/models/topic.model'
+import { ITopic, Topic } from '@app/core/models/topic.model'
 import { IssueService } from '@app/core/http/issue/issue.service'
 import { TopicService } from '@app/core/http/topic/topic.service'
 import { Organization } from '@app/core/models/organization.model'
@@ -21,6 +21,7 @@ import { StateService } from '@app/core/http/state/state.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
+import { cloudinaryUploader } from '@app/shared/helpers/cloudinary'
 
 @Component({
     selector: 'app-issue',
@@ -74,8 +75,11 @@ export class IssueEditComponent implements OnInit {
     ngOnInit() {
         this.isLoading = true
         this.route.paramMap.subscribe(params => {
+            console.log(params, 'this is params')
             const ID = params.get('id')
             this.subscribeToIssueStore(ID)
+            this.subscribeToTopicStore()
+            this.fetchData(ID)
             this.issueService.view({ id: ID, orgs: [] })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
@@ -84,44 +88,7 @@ export class IssueEditComponent implements OnInit {
                 )
         })
 
-        
-
-        // set up the file uploader
-        const uploaderOptions: FileUploaderOptions = {
-            url: 'https://api.cloudinary.com/v1_1/newvote/upload',
-            // Upload files automatically upon addition to upload queue
-            autoUpload: false,
-            // Use xhrTransport in favor of iframeTransport
-            isHTML5: true,
-            // Calculate progress independently for each uploaded file
-            removeAfterUpload: true,
-            // XHR request headers
-            headers: [
-                {
-                    name: 'X-Requested-With',
-                    value: 'XMLHttpRequest'
-                }
-            ]
-        }
-
-        this.uploader = new FileUploader(uploaderOptions)
-
-        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
-            if (this.uploader.queue.length > 1) {
-                this.uploader.removeFromQueue(this.uploader.queue[0])
-            }
-        }
-
-        this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
-            // Add Cloudinary's unsigned upload preset to the upload form
-            form.append('upload_preset', 'qhf7z3qa')
-            // Add file to upload
-            form.append('file', fileItem)
-
-            // Use default "withCredentials" value for CORS requests
-            fileItem.withCredentials = false
-            return { fileItem, form }
-        }
+        this.uploader = cloudinaryUploader()
     }
 
     fetchData(url: string) {
@@ -153,6 +120,14 @@ export class IssueEditComponent implements OnInit {
             if (!issue) return false
             this.updateForm(issue)
         })
+    }
+
+    subscribeToTopicStore() {
+        this.topicQuery.selectAll({})
+            .subscribe(
+                (topics: Topic[]) => { this.topics = topics },
+                (err: any) => err
+            )
     }
 
     updateForm(issue: Issue) {

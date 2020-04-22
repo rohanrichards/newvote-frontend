@@ -23,7 +23,9 @@ import { VoteService } from '@app/core/http/vote/vote.service'
 import { SharedModule } from '@app/shared'
 
 import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
-import { JoyrideModule } from 'ngx-joyride'
+import { JoyrideModule } from 'ngx-joyride';
+import { IssueListSkeletonComponent } from './components/skeleton/issue-list-skeleton/issue-list-skeleton.component';
+import { IssueSearchSkeletonComponent } from './components/skeleton/issue-search-skeleton/issue-search-skeleton.component'
 
 @NgModule({
     imports: [
@@ -65,7 +67,9 @@ import { JoyrideModule } from 'ngx-joyride'
         IssueListComponent,
         IssueViewComponent,
         IssueCreateComponent,
-        IssueEditComponent
+        IssueEditComponent,
+        IssueListSkeletonComponent,
+        IssueSearchSkeletonComponent
     ],
     providers: [
         TopicService,

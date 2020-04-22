@@ -111,14 +111,6 @@ export class IssueListComponent implements OnInit {
         private entityVotes: EntityVotesQuery,
         private orgQuery: OrganizationQuery
     ) {
-        this.subscribeToSuggestionStore()
-        this.subscribeToTopicStore()
-
-        this.access.isCommunityVerified$
-            .subscribe((verified: any) => {
-                this.isVerified = verified
-            })
-
         this.filteredTopics = this.topicFilter.valueChanges.pipe(
             startWith(''),
             map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()))
@@ -129,16 +121,20 @@ export class IssueListComponent implements OnInit {
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
-
         this.stateService.setLoadingState(AppState.loading)
+
+        // Shows the suggestion component if user is logged in
+        this.access.isCommunityVerified$
+            .subscribe((verified: any) => {
+                this.isVerified = verified
+            })
+
+        this.subscribeToSuggestionStore()
+        this.subscribeToTopicStore()
 
         this.route.paramMap.subscribe(params => {
             const id = params.get('id')
             this.topicParam = params.get('topic')
-            const _id = this.orgQuery.getValue()._id
-            if (!_id) {
-                // query the organization
-            }
             this.fetchData(id)
         })
 
@@ -148,11 +144,8 @@ export class IssueListComponent implements OnInit {
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
 
-        // 
-        this.stateService.setLoadingState(AppState.complete)
-
         this.orgQuery.select().subscribe((res) => {
-            // console.log(res, 'this is res on issue list')
+            this.organization = res
         })
     }
 
@@ -180,8 +173,6 @@ export class IssueListComponent implements OnInit {
                             this.selectedTopics.push(topic[0])
                         }
                     }
-
-                    this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
                     return this.stateService.setLoadingState(AppState.error)
@@ -210,6 +201,7 @@ export class IssueListComponent implements OnInit {
                 if (!topics || !topics.length) return false
                 this.allTopics = topics
                 this.orphanedIssues = orphanedIssues || []
+                this.stateService.setLoadingState(AppState.complete)
             })
     }
 

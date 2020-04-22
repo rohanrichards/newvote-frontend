@@ -60,7 +60,6 @@ export class ShellComponent implements OnInit {
         // Without service data is saved multiple times
         this.scrollService.currentRoute$
             .subscribe((route: any) => {
-                console.log(route, 'this is route')
                 this.currentRoute = route
             })
 

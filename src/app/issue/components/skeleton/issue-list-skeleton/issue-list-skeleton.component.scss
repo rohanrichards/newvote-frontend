@@ -1,0 +1,107 @@
+.skeleton-form {
+    width: 100%;
+    border-bottom: 1px solid #949494;
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-topic-wrap {
+    padding: 0 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card-list {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.skeleton-card {
+    flex: 1 1 0;
+    margin-right: 1rem;
+    box-shadow: 3px 4px 5px 0px #ababab;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    flex-basis: 200px;
+    max-width: 200px;
+}
+
+.skeleton-card-image {
+    background-color: #d3d3d8;
+    width: 100%;
+    min-height: 175px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 5px 5px 0 0;
+}
+
+.skeleton-card-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.skeleton-issues-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skeleton-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .skeleton-card-list {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .skeleton-card {
+        width: 100%;
+        max-width: 510px;
+        margin-right: 0;
+    }
+
+    .skeleton-topic-wrap {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem
+    }
+}
+
+@media only screen and (max-width: 400px) {
+
+    .skeleton-card-list {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .skeleton-card {
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .skeleton-form-wrap {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem
+    }
+
+    .skeleton-topic-wrap {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem
+    }
+}

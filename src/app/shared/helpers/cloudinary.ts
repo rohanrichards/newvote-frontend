@@ -1,6 +1,6 @@
 // https://cloudinary.com/documentation/image_transformation_reference#quality_parameter
 
-import { FileUploader } from 'ng2-file-upload'
+import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 
 function blurImage() {
     const param = 'e_blur:'
@@ -73,4 +73,44 @@ export function optimizeImage(url: string, isLowQuality?: boolean, child?: boole
     }
 
     return createUrl(url, 'auto', 'auto', blur)
+}
+
+// set up the file uploader
+const uploaderOptions: FileUploaderOptions = {
+    url: 'https://api.cloudinary.com/v1_1/newvote/upload',
+    // Upload files automatically upon addition to upload queue
+    autoUpload: false,
+    // Use xhrTransport in favor of iframeTransport
+    isHTML5: true,
+    // Calculate progress independently for each uploaded file
+    removeAfterUpload: true,
+    // XHR request headers
+    headers: [
+        {
+            name: 'X-Requested-With',
+            value: 'XMLHttpRequest'
+        }
+    ]
+}
+
+const buildItemForm = (fileItem: any, form: FormData): any => {
+    // Add Cloudinary's unsigned upload preset to the upload form
+    form.append('upload_preset', 'qhf7z3qa')
+    // Add file to upload
+    form.append('file', fileItem)
+
+    // Use default "withCredentials" value for CORS requests
+    fileItem.withCredentials = false
+    return { fileItem, form }
+}
+
+export const cloudinaryUploader = () => {
+    const uploader = new FileUploader(uploaderOptions)
+    uploader.onAfterAddingFile = (fileItem: FileItem) => {
+        if (uploader.queue.length > 1) {
+            uploader.removeFromQueue(uploader.queue[0])
+        }
+    }
+    uploader.onBuildItemForm = buildItemForm
+    return uploader
 }

@@ -4,7 +4,7 @@ import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
-import { Observable } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs'
 import { map, startWith, finalize, delay } from 'rxjs/operators'
 
 import { IIssue } from '@app/core/models/issue.model'
@@ -17,6 +17,8 @@ import { MetaService } from '@app/core/meta.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { cloudinaryUploader } from '@app/shared/helpers/cloudinary'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-issue',
@@ -58,7 +60,8 @@ export class IssueCreateComponent implements OnInit {
         private route: ActivatedRoute,
         private meta: MetaService,
         private topicQuery: TopicQuery,
-        private admin: AdminService
+        private admin: AdminService,
+        private auth: AuthenticationQuery,
     ) {
         this.filteredTopics = this.issueForm.get('topics').valueChanges.pipe(
             startWith(''),
@@ -66,55 +69,33 @@ export class IssueCreateComponent implements OnInit {
     }
 
     ngOnInit() {
-        const uploaderOptions: FileUploaderOptions = {
-            url: 'https://api.cloudinary.com/v1_1/newvote/upload',
-            // Upload files automatically upon addition to upload queue
-            autoUpload: false,
-            // Use xhrTransport in favor of iframeTransport
-            isHTML5: true,
-            // Calculate progress independently for each uploaded file
-            removeAfterUpload: true,
-            // XHR request headers
-            headers: [
-                {
-                    name: 'X-Requested-With',
-                    value: 'XMLHttpRequest'
-                }
-            ]
-        }
-
         this.subscribeToTopicStore()
 
-        this.uploader = new FileUploader(uploaderOptions)
-
-        this.uploader.onBuildItemForm = (fileItem: any, form: FormData): any => {
-            // Add Cloudinary's unsigned upload preset to the upload form
-            form.append('upload_preset', 'qhf7z3qa')
-            // Add file to upload
-            form.append('file', fileItem)
-
-            // Use default "withCredentials" value for CORS requests
-            fileItem.withCredentials = false
-            return { fileItem, form }
-        }
-
-        this.uploader.onAfterAddingFile = (fileItem: FileItem) => {
-            if (this.uploader.queue.length > 1) {
-                this.uploader.removeFromQueue(this.uploader.queue[0])
-            }
-        }
-
-        this.topicService.list({})
-            .subscribe(
-                res => res,
-                (err) => err
-            )
+        this.uploader = cloudinaryUploader()
 
         this.meta.updateTags(
             {
                 title: 'Create Issue',
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
+
+        
+
+        // this.route.paramMap.subscribe(params => {
+        //     console.log(params, 'this is params')
+        //     const ID = params.get('id')
+        //     this.subscribeToIssueStore(ID)
+        //     this.subscribeToTopicStore()
+        //     this.fetchData(ID)
+        //     this.issueService.view({ id: ID, orgs: [] })
+        //         .pipe(finalize(() => { this.isLoading = false }))
+        //         .subscribe(
+        //             (res) => res,
+        //             (err) => err
+        //         )
+        // })
+    
+        // TODO: Update paramMap to take both orgId and the issueId
 
         this.route.paramMap
             .pipe(
@@ -130,6 +111,21 @@ export class IssueCreateComponent implements OnInit {
                     })
                 }
             })
+    }
+
+    fetchData(url: string) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+        const getOrganization = this.organizationService.view({ id: url, params })
+        const topics = this.topicService.list({ orgs: [url], params })
+        forkJoin({
+            organizations: getOrganization,
+            topics
+        })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
     subscribeToTopicStore() {
