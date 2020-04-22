@@ -33,6 +33,7 @@ export class IssueService {
     ) { }
 
     list(context: IssueContext): Observable<any[]> {
+
         // create blank params object
         let params = new HttpParams()
 
@@ -42,9 +43,13 @@ export class IssueService {
             // { topicId: [id], search: [search terms], ...}
             params = new HttpParams({ fromObject: context.params })
         }
+        params = params.append('orgs', context.orgs.join(','))
+        console.log()
+        
         const options = {
             withCredentials: true,
-            params
+           
+            params,
         }
 
         return this.httpClient

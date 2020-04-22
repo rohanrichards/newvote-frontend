@@ -29,7 +29,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
-import { Observable } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { MediaQuery } from '@app/core/http/media/media.query'
@@ -96,8 +96,9 @@ export class IssueViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
-            this.fetchData(ID)
+            const org = params.get('id')
+            const ID = params.get('issueId')
+            this.fetchData(ID, org)
             this.subscribeToIssueStore(ID)
         })
 
@@ -106,7 +107,6 @@ export class IssueViewComponent implements OnInit {
                 this.isVerified = verified
             })
 
-        this.getSuggestions()
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -157,35 +157,20 @@ export class IssueViewComponent implements OnInit {
             })
     }
 
-    fetchData(id: string) {
-        this.getIssue(id)
-        this.getProposals()
-        this.getSolutions()
-        this.getSuggestions()
-        this.getTopics()
-    }
+    fetchData(id: string, organization: string) {
+        this.getIssue(id, organization)
 
-    getTopics() {
         const isOwner = this.auth.isOwner()
         const params = {
             showDeleted: isOwner ? true : ''
         }
 
-        this.topicService.list({ orgs: [], params })
-            .subscribe(
-                res => res,
-                err => err
-            )
-    }
-
-    getSuggestions() {
-        const isOwner = this.auth.isOwner()
-
-        this.suggestionService.list({
-            forceUpdate: true,
-            params: {
-                showDeleted: isOwner ? true : ''
-            }
+        forkJoin({
+            topics: this.topicService.list({ orgs: [organization], params }),
+            solutions: this.solutionService.list({ orgs: [organization], params }),
+            proposls: this.proposalService.list({ orgs: [organization], params }),
+            suggestions: this.suggestionService.list({ params }),
+            media: this.mediaService.list({ params: { issueId: id, showDeleted: isOwner ? true : '' } })
         })
             .subscribe(
                 (res) => res,
@@ -193,8 +178,8 @@ export class IssueViewComponent implements OnInit {
             )
     }
 
-    getIssue(id: string) {
-        return this.issueService.view({ id: id, orgs: [] })
+    getIssue(id: string, organization: string) {
+        return this.issueService.view({ id: id, orgs: [organization] })
             .subscribe(
                 (issue) => {
                     const imageUrl = issue.imageUrl.includes('assets') ?
@@ -216,30 +201,6 @@ export class IssueViewComponent implements OnInit {
             )
     }
 
-    getSolutions() {
-        const isOwner = this.auth.isOwner()
-        const params = { showDeleted: isOwner ? true : '' }
-
-        return this.solutionService.list({
-            params
-        })
-            .subscribe(
-                (res: any) => res,
-                (err) => err
-            )
-    }
-
-    getProposals() {
-        const isOwner = this.auth.isOwner()
-        const params = { showDeleted: isOwner ? true : '' }
-        return this.proposalService.list({
-            params
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-    }
 
     getMedia(id: string) {
         const isOwner = this.auth.isOwner()

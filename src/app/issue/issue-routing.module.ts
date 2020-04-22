@@ -19,13 +19,13 @@ const routes: Routes = [
         canActivate: [RepOrgGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:issueId',
         component: IssueEditComponent,
         data: { title: extract('Edit Issue'), level: 'child' },
         canActivate: [ModeratorGuard]
     },
     {
-        path: ':id',
+        path: ':issueId',
         component: IssueViewComponent,
         data: { title: extract('Issue'), level: 'child' }
     },
