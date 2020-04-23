@@ -21,6 +21,7 @@ export interface SuggestionContext {
     entity?: ISuggestion; // the object being created or edited
     params?: any;
     forceUpdate?: boolean;
+    orgs?: string[];
 }
 
 @Injectable()

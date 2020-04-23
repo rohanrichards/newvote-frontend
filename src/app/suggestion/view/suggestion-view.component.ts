@@ -20,6 +20,8 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { assign } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { OrganizationService } from '@app/core'
+import { forkJoin } from 'rxjs'
 
 @Component({
     selector: 'app-suggestion',
@@ -50,6 +52,7 @@ export class SuggestionViewComponent implements OnInit {
         private admin: AdminService,
         private suggestionQuery: SuggestionQuery,
         private entityVotes: EntityVotesQuery,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit() {
@@ -60,9 +63,10 @@ export class SuggestionViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
+            const organization = params.get('id')
+            const ID = params.get('suggestionId')
             this.subscribeToSuggestionStore(ID)
-            this.fetchData(ID)
+            this.fetchData(ID, organization)
         })
 
     }
@@ -79,10 +83,19 @@ export class SuggestionViewComponent implements OnInit {
             })
     }
 
-    fetchData(id: string) {
-        this.suggestionService.view({ id: id })
+    fetchData(id: string, organization: string) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+
+        const getSuggestion = this.suggestionService.view({ id: id, orgs: [organization], params })
+        const org = this.organizationService.view({ id: organization, params })
+
+        forkJoin({
+            org,
+            suggestion: getSuggestion
+        })
             .subscribe(
-                (suggestion: Suggestion) => {
+                ({ suggestion }) => {
                     this.meta.updateTags(
                         {
                             title: `${suggestion.title}`,

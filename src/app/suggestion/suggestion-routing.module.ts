@@ -22,19 +22,19 @@ const routes: Routes = [
         canActivate: [AuthenticationGuard] // any authenticated users can create
     },
     {
-        path: 'create/:model/:id',
+        path: 'create/:model/:suggestionId',
         component: SuggestionCreateComponent,
         data: { title: extract('New Suggestion'), level: 'child' },
         canActivate: [AuthenticationGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:suggestionId',
         component: SuggestionEditComponent,
         data: { title: extract('Edit Suggestion'), level: 'child' },
         canActivate: [SuggestionCreatorGuard] // only the owner of the suggestion or the org can edit
     },
     {
-        path: ':id',
+        path: ':suggestionId',
         component: SuggestionViewComponent,
         data: { title: extract('Suggestion'), level: 'child' },
     },

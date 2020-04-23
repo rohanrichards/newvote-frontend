@@ -70,7 +70,6 @@ export class IssueCreateComponent implements OnInit {
 
     ngOnInit() {
         this.subscribeToTopicStore()
-
         this.uploader = cloudinaryUploader()
 
         this.meta.updateTags(
@@ -78,8 +77,6 @@ export class IssueCreateComponent implements OnInit {
                 title: 'Create Issue',
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
-
-        
 
         // this.route.paramMap.subscribe(params => {
         //     console.log(params, 'this is params')
@@ -99,17 +96,23 @@ export class IssueCreateComponent implements OnInit {
 
         this.route.paramMap
             .pipe(
-                map(() => window.history.state),
+                map((res) => {
+                    return {
+                        ...res,
+                        ...window.history.state
+                    }
+                }),
                 delay(0)
             )
-            .subscribe((suggestion) => {
-                if (suggestion._id) {
-                    this.suggestionTemplate = suggestion
-                    this.issueForm.patchValue({
-                        name: suggestion.title,
-                        description: suggestion.description
-                    })
-                }
+            .subscribe((params) => {
+                const organization = params.get('id')
+                // if (suggestion._id) {
+                //     this.suggestionTemplate = suggestion
+                //     this.issueForm.patchValue({
+                //         name: suggestion.title,
+                //         description: suggestion.description
+                //     })
+                // }
             })
     }
 

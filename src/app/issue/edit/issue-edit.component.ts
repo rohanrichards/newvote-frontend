@@ -79,27 +79,25 @@ export class IssueEditComponent implements OnInit {
             const ID = params.get('issueId')
             this.subscribeToIssueStore(ID)
             this.subscribeToTopicStore()
-            this.fetchData(ID)
-            this.issueService.view({ id: ID, orgs: [] })
-                .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(
-                    (res) => res,
-                    (err) => err
-                )
+            this.fetchData(ID, organization)
         })
 
         this.uploader = cloudinaryUploader()
     }
 
-    fetchData(url: string) {
+    fetchData(issueId: string, url: string) {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
         const getOrganization = this.organizationService.view({ id: url, params })
         const topics = this.topicService.list({ orgs: [url], params })
+        const issue = this.issueService.view({ id: issueId, orgs: [url] })
+
         forkJoin({
             organizations: getOrganization,
-            topics
+            topics,
+            issue
         })
+            .pipe(finalize(() => { this.isLoading = false }))
             .subscribe(
                 (res) => res,
                 (err) => err
@@ -125,7 +123,7 @@ export class IssueEditComponent implements OnInit {
     subscribeToTopicStore() {
         this.topicQuery.selectAll({})
             .subscribe(
-                (topics: Topic[]) => { this.topics = topics },
+                (topics: Topic[]) => { this.allTopics = topics },
                 (err: any) => err
             )
     }
@@ -214,7 +212,7 @@ export class IssueEditComponent implements OnInit {
         issue.topics = this.topics
 
         if (this.resetImage) {
-            issue.imageUrl = this.imageUrl;
+            issue.imageUrl = this.imageUrl
         }
 
         this.issueService.update({ id: issue._id, entity: issue })
@@ -223,7 +221,7 @@ export class IssueEditComponent implements OnInit {
                 (t) => {
                     this.stateService.setLoadingState(AppState.loading)
                     this.admin.openSnackBar('Succesfully updated', 'OK')
-                    this.router.navigate([`/issues/${t.slug || t._id}`])
+                    this.router.navigate([`../../../issues/${t.slug || t._id}`], { relativeTo: this.route })
                 },
                 (error) => this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
             )
