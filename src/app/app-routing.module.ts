@@ -9,7 +9,6 @@ const routes: Routes = [
     // ]),
     { path: '', loadChildren: 'app/communities/communities.module#CommunitiesModule' },
     Shell.childRoutes([
-        { path: 'auth', loadChildren: 'app/auth/auth.module#AuthModule' },
         { path: 'organizations', loadChildren: 'app/organization/organization.module#OrganizationModule' },
         { path: 'communities', loadChildren: 'app/home/home.module#HomeModule' }
     ]),

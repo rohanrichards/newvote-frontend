@@ -75,8 +75,8 @@ export class IssueEditComponent implements OnInit {
     ngOnInit() {
         this.isLoading = true
         this.route.paramMap.subscribe(params => {
-            console.log(params, 'this is params')
-            const ID = params.get('id')
+            const organization = params.get('id')
+            const ID = params.get('issueId')
             this.subscribeToIssueStore(ID)
             this.subscribeToTopicStore()
             this.fetchData(ID)

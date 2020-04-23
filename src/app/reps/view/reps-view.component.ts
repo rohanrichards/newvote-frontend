@@ -23,6 +23,7 @@ import { MetaService } from '@app/core/meta.service';
 import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 import { Organization } from '@app/core/models/organization.model';
 import { IRep } from '@app/core/models/rep.model';
+import { OrganizationService } from '@app/core';
 @Component({
     selector: 'app-reps-view',
     templateUrl: './reps-view.component.html',
@@ -58,13 +59,12 @@ export class RepsViewComponent implements OnInit {
         private route: ActivatedRoute,
         private stateService: StateService,
         private meta: MetaService,
-        private org: OrganizationQuery
+        private org: OrganizationQuery,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit() {
         this.isLoading = true
-        this.fetchData()
-
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -72,16 +72,11 @@ export class RepsViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
+            const organizationUrl = params.get('id')
+            const rep = params.get('repId')
 
-            this.repService.view({ id: ID, orgs: [] })
-                .subscribe(
-                    (res) => {
-                        this.isLoading = false
-                    },
-                    (err) => err
-                )
-            this.subscribeToRepStore(ID)
+            this.fetchData(rep, organizationUrl)
+            this.subscribeToRepStore(rep)
         })
     }
 
@@ -172,21 +167,25 @@ export class RepsViewComponent implements OnInit {
         })
     }
 
-    fetchData() {
+    fetchData(rep: string, url: string) {
         const isModerator = this.auth.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true
         // this.stateService.setLoadingState(AppState.loading)
 
-        const getSolutions = this.solutionService.list({ params })
-        const getProposals = this.proposalService.list({ params })
-        const getIssues = this.issueService.list({ params })
+        const getOrganization = this.organizationService.view({ id: url, params })
+        const getSolutions = this.solutionService.list({ params, orgs: [url] })
+        const getProposals = this.proposalService.list({ params, orgs: [url] })
+        const getIssues = this.issueService.list({ params, orgs: [url] })
+        const getRep = this.repService.view({ id: rep, orgs: [url] })
 
         forkJoin({
+            organization: getOrganization,
             solutions: getSolutions,
             proposals: getProposals,
-            issues: getIssues
+            issues: getIssues,
+            rep: getRep
         })
             .subscribe(
                 () => {

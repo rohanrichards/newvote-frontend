@@ -39,7 +39,8 @@ const routes: Routes = [
             },
             {
                 path: 'reps', loadChildren: 'app/reps/reps.module#RepsModule'
-            }
+            },
+            { path: 'auth', loadChildren: 'app/auth/auth.module#AuthModule' },
         ]
     },
 ]

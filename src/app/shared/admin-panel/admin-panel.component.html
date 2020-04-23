@@ -3,8 +3,8 @@
         *ngIf="auth.isModerator() || auth.isCreator(item)">
         <button color="accent"
             mat-icon-button
-            (click)="$event.stopPropagation()"
-            routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+            (click)="$event.stopPropagation();$event.preventDefault(); handleUrl(item)"
+            >
             <mat-icon aria-label="Edit the content">edit
             </mat-icon>
         </button>

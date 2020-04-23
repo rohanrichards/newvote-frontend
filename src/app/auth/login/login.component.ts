@@ -8,6 +8,8 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CookieService } from 'ngx-cookie-service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 const log = new Logger('Login')
 
@@ -31,13 +33,29 @@ export class LoginComponent implements OnInit {
         private i18nService: I18nService,
         private authenticationService: AuthenticationService,
         private meta: MetaService,
+        private cookieService: CookieService,
         private organizationService: OrganizationService,
-        private cookieService: CookieService
+        private auth: AuthenticationQuery,
+        private organizationQuery: OrganizationQuery
     ) {
         this.createForm()
     }
 
     ngOnInit() {
+        this.organizationQuery.select()
+            .subscribe((res) => {
+                if (!res._id) return false
+                this.org = res
+            })
+
+        this.route.params.subscribe(
+            (res: any) => {
+                const { id } = res
+                if (!id) return false
+                this.fetchData(id)
+            }
+        )
+
         this.meta.updateTags(
             {
                 title: 'Login',
@@ -45,6 +63,17 @@ export class LoginComponent implements OnInit {
             })
 
         this.adminLogin = !!this.route.snapshot.queryParamMap.get('admin')
+    }
+
+    fetchData(organization: any) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+
+        this.organizationService.view({ id: organization, params })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
     login() {

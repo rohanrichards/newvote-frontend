@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IRep } from '@app/core/models/rep.model';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 import { optimizeImage } from '../../helpers/cloudinary';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-rep-card-v2',
@@ -18,7 +19,7 @@ export class RepCardV2Component implements OnInit {
   handleImageUrl = optimizeImage
   DEFAULT_IMAGE = 'assets/logo-no-text.png'
 
-  constructor(public auth: AuthenticationQuery) { }
+  constructor(public auth: AuthenticationQuery, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
   }
@@ -29,12 +30,17 @@ export class RepCardV2Component implements OnInit {
   }
 
   filterTags(userTags: any, communityTags: any = this.tags) {
-    if (!userTags.length) return []
-    return userTags.filter((tag: any) => {
-        return communityTags.find((item: any) => {
-            return item.name === tag
-        })
-    })
-}
+      if (!userTags.length) return []
+      return userTags.filter((tag: any) => {
+          return communityTags.find((item: any) => {
+              return item.name === tag
+          })
+      })
+  }
+
+  handleClick() {
+      console.log('handling')
+      return this.router.navigate([this.rep._id], { relativeTo: this.route })
+  }
 
 }

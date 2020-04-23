@@ -9,6 +9,8 @@ import { AppState } from '@app/core/models/state.model'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { Topic } from '@app/core/models/topic.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { OrganizationService } from '@app/core'
+import { forkJoin } from 'rxjs'
 
 @Component({
     selector: 'app-topic',
@@ -27,7 +29,7 @@ export class TopicListComponent implements OnInit {
     headerButtons = [{
         text: 'New Topic',
         color: 'warn',
-        routerLink: '/topics/create',
+        routerLink: 'create',
         role: 'admin'
     }];
 
@@ -39,13 +41,22 @@ export class TopicListComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private topicQuery: TopicQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private organizationService: OrganizationService
     ) { }
 
     ngOnInit() {
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
+        this.stateService.setLoadingState(AppState.loading)
+
+        this.route.params.subscribe(
+            (res) => {
+                const { id } = res
+                this.fetchData(id)
+            }
+        )
 
         this.subscribeToTopicStore()
         this.stateService.setLoadingState(AppState.loading)
@@ -54,26 +65,32 @@ export class TopicListComponent implements OnInit {
                 title: 'All Topics',
                 description: 'List all topics.'
             })
-
-        this.fetchData()
     }
 
-    fetchData() {
+    fetchData(organization: string) {
         const isModerator = this.auth.isModerator()
         const params = {
             showDeleted: isModerator ? true : ''
         }
 
-        this.stateService.setLoadingState(AppState.loading)
-        this.topicService.list({ orgs: [], params })
+        const getOrganization = this.organizationService.view({ id: organization, params })
+        const getTopics = this.topicService.list({ orgs: [organization], params })
+
+        forkJoin({
+            organization: getOrganization,
+            topics: getTopics
+        })
             .subscribe(
-                () => this.stateService.setLoadingState(AppState.complete),
+                (res: any) => this.stateService.setLoadingState(AppState.complete),
                 () => this.stateService.setLoadingState(AppState.error)
             )
     }
 
     subscribeToTopicStore() {
         this.topicQuery.selectAll()
-            .subscribe((topics: Topic[]) => { this.topics = topics })
+            .subscribe((topics: Topic[]) => { 
+                if (!topics.length) return false
+                this.topics = topics
+            })
     }
 }

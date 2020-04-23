@@ -8,6 +8,8 @@ import { environment } from '@env/environment'
 import { Logger, AuthenticationService, OrganizationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { ReCaptcha2Component } from 'ngx-captcha'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 const log = new Logger('Signup')
 
@@ -32,7 +34,9 @@ export class SignupComponent implements OnInit {
         private formBuilder: FormBuilder,
         private authenticationService: AuthenticationService,
         private meta: MetaService,
-        private organizationService: OrganizationService
+        private organizationService: OrganizationService,
+        private organizationQuery: OrganizationQuery,
+        private auth: AuthenticationQuery
     ) {
         this.createForm()
     }
@@ -40,6 +44,21 @@ export class SignupComponent implements OnInit {
     @ViewChild('captchaElem', { static: false }) captchaElem: ReCaptcha2Component;
 
     ngOnInit() {
+
+        this.organizationQuery.select()
+            .subscribe((res) => {
+                if (!res._id) return false
+                this.org = res
+            })
+
+        this.route.params.subscribe(
+            (res: any) => {
+                const { id } = res
+                if (!id) return false
+                this.fetchData(id)
+            }
+        )
+
         this.meta.updateTags(
             {
                 title: 'Create account',
@@ -47,10 +66,21 @@ export class SignupComponent implements OnInit {
             })
 
         // extract verificationCode if directed via email
-        this.verificationCode = this.route.snapshot.params.id
-            ? this.route.snapshot.params.id
+        this.verificationCode = this.route.snapshot.params.authId
+            ? this.route.snapshot.params.authId
             : ''
 
+    }
+
+    fetchData(organization: any) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+
+        this.organizationService.view({ id: organization, params })
+            .subscribe(
+                (res) => res,
+                (err) => err
+            )
     }
 
     signup() {

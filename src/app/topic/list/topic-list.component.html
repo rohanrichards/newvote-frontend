@@ -13,7 +13,8 @@
         fxFlex.sm="690px"
         fxFlex.gt-sm="690px"
         fxFlex.gt-md="800px">
-        <app-grid-list path="/topics"
+        <app-grid-list 
+            *ngIf="loadingState === 'complete'"
             [items]=topics
             model="Topic"
             (restore)="admin.onRestore($event, 'Topic')"

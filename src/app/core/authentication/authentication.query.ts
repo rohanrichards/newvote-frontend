@@ -48,6 +48,8 @@ export class AuthenticationQuery extends Query<IUser> {
         const user = this.getValue()
         const organization = this.organizationQuery.getValue()
 
+        if (this.isAdmin()) return true
+
         const organizationOwner = (organization.owner && organization.owner._id) && organization.owner._id === user._id
         return !!this.getValue().roles.includes('admin') || !!organizationOwner
     }

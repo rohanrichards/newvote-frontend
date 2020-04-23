@@ -27,13 +27,7 @@ export class SideMenuComponent implements OnInit {
     }
 
     redirectToLanding() {
-        const { hostname } = window.location
-
-        // separate the current hostname into subdomain and main site
-        const splitHostname = hostname.split('.')
-        splitHostname[0] = 'app'
-
-        this.router.navigate(['/landing'])
+        this.router.navigate(['/'])
     }
 
     get isMobile(): boolean {

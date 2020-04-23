@@ -12,7 +12,7 @@ import { OrganizationClaimComponent } from './claim/organization-claim.component
 
 const routes: Routes = [
     {
-        path: 'claim/:id',
+        path: 'claim/:organizationId',
         component: OrganizationClaimComponent,
         data: { title: extract('Community'), level: 'child' }
     },
@@ -28,7 +28,7 @@ const routes: Routes = [
         canActivate: [AdminGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:organizationId',
         component: OrganizationEditComponent,
         data: { title: extract('Edit Community'), level: 'child' },
         canActivate: [OwnerGuard]

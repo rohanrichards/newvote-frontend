@@ -22,13 +22,13 @@ const routes: Routes = [
         canActivate: [ModeratorGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:topicId',
         component: TopicEditComponent,
         data: { title: extract('Edit Topic'), level: 'child' },
         canActivate: [ModeratorGuard]
     },
     {
-        path: ':id',
+        path: ':topicId',
         component: TopicViewComponent,
         data: { title: extract('Topic'), level: 'child' }
     },

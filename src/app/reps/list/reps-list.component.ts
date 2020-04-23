@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query';
 import { Proposal } from '@app/core/models/proposal.model';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { ProposalService } from '@app/core/http/proposal/proposal.service';
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 import { optimizeImage } from '@app/shared/helpers/cloudinary'
@@ -25,6 +25,7 @@ import { startWith, map, filter } from 'rxjs/operators';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { StateService } from '@app/core/http/state/state.service';
 import { AppState } from '@app/core/models/state.model';
+import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'app-reps-list',
     templateUrl: './reps-list.component.html',
@@ -70,7 +71,8 @@ export class RepsListComponent implements OnInit {
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
         private organizationService: OrganizationService,
-        private stateService: StateService
+        private stateService: StateService,
+        private route: ActivatedRoute
     ) {
         this.filteredTags = this.tagCtrl.valueChanges.pipe(
             startWith(''),
@@ -81,10 +83,18 @@ export class RepsListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.fetchData()
-        this.subscribeToOrgStore()
-        // this.subscribeToProposalStore()
+        this.route.params.subscribe(
+            (res: any) => {
+                const { id } = res
+                if (!id) return false
+                this.fetchData(id)
+            }
+        )
 
+        this.subscribeToOrgStore()
+        this.subscribeToRepStore()
+
+        // this.subscribeToProposalStore()
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -127,39 +137,29 @@ export class RepsListComponent implements OnInit {
             )
     }
 
-    // subscribeToProposalStore() {
-    //     this.proposals$ = this.proposalQuery.selectAll({})
-    // }
-
-    fetchData() {
+    fetchData(url: string) {
         const isModerator = this.auth.isModerator()
-        // this.isLoading = true
         const params = { softDeleted: isModerator ? true : '' }
 
-        this.proposalService.list({ orgs: [], params })
+        const getOrganization = this.organizationService.view({ id: url, params })
+        const getSolutions = this.solutionService.list({ orgs: [url], params })
+        const getProposals = this.proposalService.list({ orgs: [url], params })
+        const getIssues = this.issueService.list({ orgs: [url], params })
+        const getReps = this.repsService.list({ orgs: [url] })
+
+        forkJoin({
+            organization: getOrganization,
+            issues: getIssues,
+            solutions: getSolutions,
+            proposals: getProposals,
+            reps: getReps
+        })
             .subscribe(
                 (res) => res,
                 (err) => err
             )
+        this.proposalService.list({ orgs: [url], params })    
 
-        this.repsService.list()
-            .subscribe(
-                () => this.subscribeToRepStore(),
-                (err) => err
-            )
-
-
-        this.solutionService.list({ orgs: [], params })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-
-        this.issueService.list({ orgs: [], params })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
     }
 
     openDialog(): void {

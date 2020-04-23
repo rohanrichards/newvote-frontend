@@ -1,4 +1,4 @@
-<mat-card routerLink="{{path}}{{'/'}}{{rep._id}}">
+<mat-card (click)="handleClick()">
     <div class="button-panel"   
         *ngIf="auth.isModerator()">
         <button color="accent"

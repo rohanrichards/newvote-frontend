@@ -21,13 +21,13 @@ const routes: Routes = [
     //     // canActivate: [ModeratorGuard]
     // },
     {
-        path: 'edit/:id',
+        path: 'edit/:repId',
         component: RepsEditComponent,
         data: { title: extract('Edit Rep'), level: 'child' },
         canActivate: [RepGuard]
     },
     {
-        path: ':id',
+        path: ':repId',
         component: RepsViewComponent,
         data: {
             title: extract(''),

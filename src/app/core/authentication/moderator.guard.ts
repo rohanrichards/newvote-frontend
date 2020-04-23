@@ -3,6 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 
 import { Logger } from '../logger.service'
 import { AuthenticationService } from './authentication.service'
+import { AuthenticationQuery } from './authentication.query'
 
 const log = new Logger('ModeratorGuard')
 
@@ -10,10 +11,11 @@ const log = new Logger('ModeratorGuard')
 export class ModeratorGuard implements CanActivate {
 
     constructor(private router: Router,
+        private auth: AuthenticationQuery,
         private authenticationService: AuthenticationService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (this.authenticationService.isModerator()) {
+        if (this.auth.isModerator()) {
             return true
         }
 

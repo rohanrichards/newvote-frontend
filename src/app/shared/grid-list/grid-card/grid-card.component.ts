@@ -25,6 +25,7 @@ export class GridCardComponent {
 
   handleUrl(item: any) {
       if (this.model !== 'Organization') {
+        console.log('grid card')
         const link = this.path ? [this.path, `${item.slug || item._id}`]
             : [`${item.slug || item._id}`]
         const options = { relativeTo: this.route } 
