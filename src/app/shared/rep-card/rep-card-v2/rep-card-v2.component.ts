@@ -39,7 +39,6 @@ export class RepCardV2Component implements OnInit {
   }
 
   handleClick() {
-      console.log('handling')
       return this.router.navigate([this.rep._id], { relativeTo: this.route })
   }
 

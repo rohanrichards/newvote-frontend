@@ -14,7 +14,7 @@
             fxFlex.md="50%"
             fxFlex.gt-md="33%"
             class="login-box">
-            <div *ngIf="org  && org.authType && org.authType!==0"
+            <div *ngIf="org  && org.authType && org.authType === 1"
                 fxFlex="1 0 100%"
                 fxLayout="column">
                 <ul class="mat-body larger-spacing">
@@ -50,7 +50,7 @@
                     <span translate>Verify Account</span>
                 </button>
             </div>
-            <form *ngIf="!org.authType || org.authType===0"
+            <form *ngIf="!org || !org.authType || org.authType===0"
                 (ngSubmit)="login()"
                 [formGroup]="loginForm"
                 novalidate>
@@ -88,7 +88,7 @@
                         class="remember-toggle"
                         formControlName="remember"
                         translate>Remember me</mat-slide-toggle>
-                    <a routerLink="/auth/forgot">Forgot password?</a>
+                    <a routerLink="../forgot">Forgot password?</a>
                     <a href="https://newvote.org/privacy-policy"
                         [style.margin-top]="'5px'">Terms of Service</a>
                     <br />

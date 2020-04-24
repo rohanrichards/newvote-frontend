@@ -25,7 +25,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ProposalQuery } from '@app/core/http/proposal/proposal.query'
-import { Observable } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
@@ -85,10 +85,9 @@ export class SolutionViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
-            this.getSolution(ID)
-            this.getProposals()
-            this.getSuggestions()
+            const organization = params.get('id')
+            const ID = params.get('solutionId')
+            this.fetchData(ID, organization)
             this.subscribeToSolutionStore(ID)
         })
 
@@ -99,53 +98,41 @@ export class SolutionViewComponent implements OnInit {
 
     }
 
-    getSolution(id: string) {
+    fetchData(solutionId: string, organization: string) {
         const isModerator = this.auth.isModerator()
         const options = { showDeleted: isModerator ? true : '' }
 
-        this.solutionService.view({
-            id: id,
-            params: options
+        const getSolution = this.solutionService.view({
+            id: solutionId,
+            params: options,
+            orgs: [organization]
+        })
+        const getProposals = this.proposalService.list({ orgs: [organization], params: options })
+        const getSuggestions = this.suggestionService.list({ orgs: [organization], params: options })
+        
+        forkJoin({
+            solution: getSolution,
+            proposals: getProposals,
+            suggestions: getSuggestions
         })
             .subscribe(
-                (solution: Solution) => {
-                    return solution
-                },
+                () => { this.stateService.setLoadingState(AppState.complete) },
                 () => this.stateService.setLoadingState(AppState.error)
-            )
-    }
-
-    getProposals() {
-        this.proposalService.list({})
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-    }
-
-    getSuggestions() {
-        const isModerator = this.auth.isModerator()
-
-        this.suggestionService.list({
-            params: {
-                showDeleted: isModerator ? true : ''
-            }
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
             )
     }
 
     subscribeToSolutionStore(id: string) {
         this.entityVotes.getSolution(id)
-            .subscribe((solution: ISolution) => {
-                if (!solution) return false
-                this.solution = solution
-                this.subscribeToProposalStore(solution._id)
-                this.subscribeToSuggestionStore(solution._id)
-                this.stateService.setLoadingState(AppState.complete)
-                this.updateTags(solution)
+            .subscribe((solution: ISolution | boolean) => {
+                if (solution instanceof Boolean) return false
+                if (solution instanceof Solution) {
+                    this.solution = solution
+                    this.subscribeToProposalStore(solution._id)
+                    this.subscribeToSuggestionStore(solution._id)
+                    this.stateService.setLoadingState(AppState.complete)
+                    this.updateTags(solution)
+                }
+       
             })
     }
 

@@ -163,7 +163,8 @@ export class RepsViewComponent implements OnInit {
             this.subscribeToSolutionStore(solutions)
             this.subscribeToProposalStore(proposals)
             this.subscribeToOrgStore(this.rep)
-            this.stateService.setLoadingState(AppState.complete)
+            // this.stateService.setLoadingState(AppState.complete)
+            
         })
     }
 
@@ -188,12 +189,13 @@ export class RepsViewComponent implements OnInit {
             rep: getRep
         })
             .subscribe(
-                () => {
+                ({ rep }) => {
                     this.isLoading = false
                     // this.stateService.setLoadingState(AppState.complete)
+                    this.stateService.setLoadingState(AppState.complete)
                 },
                 () => {
-                    // return this.stateService.setLoadingState(AppState.error)
+                    return this.stateService.setLoadingState(AppState.error)
                 }
             )
     }

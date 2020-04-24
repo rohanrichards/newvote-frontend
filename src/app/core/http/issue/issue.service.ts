@@ -44,7 +44,6 @@ export class IssueService {
             params = new HttpParams({ fromObject: context.params })
         }
         params = params.append('orgs', context.orgs.join(','))
-        console.log()
         
         const options = {
             withCredentials: true,

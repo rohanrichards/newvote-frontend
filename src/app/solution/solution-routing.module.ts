@@ -18,19 +18,19 @@ const routes: Routes = [
         canActivate: [RepOrgGuard]
     },
     {
-        path: 'create/:id',
+        path: 'create/:solutionId',
         component: SolutionCreateComponent,
         data: { title: extract('New Solution'), level: 'child' },
         canActivate: [RepOrgGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:solutionId',
         component: SolutionEditComponent,
         data: { title: extract('Edit Solution'), level: 'child' },
         canActivate: [ModeratorGuard]
     },
     {
-        path: ':id',
+        path: ':solutionId',
         component: SolutionViewComponent,
         data: { title: extract('Solution'), level: 'child' }
     },

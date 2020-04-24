@@ -68,9 +68,10 @@ export class SuggestionEditComponent implements OnInit {
         this.subscribeToOrganizationStore()
         this.isLoading = true
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
+            const org = params.get('id')
+            const ID = params.get('suggestionId')
             this.subscribeToSuggestionStore(ID)
-            this.suggestionService.view({ id: ID })
+            this.suggestionService.view({ id: ID, orgs: [org] })
                 .pipe(finalize(() => { this.isLoading = false }))
                 .subscribe(
                     (res) => res,

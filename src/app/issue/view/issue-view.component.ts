@@ -166,6 +166,7 @@ export class IssueViewComponent implements OnInit {
         }
 
         forkJoin({
+            organization: this.organizationService.view({ id: organization, params }),
             topics: this.topicService.list({ orgs: [organization], params }),
             solutions: this.solutionService.list({ orgs: [organization], params }),
             proposls: this.proposalService.list({ orgs: [organization], params }),

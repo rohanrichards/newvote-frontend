@@ -3,100 +3,105 @@
         class="sticky-toolbar"
         ngClass.gt-sm="with-sidenav"
         fxLayout="row wrap">
-        <ng-template [ngIf]="routeLevel !== 'child'"
-            [ngIfElse]="childPage">
-            <button class="menu-button"
+        <ng-container *ngIf="organization && organization.url">
+
+            <ng-template [ngIf]="routeLevel !== 'child'"
+                [ngIfElse]="childPage">
+                <button class="menu-button"
+                    mat-icon-button
+                    (click)="handleToggle()">
+                    <mat-icon>menu</mat-icon>
+                </button>
+            </ng-template>
+            <ng-template #childPage>
+                <button mat-icon-button
+                    (click)="handleBackClick()">
+                    <mat-icon>arrow_back_ios</mat-icon>
+                </button>
+            </ng-template>
+            <span class="toolbar-title custom-headline">{{title}}</span>
+            <div fxFlex></div>
+            <button mat-icon-button
+                (click)="toggleSearch()">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button *ngIf="!isAuthenticated"
+                class="account-create-menu-icon"
                 mat-icon-button
-                (click)="handleToggle()">
-                <mat-icon>menu</mat-icon>
+                [matMenuTriggerFor]="loginMenu">
+                <mat-icon color="warn">person_add</mat-icon>
             </button>
-        </ng-template>
-        <ng-template #childPage>
-            <button mat-icon-button
-                (click)="handleBackClick()">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </button>
-        </ng-template>
-        <span class="toolbar-title custom-headline">{{title}}</span>
-        <div fxFlex></div>
-        <button mat-icon-button
-            (click)="toggleSearch()">
-            <mat-icon>search</mat-icon>
-        </button>
-        <button *ngIf="!isAuthenticated"
-            class="account-create-menu-icon"
-            mat-icon-button
-            [matMenuTriggerFor]="loginMenu">
-            <mat-icon color="warn">person_add</mat-icon>
-        </button>
-        <mat-menu #loginMenu="matMenu">
-            <mat-list
-                *ngIf="!organization || !organization.authType || organization.authType === 0">
-                <a mat-menu-item
-                    routerLink="/auth/login"
-                    translate>Login</a>
-                <mat-divider></mat-divider>
-                <a mat-menu-item
-                    routerLink="/auth/signup"
-                    translate>Create Account</a>
-            </mat-list>
-            <mat-list *ngIf="organization && organization.authType === 1">
-                <a mat-menu-item
-                    routerLink="/auth/login"
-                    translate>Login</a>
-                <mat-divider></mat-divider>
-                <a mat-menu-item
-                    routerLink="/auth/login"
-                    translate>Create Account</a>
-            </mat-list>
-        </mat-menu>
-        <div *ngIf="isAuthenticated">
-            <button mat-icon-button
-                [matMenuTriggerFor]="userMenu"
-                translate>
-                <mat-icon>person</mat-icon>
-            </button>
-            <mat-menu #userMenu="matMenu">
-                <mat-list>
-                    <mat-list-item>
-                        <span translate>Logged in
-                            as</span>&nbsp;<b>{{username}}</b>
-                    </mat-list-item>
+            <mat-menu #loginMenu="matMenu">
+                <mat-list
+                    *ngIf="!organization || !organization.authType || organization.authType === 0">
+                    <a mat-menu-item
+                        [routerLink]="['/communities', organization.url, 'auth', 'login']"
+                        translate>Login</a>
                     <mat-divider></mat-divider>
                     <a mat-menu-item
-                        *ngIf="authQuery.isOwner() && organization"
-                        routerLink="/organizations/edit/{{organization._id}}"
-                        translate>Edit Community</a>
-                    <mat-divider></mat-divider>
-                    <a mat-menu-item
-                        *ngIf="isRep && organization"
-                        routerLink="/reps/edit/{{userId}}"
-                        translate>Edit Profile</a>
-                    <mat-divider *ngIf="isRep"></mat-divider>
+                        [routerLink]="['/communities', organization.url, 'auth', 'login']"
+                        translate>Create Account</a>
                 </mat-list>
-                <button mat-menu-item
-                    (click)="logout()"
-                    translate>Logout</button>
+                <mat-list *ngIf="organization && organization.authType && organization.authType === 1">
+                    <a mat-menu-item
+                        [routerLink]="['/communities', organization.url, 'auth', 'login']"
+                        translate>Login</a>
+                    <mat-divider></mat-divider>
+                    <a mat-menu-item
+                    [routerLink]="['/communities', organization.url, 'auth', 'login']"
+                    translate>Create Account</a>
+                </mat-list>
             </mat-menu>
-        </div>
-        <div *ngIf="!isAuthenticated && (!this.organization || !this.organization.authType || this.organization.authType === 0)"
-            class="hide-login-menu">
-            <button mat-stroked-button
-                class="border-override"
-                routerLink="./auth/login">Login</button>
-            <button mat-flat-button
-                color="warn"
-                routerLink="./auth/signup">Create Account</button>
-        </div>
-        <div *ngIf="!isAuthenticated && (this.organization && this.organization.authType === 1)"
-            class="hide-login-menu">
-            <button mat-stroked-button
-                class="border-override"
-                routerLink="./auth/login">Login</button>
-            <button mat-flat-button
-                color="warn"
-                routerLink="./auth/login">Create Account</button>
-        </div>
+            <div *ngIf="isAuthenticated">
+                <button mat-icon-button
+                    [matMenuTriggerFor]="userMenu"
+                    translate>
+                    <mat-icon>person</mat-icon>
+                </button>
+                <mat-menu #userMenu="matMenu">
+                    <mat-list>
+                        <mat-list-item>
+                            <span translate>Logged in
+                                as</span>&nbsp;<b>{{username}}</b>
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <a mat-menu-item
+                            *ngIf="authQuery.isOwner() && organization"
+                            [routerLink]="['/communities', organization.url, 'organizations', 'edit', organization._id]"
+                            translate>Edit Community</a>
+                        <mat-divider></mat-divider>
+                        <a mat-menu-item
+                            *ngIf="isRep && organization"
+                            [routerLink]="['/communities', organization.url, 'reps', 'edit', userId]"
+                            routerLink="/reps/edit/{{userId}}"
+                            translate>Edit Profile</a>
+                        <mat-divider *ngIf="isRep"></mat-divider>
+                    </mat-list>
+                    <button mat-menu-item
+                        (click)="logout()"
+                        translate>Logout</button>
+                </mat-menu>
+            </div>
+            <div *ngIf="!isAuthenticated && (!organization || !organization.authType || organization.authType === 0)"
+                class="hide-login-menu">
+                <button mat-stroked-button
+                    class="border-override"
+                    [routerLink]="['/communities', organization.url, 'auth', 'login']">Login</button>
+                <button mat-flat-button
+                    color="warn"
+                    [routerLink]="['/communities', organization.url, 'auth', 'signup']">Create Account</button>
+            </div>
+            <div *ngIf="!isAuthenticated && (organization && organization.authType && organization.authType === 1)"
+                class="hide-login-menu">
+                <button mat-stroked-button
+                    class="border-override"
+                    [routerLink]="['/communities', organization.url, 'auth', 'login']"
+                    >Login</button>
+                <button mat-flat-button
+                    color="warn"
+                    [routerLink]="['/communities', organization.url, 'auth', 'login']">Create Account</button>
+            </div>
+        </ng-container>
     </mat-toolbar>
 
     <app-search-bar class="sticky-search"

@@ -35,18 +35,27 @@ export class RepService {
     ) { }
 
     list(context?: RepContext): Observable<any[]> {
-        // // create blank params object
-        // let params = new HttpParams()
+        // create blank params object
+        let params = new HttpParams()
 
-        // // if we have params provided in the context, replace with those
-        // if (context.params) {
-        //     // context.params is assumed to have a format similar to
-        //     // { topicId: [id], search: [search terms], ...}
-        //     params = new HttpParams({ fromObject: context.params })
-        // }
+        // if we have params provided in the context, replace with those
+        if (context.params) {
+            // context.params is assumed to have a format similar to
+            // { topicId: [id], search: [search terms], ...}
+            params = new HttpParams({ fromObject: context.params })
+        }
+
+        if (context.orgs) {
+            params = params.set('orgs', context.orgs.join(','))
+        }
+
+        const options = {
+            withCredentials: true,
+            params,
+        }
 
         return this.httpClient
-            .get(routes.list())
+            .get(routes.list(), options)
             .pipe(
                 tap((data: Rep[]) => {
                     this.store.add(data)

@@ -23,8 +23,10 @@
                 fxLayout="column"
                 [defaultImage]="handleImageUrl(issue.imageUrl, true)"
                 [lazyLoad]="handleImageUrl(issue.imageUrl)">
-                <app-admin-panel model="Issue"
-                    path="/issues"
+                <app-admin-panel
+                    [organization]="organization"
+                    model="Issue"
+                    path="issues"
                     [item]="issue"
                     redirectRoute="issues"></app-admin-panel>
                 <div fxLayout="row"

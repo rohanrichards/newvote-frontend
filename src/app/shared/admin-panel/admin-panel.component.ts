@@ -4,6 +4,8 @@ import { AuthenticationService } from '@app/core';
 import { ISuggestion } from '@app/core/models/suggestion.model';
 import { RepQuery } from '@app/core/http/rep/rep.query';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
+import { Organization } from '@app/core/models/organization.model';
 
 @Component({
     selector: 'app-admin-panel',
@@ -12,16 +14,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class AdminPanelComponent implements OnInit {
     @Input() isCard = false
-    @Input() path: string;
+
     @Input() model: string;
     @Input() item: any;
     @Input() redirectRoute: string;
 
     @Output() updateSuggestion = new EventEmitter()
 
+    @Input() organization: Organization
+    @Input() path: string;
+
+ 
     constructor(
         public admin: AdminService,
-        public auth: AuthenticationService,
+        public auth: AuthenticationQuery,
         public repQuery: RepQuery,
         private router: Router,
         private route: ActivatedRoute
@@ -42,10 +48,11 @@ export class AdminPanelComponent implements OnInit {
         if (this.model !== 'Organization') {
             const link = this.path ? [this.path, 'edit', `${item.slug || item._id}`]
                 : ['edit', `${item.slug || item._id}`]
-            const options = { relativeTo: this.route } 
+            const options = { relativeTo: this.route }
             return this.router.navigate(link, options)
         }
-  
+
         return this.router.navigate([`/communities/${item.slug || item._id}`])
     }
+
 }

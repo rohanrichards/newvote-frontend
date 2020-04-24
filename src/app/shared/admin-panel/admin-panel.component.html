@@ -68,14 +68,15 @@
                 <button mat-icon-button
                     matTooltip="Create a new Issue"
                     color="accent"
-                    routerLink="/issues/create">
+                    [routerLink]="['communities', organization, 'issues', 'create']">
                     <mat-icon aria-label="Create a new issue">add
                 </mat-icon>
                 </button>
                 <button mat-icon-button
                     matTooltip="Add Solution for this Issue"
                     color="accent"
-                    routerLink="/solutions/create/{{item._id}}">
+                    [routerLink]="['communities', organization, 'solutions', 'create', item._id]"
+                    >
                     <mat-icon aria-label="Add a new solution">
                         playlist_add
                     </mat-icon>
@@ -83,7 +84,8 @@
                     <button mat-icon-button
                     matTooltip="Add Media to this Issue"
                     color="accent"
-                    routerLink="/media/create/{{item._id}}">
+                    [routerLink]="['communities', organization, 'media', 'create', item._id]"
+                    >
                     <mat-icon aria-label="Add new media">add_a_photo
                 </mat-icon>
             </button>
@@ -93,14 +95,16 @@
                 <button mat-icon-button
                     matTooltip="Create a new Solution"
                     color="accent"
-                    routerLink="/solutions/create">
+                    [routerLink]="['communities', organization, 'solutions', 'create']"
+                    >
                     <mat-icon aria-label="Create a new Solution">add
                 </mat-icon>
                 </button>
                 <button mat-icon-button
                     matTooltip="Add a Action for this Solution"
                     color="accent"
-                    routerLink="/proposals/create/{{item._id}}">
+                    [routerLink]="['communities', organization, 'proposals', 'create', item._id]"
+                    >
                     <mat-icon aria-label="Add a Action for this Solution">
                         playlist_add</mat-icon>
                 </button>
@@ -110,7 +114,8 @@
                 <button mat-icon-button
                     matTooltip="Add a new Action"
                     color="accent"
-                    routerLink="/proposals/create">
+                    [routerLink]="['communities', organization, 'proposals', 'create']"
+                    >
                     <mat-icon aria-label="Add a new action">
                         playlist_add
                     </mat-icon>
@@ -146,8 +151,7 @@
             <ng-container *ngIf="auth.isModerator()">
                 <button color="accent"
                     mat-icon-button
-                    (click)="$event.stopPropagation()"
-                    routerLink='{{path}}/edit/{{item.slug || item._id}}'>
+                    [routerLink]="[path, 'edit', item.slug || item._id]">
                     <mat-icon aria-label="Edit the content">edit
                     </mat-icon>
                 </button>

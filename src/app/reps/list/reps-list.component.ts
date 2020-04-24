@@ -138,6 +138,7 @@ export class RepsListComponent implements OnInit {
     }
 
     fetchData(url: string) {
+
         const isModerator = this.auth.isModerator()
         const params = { softDeleted: isModerator ? true : '' }
 

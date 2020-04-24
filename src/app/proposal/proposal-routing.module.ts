@@ -18,19 +18,19 @@ const routes: Routes = [
         canActivate: [RepOrgGuard]
     },
     {
-        path: 'create/:id',
+        path: 'create/:proposalId',
         component: ProposalCreateComponent,
         data: { title: extract('New Proposal'), level: 'child' },
         canActivate: [RepOrgGuard]
     },
     {
-        path: 'edit/:id',
+        path: 'edit/:proposalId',
         component: ProposalEditComponent,
         data: { title: extract('Edit Proposal'), level: 'child' },
         canActivate: [ModeratorGuard]
     },
     {
-        path: ':id',
+        path: ':proposalId',
         component: ProposalViewComponent,
         data: { title: extract('Proposal'), level: 'child' }
     },

@@ -24,7 +24,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
-import { Observable, pipe } from 'rxjs'
+import { Observable, pipe, forkJoin } from 'rxjs'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
@@ -80,16 +80,35 @@ export class ProposalViewComponent implements OnInit {
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
-            const ID = params.get('id')
+            const organization = params.get('id');
+            const ID = params.get('proposalId')
             this.subscribeToProposalStore(ID)
-            this.getProposal(ID)
-            this.getSuggestions()
+            this.fetchData(ID, organization)
         })
 
         this.access.isCommunityVerified$
             .subscribe((verified: boolean) => {
                 this.isVerified = verified
             })
+    }
+
+    fetchData(id: string, organization: string) {
+        const isModerator = this.auth.isModerator()
+        const params = { showDeleted: isModerator ? true : ' ' }
+
+        const getProposal = this.proposalService.view({ id: id, orgs: [organization] })
+        const getOrganization = this.organizationService.view({ id: organization, params })
+        const getSuggestions = this.suggestionService.list({ orgs: [organization], params })
+
+        forkJoin({
+            proposal: getProposal,
+            organization: getOrganization,
+            suggestions: getSuggestions
+        })
+            .subscribe(
+                (res) => res,
+                () => this.stateService.setLoadingState(AppState.error)
+            )
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -120,34 +139,6 @@ export class ProposalViewComponent implements OnInit {
                 description: proposal.description,
                 image: imageUrl
             })
-    }
-
-    getSuggestions() {
-        const isModerator = this.auth.isModerator()
-
-        this.suggestionService.list({
-            forceUpdate: true,
-            params: {
-                showDeleted: isModerator ? true : ''
-            }
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-    }
-
-    getProposal(id: string) {
-        this.proposalService.view({ id: id, orgs: [] })
-            .subscribe(
-                (proposal: Proposal) => {
-
-                    return proposal
-                },
-                () => {
-                    return this.stateService.setLoadingState(AppState.error)
-                }
-            )
     }
 
     onVote(voteData: any, model: string) {

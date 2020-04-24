@@ -22,6 +22,9 @@ import { assign } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { OrganizationService } from '@app/core'
 import { forkJoin } from 'rxjs'
+import { Organization } from '@app/core/models/organization.model'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 @Component({
     selector: 'app-suggestion',
@@ -37,12 +40,13 @@ export class SuggestionViewComponent implements OnInit {
     suggestions: Array<ISuggestion>;
     isLoading: boolean;
     loadingState: string;
+    organization: Organization;
 
     constructor(
         private stateService: StateService,
         private suggestionService: SuggestionService,
         private voteService: VoteService,
-        public auth: AuthenticationService,
+        public auth: AuthenticationQuery,
         private route: ActivatedRoute,
         private router: Router,
         public dialog: MatDialog,
@@ -52,7 +56,8 @@ export class SuggestionViewComponent implements OnInit {
         private admin: AdminService,
         private suggestionQuery: SuggestionQuery,
         private entityVotes: EntityVotesQuery,
-        private organizationService: OrganizationService
+        private organizationService: OrganizationService,
+        private organizationQuery: OrganizationQuery
     ) { }
 
     ngOnInit() {
@@ -66,6 +71,11 @@ export class SuggestionViewComponent implements OnInit {
             const organization = params.get('id')
             const ID = params.get('suggestionId')
             this.subscribeToSuggestionStore(ID)
+            this.organizationQuery.select()
+                .subscribe((res) => {
+                    if (!res._id) return false
+                    this.organization = res
+                })
             this.fetchData(ID, organization)
         })
 

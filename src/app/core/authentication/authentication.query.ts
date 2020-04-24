@@ -75,6 +75,18 @@ export class AuthenticationQuery extends Query<IUser> {
         })
     }
 
+    isCreator(object?: any): boolean {
+        const { _id: loggedInUserId } = this.getValue()
+        if (!object) return false
+        if (!this.getValue()._id) return false
+
+        if (object.user) {
+            const id = object.user._id || object.user
+            if (id === loggedInUserId) return true
+            return false
+        }
+    }
+
     // rewriting query to not import other queries
     isModeratorNew(organization: IOrganization) {
         if (this.isOwner()) {
