@@ -97,7 +97,9 @@ export class NotificationService {
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
-                tap((notification: Notification) => this.store.remove(notification._id)),
+                tap((notification: Notification) => {
+                    this.store.remove(notification._id)
+                }),
                 map((res: any) => res)
             )
     }

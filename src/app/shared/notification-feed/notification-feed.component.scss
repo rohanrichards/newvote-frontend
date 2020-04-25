@@ -6,7 +6,7 @@
 .progress-item {
     width: 100%;
     border: 1px solid lightgray;
-    padding: 0.5rem 1.5rem;
+    padding: 1rem 1.5rem;
     margin-bottom: 1rem;
 }
 
@@ -51,4 +51,14 @@
     p {
         margin-top: 0;
     }
+}
+
+.notification-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.soft-delete {
+    border-color: red;
 }

@@ -2,9 +2,19 @@
     fxFlex>
     <div *ngFor="let notification of notifications"
         class="progress-item"
+        [ngClass]="{ 'soft-delete': notification.softDeleted }"
         fxLayout="column"
-        fxLayoutAlign="center flex-start">
-        <div fxLayout="row">
+        fxLayoutAlign="center flex-start"
+        [style.position]="'relative'"
+        >
+        <app-admin-panel
+            class="notification-panel"
+            model="Notification"
+            [item]="notification"
+            isCard="true"
+            (toggleEdit)="handleNotification($event)"
+            ></app-admin-panel>
+        <div fxLayout="row" >
             <div class="block-quote"></div>
             <div>
                 <div class="mat-title main-content" [innerHTML]="notification.description"></div>

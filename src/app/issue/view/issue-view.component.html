@@ -133,12 +133,16 @@
             <app-progress-form 
                 *ngIf="auth.isOwner()" 
                 [progress]="progress"
+                [notification]="notificationToEdit"
                 (updateProgressState)="updateProgress($event)"
                 (updateNotifications)="addNotification($event)"
+                (removeNotificationIfEditing)="notificationToEdit = null"  
+                (submitNotificationUpdate)="updateNotification($event)"
                 >
             </app-progress-form>
             <app-notification-feed 
                 [notifications]="notifications"
+                (toggleEdit)="setNotificationToEdit($event)"
                 >
             </app-notification-feed>
             <mat-accordion [multi]="true">

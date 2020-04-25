@@ -96,6 +96,8 @@ export class IssueViewComponent implements OnInit {
     solutionAccordion = false
     suggestionAccordion = false
 
+    notificationToEdit: Notification
+
     constructor(
         private organizationService: OrganizationService,
         private suggestionService: SuggestionService,
@@ -429,9 +431,13 @@ export class IssueViewComponent implements OnInit {
         return this.notificationService.create({ entity: notification })
             .subscribe(
                 (res) => {
-                    console.log(res, 'this is res')
+                    this.admin.openSnackBar('Succesfully created', 'OK')
                 },
-                (err) => err
+                (err) => {
+                    this.admin.openSnackBar('There was an error while creating your notification', 'OK')
+                    return err
+
+                }
             )
     }
 
@@ -452,4 +458,29 @@ export class IssueViewComponent implements OnInit {
         })
     }
 
+    setNotificationToEdit(notification: Notification) {
+        // If edit button is hit twice, remove the notification
+        if (this.notificationToEdit && this.notificationToEdit._id === notification._id) {
+            this.notificationToEdit = null
+            return false
+        }
+        // The notification when passed around is from the notificaitons query
+        // all query items are ready only - need to dereference in order to edit
+        const dereferencedNotification = cloneDeep(notification)
+        this.notificationToEdit = dereferencedNotification
+    }
+
+    updateNotification(notification: any) {
+        return this.notificationService.update({ id: notification._id, entity: notification, orgs: [this.organization.url] })
+            .subscribe(
+                (res) => {
+                    this.notificationToEdit = null
+                    this.admin.openSnackBar('Succesfully Updated', 'OK')
+                },
+                (err) => {
+                    this.admin.openSnackBar('There was an error updating the notification', 'OK')
+                    return err
+                }
+            )
+    }
 }

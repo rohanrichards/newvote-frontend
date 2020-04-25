@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@angular/forms'
 import { Progress } from '@app/core/models/progress.model'
 import { NotificationService } from '@app/core/http/notifications/notification.service';
+import { Notification } from '@app/core/models/notification.model';
 
 @Component({
     selector: 'app-progress-form',
@@ -17,13 +18,17 @@ export class ProgressFormComponent implements OnChanges {
     };
 
     @Input() progress: Progress;
+    @Input() notification: Notification;
     @Output() updateProgressState = new EventEmitter();
     @Output() updateNotifications = new EventEmitter();
+    @Output() submitNotificationUpdate = new EventEmitter();
+    @Output() removeNotificationIfEditing = new EventEmitter();
 
     currentActiveState: string;
     showForm = false;
     showProgress = false;
     showFeed = false
+    editNotification = false
     description = ''
 
     ngOnInit() {
@@ -48,12 +53,23 @@ export class ProgressFormComponent implements OnChanges {
             this.showForm = false
         }
 
+        // as long as issues view has a notification object, progress form
+        // will display an extra textarea component - need to remove it
+        // to hide the component
+        if (this.notification !== null) {
+            this.removeNotificationIfEditing.emit()
+        }
+
         this.showProgress = !this.showProgress
     }
 
     toggleNotificationForm() {
         if (this.showProgress) {
             this.showProgress = false
+        }
+
+        if (this.notification !== null) {
+            this.removeNotificationIfEditing.emit()
         }
 
         this.showForm = !this.showForm
@@ -68,6 +84,7 @@ export class ProgressFormComponent implements OnChanges {
         return object.states
     }
 
+    // For Radio Group
     setCurrentActiveState(stateObj: any) {
         const filteredState = stateObj.states.slice().filter((state: any) => {
             return state.active
@@ -83,6 +100,10 @@ export class ProgressFormComponent implements OnChanges {
 
     submitNotification() {
         this.updateNotifications.emit(this.description)
+    }
+
+    handleEditedNotification() {
+        this.submitNotificationUpdate.emit(this.notification)
     }
 
     checkState(state: any) {

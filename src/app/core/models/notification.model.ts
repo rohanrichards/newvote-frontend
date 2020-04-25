@@ -8,6 +8,7 @@ export interface INotification {
     user: any;
     description: string;
     organizations: any;
+    softDeleted: boolean;
 }
 
 export class Notification implements INotification {
@@ -18,6 +19,7 @@ export class Notification implements INotification {
         public imageUrl: string = '',
         public description: string = '',
         public organizations: any = {},
-        public user: any = {}
+        public user: any = {},
+        public softDeleted: boolean = false
     ) { }
 }

@@ -4,15 +4,29 @@
         fxLayoutGap="8px">
         <button
             mat-raised-button
-            color="warn"
+            [color]="showForm ? 'warn' : 'primary'"
             (click)="toggleNotificationForm()"
             fxFlex>Add Update</button
             >
         <button mat-raised-button
-            color="primary"
+            [color]="showProgress ? 'warn' : 'primary'"
             (click)="toggleProgressForm()"
             fxFlex
             >Update Progress</button>
+    </div>
+    
+    <div 
+        fxLayout="column"
+        *ngIf="notification && notification.description"
+        class="quill-editor-container cf">
+        <quill-editor [(ngModel)]="notification.description"></quill-editor>
+        <button 
+            fxFlex
+            [ngStyle]="{'margin-top': '0.5rem'}"
+            color="primary" 
+            mat-raised-button 
+            (click)="handleEditedNotification()"
+            >Update Notification</button>
     </div>
 
     <div 
