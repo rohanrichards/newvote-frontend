@@ -181,7 +181,10 @@ export class IssueViewComponent implements OnInit {
     subscribeToNotificationStore(parentId: string) {
         this.notificationQuery.getNotifications(parentId)
             .subscribe((res: any) => {
-                if (!res.length) return false
+                if (!res.length) { 
+                    this.notifications = []
+                    return false
+                }
                 this.notifications = res
             })
     }
