@@ -4,13 +4,13 @@
         fxLayoutGap="8px">
         <button
             mat-raised-button
-            [color]="showForm ? 'warn' : 'primary'"
+            [color]="showForm && !notification ? 'warn' : 'primary'"
             (click)="toggleNotificationForm()"
             fxFlex>Add Update</button
             >
         <button mat-raised-button
             *ngIf="auth.isModerator()"
-            [color]="showProgress ? 'warn' : 'primary'"
+            [color]="showProgress && !notification ? 'warn' : 'primary'"
             (click)="toggleProgressForm()"
             fxFlex
             >Update Progress</button>
@@ -32,7 +32,7 @@
 
     <div 
         fxLayout="column"
-        *ngIf="showForm"
+        *ngIf="showForm && !notification"
         class="quill-editor-container cf">
         <quill-editor [(ngModel)]="description"></quill-editor>
         <button 
@@ -45,7 +45,7 @@
     </div>
 
     <div class="progress-form"
-        *ngIf="showProgress"
+        *ngIf="showProgress && !notification"
         fxLayout="column"
         fxLayoutAlign="center center"
         fxLayoutGap="24px">
