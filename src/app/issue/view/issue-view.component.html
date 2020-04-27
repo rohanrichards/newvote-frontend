@@ -131,7 +131,7 @@
             <app-progress-bar [progressState]="progress">
             </app-progress-bar>
             <app-progress-form 
-                *ngIf="auth.isOwner()" 
+                *ngIf="repQuery.isRepForOrg() || authQuery.isModerator()"
                 [progress]="progress"
                 [notification]="notificationToEdit"
                 (updateProgressState)="updateProgress($event)"

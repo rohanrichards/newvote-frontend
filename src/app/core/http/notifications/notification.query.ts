@@ -7,6 +7,16 @@ import { INotification, Notification } from '@app/core/models/notification.model
 
 @Injectable()
 export class NotificationQuery extends QueryEntity<NotificationState, Notification> {
+    notifications$ = this.selectAll({
+        filterBy: (entity) => {
+            if (this.auth.isModerator()) {
+                return true
+            }
+
+            return !entity.softDeleted
+        }
+    })
+
     constructor(
         protected store: NotificationStore,
         private auth: AuthenticationQuery
@@ -15,8 +25,13 @@ export class NotificationQuery extends QueryEntity<NotificationState, Notificati
     }
 
     getNotifications(parentId: string) {
-        return this.selectAll({
-            filterBy: (entity: any) => entity.parent === parentId
-        })
+        return this.notifications$
+            .pipe(
+                map((items) => {
+                    return items.filter((entity: any) => {
+                        return entity.parent === parentId
+                    })
+                })
+            )
     }
 }

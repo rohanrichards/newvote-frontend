@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators, FormArray, FormBuilder } from '@ang
 import { Progress } from '@app/core/models/progress.model'
 import { NotificationService } from '@app/core/http/notifications/notification.service';
 import { Notification } from '@app/core/models/notification.model';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 
 @Component({
     selector: 'app-progress-form',
@@ -11,7 +12,7 @@ import { Notification } from '@app/core/models/notification.model';
 })
 export class ProgressFormComponent implements OnChanges {
 
-    constructor(private notificationService: NotificationService) {}
+    constructor(public auth: AuthenticationQuery) {}
 
     @Input() item: any = {
         name: 'Issue'

@@ -9,6 +9,7 @@
             fxFlex>Add Update</button
             >
         <button mat-raised-button
+            *ngIf="auth.isModerator()"
             [color]="showProgress ? 'warn' : 'primary'"
             (click)="toggleProgressForm()"
             fxFlex
