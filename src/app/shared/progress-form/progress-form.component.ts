@@ -101,6 +101,8 @@ export class ProgressFormComponent implements OnChanges {
 
     submitNotification() {
         this.updateNotifications.emit(this.description)
+        this.description = ''
+        this.showForm = false
     }
 
     handleEditedNotification() {

@@ -104,6 +104,14 @@ export class AuthenticationQuery extends Query<IUser> {
         return toBoolean(this.getValue().verified)
     }
 
+    canVerify() {
+        const user = this.getValue()
+        if (!user.verified) return false
+        if (user.roles.includes('guest')) return false
+        if (!user.mobileNumber) return false
+        return true
+    }
+
     isLocalVerified(user: IUser, organization: IOrganization) {
         if (!user.verified) return false
         if (user.roles.includes('guest')) return false

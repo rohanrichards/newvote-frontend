@@ -54,7 +54,6 @@ import { RepChildCardListComponent } from './rep-child-card-list/rep-child-card-
 import { SideMenuComponent } from './side-menu/side-menu.component'
 import { RepCardV2Component } from './rep-card/rep-card-v2/rep-card-v2.component'
 import { ProgressBarComponent } from './progress-bar/progress-bar.component'
-import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 import { ProgressFormComponent } from './progress-form/progress-form.component';
 import { NotificationFeedComponent } from './notification-feed/notification-feed.component'
 import { MomentModule } from 'ngx-moment';
@@ -117,7 +116,6 @@ import { MomentModule } from 'ngx-moment';
         SideMenuComponent,
         RepCardV2Component,
         ProgressBarComponent,
-        ProgressFeedComponent,
         ProgressFormComponent,
         NotificationFeedComponent
     ],
@@ -156,7 +154,6 @@ import { MomentModule } from 'ngx-moment';
         SideMenuComponent,
         RepCardV2Component,
         ProgressBarComponent,
-        ProgressFeedComponent,
         ProgressFormComponent,
         NotificationFeedComponent
     ]

@@ -152,7 +152,9 @@ export class NavbarComponent implements OnInit {
         // If community is authType 0
         const { authType, url } = this.orgQuery.getValue()
         if (authType === 0) {
-            if (!this.access.isCommunityVerified()) {
+            // Checks user has prerequisites for verification
+            // mobileNumber, verified, not guest
+            if (!this.authQuery.canVerify()) {
                 return this.router.navigate(['/auth/verify'], { replaceUrl: true })
             }
 
