@@ -29,7 +29,6 @@ export class AccessControlQuery {
     // Verification Checks
     // 1) Have they verified their account? Mobile / email verification + have removed guest role & gained 'user' role
     // 2) Are they community verified - been granted accesss & organizationId is on the users organizations object
-    // 3)
 
     isCommunityVerified() {
         const user = this.auth.getValue()

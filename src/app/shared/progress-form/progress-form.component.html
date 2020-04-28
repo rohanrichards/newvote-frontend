@@ -1,0 +1,72 @@
+<div [ngStyle]="{'margin-bottom': '1rem'}">
+    <div class=""
+        fxLayout="row"
+        fxLayoutGap="8px">
+        <button
+            mat-raised-button
+            [color]="showForm && !notification ? 'warn' : 'primary'"
+            (click)="toggleNotificationForm()"
+            fxFlex>Add Update</button
+            >
+        <button mat-raised-button
+            *ngIf="auth.isModerator()"
+            [color]="showProgress && !notification ? 'warn' : 'primary'"
+            (click)="toggleProgressForm()"
+            fxFlex
+            >Update Progress</button>
+    </div>
+    
+    <div 
+        fxLayout="column"
+        *ngIf="notification && notification.description"
+        class="quill-editor-container cf">
+        <quill-editor [(ngModel)]="notification.description"></quill-editor>
+        <button 
+            fxFlex
+            [ngStyle]="{'margin-top': '0.5rem'}"
+            color="primary" 
+            mat-raised-button 
+            (click)="handleEditedNotification()"
+            >Update Notification</button>
+    </div>
+
+    <div 
+        fxLayout="column"
+        *ngIf="showForm && !notification"
+        class="quill-editor-container cf">
+        <quill-editor [(ngModel)]="description"></quill-editor>
+        <button 
+            fxFlex
+            [ngStyle]="{'margin-top': '0.5rem'}"
+            color="primary" 
+            mat-raised-button 
+            (click)="submitNotification()"
+            >Post Update</button>
+    </div>
+
+    <div class="progress-form"
+        *ngIf="showProgress && !notification"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="24px">
+        <mat-radio-group [style.width.%]="50"
+            fxLayout="column"
+            fxLayoutGap="12px"
+            aria-label="Select an option"
+            [value]="currentActiveState"
+            >
+            <div *ngFor="let state of progress.states;let i=index"
+                [style.width.%]="100">
+                <mat-radio-button [style.width.%]="100"
+                    (change)="handleProgressState(state)"
+                    [value]="state.name"
+                    [checked]="state.active === currentActiveState"
+                    >
+                    {{state.name}}
+                </mat-radio-button> 
+                <mat-divider [style.margin-top.rem]="1" *ngIf="i < progress.states.length -1"></mat-divider> 
+            </div>
+
+        </mat-radio-group>
+    </div>
+</div>

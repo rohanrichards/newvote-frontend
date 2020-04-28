@@ -1,0 +1,64 @@
+.container {
+    width: 100%;
+    padding: 2rem;
+}
+
+.progress-item {
+    width: 100%;
+    border: 1px solid lightgray;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.feed-footer {
+    justify-self: end;
+
+    p {
+        margin-bottom: 0;
+    }
+}
+
+.main-content {
+    p {
+        margin: 0;
+    }
+}
+
+.block-quote {
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+}
+.block-quote:before {
+    content: '\201C';
+    font-size: 5rem;
+    // transform: translate(-50%, -50%);
+    width: 3rem;
+    height: 2rem;
+    color: black;
+    text-align: center;
+    font-family: 'Proxima-Nova';
+}
+
+.date-text {
+    color: lightgray;
+
+    strong {
+        color: black;
+    }
+}
+
+.mat-title {
+    p {
+        margin-top: 0;
+    }
+}
+
+.notification-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.soft-delete {
+    border-color: red;
+}
