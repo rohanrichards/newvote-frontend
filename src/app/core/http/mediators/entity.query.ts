@@ -9,7 +9,10 @@ import { Issue, IIssue } from '@app/core/models/issue.model'
 @Injectable()
 
 export class AllEntityQuery {
-    constructor(public Topics: TopicQuery, public Issues: IssueQuery) { }
+    constructor(
+        private Topics: TopicQuery,
+        private Issues: IssueQuery
+    ) { }
 
     populateTopics() {
         return combineQueries(
@@ -85,4 +88,7 @@ export class AllEntityQuery {
                 })
             )
     }
+
+
+
 }

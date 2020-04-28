@@ -58,6 +58,9 @@ import { AccessControlQuery } from './http/mediators/access-control.query'
 import { AccessControlStore } from './http/mediators/access-control.store'
 import { EntityVotesQuery } from './http/mediators/entity-votes.query'
 import { EntityVotesStore } from './http/mediators/entity-votes.store'
+import { NotificationService } from './http/notifications/notification.service'
+import { NotificationStore } from './http/notifications/notification.store'
+import { NotificationQuery } from './http/notifications/notification.query'
 
 
 export function tokenGetter() {
@@ -138,6 +141,10 @@ export function tokenGetter() {
         AccessControlStore,
         AccessControlQuery,
         EntityVotesQuery,
+        EntityVotesStore,
+        NotificationService,
+        NotificationStore,
+        NotificationQuery,
         {
             provide: HttpClient,
             useClass: HttpService
