@@ -44,6 +44,7 @@ import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { NotificationService } from '@app/core/http/notifications/notification.service'
 import { INotification, Notification } from '@app/core/models/notification.model'
 import { NotificationQuery } from '@app/core/http/notifications/notification.query'
+import { Rep } from '@app/core/models/rep.model'
 
 @Component({
     selector: 'app-issue',
@@ -71,6 +72,11 @@ export class IssueViewComponent implements OnInit {
     isVerified: boolean;
     progress: any;
     notifications: INotification[];
+    rep: Rep;
+
+    isAdmin: boolean;
+    isModerator: boolean;
+    isOwner: boolean;
 
     defaultState = {
         _id: '',
@@ -125,7 +131,7 @@ export class IssueViewComponent implements OnInit {
         private progressService: ProgressService,
         private entityVotes: EntityVotesQuery,
         private notificationService: NotificationService,
-        private notificationQuery: NotificationQuery
+        private notificationQuery: NotificationQuery,
     ) { }
 
     ngOnInit() {
@@ -150,6 +156,12 @@ export class IssueViewComponent implements OnInit {
             })
 
         this.getSuggestions()
+        this.repQuery.isLoggedInUserRep()
+            .subscribe((res) => {
+                console.log(res, 'this is res')
+                if (!res.length) return false
+                this.rep = res[0];
+            })
     }
 
     subscribeToSuggestionStore(id: string) {
@@ -429,7 +441,8 @@ export class IssueViewComponent implements OnInit {
             imageUrl: '',
             description,
             organizations: this.organization._id,
-            user: this.authQuery.getValue()._id
+            user: this.authQuery.getValue()._id,
+            rep: this.rep
         } as INotification
         return this.notificationService.create({ entity: notification })
             .subscribe(
@@ -485,5 +498,33 @@ export class IssueViewComponent implements OnInit {
                     return err
                 }
             )
+    }
+
+    getUserPosition() {
+        const { _id, roles } = this.authQuery.getValue()
+        const { moderators, owner } = this.organization
+
+        if (owner === _id) {
+            this.isOwner = true
+            this.isModerator = false
+            this.isAdmin = false
+            return 'Community Owner'
+        }
+
+        if (roles.includes('admin')) {
+            this.isOwner = false
+            this.isModerator = false
+            this.isAdmin = true
+            return 'NewVote Admin'
+        }
+
+        if (moderators.includes(_id)) {
+            this.isOwner = false
+            this.isModerator = true
+            this.isAdmin = false
+            return 'Community Moderator'
+        }
+
+        return false
     }
 }

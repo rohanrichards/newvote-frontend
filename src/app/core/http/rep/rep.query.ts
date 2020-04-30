@@ -25,6 +25,15 @@ export class RepQuery extends QueryEntity<RepState, Rep> {
         super(store)
     }
 
+    isLoggedInUserRep() {
+        const id = this.authQuery.getValue()._id
+        return this.selectAll({
+            filterBy: (state) => {
+                return state.owner === id
+            }
+        })
+    }
+
     getRepId() {
         return combineQueries([
             this.authQuery.select(),

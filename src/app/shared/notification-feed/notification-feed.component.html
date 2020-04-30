@@ -21,7 +21,7 @@
                 <div class="feed-footer"
                     fxFlexAlign="baseline" fxLayout="row">
                     <p class="mat-subheading-2 date-text">
-                        <strong>{{notification.user.displayName}} {{ notification.user.displayName ? '-' : ''}}</strong>
+                        <strong>{{notification.user.displayName }} {{ notification && notification.rep && notification.rep.position }}{{ notification.user.displayName ? '-' : ''}}</strong>
                         {{ createDate(notification.created_at) | amLocal | amDateFormat: 'Do MMMM YYYY' }}
                     </p>
                 </div>

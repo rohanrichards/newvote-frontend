@@ -6,6 +6,7 @@ export interface INotification {
     parentType: string;
     imageUrl: string;
     user: any;
+    rep?: any;
     description: string;
     organizations: any;
     softDeleted: boolean;
@@ -20,6 +21,7 @@ export class Notification implements INotification {
         public description: string = '',
         public organizations: any = {},
         public user: any = {},
-        public softDeleted: boolean = false
+        public softDeleted: boolean = false,
+        public rep: any = {},
     ) { }
 }

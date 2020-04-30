@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { INotification } from '@app/core/models/notification.model';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { Rep } from '@app/core/models/rep.model';
 
 @Component({
     selector: 'app-notification-feed',
@@ -8,9 +9,7 @@ import { AdminService } from '@app/core/http/admin/admin.service';
     styleUrls: ['./notification-feed.component.scss']
 })
 export class NotificationFeedComponent implements OnInit {
-  @Input() feedItems: Array<any> = ['one', 'two', 'three'];
   @Input() notifications: Array<INotification> = []
-
   @Output() toggleEdit = new EventEmitter()
 
   ngOnInit() {
@@ -23,4 +22,5 @@ export class NotificationFeedComponent implements OnInit {
   handleNotification(notification: Notification) {
       this.toggleEdit.emit(notification)
   }
+
 }
