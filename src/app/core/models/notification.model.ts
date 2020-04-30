@@ -10,6 +10,7 @@ export interface INotification {
     description: string;
     organizations: any;
     softDeleted: boolean;
+    position: string;
 }
 
 export class Notification implements INotification {
@@ -23,5 +24,6 @@ export class Notification implements INotification {
         public user: any = {},
         public softDeleted: boolean = false,
         public rep: any = {},
+        public position: string = ''
     ) { }
 }

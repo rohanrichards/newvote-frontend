@@ -442,7 +442,8 @@ export class IssueViewComponent implements OnInit {
             description,
             organizations: this.organization._id,
             user: this.authQuery.getValue()._id,
-            rep: this.rep
+            rep: this.rep,
+            position: !this.rep ? this.getUserPosition() : ''
         } as INotification
         return this.notificationService.create({ entity: notification })
             .subscribe(
@@ -505,23 +506,14 @@ export class IssueViewComponent implements OnInit {
         const { moderators, owner } = this.organization
 
         if (owner === _id) {
-            this.isOwner = true
-            this.isModerator = false
-            this.isAdmin = false
             return 'Community Owner'
         }
 
         if (roles.includes('admin')) {
-            this.isOwner = false
-            this.isModerator = false
-            this.isAdmin = true
             return 'NewVote Admin'
         }
 
         if (moderators.includes(_id)) {
-            this.isOwner = false
-            this.isModerator = true
-            this.isAdmin = false
             return 'Community Moderator'
         }
 
