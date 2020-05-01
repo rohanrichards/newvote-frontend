@@ -23,4 +23,32 @@ export class NotificationFeedComponent implements OnInit {
       this.toggleEdit.emit(notification)
   }
 
+  handleDisplayName(notification: INotification): string {
+    if (!notification) return ''
+
+    if (notification.user && notification.user.displayName) {
+        return `${notification.user.displayName} - `
+    }
+
+    if (notification.rep && notification.rep.displayName) {
+        return `${notification.rep.displayName} - `
+    }
+
+    return ''
+  }
+
+  handlePosition(notification: INotification) {
+      if (!notification) return ''
+
+      if (notification.rep && notification.rep.position) {
+          return notification.rep.position
+      }
+
+      if (notification.position) {
+          return notification.position
+      }
+
+      return ''
+  }
+ 
 }

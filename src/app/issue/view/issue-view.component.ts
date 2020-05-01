@@ -158,7 +158,6 @@ export class IssueViewComponent implements OnInit {
         this.getSuggestions()
         this.repQuery.isLoggedInUserRep()
             .subscribe((res) => {
-                console.log(res, 'this is res')
                 if (!res.length) return false
                 this.rep = res[0];
             })
@@ -505,6 +504,10 @@ export class IssueViewComponent implements OnInit {
         const { _id, roles } = this.authQuery.getValue()
         const { moderators, owner } = this.organization
 
+        const isModerator = moderators.find((mod: any) => {
+            return mod._id === _id
+        })
+
         if (owner === _id) {
             return 'Community Owner'
         }
@@ -513,10 +516,10 @@ export class IssueViewComponent implements OnInit {
             return 'NewVote Admin'
         }
 
-        if (moderators.includes(_id)) {
+        if (isModerator) {
             return 'Community Moderator'
         }
 
-        return false
+        return ''
     }
 }
