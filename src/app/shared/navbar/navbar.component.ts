@@ -153,7 +153,7 @@ export class NavbarComponent implements OnInit {
         const { authType, url } = this.orgQuery.getValue()
         if (authType === 0) {
             if (!this.access.isCommunityVerified()) {
-                return this.router.navigate(['communities', this.organization.url, '/auth/verify'], { replaceUrl: true })
+                return this.router.navigate(['communities', this.organization.url, 'auth', 'verify'], { replaceUrl: true })
             }
 
             return this.auth.verifyWithCommunity()
@@ -168,7 +168,7 @@ export class NavbarComponent implements OnInit {
 
         if (authType === 1) {
             if (!this.access.isCommunityVerified()) {
-                return this.router.navigate(['communities', this.organization.url, '/auth/login'], { replaceUrl: true })
+                return this.router.navigate(['communities', this.organization.url, 'auth', 'login'], { replaceUrl: true })
             }
         }
 
