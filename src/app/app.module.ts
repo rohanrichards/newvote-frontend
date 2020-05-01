@@ -44,7 +44,12 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
+<<<<<<< HEAD
 import { JwtModule } from '@auth0/angular-jwt'
+=======
+import { FeedModule } from './feed/feed.module'
+import { MomentModule } from 'ngx-moment'
+>>>>>>> staging
 
 @NgModule({
     imports: [
@@ -61,6 +66,11 @@ import { JwtModule } from '@auth0/angular-jwt'
         CoreModule,
         SharedModule,
         ShellModule,
+<<<<<<< HEAD
+=======
+        HomeModule,
+        FeedModule,
+>>>>>>> staging
         ShareModule,
         InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
@@ -88,6 +98,7 @@ import { JwtModule } from '@auth0/angular-jwt'
             }
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
+        MomentModule,
         AppRoutingModule,
     ],
     declarations: [

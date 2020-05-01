@@ -102,6 +102,8 @@ export class HomeComponent implements OnInit {
         )
 
         // this.subscribeToOrgStore()
+        this.stateService.setLoadingState(AppState.loading)
+        this.subscribeToOrgStore()
         this.subscribeToIssueStore()
         this.subscribeToProposalStore()
         this.subscribeToSolutionStore()

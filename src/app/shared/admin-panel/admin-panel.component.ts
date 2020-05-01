@@ -25,6 +25,7 @@ export class AdminPanelComponent implements OnInit {
     @Input() path: string;
 
  
+    @Output() toggleEdit = new EventEmitter()
     constructor(
         public admin: AdminService,
         public auth: AuthenticationQuery,
@@ -55,4 +56,7 @@ export class AdminPanelComponent implements OnInit {
         return this.router.navigate([`/communities/${item.slug || item._id}`])
     }
 
+    toggleNotificationEdit(notification: Notification) {
+        this.toggleEdit.emit(notification)
+    }
 }

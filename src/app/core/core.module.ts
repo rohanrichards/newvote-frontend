@@ -60,6 +60,9 @@ import { EntityVotesStore } from './http/mediators/entity-votes.store'
 import { SolutionService } from './http/solution/solution.service'
 import { ProposalService } from './http/proposal/proposal.service'
 import { UserService } from './http/user/user.service'
+import { NotificationService } from './http/notifications/notification.service'
+import { NotificationStore } from './http/notifications/notification.store'
+import { NotificationQuery } from './http/notifications/notification.query'
 
 
 export function tokenGetter() {
@@ -137,6 +140,10 @@ export function tokenGetter() {
         AccessControlStore,
         AccessControlQuery,
         EntityVotesQuery,
+        EntityVotesStore,
+        NotificationService,
+        NotificationStore,
+        NotificationQuery,
         {
             provide: HttpClient,
             useClass: HttpService

@@ -36,7 +36,14 @@ import { MediaQuery } from '@app/core/http/media/media.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { FeedService } from '@app/core/http/feed'
+import { Progress } from '@app/core/models/progress.model'
+import { ProgressService, ProgressQuery } from '@app/core/http/progress'
+import { cloneDeep } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { NotificationService } from '@app/core/http/notifications/notification.service'
+import { INotification, Notification } from '@app/core/models/notification.model'
+import { NotificationQuery } from '@app/core/http/notifications/notification.query'
 
 @Component({
     selector: 'app-issue',
@@ -62,9 +69,34 @@ export class IssueViewComponent implements OnInit {
     solutions$: Observable<ISolution[]>;
     suggestions$: Observable<ISuggestion[]>;
     isVerified: boolean;
+    progress: any;
+    notifications: INotification[];
+
+    defaultState = {
+        _id: '',
+        organizations: '',
+        parent: '',
+        parentType: 'Issue',
+        states: [
+            {
+                name: 'Raised',
+                active: true
+            },
+            {
+                name: 'In Progress',
+                active: false
+            },
+            {
+                name: 'Outcome',
+                active: false
+            },
+        ]
+    } as Progress
 
     solutionAccordion = false
     suggestionAccordion = false
+
+    notificationToEdit: Notification
 
     constructor(
         private organizationService: OrganizationService,
@@ -88,7 +120,12 @@ export class IssueViewComponent implements OnInit {
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         public access: AccessControlQuery,
-        private entityVotes: EntityVotesQuery
+        private feedService: FeedService,
+        private progressQuery: ProgressQuery,
+        private progressService: ProgressService,
+        private entityVotes: EntityVotesQuery,
+        private notificationService: NotificationService,
+        private notificationQuery: NotificationQuery
     ) { }
 
     ngOnInit() {
@@ -122,16 +159,43 @@ export class IssueViewComponent implements OnInit {
         })
     }
 
+    subscribeToProgressStore(parentId: string) {
+        this.progressQuery.selectAll({
+            filterBy: (entity) => entity.parent === parentId
+        })
+            .subscribe((res) => {
+                if (!res.length) {
+                    this.progress = this.defaultState
+                    return false
+                }
+                this.progress = res[0]
+            })
+    }
+
+    subscribeToNotificationStore(parentId: string) {
+        this.notificationQuery.getNotifications(parentId)
+            .subscribe((res: any) => {
+                if (!res.length) { 
+                    this.notifications = []
+                    return false
+                }
+                this.notifications = res
+            })
+    }
+
     subscribeToIssueStore(id: string) {
 
         this.issueQuery.getIssueWithTopic(id)
             .subscribe(
                 (issue: Issue) => {
                     if (!issue) return issue
+
                     this.issue = issue
                     this.subscribeToSuggestionStore(issue._id)
                     this.subscribeToSolutionStore(issue._id)
                     this.subscribeToMediaStore(issue._id)
+                    this.subscribeToProgressStore(issue._id)
+                    this.subscribeToNotificationStore(issue._id)
                     this.getMedia(issue._id)
                     this.stateService.setLoadingState(AppState.complete)
                 },
@@ -165,13 +229,18 @@ export class IssueViewComponent implements OnInit {
             showDeleted: isOwner ? true : ''
         }
 
+        // this.getProgress()
+        // this.getNotifications()
+
         forkJoin({
             organization: this.organizationService.view({ id: organization, params }),
             topics: this.topicService.list({ orgs: [organization], params }),
             solutions: this.solutionService.list({ orgs: [organization], params }),
             proposls: this.proposalService.list({ orgs: [organization], params }),
             suggestions: this.suggestionService.list({ params }),
-            media: this.mediaService.list({ params: { issueId: id, showDeleted: isOwner ? true : '' } })
+            media: this.mediaService.list({ params: { issueId: id, showDeleted: isOwner ? true : '' } }),
+            progress: this.progressService.get({ id, params }),
+            notifications: this.notificationService.list({ orgs: [organization], params })
         })
             .subscribe(
                 (res) => res,
@@ -282,4 +351,85 @@ export class IssueViewComponent implements OnInit {
             )
     }
 
+    updateProgress(state: any) {
+
+        if (!this.progress._id) {
+            this.progress.parent = this.issue._id
+            this.updateState(this.progress, state)
+            return this.progressService.create({ entity: this.progress })
+                .subscribe(
+                    (res) => res,
+                    (err) => err
+                )
+        }
+        const updatedProgress = cloneDeep(this.progress)
+        this.updateState(updatedProgress, state)
+        return this.progressService.update({ id: this.progress._id, entity: updatedProgress })
+            .subscribe((res) => res)
+    }
+
+    addNotification(description: any) {
+        const notification = {
+            parent: this.issue._id,
+            parentType: 'Issue',
+            imageUrl: '',
+            description,
+            organizations: this.organization._id,
+            user: this.authQuery.getValue()._id
+        } as INotification
+        return this.notificationService.create({ entity: notification })
+            .subscribe(
+                (res) => {
+                    this.admin.openSnackBar('Succesfully created', 'OK')
+                },
+                (err) => {
+                    this.admin.openSnackBar('There was an error while creating your notification', 'OK')
+                    return err
+
+                }
+            )
+    }
+
+    updateState(progressState: any, newState: any) {
+        // Map over the state object and set all states before the index of the updated state
+        const states = progressState.states.slice()
+        const stateIndex = states.findIndex((item: any) => {
+            return item.name === newState.name
+        })
+
+        progressState.states.map((state: any, index: any) => {
+            if (index <= stateIndex) {
+                state.active = true
+                return state
+            }
+            state.active = false
+            return state
+        })
+    }
+
+    setNotificationToEdit(notification: Notification) {
+        // If edit button is hit twice, remove the notification
+        if (this.notificationToEdit && this.notificationToEdit._id === notification._id) {
+            this.notificationToEdit = null
+            return false
+        }
+        // The notification when passed around is from the notificaitons query
+        // all query items are ready only - need to dereference in order to edit
+        const dereferencedNotification = cloneDeep(notification)
+        this.notificationToEdit = dereferencedNotification
+    }
+
+    updateNotification(notification: any) {
+        return this.notificationService.update({ id: notification._id, entity: notification, orgs: [this.organization.url] })
+            .subscribe(
+                (res) => {
+                    this.notificationToEdit = null
+                    this.admin.openSnackBar('Succesfully Updated', 'OK')
+                },
+                (err) => {
+                    this.admin.openSnackBar('There was an error updating the notification', 'OK')
+                    return err
+                }
+            )
+    }
 }

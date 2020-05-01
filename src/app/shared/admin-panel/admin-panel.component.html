@@ -1,7 +1,11 @@
 <ng-container *ngIf="!!isCard; else viewPanel">
-    <div class="card-panel"
+    <div 
+        class="card-panel"
+        [ngClass]="{ notificationPanel: model === 'Notification' }"
         *ngIf="auth.isModerator() || auth.isCreator(item)">
-        <button color="accent"
+        <button 
+            *ngIf="model !== 'Notification'"
+            color="accent"
             mat-icon-button
             (click)="$event.stopPropagation();$event.preventDefault(); handleUrl(item)"
             >
@@ -9,8 +13,34 @@
             </mat-icon>
         </button>
 
+        <ng-container *ngIf="model === 'Notification'">
+            <button 
+                color="accent"
+                mat-icon-button
+                (click)="$event.stopPropagation(); toggleNotificationEdit(item)"
+                >
+                <mat-icon aria-label="Edit the content">edit
+                </mat-icon>
+            </button> 
+            <button color="accent"
+                *ngIf="item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onRestore(item, model, redirectRoute)">
+                <mat-icon aria-label="Restore content">
+                    restore
+                </mat-icon>
+            </button>
+            <button color="accent"
+                *ngIf="!item.softDeleted"
+                mat-icon-button
+                (click)="$event.stopPropagation(); admin.onSoftDelete(item, model, redirectRoute)">
+                <mat-icon aria-label="Remove content">delete
+                </mat-icon>
+            </button>
+        </ng-container>
+
         <ng-container
-            *ngIf="model !== 'Rep' && model !== 'Organization'"
+            *ngIf="model !== 'Rep' && model !== 'Organization' && model !== 'Notification'"
             >
             <button color="accent"
                 *ngIf="item.softDeleted"

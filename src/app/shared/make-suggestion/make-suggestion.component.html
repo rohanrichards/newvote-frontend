@@ -31,8 +31,8 @@
 			</div>
 			<div fxFlex>
 				<div class="quill-container">
-					<mat-label>Give us more detail</mat-label>
-					<quill-editor formControlName="description" [styles]="{height: '150px'}"></quill-editor>
+					<mat-label >Give us more detail</mat-label>
+					<quill-editor [modules]="{toolbar: false}" formControlName="description" [styles]="{'height': '150px', 'margin-top': '1rem'}"></quill-editor>
 				</div>
 			</div>
 

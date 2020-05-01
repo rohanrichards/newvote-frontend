@@ -63,7 +63,8 @@
                     <span
                         *ngFor="let parent of proposal.solutions; let i = index">
                         <a mat-button
-                            routerLink="/solutions/{{parent.slug || parent._id}}">{{parent.title || parent.name | slice:0:30 }}</a>
+                            [title]="parent.title || parent.name"
+                            routerLink="/solutions/{{parent.slug || parent._id}}">{{parent.title || parent.name | slice:0:30 }}{{(parent.title || parent.name).length > 30 ? '...' : ''}}</a>
                     </span>
                 </span>
                 <app-more-less [displayText]="proposal.description"

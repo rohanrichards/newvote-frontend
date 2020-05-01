@@ -1,0 +1,21 @@
+<div>
+    <div class="progress-header"
+        fxLayout="row"
+        fxLayoutAlign="center center">
+        <img class="header-logo" src="assets/progress-logo.png">
+        <h2 class="custom-display2 no-margin" [ngStyle]="{ 'margin': '0 !important'}">Progress Feed</h2>
+    </div>
+    <div
+        [style.margin-top.rem]="2"
+        >
+        <ul class="progress-bar">
+            <li *ngFor="let state of getStates(progressState)"
+                [ngClass]="{
+                        'active': state.active,
+                        'progress-item': true
+                    }">
+                <p class="mat-title">{{ state.name }}</p>
+            </li>
+        </ul>
+    </div>
+</div>
