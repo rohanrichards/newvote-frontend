@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
-
+        this.stateService.setLoadingState(AppState.loading)
         this.subscribeToOrgStore()
         this.subscribeToIssueStore()
         this.subscribeToProposalStore()
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
 
     fetchData() {
         this.isLoading = true
-        this.stateService.setLoadingState(AppState.loading)
+        
 
         this.data.getHome()
         this.userService.count()

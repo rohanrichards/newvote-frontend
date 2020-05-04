@@ -19,6 +19,7 @@ import { Topic, ITopic } from '@app/core/models/topic.model'
 import { Router } from '@angular/router'
 import { IRep } from '@app/core/models/rep.model'
 import { RepService } from '../rep/rep.service'
+import { NotificationService } from '../notifications/notification.service'
 
 type Entities = {
     Topic: ITopic;
@@ -40,6 +41,7 @@ type Services = {
     Media: MediaService;
     Organization: OrganizationService;
     Rep: RepService;
+    Notification: NotificationService;
 }
 
 @Injectable({
@@ -56,6 +58,7 @@ export class AdminService {
         Media: this.mediaService,
         Organization: this.organizationService,
         Rep: this.repService,
+        Notification: this.notificationService
     }
 
     constructor(
@@ -69,7 +72,8 @@ export class AdminService {
         private dialog: MatDialog,
         private snackBar: MatSnackBar,
         private router: Router,
-        private repService: RepService
+        private repService: RepService,
+        private notificationService: NotificationService
     ) { }
 
     getTitle(object: any, model: string): string {
@@ -79,7 +83,7 @@ export class AdminService {
                 : object.name.slice(0, this.MAX_LENGTH) + '...'
         }
 
-        if (model === 'Rep') {
+        if (model === 'Rep' || model === 'Notification') {
             return model
         }
 
@@ -88,26 +92,8 @@ export class AdminService {
             : object.title.slice(0, this.MAX_LENGTH) + '...'
     }
 
-    createEntity(data: any, model: string, softDelete: boolean) {
-        // switch (model) {
-        //     case 'Topic':
-        //         return new Topic(object)
-        //     case 'Issue':
-        //         return new Issue(object)
-        //     case 'Solution':
-        //         return new Solution(object)
-        //     case 'Proposal':
-        //         return new Proposal(object)
-        //     case 'Media':
-        //         return new Media(object)
-        //     case 'Organization':
-        //         return new Organization(object)
-        // }
-    }
-
     onDelete(object: any, model: string, redirectRoute?: string) {
         const title: string = this.getTitle(object, model)
-
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '250px',
             data: {
