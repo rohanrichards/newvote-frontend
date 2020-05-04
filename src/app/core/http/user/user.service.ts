@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
 
 import { IUser } from '@app/core/models/user.model'
+import { handleError } from '../errors'
 
 const routes = {
     list: () => '/users',
@@ -12,7 +13,8 @@ const routes = {
     // create: (c: UserContext) => `/users`,
     // update: (c: UserContext) => `/users/${c.id}`,
     // delete: (c: UserContext) => `/users/${c.id}`
-    patch: (c: UserContext) => `/users/tour/${c.id}`
+    patch: (c: UserContext) => `/users/tour/${c.id}`,
+    subscribe: (c: UserContext) => `/users/subscribe/${c.id}`
 }
 
 export interface UserContext {
@@ -20,6 +22,7 @@ export interface UserContext {
     entity?: IUser; // the object being created or edited
     params?: any;
     forceUpdate?: boolean;
+    subscription?: PushSubscription;
 }
 
 @Injectable()
@@ -92,6 +95,15 @@ export class UserService {
             .pipe(
                 catchError((e) => of({ error: e })),
                 map((res: any) => res),
+            )
+    }
+
+    addPushSubscriber(context: UserContext) {
+        return this.httpClient
+            .put(routes.subscribe(context), context.subscription)
+            .pipe(
+                catchError((e) => handleError(e)),
+                map((res: any) => res)
             )
     }
     // delete(context: UserContext): Observable<any> {

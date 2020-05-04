@@ -13,6 +13,8 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { SwPush } from '@angular/service-worker'
+import { UserService } from '@app/core/http/user/user.service'
 
 @Component({
     selector: 'div[sticky-component]',
@@ -35,6 +37,8 @@ export class NavbarComponent implements OnInit {
     VERIFYDELAY = 1000;
     delayPassed: any;
 
+    readonly VAPID_PUBLIC_KEY = "BOHcYeNY59CyjqMgySxUbOPPDk0QPMbZIqNlQxSok8XJ9FksUZ1KwtqlQ0woskm8wZXrGGjb1kMYdssfBxlO3Ec";
+
     constructor(
         private meta: MetaService,
         private titleService: Title,
@@ -48,7 +52,9 @@ export class NavbarComponent implements OnInit {
         public authQuery: AuthenticationQuery,
         private admin: AdminService,
         public access: AccessControlQuery,
-        public orgQuery: OrganizationQuery
+        public orgQuery: OrganizationQuery,
+        private swPush: SwPush,
+        private userService: UserService
     ) { }
 
     ngOnInit() {
@@ -87,6 +93,22 @@ export class NavbarComponent implements OnInit {
                 this.isRep = res
             })
 
+    }
+
+    subscribeToNotifications() {
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        })
+            .then((sub: any) => {
+                this.userService.addPushSubscriber(sub)
+                    .subscribe(
+                        (res) => {
+                            console.log(sub, 'success')
+                            return res
+                        },
+                        (err) => console.error(err, 'Could not subscribe to notifications')
+                    )
+            })
     }
 
     toggleSearch() {
