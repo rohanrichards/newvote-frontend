@@ -5,6 +5,7 @@ import { map, catchError, tap } from 'rxjs/operators'
 import { handleError } from '@app/core/http/errors'
 import { INotification, Notification } from '@app/core/models/notification.model'
 import { NotificationStore } from './notification.store'
+import { cacheable } from '@datorama/akita'
 
 const routes = {
     list: () => '/notifications',
@@ -42,7 +43,7 @@ export class NotificationService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
@@ -51,6 +52,8 @@ export class NotificationService {
                 }),
                 map((res: Array<any>) => res)
             )
+
+        return cacheable(this.store, request$)
     }
 
     view(context: NotificationContext): Observable<any> {
@@ -61,7 +64,7 @@ export class NotificationService {
             params = new HttpParams({ fromObject: context.params })
         }
 
-        return this.httpClient
+        const request$ = this.httpClient
             .get(routes.view(context), { params })
             .pipe(
                 catchError(handleError),
@@ -70,30 +73,36 @@ export class NotificationService {
                 }),
                 map((res: any) => res)
             )
+
+        return cacheable(this.store, request$)
     }
 
     create(context: NotificationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((notification: Notification) => this.store.add(notification)),
                 map((res: any) => res)
             )
+        return cacheable(this.store, request$)
     }
 
     update(context: NotificationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
                 tap((notification: Notification) => this.store.update(notification._id, notification)),
                 map((res: any) => res)
             )
+
+        return cacheable(this.store, request$)
+
     }
 
     delete(context: NotificationContext): Observable<any> {
-        return this.httpClient
+        const request$ = this.httpClient
             .delete(routes.delete(context))
             .pipe(
                 catchError(handleError),
@@ -102,6 +111,8 @@ export class NotificationService {
                 }),
                 map((res: any) => res)
             )
+        return cacheable(this.store, request$)
+
     }
 
 }

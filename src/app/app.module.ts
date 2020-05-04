@@ -45,7 +45,6 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
-import { FeedModule } from './feed/feed.module'
 import { MomentModule } from 'ngx-moment'
 
 @NgModule({
@@ -64,7 +63,6 @@ import { MomentModule } from 'ngx-moment'
         SharedModule,
         ShellModule,
         HomeModule,
-        FeedModule,
         ShareModule,
         InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
@@ -88,7 +86,6 @@ import { MomentModule } from 'ngx-moment'
         environment.production ? [] : AkitaNgDevtools.forRoot(),
         MomentModule,
         AppRoutingModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     ],
     declarations: [
         AppComponent

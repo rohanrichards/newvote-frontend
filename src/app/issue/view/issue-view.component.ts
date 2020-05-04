@@ -36,7 +36,6 @@ import { MediaQuery } from '@app/core/http/media/media.query'
 import { RepQuery } from '@app/core/http/rep/rep.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
-import { FeedService } from '@app/core/http/feed'
 import { Progress } from '@app/core/models/progress.model'
 import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
@@ -120,7 +119,6 @@ export class IssueViewComponent implements OnInit {
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         public access: AccessControlQuery,
-        private feedService: FeedService,
         private progressQuery: ProgressQuery,
         private progressService: ProgressService,
         private entityVotes: EntityVotesQuery,
