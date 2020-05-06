@@ -96,11 +96,10 @@ export class NavbarComponent implements OnInit {
     }
 
     sendTestMessage() {
-        console.log('test message called')
         this.userService.testPush({ id: this.authQuery.getValue()._id })
             .subscribe(
-                (res: any) => console.log(res, 'this is test message'),
-                (err: any) => console.log(err, 'this is message err')
+                (res: any) => res,
+                (err: any) => err
             )
     }
 
@@ -109,21 +108,16 @@ export class NavbarComponent implements OnInit {
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then((sub: any) => {
-                console.log(sub, 'this is sub')
                 const id = this.authQuery.getValue()._id
-                console.log(id, 'this is id on sub')
                 this.userService.addPushSubscriber({ id, subscription: sub })
                     .subscribe(
-                        (res) => {
-                            console.log(res, 'success')
-                            return res
-                        },
-                        (err) => console.error(err, 'Could not subscribe to notifications')
+                        (res) => res,
+                        (err) => err
                     )
             })
 
         this.swPush.messages.subscribe((message: any) => {
-            console.log(message, 'this is message')
+            console.log(message, 'this is message on subscribe')
             // const notification = new Notification(message.title,{
             //     body: message.body
             // })
