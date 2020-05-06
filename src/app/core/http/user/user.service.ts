@@ -14,7 +14,8 @@ const routes = {
     // update: (c: UserContext) => `/users/${c.id}`,
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`,
-    subscribe: (c: UserContext) => `/users/subscribe/${c.id}`
+    subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
+    push: (c: UserContext) => `/subscriptions/push/${c.id}`
 }
 
 export interface UserContext {
@@ -100,12 +101,19 @@ export class UserService {
 
     addPushSubscriber(context: UserContext) {
         return this.httpClient
-            .put(routes.subscribe(context), context.subscription)
+            .post(routes.subscribe(context), context.subscription)
             .pipe(
                 catchError((e) => handleError(e)),
                 map((res: any) => res)
             )
     }
+
+    testPush(context: UserContext) {
+        console.log('Testing push')
+        return this.httpClient
+            .get(routes.push(context))
+    }
+
     // delete(context: UserContext): Observable<any> {
     //     return this.httpClient
     //         .delete(routes.delete(context))

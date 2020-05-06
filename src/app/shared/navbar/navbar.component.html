@@ -52,6 +52,7 @@
         </mat-menu>
         <div *ngIf="isAuthenticated">
             <button mat-flat-button color="warn" (click)="subscribeToNotifications()">Subscribe to Notifications</button>
+            <button mat-flat-button color="accent" (click)="sendTestMessage()">Test Notification</button>
             <button mat-icon-button
                 [matMenuTriggerFor]="userMenu"
                 translate>

@@ -33,7 +33,7 @@
 						"styles": [
 							"src/main.scss",
 							"node_modules/font-awesome/css/font-awesome.css"
-						],
+						]
 					},
 					"configurations": {
 						"production": {
@@ -63,6 +63,7 @@
 							"vendorChunk": false,
 							"buildOptimizer": true,
 							"serviceWorker": true,
+							"ngswConfigPath": "./ngsw-config.json",
 							"fileReplacements": [{
 								"replace": "src/environments/environment.ts",
 								"with": "src/environments/environment.staging.ts"

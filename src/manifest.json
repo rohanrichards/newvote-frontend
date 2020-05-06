@@ -4,6 +4,7 @@
 	"theme_color": "#0277bd",
 	"background_color": "#0277bd",
 	"scope": "/",
+	"url": "newvote.org",
 	"start_url": "/",
 	"display": "standalone",
 	"icons": [{

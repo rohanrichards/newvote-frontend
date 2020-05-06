@@ -95,20 +95,41 @@ export class NavbarComponent implements OnInit {
 
     }
 
+    sendTestMessage() {
+        console.log('test message called')
+        this.userService.testPush({ id: this.authQuery.getValue()._id })
+            .subscribe(
+                (res: any) => console.log(res, 'this is test message'),
+                (err: any) => console.log(err, 'this is message err')
+            )
+    }
+
     subscribeToNotifications() {
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then((sub: any) => {
-                this.userService.addPushSubscriber(sub)
+                console.log(sub, 'this is sub')
+                const id = this.authQuery.getValue()._id
+                console.log(id, 'this is id on sub')
+                this.userService.addPushSubscriber({ id, subscription: sub })
                     .subscribe(
                         (res) => {
-                            console.log(sub, 'success')
+                            console.log(res, 'success')
                             return res
                         },
                         (err) => console.error(err, 'Could not subscribe to notifications')
                     )
             })
+
+        this.swPush.messages.subscribe((message: any) => {
+            console.log(message, 'this is message')
+            // const notification = new Notification(message.title,{
+            //     body: message.body
+            // })
+            // Notifi
+            return message
+        })
     }
 
     toggleSearch() {
