@@ -20,7 +20,11 @@
                 <div class="mat-title main-content" [innerHTML]="notification.description"></div>
                 <div class="feed-footer"
                     fxFlexAlign="baseline" fxLayout="row">
-                    <p class="mat-subheading-2 date-text"><strong>{{notification.user.displayName || 'Test Name'}} -</strong> {{ createDate(notification.created_at) | amLocal | amDateFormat: 'Do MMMM YYYY' }}</p>
+                    <p class="mat-subheading-2 date-text">
+                        <strong>{{ handleDisplayName(notification) }}</strong>
+                        <span class="position-text">{{ handlePosition(notification) }}</span>
+                        {{ createDate(notification.created_at) | amLocal | amDateFormat: 'Do MMMM YYYY' }}
+                    </p>
                 </div>
             </div>     
         </div> 
