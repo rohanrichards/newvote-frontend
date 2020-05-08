@@ -147,7 +147,7 @@ export class IssueListComponent implements OnInit {
                 description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
             })
 
-        // this.fetchData()
+        this.fetchData()
         this.stateService.setLoadingState(AppState.complete)
     }
 
