@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { map, catchError, tap } from 'rxjs/operators'
 
 import { IUser } from '@app/core/models/user.model'
 import { handleError } from '../errors'
+import { AuthenticationStore } from '@app/core/authentication/authentication.store'
 
 const routes = {
     list: () => '/users',
@@ -15,7 +16,7 @@ const routes = {
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`,
     subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
-    push: (c: UserContext) => `/subscriptions/push/${c.id}`
+    unsubscribe: (c: UserContext) => `/subscriptions/${c.id}`,
 }
 
 export interface UserContext {
@@ -23,13 +24,13 @@ export interface UserContext {
     entity?: IUser; // the object being created or edited
     params?: any;
     forceUpdate?: boolean;
-    subscription?: PushSubscription;
+    subscription?: PushSubscription | null;
 }
 
 @Injectable()
 export class UserService {
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient, private store: AuthenticationStore) { }
 
     count(): Observable<any> {
         return this.httpClient
@@ -108,10 +109,14 @@ export class UserService {
             )
     }
 
-    testPush(context: UserContext) {
-        console.log('Testing push')
+    removePushSubscriber(context: UserContext) {
         return this.httpClient
-            .get(routes.push(context))
+            .put(routes.unsubscribe(context), context.subscription)
+            .pipe(
+                catchError((e) => handleError(e)),
+                tap((res: any) => this.store.update({ pushSubscription: null })),
+                map((res: any) => res)
+            )
     }
 
     // delete(context: UserContext): Observable<any> {

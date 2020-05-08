@@ -51,7 +51,7 @@
             </mat-list>
         </mat-menu>
         <div *ngIf="isAuthenticated">
-            <button mat-flat-button color="warn" (click)="handleSubscription()">{{ !notificationSubscription ? 'Subscribe to Notifications' : 'Unsubscribe from Push Notifications' }}</button>
+            <button mat-flat-button color="warn" [disabled]="subDisabled" (click)="handleSubscription()">{{ !notificationSubscription ? 'Subscribe to Notifications' : 'Unsubscribe from Push Notifications' }}</button>
             <button mat-icon-button
                 [matMenuTriggerFor]="userMenu"
                 translate>

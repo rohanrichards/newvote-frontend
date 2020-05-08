@@ -40,6 +40,7 @@ export class NavbarComponent implements OnInit {
     notificationSubscription = false
 
     readonly VAPID_PUBLIC_KEY = "BOHcYeNY59CyjqMgySxUbOPPDk0QPMbZIqNlQxSok8XJ9FksUZ1KwtqlQ0woskm8wZXrGGjb1kMYdssfBxlO3Ec";
+    subDisabled = false
 
     constructor(
         private meta: MetaService,
@@ -77,14 +78,17 @@ export class NavbarComponent implements OnInit {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
 
-        this.authQuery.select()
-            .subscribe(
-                (res: any) => {
-                    if (!res || !res.pushSubscription) this.notificationSubscription = false
-                    console.log(res, 'this is res on authQuery')
-                    this.notificationSubscription = (res && res.pushSubscription && res.pushSubscription.endpoint)
+        this.swPush.subscription
+            .subscribe((res) => {
+                if (!res) {
+                    // no subscription
+                    this.notificationSubscription = false
+                    return
                 }
-            )
+
+                this.notificationSubscription = true
+            },
+            (err) => err)
 
         this.meta.routeLevel$
             .subscribe((res) => {
@@ -118,28 +122,51 @@ export class NavbarComponent implements OnInit {
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then((sub: any) => {
+                this.notificationSubscription = true
                 const id = this.authQuery.getValue()._id
-                this.userService.addPushSubscriber({ id, subscription: sub })
-                    .subscribe(
-                        (res) => {
-                            this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
-                        },
-                        (err) => {
-                            this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
-                            return err
-                        }
-                    )
+                this.createPushNotification(id, sub)
+            })
+            .catch((err) => {
+                this.subDisabled = true
+                this.admin.openSnackBar('Browser does not support push notifications.', 'OK')
+                return err
             })
     }
 
+    createPushNotification(id: string, subscription: PushSubscription) {
+        this.userService.addPushSubscriber({ id, subscription })
+            .subscribe(
+                (res) => {
+                    this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
+                },
+                (err) => {
+                    this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
+                    return err
+                }
+            )
+    }
+
     unsubscribeFromNotifications() {
-        this.swPush.unsubscribe()
-            .then((sub) => {
-                console.log(sub, 'unsubbed sub')
-            })
-            .catch((err) => {
-                console.log(err, 'this is err')
-            })
+
+        if (this.notificationSubscription) {
+            this.swPush.unsubscribe()
+                .then((sub) => {
+                    const id = this.authQuery.getValue()._id
+                    this.userService.removePushSubscriber({ id, subscription: null })
+                        .subscribe(
+                            (res) => {
+                                this.notificationSubscription = false
+                            },
+                            (err) => {
+                                console.log(err, 'this is err')
+                            }
+                        )
+                    this.admin.openSnackBar('Unsubscribed from push Notifications', 'OK')
+                })
+                .catch((err) => err)
+        } else {
+            return false
+        }
     }
 
     toggleSearch() {
@@ -236,12 +263,9 @@ export class NavbarComponent implements OnInit {
     }
 
     handleSubscription() {
-        const { pushSubscription } = this.authQuery.getValue() as any
-
-        if (!pushSubscription || !pushSubscription.endpoint) {
+        if (!this.notificationSubscription) {
             return this.subscribeToNotifications()
         }
-
         return this.unsubscribeFromNotifications()
     }
 
