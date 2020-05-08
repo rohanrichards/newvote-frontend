@@ -28,7 +28,8 @@
 							"src/robots.txt",
 							"src/manifest.json",
 							"src/assets",
-							"src/.well-known"
+							"src/.well-known",
+							"src/my-worker.js"
 						],
 						"styles": [
 							"src/main.scss",

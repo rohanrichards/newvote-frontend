@@ -4,7 +4,7 @@ import { AuthenticationService } from '@app/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
-import { MatSidenav, MatSnackBar } from '@angular/material'
+import { MatSidenav } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
 import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
@@ -45,7 +45,6 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
-        public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private location: Location,
         public repQuery: RepQuery,
@@ -111,19 +110,15 @@ export class NavbarComponent implements OnInit {
                 const id = this.authQuery.getValue()._id
                 this.userService.addPushSubscriber({ id, subscription: sub })
                     .subscribe(
-                        (res) => res,
-                        (err) => err
+                        (res) => {
+                            this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
+                        },
+                        (err) => {
+                            this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
+                            return err
+                        }
                     )
             })
-
-        this.swPush.messages.subscribe((message: any) => {
-            console.log(message, 'this is message on subscribe')
-            // const notification = new Notification(message.title,{
-            //     body: message.body
-            // })
-            // Notifi
-            return message
-        })
     }
 
     toggleSearch() {

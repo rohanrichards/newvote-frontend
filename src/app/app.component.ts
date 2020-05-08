@@ -82,15 +82,15 @@ export class AppComponent implements OnInit {
             }
         })
 
-        this.fetchData()
+        // this.fetchData()
     }
 
-    fetchData() {
-        this.dataFetch.get()
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
-    }
+    // fetchData() {
+    //     this.dataFetch.get()
+    //         .subscribe(
+    //             (res) => res,
+    //             (err) => err
+    //         )
+    // }
 
 }

@@ -7,16 +7,33 @@
 	"url": "newvote.org",
 	"start_url": "/",
 	"display": "standalone",
-	"icons": [{
+	"description": "Join your community to vote on the issues that matter",
+	"icons": [
+		{
+			"src": "assets/logo-no-text.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "assets/logo-no-text.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "assets/logo-no-text.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "assets/logo-no-text.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
 		"src": "assets/logo-no-text.png",
 		"sizes": "512x512",
 		"type": "image/png"
-	}],
-	"mjs_cordova": {
-		"plugin_mode": "client"
-	},
-	"mjs_api_access": [{
-			"match": "*"
-		}
-	]
+	}]
 }
