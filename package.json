@@ -18,7 +18,7 @@
         "e2e": "npm run env -s && ng e2e",
         "translations:extract": "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
         "docs": "hads ./docs -o",
-        "env": "ngx-scripts env npm_package_version recaptcha_sitekey staging_recaptcha_sitekey",
+        "env": "ngx-scripts env npm_package_version recaptcha_sitekey staging_recaptcha_sitekey vapid_public_key",
         "generate": "ng generate"
     },
     "dependencies": {

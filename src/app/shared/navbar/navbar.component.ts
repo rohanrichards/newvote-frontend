@@ -15,7 +15,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { SwPush } from '@angular/service-worker'
 import { UserService } from '@app/core/http/user/user.service'
-
+import { environment } from '@env/environment'
 @Component({
     selector: 'div[sticky-component]',
     templateUrl: './navbar.component.html',
@@ -38,8 +38,6 @@ export class NavbarComponent implements OnInit {
     delayPassed: any;
 
     notificationSubscription = false
-
-    readonly VAPID_PUBLIC_KEY = "BOHcYeNY59CyjqMgySxUbOPPDk0QPMbZIqNlQxSok8XJ9FksUZ1KwtqlQ0woskm8wZXrGGjb1kMYdssfBxlO3Ec";
     subDisabled = false
 
     constructor(
@@ -109,17 +107,9 @@ export class NavbarComponent implements OnInit {
 
     }
 
-    sendTestMessage() {
-        this.userService.testPush({ id: this.authQuery.getValue()._id })
-            .subscribe(
-                (res: any) => res,
-                (err: any) => err
-            )
-    }
-
     subscribeToNotifications() {
         this.swPush.requestSubscription({
-            serverPublicKey: this.VAPID_PUBLIC_KEY
+            serverPublicKey: environment.vapidPublicKey
         })
             .then((sub: any) => {
                 this.notificationSubscription = true
