@@ -37,6 +37,8 @@ export class NavbarComponent implements OnInit {
     VERIFYDELAY = 1000;
     delayPassed: any;
 
+    notificationSubscription = false
+
     readonly VAPID_PUBLIC_KEY = "BOHcYeNY59CyjqMgySxUbOPPDk0QPMbZIqNlQxSok8XJ9FksUZ1KwtqlQ0woskm8wZXrGGjb1kMYdssfBxlO3Ec";
 
     constructor(
@@ -74,6 +76,14 @@ export class NavbarComponent implements OnInit {
             .subscribe((verified: boolean) => {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
+
+        this.authQuery.select()
+            .subscribe(
+                (res: any) => {
+                    if (!res) this.notificationSubscription = false
+                    this.notificationSubscription = !!res.pushSubscription.endpoint
+                }
+            )
 
         this.meta.routeLevel$
             .subscribe((res) => {
@@ -118,6 +128,16 @@ export class NavbarComponent implements OnInit {
                             return err
                         }
                     )
+            })
+    }
+
+    unsubscribeFromNotifications() {
+        this.swPush.unsubscribe()
+            .then((sub) => {
+                console.log(sub, 'unsubbed sub')
+            })
+            .catch((err) => {
+                console.log(err, 'this is err')
             })
     }
 
@@ -212,6 +232,16 @@ export class NavbarComponent implements OnInit {
                 (error) => {
                     this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
+    }
+
+    handleSubscription() {
+        const subscription = this.authQuery.getValue().pushSubscription as any
+
+        if (!subscription || !subscription.endpoint) {
+            return this.subscribeToNotifications()
+        }
+
+        return this.unsubscribeFromNotifications()
     }
 
 }

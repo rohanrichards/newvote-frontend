@@ -21,6 +21,8 @@ export interface IUser {
     completedTour?: boolean;
     organizations: string[];
     providerData?: IProvider;
+    pushSubscription?: {};
+    subscriptions?: {};
 }
 
 export class User implements IUser {

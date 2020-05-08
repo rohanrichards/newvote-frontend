@@ -1,4 +1,5 @@
 <div
+    fxLayout="column-reverse"   
     fxFlex>
     <div *ngFor="let notification of notifications"
         class="progress-item"
@@ -14,7 +15,7 @@
             isCard="true"
             (toggleEdit)="handleNotification($event)"
             ></app-admin-panel>
-        <div fxLayout="row-reverse" >
+        <div fxLayout="row" >
             <div class="block-quote"></div>
             <div>
                 <div class="mat-title main-content" [innerHTML]="notification.description"></div>
