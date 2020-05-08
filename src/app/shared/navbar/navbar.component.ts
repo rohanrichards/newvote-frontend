@@ -80,8 +80,9 @@ export class NavbarComponent implements OnInit {
         this.authQuery.select()
             .subscribe(
                 (res: any) => {
-                    if (!res) this.notificationSubscription = false
-                    this.notificationSubscription = !!res.pushSubscription.endpoint
+                    if (!res || !res.pushSubscription) this.notificationSubscription = false
+                    console.log(res, 'this is res on authQuery')
+                    this.notificationSubscription = (res && res.pushSubscription && res.pushSubscription.endpoint)
                 }
             )
 
@@ -235,9 +236,9 @@ export class NavbarComponent implements OnInit {
     }
 
     handleSubscription() {
-        const subscription = this.authQuery.getValue().pushSubscription as any
+        const { pushSubscription } = this.authQuery.getValue() as any
 
-        if (!subscription || !subscription.endpoint) {
+        if (!pushSubscription || !pushSubscription.endpoint) {
             return this.subscribeToNotifications()
         }
 
