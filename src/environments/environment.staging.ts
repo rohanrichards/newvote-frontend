@@ -15,7 +15,8 @@ export const environment = {
         'en-US',
         'fr-FR'
     ],
-    recaptchaSitekey: env.staging_recaptcha_sitekey
+    recaptchaSitekey: env.staging_recaptcha_sitekey,
+    vapidPublicKey: env.vapid_public_key
 }
 
 /*
