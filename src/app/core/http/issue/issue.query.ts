@@ -67,4 +67,31 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
                 })
             )
     }
+
+    getIssuesByOrganizations(organizations: any[]) {
+        return this.issues$
+            .pipe(
+                map((issues: any[]) => {
+                    const issuesObj = {}
+                    organizations.forEach((organization) => {
+                        if (!issuesObj[organization]) {
+                            issuesObj[organization] = {
+                                issues: [],
+                            }
+                        }    
+                        return organization
+                    })
+
+                    issues.forEach((issue) => {
+                        if (issuesObj[issue.organizations._id]) {
+                            issuesObj[issue.organizations._id].issues.push(issue)
+                        }
+
+                        return issue
+                    })
+
+                    return issuesObj
+                })
+            )
+     }   
 }

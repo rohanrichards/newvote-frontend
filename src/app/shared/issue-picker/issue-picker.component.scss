@@ -1,0 +1,45 @@
+:host {
+  margin-bottom: 1rem;
+}
+
+.picker-wrapper {
+  border: 1px solid black;
+  border-radius: 5px;
+  max-height: 270px;
+  overflow: hidden;
+}
+
+.organization-box {
+  border-right: 1px solid black;
+  overflow-y: scroll;
+}
+
+.issue-box {
+  text-align: left;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+.selected {
+  background: rgba(0,0,0,.08);
+}
+
+// .entity-tabs {
+//   max-height: 265px;
+// }
+
+// .organization-header {
+//   border-bottom: 1px solid lightgrey;
+// }
+
+
+@media only screen and (max-width: 950px) {
+  .issue-box {
+    border-top: 1px solid black;
+    margin-top: 0.25rem;
+  }
+
+  .picker-wrapper {
+    max-height: 400px;
+  }
+}

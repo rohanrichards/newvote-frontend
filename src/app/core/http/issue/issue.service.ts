@@ -42,6 +42,11 @@ export class IssueService {
             // { topicId: [id], search: [search terms], ...}
             params = new HttpParams({ fromObject: context.params })
         }
+
+        if (context.orgs) {
+            params = params.append('orgs', context.orgs.join(','))
+        }
+        
         const options = {
             withCredentials: true,
             params

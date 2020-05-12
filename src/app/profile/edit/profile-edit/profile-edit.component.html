@@ -1,0 +1,42 @@
+<app-loader [isLoading]="isLoading"
+    size="1.5"></app-loader>
+<div class="container"
+    fxLayoutAlign="center center">
+    <mat-card fxFlex.gt-sm="60"
+        fxFlex="100">
+        <form [formGroup]="profileForm"
+            fxLayout="column"
+            (ngSubmit)="onSave()"
+            novalidate>
+
+            <mat-form-field>
+                <input matInput
+                    placeholder="Enter a display name for your profile."
+                    formControlName="displayName"
+                    required>
+                <mat-error>
+                    Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
+                Subscriptions
+                <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button>
+            </div>
+            
+           <app-issue-picker
+                [parentForm]="profileForm"
+                [user]="userData"
+                [isEnabled]="enablePicker"
+                [organizations]="organizations"
+                [issues]="issuesObj"
+           >
+           </app-issue-picker>
+
+           <button mat-flat-button
+            type="submit"
+            [disabled]="!profileForm.valid || isLoading"
+            color="primary">Update</button>
+        </form>
+    </mat-card>
+</div>

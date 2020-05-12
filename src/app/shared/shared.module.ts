@@ -58,6 +58,7 @@ import { ProgressFeedComponent } from './progress-feed/progress-feed.component'
 import { ProgressFormComponent } from './progress-form/progress-form.component';
 import { NotificationFeedComponent } from './notification-feed/notification-feed.component'
 import { MomentModule } from 'ngx-moment';
+import { IssuePickerComponent } from './issue-picker/issue-picker.component';
 @NgModule({
     imports: [
         FlexLayoutModule,
@@ -119,7 +120,8 @@ import { MomentModule } from 'ngx-moment';
         ProgressBarComponent,
         ProgressFeedComponent,
         ProgressFormComponent,
-        NotificationFeedComponent
+        NotificationFeedComponent,
+        IssuePickerComponent
     ],
     exports: [
         LoaderComponent,
@@ -158,7 +160,8 @@ import { MomentModule } from 'ngx-moment';
         ProgressBarComponent,
         ProgressFeedComponent,
         ProgressFormComponent,
-        NotificationFeedComponent
+        NotificationFeedComponent,
+        IssuePickerComponent
     ]
 })
 export class SharedModule { }

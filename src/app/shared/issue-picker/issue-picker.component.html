@@ -1,0 +1,34 @@
+<div class="picker-wrapper" 
+    fxLayout="row" 
+    fxLayout.lt-md="column"
+    >
+    <div class="organization-box">
+        <mat-nav-list disabled="true">
+            <h3 class="mat-subheading-1 organization-header">Your <br> Organizations</h3>
+            <mat-list-item 
+                *ngFor="let organization of organizations" 
+                [ngClass]="{selected: selectedItem === organization._id}"
+                (click)="handleClick(organization._id)"
+                >
+                {{ organization.name }}
+            </mat-list-item>
+         </mat-nav-list>
+    </div>
+    <div class="issue-box">
+        <mat-tab-group  mat-align-tabs="start" class="entity-tabs">
+            <mat-tab label="Issues" [disabled]="!isEnabled">
+                <mat-selection-list *ngIf="selectedItem"
+                    (selectionChange)="handleChange($event)"
+                    >
+                    <mat-list-option
+                        [value]="issue._id"
+                        *ngFor="let issue of issues[selectedItem].issues"
+                        [disabled]="isEnabled"
+                        >
+                        {{ (issue.name.length>40)? (issue.name | slice:0:40)+'..':(issue.name) }}
+                    </mat-list-option>
+                </mat-selection-list>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
