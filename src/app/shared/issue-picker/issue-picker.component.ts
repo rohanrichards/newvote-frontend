@@ -5,6 +5,10 @@ import { IOrganization } from '@app/core/models/organization.model';
 import { IIssue } from '@app/core/models/issue.model';
 import { MatSelectionListChange } from '@angular/material';
 
+type Subscription = {
+    isSubscribed: boolean;
+    issues: string[];
+}
 @Component({
   selector: 'app-issue-picker',
   templateUrl: './issue-picker.component.html',
@@ -19,8 +23,7 @@ export class IssuePickerComponent implements OnInit, OnChanges {
 
     selectedItem: string;
 
-    subscriptionForm = this.fb.group({
-    })
+    subscriptionForm: FormGroup;
 
     // subscription = {
     //   "kip": {
@@ -32,10 +35,11 @@ export class IssuePickerComponent implements OnInit, OnChanges {
     constructor(private fb: FormBuilder) { }
 
     ngOnInit() {
+        this.initForm(this.user.subscriptions)
         this.parentForm.addControl('subscriptions', this.subscriptionForm)
 
         this.organizations.forEach((organization) => {
-            this.addControl(organization)
+            this.addControl(organization._id)
         })
     }
 
@@ -52,38 +56,25 @@ export class IssuePickerComponent implements OnInit, OnChanges {
         this.selectedItem = item !== this.selectedItem ? item : ''
     }
 
-    addControl(organization: IOrganization): void {
-        this.subscriptionForm.addControl(organization._id, this.createFormGroup())
+    initForm(subscriptions: any): void {
+        Object.entries(subscriptions).forEach(([key, value]: any) => {
+            if (!key) return false
+            this.addControl(key, value)
+        })
     }
 
-    createFormGroup() {
+    addControl(id: string, value?: Subscription): void {
+        this.subscriptionForm.addControl(id, this.createFormGroup(value))
+    }
+
+    createFormGroup(value?: Subscription): FormGroup {
         return this.fb.group({
-            isSubscribed: [false],
-            issues: this.fb.array([])
+            isSubscribed: [value.isSubscribed || false],
+            issues: this.fb.array(value.issues || [])
         })
     }
 
     handleChange(event: MatSelectionListChange): void {
         (this.subscriptionForm.get(this.selectedItem) as FormGroup).setControl('issues', this.fb.array(event.source._value || []))
-        
-        console.log(this.subscriptionForm.value, 'this is form')
-        // const id = event.option.value
-        // const index = form.length ? form.findIndex((item: any) => {
-        //     console.log(item)
-        //     console.log(id)
-        //     console.log(item)
-        //     return item === id
-        // }) : -1
-
-        // console.log(event, 'this is event')
-        // console.log(form, 'this is form')
-        // console.log(this.subscriptionForm.value)
-
-        // if (index !== -1) {
-        //     form.removeAt(index)
-        //     return
-        // }
-
-        // form.push(id)
     }
 }
