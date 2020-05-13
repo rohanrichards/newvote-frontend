@@ -14,11 +14,12 @@
             </mat-list-item>
          </mat-nav-list>
     </div>
-    <div class="issue-box">
-        <mat-tab-group  mat-align-tabs="start" class="entity-tabs">
+    <div class="issue-box" *ngIf="organizations.length">
+        <mat-tab-group mat-align-tabs="start" class="entity-tabs">
             <mat-tab label="Issues" [disabled]="!isEnabled">
                 <mat-selection-list *ngIf="selectedItem"
                     (selectionChange)="handleChange($event)"
+                    [(ngModel)]="subscriptionForm.get(selectedItem).value.issues"
                     >
                     <mat-list-option
                         [value]="issue._id"

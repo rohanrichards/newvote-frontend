@@ -221,8 +221,10 @@ export class NavbarComponent implements OnInit {
     handleVerify() {
         // If community is authType 0
         const { authType, url } = this.orgQuery.getValue()
+        const canVerify = this.authQuery.canVerify()
+
         if (authType === 0) {
-            if (!this.access.isCommunityVerified()) {
+            if (!canVerify) {
                 return this.router.navigate(['/auth/verify'], { replaceUrl: true })
             }
 
@@ -237,7 +239,7 @@ export class NavbarComponent implements OnInit {
         }
 
         if (authType === 1) {
-            if (!this.access.isCommunityVerified()) {
+            if (!canVerify) {
                 return this.router.navigate(['/auth/login'], { replaceUrl: true })
             }
         }

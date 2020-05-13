@@ -70,9 +70,14 @@
                         translate>Edit Community</a>
                     <mat-divider></mat-divider>
                     <a mat-menu-item
+                        *ngIf="authQuery.isUserVerified()"
+                        routerLink="/profile"
+                        translate>Edit Profile</a>
+                    <mat-divider></mat-divider>
+                    <a mat-menu-item
                         *ngIf="isRep && organization"
                         routerLink="/reps/edit/{{userId}}"
-                        translate>Edit Profile</a>
+                        translate>Edit Rep Profile</a>
                     <mat-divider *ngIf="isRep"></mat-divider>
                 </mat-list>
                 <button mat-menu-item

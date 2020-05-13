@@ -25,6 +25,8 @@ export interface IUser {
     subscriptions?: {};
 }
 
+export type IProfile = Pick<IUser, 'displayName' | 'subscriptions'> & Partial<IUser>
+
 export class User implements IUser {
     public constructor(
         public _id: string = '',

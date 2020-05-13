@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
-import { IUser } from '@app/core/models/user.model'
+import { IUser, IProfile } from '@app/core/models/user.model'
 import { handleError } from '../errors'
 import { AuthenticationStore } from '@app/core/authentication/authentication.store'
 
@@ -12,19 +12,25 @@ const routes = {
     count: () => '/users/count',
     // view: (c: UserContext) => `/users/${c.id}`,
     // create: (c: UserContext) => `/users`,
-    // update: (c: UserContext) => `/users/${c.id}`,
+    update: (c: ProfileContext) => `/users/${c.id}/edit`,
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`,
     subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
     unsubscribe: (c: UserContext) => `/subscriptions/${c.id}`,
 }
 
-export interface UserContext {
+interface ApiContext {
     id?: string; // id of object to find/modify
-    entity?: IUser; // the object being created or edited
     params?: any;
-    forceUpdate?: boolean;
+}
+
+export interface UserContext extends ApiContext {
+    entity?: IUser;
     subscription?: PushSubscription | null;
+}
+
+export interface ProfileContext extends ApiContext {
+    entity?: IProfile;
 }
 
 @Injectable()
@@ -90,6 +96,19 @@ export class UserService {
     //             catchError((e) => of({ error: e }))
     //         );
     // }
+
+    update(context: ProfileContext): Observable<any> {
+        return this.httpClient
+            .put(routes.update(context), context.entity)
+            .pipe(
+                catchError((e) => handleError(e)),
+                tap((res: any) => {
+                    const { displayName, subscriptions } = res
+                    this.store.update({ displayName, subscriptions })
+                }),
+                map((res: any) => res),
+            );
+    }
 
     patch(context: UserContext): Observable<any> {
         return this.httpClient

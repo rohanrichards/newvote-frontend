@@ -89,7 +89,7 @@ export class IssueQuery extends QueryEntity<IssueState, Issue> {
 
                         return issue
                     })
-
+                    
                     return issuesObj
                 })
             )
