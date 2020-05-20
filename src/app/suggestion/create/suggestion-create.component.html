@@ -96,6 +96,7 @@
                         placeholder="e.g Create new content for climate change"
                         formControlName="title"
                         required>
+                    <mat-hint>50 character limit.</mat-hint>
                     <mat-error
                         *ngIf="suggestionForm.hasError('required', ['title'])">
                         Title is <strong>required</strong>

@@ -35,7 +35,7 @@ export class SuggestionEditComponent implements OnInit {
     isLoading = true;
 
     suggestionForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
+        title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         type: new FormControl('', [Validators.required]),
         description: new FormControl('', [Validators.required]),
         statements: new FormControl(''),

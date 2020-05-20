@@ -61,6 +61,7 @@
                 target="_blank">
                 <span translate
                     >About {{organization.name}}</span>
+                    <mat-icon [style.margin-left]="'auto'">launch</mat-icon>
             </a>
 
         </ng-container>
@@ -68,7 +69,7 @@
         <ng-template #communityBlock>
             <a mat-list-item
                 (click)="isMobile && handleClick()">
-                <span translate>Home</span>
+                <span translate>Home</span> 
             </a>
         </ng-template>
         
@@ -79,18 +80,21 @@
             target="_blank">
             <span translate
                 matLine>About NewVote</span>
-        </a>
+                <mat-icon [style.margin-left]="'auto'">launch</mat-icon>
+            </a>
 
         <a mat-list-item
             href="https://newvote.org/help"
             target="_blank">
             <span translate>Help</span>
+            <mat-icon [style.margin-left]="'auto'">launch</mat-icon>
         </a>
 
         <a mat-list-item
             href="https://docs.google.com/forms/d/1nqAUYXksiWyd6HwDdbFgO3-vU-2LI0xtFm1tyX_JgFk/edit"
             target="_blank">
             <span translate>Give Feedback</span>
+            <mat-icon [style.margin-left]="'auto'">launch</mat-icon>
         </a>
     </mat-list>
 </nav>

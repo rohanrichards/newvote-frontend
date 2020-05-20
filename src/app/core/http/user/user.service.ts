@@ -107,7 +107,6 @@ export class UserService {
                     const { displayName, subscriptions } = res
                     this.store.update({ displayName, subscriptions })
                     const credentials = this.authService.credentials
-                    console.log(credentials, 'this is credentials');
                     this.authService.updateCredentials(res)
                 }),
                 map((res: any) => res),

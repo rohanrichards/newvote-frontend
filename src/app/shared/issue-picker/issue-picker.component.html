@@ -24,7 +24,7 @@
                     <mat-list-option
                         [value]="issue._id"
                         *ngFor="let issue of issues[selectedItem].issues"
-                        [disabled]="isEnabled"
+                        [disabled]="!isEnabled"
                         >
                         {{ (issue.name.length>40)? (issue.name | slice:0:40)+'..':(issue.name) }}
                     </mat-list-option>

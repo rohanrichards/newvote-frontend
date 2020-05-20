@@ -86,7 +86,6 @@ export class ProfileEditComponent implements OnInit {
         this.auth.select()
             .subscribe((res) => {
                 if (!res) return false
-                console.log(res, 'this is res')
                 this.userData = res
                 this.profileForm.get('displayName').patchValue(res.displayName || '')
                 this.createProfileForm(res)
