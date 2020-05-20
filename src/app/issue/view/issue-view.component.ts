@@ -433,7 +433,13 @@ export class IssueViewComponent implements OnInit {
             .subscribe((res) => res)
     }
 
-    addNotification(description: any) {
+    addNotification(notificationObject: { isNotification: boolean; description: string }) {
+        const { description, isNotification } = notificationObject
+        
+        const params = {
+            isNotification
+        }
+
         const notification = {
             parent: this.issue._id,
             parentType: 'Issue',
@@ -444,7 +450,7 @@ export class IssueViewComponent implements OnInit {
             rep: this.rep,
             position: !this.rep ? this.getUserPosition() : ''
         } as INotification
-        return this.notificationService.create({ entity: notification })
+        return this.notificationService.create({ entity: notification, params })
             .subscribe(
                 (res) => {
                     this.admin.openSnackBar('Succesfully created', 'OK')

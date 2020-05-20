@@ -31,6 +31,7 @@ export class ProgressFormComponent implements OnChanges {
     showFeed = false
     editNotification = false
     description = ''
+    isNotification = false
 
     ngOnInit() {
         this.setCurrentActiveState(this.progress)
@@ -100,7 +101,13 @@ export class ProgressFormComponent implements OnChanges {
     }
 
     submitNotification() {
-        this.updateNotifications.emit(this.description)
+        // isNotification - user wants the notification delivered to users devices if true
+        const notificationObject = {
+            isNotification: this.isNotification,
+            description: this.description
+        }
+
+        this.updateNotifications.emit(notificationObject)
     }
 
     handleEditedNotification() {

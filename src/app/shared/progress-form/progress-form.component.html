@@ -34,6 +34,10 @@
         fxLayout="column"
         *ngIf="showForm && !notification"
         class="quill-editor-container cf">
+        <div [style.margin-bottom]="'0.5rem'">
+            <mat-slide-toggle [(ngModel)]="isNotification">Send Update as Notification</mat-slide-toggle>
+            <p [style.margin]="'0'"><small class="mat-caption">Users subscribed to this issue will receive a notification to their device.</small></p>
+        </div>
         <quill-editor [(ngModel)]="description"></quill-editor>
         <button 
             fxFlex

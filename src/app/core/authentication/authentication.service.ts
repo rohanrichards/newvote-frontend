@@ -21,6 +21,7 @@ export interface Credentials {
 export interface LoginContext {
     username: string;
     password: string;
+
     remember?: boolean;
     organizations?: [Organization];
 }
@@ -83,7 +84,6 @@ export class AuthenticationService {
                 this.logout()
             }
         }
-
         this.organizationService.get().subscribe(org => { this._org = org })
 
         this.checkStatus()
@@ -402,6 +402,15 @@ export class AuthenticationService {
      */
     get credentials(): Credentials | null {
         return this._credentials
+    }
+
+    updateCredentials(user: any) {
+        const { displayName, subscriptions } = user
+        const credentials = this.credentials;
+        credentials.user.subscriptions = subscriptions;
+        credentials.user.displayName = displayName;
+
+        this.setCredentials(credentials, true);
     }
 
     /**

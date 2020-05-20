@@ -46,7 +46,7 @@ import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 import { MomentModule } from 'ngx-moment';
-import { ProfileModule } from './profile/profile.module'
+import { ProfileModule } from './profile/profile.module';
 
 @NgModule({
     imports: [

@@ -6,6 +6,7 @@ import { map, catchError, tap } from 'rxjs/operators'
 import { IUser, IProfile } from '@app/core/models/user.model'
 import { handleError } from '../errors'
 import { AuthenticationStore } from '@app/core/authentication/authentication.store'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
 
 const routes = {
     list: () => '/users',
@@ -36,7 +37,7 @@ export interface ProfileContext extends ApiContext {
 @Injectable()
 export class UserService {
 
-    constructor(private httpClient: HttpClient, private store: AuthenticationStore) { }
+    constructor(private httpClient: HttpClient, private store: AuthenticationStore, private authService: AuthenticationService) { }
 
     count(): Observable<any> {
         return this.httpClient
@@ -105,6 +106,9 @@ export class UserService {
                 tap((res: any) => {
                     const { displayName, subscriptions } = res
                     this.store.update({ displayName, subscriptions })
+                    const credentials = this.authService.credentials
+                    console.log(credentials, 'this is credentials');
+                    this.authService.updateCredentials(res)
                 }),
                 map((res: any) => res),
             );
