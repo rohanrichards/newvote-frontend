@@ -15,7 +15,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { SwPush } from '@angular/service-worker'
 import { UserService } from '@app/core/http/user/user.service'
-import { environment } from '@env/environment'
+
 @Component({
     selector: 'div[sticky-component]',
     templateUrl: './navbar.component.html',
@@ -76,18 +76,6 @@ export class NavbarComponent implements OnInit {
                 this.showVerify = this.checkVerify(verified, this.isAuthenticated)
             })
 
-        this.swPush.subscription
-            .subscribe((res) => {
-                if (!res) {
-                    // no subscription
-                    this.notificationSubscription = false
-                    return
-                }
-
-                this.notificationSubscription = true
-            },
-            (err) => err)
-
         this.meta.routeLevel$
             .subscribe((res) => {
                 this.routeLevel = res
@@ -105,58 +93,6 @@ export class NavbarComponent implements OnInit {
                 this.isRep = res
             })
 
-    }
-
-    subscribeToNotifications() {
-        this.swPush.requestSubscription({
-            serverPublicKey: environment.vapidPublicKey
-        })
-            .then((sub: any) => {
-                this.notificationSubscription = true
-                const id = this.authQuery.getValue()._id
-                this.createPushNotification(id, sub)
-            })
-            .catch((err) => {
-                this.subDisabled = true
-                this.admin.openSnackBar('Browser does not support push notifications.', 'OK')
-                return err
-            })
-    }
-
-    createPushNotification(id: string, subscription: PushSubscription) {
-        this.userService.addPushSubscriber({ id, subscription })
-            .subscribe(
-                (res) => {
-                    this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
-                },
-                (err) => {
-                    this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
-                    return err
-                }
-            )
-    }
-
-    unsubscribeFromNotifications() {
-
-        if (this.notificationSubscription) {
-            this.swPush.unsubscribe()
-                .then((sub) => {
-                    const id = this.authQuery.getValue()._id
-                    this.userService.removePushSubscriber({ id, subscription: null })
-                        .subscribe(
-                            (res) => {
-                                this.notificationSubscription = false
-                            },
-                            (err) => {
-                                console.log(err, 'this is err')
-                            }
-                        )
-                    this.admin.openSnackBar('Unsubscribed from push Notifications', 'OK')
-                })
-                .catch((err) => err)
-        } else {
-            return false
-        }
     }
 
     toggleSearch() {
@@ -252,13 +188,6 @@ export class NavbarComponent implements OnInit {
                 (error) => {
                     this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
                 })
-    }
-
-    handleSubscription() {
-        if (!this.notificationSubscription) {
-            return this.subscribeToNotifications()
-        }
-        return this.unsubscribeFromNotifications()
     }
 
 }

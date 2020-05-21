@@ -1,0 +1,12 @@
+<div>
+    <button mat-icon-button color="primary" (click)="handleSubscription()">
+        <mat-icon [ngClass]="{ 'active': isSubscribed }">add_alert</mat-icon>
+        Notify me
+    </button>
+    <p *ngIf="isGranted" class="mat-caption success">
+            Notifications were granted by the user
+    </p>
+    <p *ngIf="!isEnabled" class="mat-caption error">
+        Notifications are not available in the browser or enabled in the application
+    </p>
+</div>

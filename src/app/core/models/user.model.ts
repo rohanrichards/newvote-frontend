@@ -23,6 +23,7 @@ export interface IUser {
     providerData?: IProvider;
     pushSubscription?: {};
     subscriptions?: {};
+    subscriptionsActive: boolean;
 }
 
 export type IProfile = Pick<IUser, 'displayName' | 'subscriptions'> & Partial<IUser>
@@ -41,6 +42,7 @@ export class User implements IUser {
         public profileImageURL: string = '',
         public roles: string[] = ['guest'],
         public completedTour: boolean = false,
-        public organizations: any[] = []
+        public organizations: any[] = [],
+        public subscriptionsActive: boolean = false,
     ) { }
 }

@@ -20,11 +20,21 @@
             </mat-form-field>
 
             <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
-                Subscriptions
-                <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button>
+                <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
+                    <h3 [style.margin-bottom]="'0'" class="mat-subheading-2">Subscriptions</h3>
+                    <p class="mat-small" *ngIf="!isGranted">Notifications are disabled on this device.</p>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="flex-end flex-end">
+                    <mat-icon [style.margin-bottom]="'1rem'" matTooltip="A placeholder">help</mat-icon>
+                    <mat-slide-toggle [disabled]="!this.isEnabled" [checked]="subscriptionsActive" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
+                    <!-- <p class="mat-caption">Allow notifications from NewVote</p> -->
+                </div>
+
+                <!-- <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button> -->
             </div>
-            
+
            <app-issue-picker
+                *ngIf="isEnabled && isGranted"
                 [parentForm]="profileForm"
                 [user]="userData"
                 [isEnabled]="enablePicker"

@@ -16,8 +16,10 @@ const routes = {
     update: (c: ProfileContext) => `/users/${c.id}/edit`,
     // delete: (c: UserContext) => `/users/${c.id}`
     patch: (c: UserContext) => `/users/tour/${c.id}`,
+    patchSubscription: (c: UserContext) => `/users/subscription/${c.id}`,
     subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
     unsubscribe: (c: UserContext) => `/subscriptions/${c.id}`,
+
 }
 
 interface ApiContext {
@@ -141,6 +143,15 @@ export class UserService {
             )
     }
 
+    patchUserSubscription(context: UserContext) {
+        return this.httpClient
+            .patch(routes.patchSubscription(context), context.entity)
+            .pipe(
+                catchError((e) => handleError(e)),
+                tap((res: any) => this.store.update({ subscriptionsActive: res.subscriptionsActive })),
+                map((res: any) => res)
+            )
+    }
     // delete(context: UserContext): Observable<any> {
     //     return this.httpClient
     //         .delete(routes.delete(context))

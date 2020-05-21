@@ -61,7 +61,7 @@ import { EntityVotesStore } from './http/mediators/entity-votes.store'
 import { NotificationService } from './http/notifications/notification.service'
 import { NotificationStore } from './http/notifications/notification.store'
 import { NotificationQuery } from './http/notifications/notification.query'
-
+import { PushService } from './http/push/push.service'
 
 export function tokenGetter() {
     const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
@@ -135,6 +135,7 @@ export function tokenGetter() {
         RepQuery,
         RepStore,
         RepService,
+        PushService,
         DataFetchService,
         AllEntityQuery,
         AllEntityStore,

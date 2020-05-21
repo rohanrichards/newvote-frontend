@@ -12,6 +12,8 @@ import { cloneDeep } from 'lodash'
 import { finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AdminService } from '@app/core/http/admin/admin.service';
+import { PushService } from '@app/core/http/push/push.service';
+import { SwPush } from '@angular/service-worker';
 
 @Component({
     selector: 'app-profile-edit',
@@ -32,6 +34,9 @@ export class ProfileEditComponent implements OnInit {
     issuesObj: any;
     enablePicker = false
 
+    isEnabled = this.swPush.isEnabled;
+    isGranted = Notification.permission === 'granted';
+    subscriptionsActive = false
 
     constructor(
         private admin: AdminService,
@@ -41,7 +46,9 @@ export class ProfileEditComponent implements OnInit {
         private organizationService: OrganizationService,
         private communityQuery: CommunityQuery,
         private issueService: IssueService,
-        private issueQuery: IssueQuery
+        private issueQuery: IssueQuery,
+        private pushService: PushService,
+        private swPush: SwPush
     ) {
 
         // set up the file uploader
@@ -87,6 +94,7 @@ export class ProfileEditComponent implements OnInit {
             .subscribe((res) => {
                 if (!res) return false
                 this.userData = res
+                this.subscriptionsActive = res.subscriptionsActive
                 this.profileForm.get('displayName').patchValue(res.displayName || '')
                 this.createProfileForm(res)
                 this.fetchOrganizations()
@@ -168,7 +176,22 @@ export class ProfileEditComponent implements OnInit {
             )
     }
 
+    handleSubscriptionToggle(event: any) {
+        const user = cloneDeep(this.auth.getValue())
+        user.subscriptionsActive = event.checked
+        this.userService.patchUserSubscription({ id: this.auth.getValue()._id, entity: user })
+            .subscribe(
+                (res) => {
+                    if (res.subscriptionsActive) {
+                        this.pushService.subscribeToNotifications(user._id);
+                    }
+                },
+                (err) => err
+            )
+    }
+
     togglePicker() {
         this.enablePicker = !this.enablePicker
     }
+
 }
