@@ -71,7 +71,7 @@ export class NotificationBellComponent implements OnInit {
         // unsubscribe the user from just that issue
 
         if (this.isEnabled && this.isGranted) {
-            this.pushService.handleIssueSubscription(userId, this.parent)
+            this.pushService.handleIssueSubscription(userId, this.parent._id)
                 .subscribe(
                     (res)=> {
                         console.log(res, 'this is res')
