@@ -4,6 +4,8 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { AdminService } from '@app/core/http/admin/admin.service';
 import { UserService } from '@app/core/http/user/user.service';
 import { PushService } from '@app/core/http/push/push.service';
+import { IUser } from '@app/core/models/user.model';
+import { OrganizationQuery } from '@app/core/http/organization/organization.query';
 
 @Component({
     selector: 'app-notification-bell',
@@ -19,10 +21,14 @@ export class NotificationBellComponent implements OnInit {
 
   isSubscribed = false
 
+  activeTip = 'Click to subscribe to this issue.'
+  inactiveTip = 'Notifications are disabled on this device.'
+
   constructor(
     private swPush: SwPush,
     private authQuery: AuthenticationQuery,
-    private pushService: PushService
+    private pushService: PushService,
+    private organizationQuery: OrganizationQuery
   ) { }
 
   ngOnInit() {
@@ -30,20 +36,8 @@ export class NotificationBellComponent implements OnInit {
     this.authQuery.select()
         .subscribe(
             (res) => {
-                // No subscriptions 
-                if (!res || !res.subscriptions) {
-                    this.isSubscribed = false
-                }
-
-                const { subscriptions } = res
-                const { hostname } = window.location
-                // separate the current hostname into subdomain and main site
-                const [url, ...rest] = hostname.split('.')
-
-                // check if issue._id exists inside of the subscriptions object
-                if (subscriptions[url] && subscriptions[url].issues && subscriptions[url].issues.includes(this.parent._id)) {
-                    this.isSubscribed = true
-                }
+                // No subscriptions
+                this.isSubscribed = this.checkSubscription(res);
             }
         )
     //   this.swPush.subscription
@@ -62,15 +56,51 @@ export class NotificationBellComponent implements OnInit {
 
     subscribeToNotifications() {
         const userId = this.authQuery.getValue()._id
-        this.pushService.subscribeToNotifications(userId)
-    }
- 
-    handleSubscription() {
-      if (this.isEnabled) {
-          return this.subscribeToNotifications()
-      }
-      return false
+
+        // If user has not given permission for notifications but service worker is enabled
+        // Do normal Subscribe flow, and on response add the issue subscription
+
+        if (this.isEnabled && !this.isGranted) {
+            this.pushService.subscribeToNotifications(userId, this.parent)
+        }
+
+        // If user has given permission for notifications
+        // Just subscribe to the issue
+
+        // if user has given permission for notifications and is subscribed
+        // unsubscribe the user from just that issue
+
+        if (this.isEnabled && this.isGranted) {
+            this.pushService.handleIssueSubscription(userId, this.parent)
+                .subscribe(
+                    (res)=> res,
+                    (err)=> err
+                )
+        }
+
     }
 
-    
+    handleSubscription() {
+        if (this.isEnabled) {
+            return this.subscribeToNotifications()
+        }
+        return false
+    }
+
+    checkSubscription(user: IUser) {
+        const { _id: organizationId } = this.organizationQuery.getValue()
+        const { subscriptions } = user
+        
+        if (!subscriptions[organizationId]) return false
+        // check if issue._id exists inside of the subscriptions object
+        const { issues = [] } = subscriptions[organizationId]
+        
+        if (!issues.length) return false
+
+        const issueExists = issues.includes(this.parent._id)
+        
+        if (!issueExists) return false
+
+        return true
+    }
 }

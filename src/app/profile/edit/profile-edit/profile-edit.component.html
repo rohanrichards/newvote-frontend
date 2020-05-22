@@ -22,10 +22,10 @@
             <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
                     <h3 [style.margin-bottom]="'0'" class="mat-subheading-2">Subscriptions</h3>
-                    <p class="mat-small" *ngIf="!isGranted">Notifications are disabled on this device.</p>
+                    <p class="mat-small error" *ngIf="!isGranted">Notifications are disabled on this device.</p>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="flex-end flex-end">
-                    <mat-icon [style.margin-bottom]="'1rem'" matTooltip="A placeholder">help</mat-icon>
+                    <mat-icon [style.margin-bottom]="'1rem'" matTooltip="By activating you will be asked by your device if you want to receive notifications from NewVote. You'll be able to customize what issues you'd like to receive updates from and also whether you would like to receive updates from the community as a whole. This can be turned off at any time by deactivating the toggle.">help</mat-icon>
                     <mat-slide-toggle [disabled]="!this.isEnabled" [checked]="subscriptionsActive" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
                     <!-- <p class="mat-caption">Allow notifications from NewVote</p> -->
                 </div>
