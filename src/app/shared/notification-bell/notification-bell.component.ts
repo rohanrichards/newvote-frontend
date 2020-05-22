@@ -73,8 +73,12 @@ export class NotificationBellComponent implements OnInit {
         if (this.isEnabled && this.isGranted) {
             this.pushService.handleIssueSubscription(userId, this.parent)
                 .subscribe(
-                    (res)=> res,
-                    (err)=> err
+                    (res)=> {
+                        console.log(res, 'this is res')
+                    },
+                    (err)=> {
+                        console.log(err, 'this is err')
+                    }
                 )
         }
 

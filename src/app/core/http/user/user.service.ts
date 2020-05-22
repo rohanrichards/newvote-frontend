@@ -158,7 +158,10 @@ export class UserService {
             .put(routes.issueSubscription(context), { issueId })
             .pipe(
                 catchError((e) => handleError(e)),
-                tap((res: any) => this.store.update({ subscriptions: res.subscriptions })),
+                tap((res: any) => {
+                    console.log(res, 'this is res on tab for issue subscription')
+                    this.store.update({ subscriptions: res.subscriptions })
+                }),
                 map((res: any) => res)
             )
     }
