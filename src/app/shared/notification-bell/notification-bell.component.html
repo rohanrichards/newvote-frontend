@@ -1,6 +1,6 @@
 <div class="notify-wrapper">
     <button 
-        [disabled]="!isEnabled"
+    [disabled]="!isEnabled"
         mat-stroked-button
         color="warn" 
         (click)="handleSubscription()">
@@ -8,10 +8,4 @@
             [ngClass]="{ 'active': isSubscribed, 'inactive': !isSubscribed }">add_alert</mat-icon>
         Notify me
     </button>
-    <!-- <p *ngIf="isGranted" class="mat-caption success">
-            Notifications were granted by the user
-    </p>
-    <p *ngIf="!isEnabled" class="mat-caption error">
-        Notifications are not available in the browser or enabled in the application
-    </p> -->
 </div>

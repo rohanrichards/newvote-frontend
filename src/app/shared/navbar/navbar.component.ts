@@ -19,23 +19,22 @@ import { UserService } from '@app/core/http/user/user.service'
 @Component({
     selector: 'div[sticky-component]',
     templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+    styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
+    @Input() organization: Organization
+    @Input() sideNavRef: MatSidenav
 
-    @Input() organization: Organization;
-    @Input() sideNavRef: MatSidenav;
-
-    showSearch = false;
-    hideVerify = false;
-    routeLevel: string;
-    isAuthenticated: boolean;
-    showVerify: boolean;
+    showSearch = false
+    hideVerify = false
+    routeLevel: string
+    isAuthenticated: boolean
+    showVerify: boolean
     isRep = false
-    userId: string;
+    userId: string
 
-    VERIFYDELAY = 1000;
-    delayPassed: any;
+    VERIFYDELAY = 1000
+    delayPassed: any
 
     notificationSubscription = false
     subDisabled = false
@@ -54,45 +53,39 @@ export class NavbarComponent implements OnInit {
         public access: AccessControlQuery,
         public orgQuery: OrganizationQuery,
         private swPush: SwPush,
-        private userService: UserService
-    ) { }
+        private userService: UserService,
+    ) {}
 
     ngOnInit() {
-        this.authQuery.isLoggedIn$
-            .subscribe((loggedIn: boolean) => {
-                this.isAuthenticated = loggedIn
-                // need to delay the showing on the verification bar
-                // when a user is loggedin and visits the app for the first time, there's a moment whenn
-                // showVerify is false whilst user is loggedIn
-                if (loggedIn && !this.delayPassed) {
-                    setTimeout(() => {
-                        this.delayPassed = true
-                    }, this.VERIFYDELAY)
-                }
-            })
+        this.authQuery.isLoggedIn$.subscribe((loggedIn: boolean) => {
+            this.isAuthenticated = loggedIn
+            // need to delay the showing on the verification bar
+            // when a user is loggedin and visits the app for the first time, there's a moment whenn
+            // showVerify is false whilst user is loggedIn
+            if (loggedIn && !this.delayPassed) {
+                setTimeout(() => {
+                    this.delayPassed = true
+                }, this.VERIFYDELAY)
+            }
+        })
 
-        this.authQuery.isCommunityVerified$
-            .subscribe((verified: boolean) => {
-                this.showVerify = this.checkVerify(verified, this.isAuthenticated)
-            })
+        this.authQuery.isCommunityVerified$.subscribe((verified: boolean) => {
+            this.showVerify = this.checkVerify(verified, this.isAuthenticated)
+        })
 
-        this.meta.routeLevel$
-            .subscribe((res) => {
-                this.routeLevel = res
-            })
+        this.meta.routeLevel$.subscribe(res => {
+            this.routeLevel = res
+        })
 
-        this.repQuery.getRepId()
-            .subscribe((rep: any) => {
-                if (!rep) return false
-                this.userId = rep._id
-            })
+        this.repQuery.getRepId().subscribe((rep: any) => {
+            if (!rep) return false
+            this.userId = rep._id
+        })
 
-        this.repQuery.isRep()
-            .subscribe((res: any) => {
-                if (!res) return false
-                this.isRep = res
-            })
-
+        this.repQuery.isRep().subscribe((res: any) => {
+            if (!res) return false
+            this.isRep = res
+        })
     }
 
     toggleSearch() {
@@ -100,7 +93,8 @@ export class NavbarComponent implements OnInit {
     }
 
     logout() {
-        this.auth.logout()
+        this.auth
+            .logout()
             .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }))
     }
 
@@ -129,15 +123,16 @@ export class NavbarComponent implements OnInit {
     }
 
     handleBackClick() {
-        this.route.paramMap.pipe(
-            take(1),
-            map((data) => {
-                return {
-                    params: data,
-                    state: window.history.state
-                }
-            })
-        )
+        this.route.paramMap
+            .pipe(
+                take(1),
+                map(data => {
+                    return {
+                        params: data,
+                        state: window.history.state,
+                    }
+                }),
+            )
             .subscribe(({ state }) => {
                 const redirect = !!state.login
 
@@ -147,7 +142,6 @@ export class NavbarComponent implements OnInit {
 
                 return this.location.back()
             })
-
     }
 
     toggleVerify() {
@@ -161,33 +155,48 @@ export class NavbarComponent implements OnInit {
 
         if (authType === 0) {
             if (!canVerify) {
-                return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+                return this.router.navigate(['/auth/verify'], {
+                    replaceUrl: true,
+                })
             }
 
-            return this.auth.verifyWithCommunity()
-                .subscribe(
-                    (res) => {
-                        this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
-                    },
-                    (error) => {
-                        this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                    })
+            return this.auth.verifyWithCommunity().subscribe(
+                res => {
+                    this.admin.openSnackBar(
+                        'You have successfully verified with this community.',
+                        'OK',
+                    )
+                },
+                error => {
+                    this.admin.openSnackBar(
+                        `Something went wrong: ${error.status} - ${error.statusText}`,
+                        'OK',
+                    )
+                },
+            )
         }
 
         if (authType === 1) {
             if (!canVerify) {
-                return this.router.navigate(['/auth/login'], { replaceUrl: true })
+                return this.router.navigate(['/auth/login'], {
+                    replaceUrl: true,
+                })
             }
         }
 
-        return this.auth.verifyWithCommunity()
-            .subscribe(
-                (res) => {
-                    this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
-                },
-                (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+        return this.auth.verifyWithCommunity().subscribe(
+            res => {
+                this.admin.openSnackBar(
+                    'You have successfully verified with this community.',
+                    'OK',
+                )
+            },
+            error => {
+                this.admin.openSnackBar(
+                    `Something went wrong: ${error.status} - ${error.statusText}`,
+                    'OK',
+                )
+            },
+        )
     }
-
 }

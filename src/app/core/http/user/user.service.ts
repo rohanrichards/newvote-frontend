@@ -19,35 +19,36 @@ const routes = {
     patchSubscription: (c: UserContext) => `/users/subscription/${c.id}`,
     subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
     unsubscribe: (c: UserContext) => `/subscriptions/${c.id}`,
-    issueSubscription: (c: UserContext) => `/subscriptions/issue/${c.id}`
+    issueSubscription: (c: UserContext) => `/subscriptions/issue/${c.id}`,
 }
 
 interface ApiContext {
-    id?: string; // id of object to find/modify
-    params?: any;
+    id?: string // id of object to find/modify
+    params?: any
 }
 
 export interface UserContext extends ApiContext {
-    entity?: IUser;
-    subscription?: PushSubscription | null;
+    entity?: IUser
+    subscription?: PushSubscription | null
 }
 
 export interface ProfileContext extends ApiContext {
-    entity?: IProfile;
+    entity?: IProfile
 }
 
 @Injectable()
 export class UserService {
-
-    constructor(private httpClient: HttpClient, private store: AuthenticationStore, private authService: AuthenticationService) { }
+    constructor(
+        private httpClient: HttpClient,
+        private store: AuthenticationStore,
+        private authService: AuthenticationService,
+    ) {}
 
     count(): Observable<any> {
-        return this.httpClient
-            .get(routes.count())
-            .pipe(
-                catchError((e) => of([{ error: e }])),
-                map((res: Array<any>) => res),
-            )
+        return this.httpClient.get(routes.count()).pipe(
+            catchError(e => of([{ error: e }])),
+            map((res: Array<any>) => res),
+        )
     }
 
     list(context: UserContext): Observable<any[]> {
@@ -62,15 +63,13 @@ export class UserService {
         }
         const options = {
             withCredentials: true,
-            params
+            params,
         }
 
-        return this.httpClient
-            .get(routes.list(), options)
-            .pipe(
-                catchError((e) => of([{ error: e }])),
-                map((res: Array<any>) => res)
-            )
+        return this.httpClient.get(routes.list(), options).pipe(
+            catchError(e => of([{ error: e }])),
+            map((res: Array<any>) => res),
+        )
     }
 
     // view(context: UserContext): Observable<any> {
@@ -101,25 +100,23 @@ export class UserService {
     // }
 
     update(context: ProfileContext): Observable<any> {
-        return this.httpClient
-            .put(routes.update(context), context.entity)
-            .pipe(
-                catchError((e) => handleError(e)),
-                tap((res: any) => {
-                    const { displayName, subscriptions } = res
-                    this.store.update({ displayName, subscriptions })
-                    const credentials = this.authService.credentials
-                    this.authService.updateCredentials(res)
-                }),
-                map((res: any) => res),
-            );
+        return this.httpClient.put(routes.update(context), context.entity).pipe(
+            catchError(e => handleError(e)),
+            tap((res: any) => {
+                const { displayName, subscriptions } = res
+                this.store.update({ displayName, subscriptions })
+                const credentials = this.authService.credentials
+                this.authService.updateCredentials(res)
+            }),
+            map((res: any) => res),
+        )
     }
 
     patch(context: UserContext): Observable<any> {
         return this.httpClient
             .patch(routes.patch(context), context.entity)
             .pipe(
-                catchError((e) => of({ error: e })),
+                catchError(e => of({ error: e })),
                 map((res: any) => res),
             )
     }
@@ -128,8 +125,8 @@ export class UserService {
         return this.httpClient
             .post(routes.subscribe(context), context.subscription)
             .pipe(
-                catchError((e) => handleError(e)),
-                map((res: any) => res)
+                catchError(e => handleError(e)),
+                map((res: any) => res),
             )
     }
 
@@ -137,9 +134,11 @@ export class UserService {
         return this.httpClient
             .put(routes.unsubscribe(context), context.subscription)
             .pipe(
-                catchError((e) => handleError(e)),
-                tap((res: any) => this.store.update({ pushSubscription: null })),
-                map((res: any) => res)
+                catchError(e => handleError(e)),
+                tap((res: any) =>
+                    this.store.update({ pushSubscription: null }),
+                ),
+                map((res: any) => res),
             )
     }
 
@@ -147,9 +146,13 @@ export class UserService {
         return this.httpClient
             .patch(routes.patchSubscription(context), context.entity)
             .pipe(
-                catchError((e) => handleError(e)),
-                tap((res: any) => this.store.update({ subscriptionsActive: res.subscriptionsActive })),
-                map((res: any) => res)
+                catchError(e => handleError(e)),
+                tap((res: any) =>
+                    this.store.update({
+                        subscriptionsActive: res.subscriptionsActive,
+                    }),
+                ),
+                map((res: any) => res),
             )
     }
 
@@ -157,15 +160,17 @@ export class UserService {
         return this.httpClient
             .put(routes.issueSubscription(context), { issueId })
             .pipe(
-                catchError((e) => handleError(e)),
+                catchError(e => handleError(e)),
                 tap((res: any) => {
-                    console.log(res, 'this is res on tab for issue subscription')
+                    console.log(
+                        res,
+                        'this is res on tab for issue subscription',
+                    )
                     this.store.update({ subscriptions: res.subscriptions })
                 }),
-                map((res: any) => res)
+                map((res: any) => res),
             )
     }
-
 
     // delete(context: UserContext): Observable<any> {
     //     return this.httpClient
@@ -175,5 +180,4 @@ export class UserService {
     //             catchError((e) => of({ error: e }))
     //         );
     // }
-
 }
