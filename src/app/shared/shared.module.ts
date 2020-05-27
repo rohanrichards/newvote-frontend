@@ -59,7 +59,7 @@ import { ProgressFormComponent } from './progress-form/progress-form.component';
 import { NotificationFeedComponent } from './notification-feed/notification-feed.component'
 import { MomentModule } from 'ngx-moment';
 import { IssuePickerComponent } from './issue-picker/issue-picker.component';
-import { NotificationBellComponent } from './notification-bell/notification-bell.component';
+import { NotificationBellComponent, NotificationPopupDialog } from './notification-bell/notification-bell.component';
 @NgModule({
     imports: [
         FlexLayoutModule,
@@ -123,7 +123,8 @@ import { NotificationBellComponent } from './notification-bell/notification-bell
         ProgressFormComponent,
         NotificationFeedComponent,
         IssuePickerComponent,
-        NotificationBellComponent
+        NotificationBellComponent,
+        NotificationPopupDialog
     ],
     exports: [
         LoaderComponent,
@@ -164,7 +165,8 @@ import { NotificationBellComponent } from './notification-bell/notification-bell
         ProgressFormComponent,
         NotificationFeedComponent,
         IssuePickerComponent,
-        NotificationBellComponent
+        NotificationBellComponent,
+        
     ]
 })
 export class SharedModule { }

@@ -23,7 +23,7 @@ export interface IUser {
     providerData?: IProvider;
     pushSubscription?: {};
     subscriptions?: {};
-    subscriptionsActive: boolean;
+    subscriptionsActive: string;
 }
 
 export type IProfile = Pick<IUser, 'displayName' | 'subscriptions'> & Partial<IUser>
@@ -43,6 +43,6 @@ export class User implements IUser {
         public roles: string[] = ['guest'],
         public completedTour: boolean = false,
         public organizations: any[] = [],
-        public subscriptionsActive: boolean = false,
+        public subscriptionsActive: string = 'DEFAULT',
     ) { }
 }

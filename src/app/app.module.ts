@@ -47,6 +47,7 @@ import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 import { MomentModule } from 'ngx-moment';
 import { ProfileModule } from './profile/profile.module';
+import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
 
 @NgModule({
     imports: [
@@ -94,7 +95,8 @@ import { ProfileModule } from './profile/profile.module';
     ],
     entryComponents: [
         ConfirmDialogComponent,
-        RepModalComponent
+        RepModalComponent,
+        NotificationPopupDialog
     ],
     providers: [
         CookieService,

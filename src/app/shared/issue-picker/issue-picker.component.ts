@@ -16,7 +16,7 @@ type Subscription = {
   styleUrls: ['./issue-picker.component.scss']
 })
 export class IssuePickerComponent implements OnInit {
-    @Input() isEnabled: boolean;
+    @Input() isEnabled: string;
     @Input() parentForm: FormGroup;
     @Input() user: IUser;
     @Input() organizations: any[] = []

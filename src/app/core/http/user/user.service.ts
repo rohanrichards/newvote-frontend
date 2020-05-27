@@ -121,6 +121,8 @@ export class UserService {
             )
     }
 
+    // Adds a subscription object to the user profile
+    // No need to update store, subscriptions are just for backend
     addPushSubscriber(context: UserContext) {
         return this.httpClient
             .post(routes.subscribe(context), context.subscription)
@@ -130,17 +132,17 @@ export class UserService {
             )
     }
 
-    removePushSubscriber(context: UserContext) {
-        return this.httpClient
-            .put(routes.unsubscribe(context), context.subscription)
-            .pipe(
-                catchError(e => handleError(e)),
-                tap((res: any) =>
-                    this.store.update({ pushSubscription: null }),
-                ),
-                map((res: any) => res),
-            )
-    }
+    // removePushSubscriber(context: UserContext) {
+    //     return this.httpClient
+    //         .put(routes.unsubscribe(context), context.subscription)
+    //         .pipe(
+    //             catchError(e => handleError(e)),
+    //             tap((res: any) =>
+    //                 this.store.update({ pushSubscription: null }),
+    //             ),
+    //             map((res: any) => res),
+    //         )
+    // }
 
     patchUserSubscription(context: UserContext) {
         return this.httpClient
@@ -162,10 +164,6 @@ export class UserService {
             .pipe(
                 catchError(e => handleError(e)),
                 tap((res: any) => {
-                    console.log(
-                        res,
-                        'this is res on tab for issue subscription',
-                    )
                     this.store.update({ subscriptions: res.subscriptions })
                 }),
                 map((res: any) => res),

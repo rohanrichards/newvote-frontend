@@ -1,11 +1,19 @@
 <div class="notify-wrapper">
-    <button 
-    [disabled]="!isEnabled"
+    <!-- <button 
+    [disabled]="!isEnabled || !notificationsAllowed"
         mat-stroked-button
-        color="warn" 
+        [color]="isSubscribed ? 'warn' : 'accent'" 
         (click)="handleSubscription()">
         <mat-icon 
             [ngClass]="{ 'active': isSubscribed, 'inactive': !isSubscribed }">add_alert</mat-icon>
         Notify me
+    </button> -->
+    <button 
+        [disabled]="!isEnabled"
+        mat-stroked-button
+        [color]="isSubscribed ? 'warn' : 'accent'" 
+        (click)="handleSubscription()">
+        <mat-icon 
+            [ngClass]="{ 'active': isSubscribed, 'inactive': !isSubscribed }">add_alert</mat-icon>
     </button>
 </div>

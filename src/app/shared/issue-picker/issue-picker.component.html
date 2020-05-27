@@ -16,7 +16,7 @@
     </div>
     <div class="issue-box" *ngIf="organizations.length">
         <mat-tab-group mat-align-tabs="start" class="entity-tabs">
-            <mat-tab label="Issues" [disabled]="!isEnabled">
+            <mat-tab label="Issues" [disabled]="isEnabled !== 'ACCEPTED'">
                 <mat-selection-list *ngIf="selectedItem"
                     (selectionChange)="handleChange($event)"
                     [(ngModel)]="subscriptionForm.get(selectedItem).value.issues"
@@ -24,7 +24,7 @@
                     <mat-list-option
                         [value]="issue._id"
                         *ngFor="let issue of issues[selectedItem].issues"
-                        [disabled]="!isEnabled"
+                        [disabled]="isEnabled !== 'ACCEPTED'"
                         >
                         {{ (issue.name.length>40)? (issue.name | slice:0:40)+'..':(issue.name) }}
                     </mat-list-option>

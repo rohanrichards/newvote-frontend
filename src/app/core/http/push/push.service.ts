@@ -22,9 +22,10 @@ export class PushService {
         this.swPush.requestSubscription({
             serverPublicKey: environment.vapidPublicKey
         })
-            .then((sub: any) => {
+            .then((subscription: any) => {
+                // If no parent Id then we are just saving the subscription object
                 if (!parentId) {
-                    return this.createPushNotification(userId, sub)
+                    return this.createPushNotification(userId, subscription)
                         .subscribe(
                             (res) => {
                                 this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
@@ -37,12 +38,11 @@ export class PushService {
                 }
 
                 return forkJoin({
-                    user: this.createPushNotification(userId, sub),
+                    user: this.createPushNotification(userId, subscription),
                     issueSubscription: this.handleIssueSubscription(userId, parentId)
                 })
                     .subscribe(
                         (res) => {
-                            const { user, issueSubscription } = res;
                             this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
                         },
                         (err) => {

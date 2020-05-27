@@ -36,7 +36,7 @@ export class ProfileEditComponent implements OnInit {
 
     isEnabled = this.swPush.isEnabled;
     isGranted = Notification.permission === 'granted';
-    subscriptionsActive = false
+    subscriptionsActive = 'DEFAULT'
 
     constructor(
         private admin: AdminService,
@@ -102,6 +102,13 @@ export class ProfileEditComponent implements OnInit {
                 this.subscribeToCommunities()
                 this.subscribeToIssues()
             })
+
+        this.swPush.subscription.subscribe(
+            res => {
+                this.isGranted = Notification.permission === 'granted'
+            },
+            err => err,
+        )
     }
 
     fetchIssues() {
@@ -178,20 +185,21 @@ export class ProfileEditComponent implements OnInit {
 
     handleSubscriptionToggle(event: any) {
         const user = cloneDeep(this.auth.getValue())
-        user.subscriptionsActive = event.checked
+
+        user.subscriptionsActive = event.checked ? 'ACCEPTED' : 'DENIED';
+
+        // toggles the userSubscription property on the user object
         this.userService.patchUserSubscription({ id: this.auth.getValue()._id, entity: user })
             .subscribe(
                 (res) => {
                     if (res.subscriptionsActive) {
-                        this.pushService.subscribeToNotifications(user._id);
+                        return this.pushService.subscribeToNotifications(user._id);
                     }
+
+                    return this.admin.openSnackBar('Successfully unsubscribed from noitifications', 'OK');
                 },
                 (err) => err
             )
-    }
-
-    togglePicker() {
-        this.enablePicker = !this.enablePicker
     }
 
 }
