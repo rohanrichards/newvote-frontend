@@ -9,12 +9,12 @@ import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/o
 import { IssueService } from '@app/core/http/issue/issue.service';
 import { IssueQuery } from '@app/core/http/issue/issue.query';
 import { cloneDeep } from 'lodash'
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AdminService } from '@app/core/http/admin/admin.service';
 import { PushService } from '@app/core/http/push/push.service';
 import { SwPush } from '@angular/service-worker';
-
+import { environment } from '@env/environment';
 @Component({
     selector: 'app-profile-edit',
     templateUrl: './profile-edit.component.html',
@@ -37,6 +37,8 @@ export class ProfileEditComponent implements OnInit {
     isEnabled = this.swPush.isEnabled;
     isGranted = Notification.permission === 'granted';
     subscriptionsActive = 'DEFAULT'
+
+    disableNotificationSlideToggle = false;
 
     constructor(
         private admin: AdminService,
@@ -105,6 +107,8 @@ export class ProfileEditComponent implements OnInit {
 
         this.swPush.subscription.subscribe(
             res => {
+                // can't access Notification object on the template, so if notifications are 'denied' disable the slide toggle
+                this.disableNotificationSlideToggle = Notification.permission === 'denied'
                 this.isGranted = Notification.permission === 'granted'
             },
             err => err,
@@ -192,11 +196,25 @@ export class ProfileEditComponent implements OnInit {
         this.userService.patchUserSubscription({ id: this.auth.getValue()._id, entity: user })
             .subscribe(
                 (res) => {
-                    if (res.subscriptionsActive) {
-                        return this.pushService.subscribeToNotifications(user._id);
+                    const { subscriptionsActive } = res
+                    if (subscriptionsActive === 'DENIED') {
+                        return this.admin.openSnackBar('Successfully unsubscribed from noitifications', 'OK');
                     }
+                    // TODO - need to differentiate between when to subscribe to Notifications again, and when not to
+                    this.swPush.subscription
+                        .pipe(
+                            take(1)
+                        )
+                        .subscribe(
+                            (sub) => {
+                                if (!sub) {
+                                    return this.pushService.subscribeToNotifications(user._id)
+                                }
 
-                    return this.admin.openSnackBar('Successfully unsubscribed from noitifications', 'OK');
+                                return this.admin.openSnackBar('Subscribed to notifications successfully', 'OK');
+                            },
+                            err => err
+                        )
                 },
                 (err) => err
             )

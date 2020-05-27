@@ -48,9 +48,13 @@ export class NotificationBellComponent implements OnInit {
         // keep track of whether isGranted has been updated
         this.swPush.subscription.subscribe(
             res => {
+                console.log(res, 'this is res on swPush')
                 this.isGranted = Notification.permission === 'granted'
             },
-            err => err,
+            err => {
+                console.log(err, 'this is err on swPush')
+                return err
+            },
         )
     }
 
@@ -78,7 +82,9 @@ export class NotificationBellComponent implements OnInit {
         return this.pushService
             .handleIssueSubscription(userId, this.parent._id)
             .subscribe(
-                res => res,
+                res => {
+                    console.log(res, 'this is res on handleSubscription')
+                },
                 err => {
                     console.log(err, 'this is err')
                 },
