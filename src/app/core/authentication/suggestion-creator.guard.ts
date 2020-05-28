@@ -16,7 +16,7 @@ export class SuggestionCreatorGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): (Promise<boolean>) {
         const id = route.params.id
-        if (this.authenticationService.isModerator()) {
+        if (this.authenticationQuery.isModerator()) {
             return Promise.resolve(true)
         }
         return new Promise((resolve, reject) => {

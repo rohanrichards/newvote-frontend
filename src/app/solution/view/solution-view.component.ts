@@ -36,19 +36,16 @@ import { IProposal } from '@app/core/models/proposal.model'
     selector: 'app-solution',
     templateUrl: './solution-view.component.html',
     styleUrls: ['./solution-view.component.scss'],
-    animations: [
-        trigger('fadeIn', fadeIn(':enter'))
-    ]
+    animations: [trigger('fadeIn', fadeIn(':enter'))],
 })
 export class SolutionViewComponent implements OnInit {
-
-    solution: ISolution;
-    isLoading: boolean;
-    loadingState: string;
-    handleImageUrl = optimizeImage;
-    organization: any;
-    suggestions: any[];
-    proposals: any[];
+    solution: ISolution
+    isLoading: boolean
+    loadingState: string
+    handleImageUrl = optimizeImage
+    organization: any
+    suggestions: any[]
+    proposals: any[]
     proposals$: Observable<IProposal[]>
     suggestions$: Observable<any[]>
     isVerified: boolean
@@ -74,12 +71,13 @@ export class SolutionViewComponent implements OnInit {
         public authQuery: AuthenticationQuery,
         public repQuery: RepQuery,
         private access: AccessControlQuery,
-        private entityVotes: EntityVotesQuery
-    ) { }
+        private entityVotes: EntityVotesQuery,
+    ) {}
 
     ngOnInit() {
-        this.organizationService.get()
-            .subscribe((org) => { this.organization = org })
+        this.organizationService.get().subscribe(org => {
+            this.organization = org
+        })
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -94,83 +92,74 @@ export class SolutionViewComponent implements OnInit {
             this.subscribeToSolutionStore(ID)
         })
 
-        this.access.isCommunityVerified$
-            .subscribe((verified: boolean) => {
-                this.isVerified = verified
-            })
-
+        this.access.isCommunityVerified$.subscribe((verified: boolean) => {
+            this.isVerified = verified
+        })
     }
 
     getSolution(id: string) {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         const options = { showDeleted: isModerator ? true : '' }
 
-        this.solutionService.view({
-            id: id,
-            params: options
-        })
+        this.solutionService
+            .view({
+                id: id,
+                params: options,
+            })
             .subscribe(
                 (solution: Solution) => {
                     return solution
                 },
-                () => this.stateService.setLoadingState(AppState.error)
+                () => this.stateService.setLoadingState(AppState.error),
             )
     }
 
     getProposals() {
-        this.proposalService.list({})
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
+        this.proposalService.list({}).subscribe(res => res, err => err)
     }
 
     getSuggestions() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
 
-        this.suggestionService.list({
-            params: {
-                showDeleted: isModerator ? true : ''
-            }
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
+        this.suggestionService
+            .list({
+                params: {
+                    showDeleted: isModerator ? true : '',
+                },
+            })
+            .subscribe(res => res, err => err)
     }
 
     subscribeToSolutionStore(id: string) {
-        this.entityVotes.getSolution(id)
-            .subscribe((solution: ISolution) => {
-                if (!solution) return false
-                this.solution = solution
-                this.subscribeToProposalStore(solution._id)
-                this.subscribeToSuggestionStore(solution._id)
-                this.stateService.setLoadingState(AppState.complete)
-                this.updateTags(solution)
-            })
+        this.entityVotes.getSolution(id).subscribe((solution: ISolution) => {
+            if (!solution) return false
+            this.solution = solution
+            this.subscribeToProposalStore(solution._id)
+            this.subscribeToSuggestionStore(solution._id)
+            this.stateService.setLoadingState(AppState.complete)
+            this.updateTags(solution)
+        })
     }
 
     updateTags(solution: ISolution) {
         // meta url tags do not recognize relative paths like 'assets/solution.png'
         // check if the image is from a relative url if so retrieve absolute url
-        const imageUrl = solution.imageUrl.includes('assets') ? 
-            'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/solution-icon-min.png'
+        const imageUrl = solution.imageUrl.includes('assets')
+            ? 'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/solution-icon-min.png'
             : solution.imageUrl
-        
-        this.meta.updateTags(
-            {
-                title: solution.title,
-                appBarTitle: 'View Solution',
-                description: solution.description,
-                image: imageUrl
-            })
+
+        this.meta.updateTags({
+            title: solution.title,
+            appBarTitle: 'View Solution',
+            description: solution.description,
+            image: imageUrl,
+        })
     }
 
     subscribeToSuggestionStore(id: string) {
         this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
-        this.suggestions$.subscribe((res) => {
+        this.suggestions$.subscribe(res => {
             if (!res) return false
             this.suggestions = res
         })
@@ -179,7 +168,7 @@ export class SolutionViewComponent implements OnInit {
     subscribeToProposalStore(id: string) {
         this.proposals$ = this.entityVotes.getManyProposals(id)
 
-        this.proposals$.subscribe((res) => {
+        this.proposals$.subscribe(res => {
             if (!res) return
             this.proposals = res
         })
@@ -187,7 +176,11 @@ export class SolutionViewComponent implements OnInit {
 
     onVote(voteData: any, model: string) {
         this.isLoading = true
-        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
+        const {
+            item,
+            voteValue,
+            item: { votes: { currentUser = false } = false },
+        } = voteData
         const vote = new Vote(item._id, model, voteValue)
         const existingVote = item.votes.currentUser
 
@@ -195,19 +188,30 @@ export class SolutionViewComponent implements OnInit {
             vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
-        this.voteService.create({ entity: vote })
-            .pipe(finalize(() => { this.isLoading = false }))
+        this.voteService
+            .create({ entity: vote })
+            .pipe(
+                finalize(() => {
+                    this.isLoading = false
+                }),
+            )
             .subscribe(
-                (res) => {
+                res => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                (error) => {
+                error => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar(
+                            'You must be logged in to vote',
+                            'OK',
+                        )
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar(
+                            'There was an error recording your vote',
+                            'OK',
+                        )
                     }
-                }
+                },
             )
     }
 
@@ -219,15 +223,16 @@ export class SolutionViewComponent implements OnInit {
         suggestion.parentType = 'Solution'
         suggestion.parentTitle = this.solution.title
 
-        this.suggestionService.create({ entity: suggestion })
-            .subscribe(
-                () => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
-                },
-                (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                }
-            )
+        this.suggestionService.create({ entity: suggestion }).subscribe(
+            () => {
+                this.admin.openSnackBar('Succesfully created', 'OK')
+            },
+            error => {
+                this.admin.openSnackBar(
+                    `Something went wrong: ${error.status} - ${error.statusText}`,
+                    'OK',
+                )
+            },
+        )
     }
-
 }

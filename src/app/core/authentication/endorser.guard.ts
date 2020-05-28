@@ -3,6 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 
 import { Logger } from '../logger.service'
 import { AuthenticationService } from './authentication.service'
+import { AuthenticationQuery } from './authentication.query'
 
 const log = new Logger('EndorserGuard')
 
@@ -10,10 +11,11 @@ const log = new Logger('EndorserGuard')
 export class EndorserGuard implements CanActivate {
 
     constructor(private router: Router,
-        private authenticationService: AuthenticationService) { }
+        private authenticationService: AuthenticationService,
+        private authenticationQuery: AuthenticationQuery) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (this.authenticationService.hasRole('endorser') || this.authenticationService.isAdmin()) {
+        if (this.authenticationQuery.hasRole('endorser') || this.authenticationQuery.isAdmin()) {
             return true
         }
 

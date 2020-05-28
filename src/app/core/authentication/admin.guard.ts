@@ -3,6 +3,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 
 import { Logger } from '../logger.service'
 import { AuthenticationService } from './authentication.service'
+import { AuthenticationQuery } from './authentication.query'
 
 const log = new Logger('AdminGuard')
 
@@ -10,10 +11,10 @@ const log = new Logger('AdminGuard')
 export class AdminGuard implements CanActivate {
 
     constructor(private router: Router,
-        private authenticationService: AuthenticationService) { }
+        private auth: AuthenticationQuery) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (this.authenticationService.isAdmin()) {
+        if (this.auth.isAdmin()) {
             return true
         }
 

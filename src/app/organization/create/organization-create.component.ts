@@ -1,6 +1,10 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import { MatAutocomplete, MatSnackBar, MatSnackBarConfig } from '@angular/material'
+import {
+    MatAutocomplete,
+    MatSnackBar,
+    MatSnackBarConfig,
+} from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
@@ -14,26 +18,26 @@ import { Organization } from '@app/core/models/organization.model'
 import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-organization',
     templateUrl: './organization-create.component.html',
-    styleUrls: ['./organization-create.component.scss']
+    styleUrls: ['./organization-create.component.scss'],
 })
 export class OrganizationCreateComponent implements OnInit {
+    organization: Organization
+    allUsers: Array<User> = []
+    owner: User
+    filteredUsers: Observable<User[]>
+    separatorKeysCodes: number[] = [ENTER, COMMA, SPACE]
+    isLoading = true
+    backgroundImage: any
+    iconImage: any
+    uploader: FileUploader
+    isValid = false
 
-    organization: Organization;
-    allUsers: Array<User> = [];
-    owner: User;
-    filteredUsers: Observable<User[]>;
-    separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
-    isLoading = true;
-    backgroundImage: any;
-    iconImage: any;
-    uploader: FileUploader;
-    isValid = false;
-
-    checkboxOptions = ['student', 'faculty', 'staff', 'employee', 'member'];
+    checkboxOptions = ['student', 'faculty', 'staff', 'employee', 'member']
 
     organizationForm = new FormGroup({
         name: new FormControl('', [Validators.required]),
@@ -54,25 +58,25 @@ export class OrganizationCreateComponent implements OnInit {
         voteRoles: new FormArray([
             new FormGroup({
                 role: new FormControl('student'),
-                active: new FormControl(false)
+                active: new FormControl(false),
             }),
             new FormGroup({
                 role: new FormControl('faculty'),
-                active: new FormControl(false)
+                active: new FormControl(false),
             }),
             new FormGroup({
                 role: new FormControl('staff'),
-                active: new FormControl(false)
+                active: new FormControl(false),
             }),
             new FormGroup({
                 role: new FormControl('employee'),
-                active: new FormControl(false)
+                active: new FormControl(false),
             }),
             new FormGroup({
                 role: new FormControl('member'),
-                active: new FormControl(false)
-            })
-        ])
+                active: new FormControl(false),
+            }),
+        ]),
     })
 
     uploaderOptions: FileUploaderOptions = {
@@ -87,14 +91,18 @@ export class OrganizationCreateComponent implements OnInit {
         headers: [
             {
                 name: 'X-Requested-With',
-                value: 'XMLHttpRequest'
-            }
-        ]
-    };
+                value: 'XMLHttpRequest',
+            },
+        ],
+    }
 
-    @ViewChild('userInput', { static: false }) userInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
-    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<HTMLInputElement>;
+    @ViewChild('userInput', { static: false }) userInput: ElementRef<
+        HTMLInputElement
+    >
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete
+    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<
+        HTMLInputElement
+    >
 
     constructor(
         private userService: UserService,
@@ -104,11 +112,17 @@ export class OrganizationCreateComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
-        private admin: AdminService
+        private admin: AdminService,
+        private authQuery: AuthenticationQuery,
     ) {
-        this.filteredUsers = this.organizationForm.get('owner').valueChanges.pipe(
-            startWith(''),
-            map((issue: string) => issue ? this._filter(issue) : this.allUsers.slice()))
+        this.filteredUsers = this.organizationForm
+            .get('owner')
+            .valueChanges.pipe(
+                startWith(''),
+                map((issue: string) =>
+                    issue ? this._filter(issue) : this.allUsers.slice(),
+                ),
+            )
     }
 
     ngOnInit() {
@@ -117,29 +131,27 @@ export class OrganizationCreateComponent implements OnInit {
         this.uploader = new FileUploader(this.uploaderOptions)
         this.uploader.onBuildItemForm = this.buildItemForm()
 
-        if (this.auth.isAdmin()) {
+        if (this.authQuery.isAdmin()) {
             this.userService.list({}).subscribe(users => {
                 this.allUsers = users
                 this.isLoading = false
             })
         }
-        this.meta.updateTags(
-            {
-                title: 'Create Community',
-                description: 'Create a new community on the NewVote platform.'
-            })
+        this.meta.updateTags({
+            title: 'Create Community',
+            description: 'Create a new community on the NewVote platform.',
+        })
 
         this.setAuthtypeValidators()
-
     }
 
     setAuthtypeValidators() {
         const authUrl = this.organizationForm.get('authUrl')
         const authEntityId = this.organizationForm.get('authEntityId')
 
-        this.organizationForm.get('authType').valueChanges
-            .subscribe((authType) => {
-
+        this.organizationForm
+            .get('authType')
+            .valueChanges.subscribe(authType => {
                 if (authType === 0) {
                     authUrl.setValidators(null)
                     authEntityId.setValidators(null)
@@ -177,7 +189,7 @@ export class OrganizationCreateComponent implements OnInit {
                 // when the file is changed store the file name for later
                 this[field] = {
                     name: file.name,
-                    src: (pe.target as FileReader).result
+                    src: (pe.target as FileReader).result,
                 }
             }
 
@@ -199,30 +211,49 @@ export class OrganizationCreateComponent implements OnInit {
         }
 
         this.uploader.onCompleteAll = () => {
-            this.organizationService.create({ entity: this.organization })
-                .pipe(finalize(() => { this.isLoading = false }))
-                .subscribe(res => {
-                    this.admin.openSnackBar('Succesfully created', 'OK')
+            this.organizationService
+                .create({ entity: this.organization })
+                .pipe(
+                    finalize(() => {
+                        this.isLoading = false
+                    }),
+                )
+                .subscribe(
+                    res => {
+                        this.admin.openSnackBar('Succesfully created', 'OK')
 
-                    if (res.moderators.length) {
-                        const config = new MatSnackBarConfig()
-                        config.duration = 2000
-                        config.panelClass = ['warn-snack']
+                        if (res.moderators.length) {
+                            const config = new MatSnackBarConfig()
+                            config.duration = 2000
+                            config.panelClass = ['warn-snack']
 
-                        setTimeout(() => {
-                            this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error')
-                            // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
-                        }, 3100)
-                    }
+                            setTimeout(() => {
+                                this.admin.openSnackBar(
+                                    `The following moderators failed to save: ${res.moderators.join(
+                                        ' ',
+                                    )}`,
+                                    'Error',
+                                )
+                                // this.admin.openSnackBar(`The following moderators failed to save: ${res.moderators.join(' ')}`, 'Error', config)
+                            }, 3100)
+                        }
 
-                    this.router.navigate(['/organizations'])
-                },
-                (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+                        this.router.navigate(['/organizations'])
+                    },
+                    error => {
+                        this.admin.openSnackBar(
+                            `Something went wrong: ${error.status} - ${error.statusText}`,
+                            'OK',
+                        )
+                    },
+                )
         }
 
-        this.uploader.onCompleteItem = (item: any, response: string, status: number) => {
+        this.uploader.onCompleteItem = (
+            item: any,
+            response: string,
+            status: number,
+        ) => {
             // when the upload is complete compare the files name
             // to the one we stored earlier so we know which file it is
             if (status === 200 && item.isSuccess) {
@@ -279,14 +310,17 @@ export class OrganizationCreateComponent implements OnInit {
 
     private _filter(value: any): User[] {
         // is value an instance of user? just use email if it is
-        const filterValue = value.email ? value.email.toLowerCase() : value.toLowerCase()
+        const filterValue = value.email
+            ? value.email.toLowerCase()
+            : value.toLowerCase()
 
         const filterVal = this.allUsers.filter((user: User) => {
-            const name = user.firstName.toLowerCase() + user.lastName.toLowerCase()
+            const name =
+                user.firstName.toLowerCase() + user.lastName.toLowerCase()
             const email = user.email
             const isInName = name.indexOf(filterValue) !== -1
             const isInEmail = email.indexOf(filterValue) !== -1
-            return (isInName || isInEmail)
+            return isInName || isInEmail
         })
         return filterVal
     }

@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit {
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true

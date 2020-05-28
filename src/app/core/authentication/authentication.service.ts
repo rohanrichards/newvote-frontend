@@ -192,9 +192,9 @@ export class AuthenticationService {
      */
 
     // TODO: Update service isAuthenticated & JWT check to query
-    isAuthenticated(): boolean {
-        return !!this._credentials && !this.isTokenExpired()
-    }
+    // isAuthenticated(): boolean {
+    //     return !!this._credentials && !this.isTokenExpired()
+    // }
 
     isTokenExpired(): boolean {
         const token = this._credentials.token
@@ -212,13 +212,13 @@ export class AuthenticationService {
      * Checks is the user is an admin.
      * @return True if the user is an admin.
      */
-    isAdmin(): boolean {
-        if (this._credentials) {
-            return includes(this._credentials.user.roles, 'admin')
-        } else {
-            return false
-        }
-    }
+    // isAdmin(): boolean {
+    //     if (this._credentials) {
+    //         return includes(this._credentials.user.roles, 'admin')
+    //     } else {
+    //         return false
+    //     }
+    // }
 
     /**
      * owner implies admin or organization owner
@@ -247,69 +247,69 @@ export class AuthenticationService {
      * also allows through admins or owners
      * @return True if the user is moderator.
      */
-    isModerator(): boolean {
-        // debugger;
+    // isModerator(): boolean {
+    //     // debugger;
 
-        if (!this._credentials || !this._credentials.user || !this._org) {
-            return false
-        }
+    //     if (!this._credentials || !this._credentials.user || !this._org) {
+    //         return false
+    //     }
 
-        // owners and admins are allowed to do anything a moderator can
-        if (this.isOwner()) {
-            return true
-        }
+    //     // owners and admins are allowed to do anything a moderator can
+    //     if (this.isOwner()) {
+    //         return true
+    //     }
 
-        if (!this._org || !this._org.moderators || !this._org.moderators.length) {
-            return false
-        }
+    //     if (!this._org || !this._org.moderators || !this._org.moderators.length) {
+    //         return false
+    //     }
 
-        return this._org.moderators.some((mod: any) => {
-            if (typeof mod === 'string') {
-                return mod === this._credentials.user._id
-            }
+    //     return this._org.moderators.some((mod: any) => {
+    //         if (typeof mod === 'string') {
+    //             return mod === this._credentials.user._id
+    //         }
 
-            return mod._id === this._credentials.user._id
-        })
-    }
+    //         return mod._id === this._credentials.user._id
+    //     })
+    // }
 
     /**
      * check if content is owned by current user
      * @return True if the user is an admin.
      */
-    isCreator(object?: any): boolean {
-        if (!object) {
-            return false
-        }
+    // isCreator(object?: any): boolean {
+    //     if (!object) {
+    //         return false
+    //     }
 
-        if (this._credentials) {
-            if (object.user) {
-                const id = object.user._id || object.user
+    //     if (this._credentials) {
+    //         if (object.user) {
+    //             const id = object.user._id || object.user
 
-                if (id === this._credentials.user._id) {
-                    return true
-                }
-            }
-        } else {
-            return false
-        }
-    }
+    //             if (id === this._credentials.user._id) {
+    //                 return true
+    //             }
+    //         }
+    //     } else {
+    //         return false
+    //     }
+    // }
 
-    hasRole(role: string): boolean {
-        if (this._credentials) {
-            return includes(this._credentials.user.roles, role)
-        }
-    }
+    // hasRole(role: string): boolean {
+    //     if (this._credentials) {
+    //         return includes(this._credentials.user.roles, role)
+    //     }
+    // }
 
     /**
      * check if current user has completed verification
      * @return True if the user is verified.
      */
-    isVerified(): boolean {
-        // debugger;
-        if (this._credentials) {
-            return (this._credentials.user.verified === true)
-        }
-    }
+    // isVerified(): boolean {
+    //     // debugger;
+    //     if (this._credentials) {
+    //         return (this._credentials.user.verified === true)
+    //     }
+    // }
 
     tourComplete(): boolean {
         if (this._credentials) {

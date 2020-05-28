@@ -10,6 +10,7 @@ import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { CommunityQuery } from '@app/core/http/organization/organization.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-organization',
@@ -39,7 +40,8 @@ export class OrganizationListComponent implements OnInit {
         private route: ActivatedRoute,
         private meta: MetaService,
         public admin: AdminService,
-        private communities: CommunityQuery
+        private communities: CommunityQuery,
+        private authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -61,7 +63,7 @@ export class OrganizationListComponent implements OnInit {
     }
 
     fetchData(force?: boolean) {
-        const isAdmin = this.auth.isAdmin()
+        const isAdmin = this.authQuery.isAdmin()
         this.stateService.setLoadingState(AppState.loading)
 
         this.organizationService.list({
@@ -99,7 +101,7 @@ export class OrganizationListComponent implements OnInit {
     }
 
     onSoftDelete(event: any) {
-        if (!this.auth.isOwner()) {
+        if (!this.authQuery.isOwner()) {
             return false
         }
         event.softDeleted = true
@@ -109,7 +111,7 @@ export class OrganizationListComponent implements OnInit {
     }
 
     onRestore(event: any) {
-        if (!this.auth.isOwner()) {
+        if (!this.authQuery.isOwner()) {
             return false
         }
         event.softDeleted = false
