@@ -11,7 +11,7 @@ import { AuthenticationService } from '@app/core/authentication/authentication.s
 export class FooterComponent implements OnInit {
   @Input() org: IOrganization;
   // TODO: Update service isAuthenticated & JWT check to query
-  constructor(public auth: AuthenticationService) { }
+  constructor(public auth: AuthenticationQuery) { }
 
   ngOnInit() {
   }

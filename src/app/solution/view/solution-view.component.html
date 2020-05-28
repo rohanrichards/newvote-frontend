@@ -118,7 +118,7 @@
                 [style.display]="'block'"
                 [multi]="true">
                 <mat-expansion-panel class="accordion-header"
-                    [expanded]="proposals.length && proposals.length > 0">
+                    [expanded]="proposals && proposals.length && proposals.length > 0">
                     <mat-expansion-panel-header>
                         <h2 class="custom-headline no-margin"
                             [ngStyle]="{ 'text-align': 'center', 'width': '100%'}">
@@ -140,7 +140,7 @@
                     </app-card-list>
                 </mat-expansion-panel>
                 <mat-expansion-panel class="accordion-header"
-                    [expanded]="!!suggestions.length && suggestions.length > 0">
+                    [expanded]="suggestions.length && suggestions.length > 0">
                     <mat-expansion-panel-header>
                         <h2 class="custom-headline no-margin"
                             [ngStyle]="{ 'text-align': 'center', 'width': '100%'}">

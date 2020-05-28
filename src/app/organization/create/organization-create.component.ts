@@ -113,7 +113,7 @@ export class OrganizationCreateComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private admin: AdminService,
-        private authQuery: AuthenticationQuery,
+        public authQuery: AuthenticationQuery,
     ) {
         this.filteredUsers = this.organizationForm
             .get('owner')

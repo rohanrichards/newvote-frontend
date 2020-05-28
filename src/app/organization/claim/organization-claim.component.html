@@ -12,7 +12,7 @@
     fxLayoutAlign="center start">
     <div fxFlex.gt-sm="690px"
         fxFlex.gt-md="800px">
-        <div *ngIf="auth.isAuthenticated()">
+        <div *ngIf="authQuery.isLoggedIn()">
             <!-- user is logged in -->
             <p class="mat-body">
                 Thank you for your interest in this community, we are currently
@@ -30,7 +30,7 @@
                     {{organization.name}}</a>
             </p>
         </div>
-        <div *ngIf="!auth.isAuthenticated()">
+        <div *ngIf="!authQuery.isLoggedIn()">
             <!-- user is not logged in -->
             <p class="mat-body">
                 To claim a community you will need to have created an account.

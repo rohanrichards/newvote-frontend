@@ -44,8 +44,8 @@ export class SolutionViewComponent implements OnInit {
     loadingState: string
     handleImageUrl = optimizeImage
     organization: any
-    suggestions: any[]
-    proposals: any[]
+    suggestions: any[] = []
+    proposals: any[] = []
     proposals$: Observable<IProposal[]>
     suggestions$: Observable<any[]>
     isVerified: boolean

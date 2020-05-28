@@ -23,17 +23,17 @@ const routes = {
 }
 
 interface ApiContext {
-    id?: string // id of object to find/modify
-    params?: any
+    id?: string; // id of object to find/modify
+    params?: any;
 }
 
 export interface UserContext extends ApiContext {
-    entity?: IUser
-    subscription?: PushSubscription | null
+    entity?: IUser;
+    subscription?: PushSubscription | null;
 }
 
 export interface ProfileContext extends ApiContext {
-    entity?: IProfile
+    entity?: IProfile;
 }
 
 @Injectable()
@@ -105,8 +105,6 @@ export class UserService {
             tap((res: any) => {
                 const { displayName, subscriptions } = res
                 this.store.update({ displayName, subscriptions })
-                const credentials = this.authService.credentials
-                this.authService.updateCredentials(res)
             }),
             map((res: any) => res),
         )
@@ -117,6 +115,7 @@ export class UserService {
             .patch(routes.patch(context), context.entity)
             .pipe(
                 catchError(e => of({ error: e })),
+                tap((e) => { this.store.update({ completedTour: true }) }),
                 map((res: any) => res),
             )
     }

@@ -18,7 +18,7 @@
 				</mat-error>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isOwner()">
+			<mat-form-field *ngIf="authQuery.isOwner()">
 				<input matInput
 				 placeholder="Organization name (will appear as leader of community)"
 				 formControlName="organizationName"
@@ -61,7 +61,7 @@
 			</mat-form-field>
 
 			<mat-form-field
-			*ngIf="auth.isAdmin()">
+			*ngIf="authQuery.isAdmin()">
 				<mat-label>Authentication Type</mat-label>
 				<mat-select formControlName="authType" required>
 					<mat-option [value]="0">
@@ -74,7 +74,7 @@
 			</mat-form-field>
 
 			<mat-form-field
-			*ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			*ngIf="authQuery.isAdmin() && this.organizationForm.value.authType!==0">
 				<input matInput
 				 type="url"
 				 placeholder="The redirect URL to use for AAF authentication"
@@ -82,7 +82,7 @@
 				 required>
 			</mat-form-field>
 
-			<mat-form-field *ngIf="auth.isAdmin() && this.organizationForm.value.authType!==0">
+			<mat-form-field *ngIf="authQuery.isAdmin() && this.organizationForm.value.authType!==0">
 				<input matInput
 				 type="text"
 				 placeholder="Enter the Entity ID for AAF authentication"
@@ -91,7 +91,7 @@
 			</mat-form-field>
 
 
-			<div class="vote-section" formArrayName="voteRoles" *ngIf="auth.isAdmin() && this.organizationForm.value.authType===1">
+			<div class="vote-section" formArrayName="voteRoles" *ngIf="authQuery.isAdmin() && this.organizationForm.value.authType===1">
 				<mat-label>Permit Voting Roles</mat-label>
 				<section class="vote-container" fxLayoutAlign="space-evenly center">
 					<div *ngFor="let item of organizationForm.get('voteRoles').controls; let i = index;">
@@ -121,7 +121,7 @@
 			 fxLayout="row">
 				<mat-form-field style="width: 100%; padding-right: 0.5rem;"
 				 class="example-chip-list"
-				 *ngIf="auth.isAdmin()">
+				 *ngIf="authQuery.isAdmin()">
 					<mat-chip-list #chipList>
 						<mat-chip *ngIf="owner"
 						 [selectable]="false"
@@ -173,7 +173,7 @@
 
 			<!-- Moderators -->
 			<mat-form-field class="example-chip-list"
-			 *ngIf="auth.isOwner()">
+			 *ngIf="authQuery.isOwner()">
 				<mat-chip-list #modChipList>
 					<mat-chip *ngFor="let mod of organizationForm.value.moderators"
 					 [selectable]="false"

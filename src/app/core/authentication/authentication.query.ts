@@ -150,4 +150,9 @@ export class AuthenticationQuery extends Query<IUser> {
 
         return false
     }
+
+    tourComplete(): boolean {
+        const user = this.getValue();
+        return user.completedTour
+    }
 }

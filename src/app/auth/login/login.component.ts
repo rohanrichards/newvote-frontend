@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit {
             }))
             .subscribe(user => {
                 // log.debug(`${credentials.user.email} successfully logged in`)
+                console.log(user, 'this is user')
                 this.route.queryParams.subscribe(
                     params => {
                         if (user.verified) {

@@ -73,28 +73,21 @@ export class AuthenticationService {
         private cookieService: CookieService,
         private authenticationStore: AuthenticationStore
     ) {
-        const savedCredentials = sessionStorage.getItem(credentialsKey) ||
-            localStorage.getItem(credentialsKey) ||
-            cookieService.get(credentialsKey)
-        if (savedCredentials) {
-            const creds: Credentials = JSON.parse(savedCredentials) as Credentials
-            this.setCredentials(creds, true)
-            this.authenticationStore.update(creds.user)
-            if (this.isTokenExpired()) {
-                this.logout()
-            }
+
+        if (this.isTokenExpired()) {
+            this.logout()
         }
+
         this.organizationService.get().subscribe(org => { this._org = org })
 
+        // Calls backend with JWT to see if a user has  session and returns a users credentials
         this.checkStatus()
             .subscribe(
-                (res) => {
-                    return this.setCredentials(res, true)
-                },
+                (res) => res,
                 (err) => {
                     if (err.status === 400) {
                         this.authenticationStore.update(createInitialState())
-                        return this.setCredentials()
+                        // return this.setCredentials()
                     }
                 }
             )
@@ -123,6 +116,7 @@ export class AuthenticationService {
             .get<Credentials>(routes.checkAuth())
             .pipe(
                 catchError(handleError),
+                tap((res: any) => this.authenticationStore.update(res)),
                 map((res) => {
                     return res
                 }),
@@ -141,7 +135,7 @@ export class AuthenticationService {
             .pipe(
                 tap((res) => this.authenticationStore.update(res.user)),
                 map((res) => {
-                    this.setCredentials(res, context.remember)
+                    // this.setCredentials(res, context.remember)
                     return res
                 })
             )
@@ -152,13 +146,8 @@ export class AuthenticationService {
      * @return True if the user was logged out successfully.
      */
     logout(): Observable<boolean> {
-        // Customize credentials invalidation here
-        this.setCredentials()
-        // reset community verified once no user is there (only shows if logged in)
-        // this.communityVerified = true
-        this.cookieService.delete('credentials')
+        this.cookieService.delete('credentials', '/', '.newvote.org')
         this.authenticationStore.reset()
-
         return of(true)
     }
 
@@ -197,7 +186,7 @@ export class AuthenticationService {
     // }
 
     isTokenExpired(): boolean {
-        const token = this._credentials.token
+        const token = this.cookieService.get('credentials')
         if (!token) {
             return true
         }
@@ -311,25 +300,25 @@ export class AuthenticationService {
     //     }
     // }
 
-    tourComplete(): boolean {
-        if (this._credentials) {
-            return this._credentials.user.completedTour
-        }
-    }
+    // tourComplete(): boolean {
+    //     if (this._credentials) {
+    //         return this._credentials.user.completedTour
+    //     }
+    // }
 
-    saveTourToLocalStorage() {
-        this.setCredentials(this._credentials, true)
-    }
+    // saveTourToLocalStorage() {
+    //     this.setCredentials(this._credentials, true)
+    // }
 
-    setVerified(credentials: Credentials) {
-        // debugger;
-        if (localStorage.getItem(credentialsKey)) {
-            localStorage.setItem(credentialsKey, JSON.stringify(credentials))
-        } else if (sessionStorage.getItem(credentialsKey)) {
-            sessionStorage.setItem(credentialsKey, JSON.stringify(credentials))
-        }
-        this._credentials = credentials
-    }
+    // setVerified(credentials: Credentials) {
+    //     // debugger;
+    //     if (localStorage.getItem(credentialsKey)) {
+    //         localStorage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     } else if (sessionStorage.getItem(credentialsKey)) {
+    //         sessionStorage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     }
+    //     this._credentials = credentials
+    // }
 
     // User sends mobile number to backend and is sent a verification code
     sendVerificationCode(number: number): Observable<any> {
@@ -350,19 +339,6 @@ export class AuthenticationService {
                         mobileNumber,
                         roles
                     }))
-
-                    const { user, token } = this._credentials
-                    user.verified = verified
-                    user.organizations = organizations
-                    user.mobileNumber = mobileNumber
-                    user.roles = roles
-
-                    const newCreds = {
-                        user,
-                        token
-                    }
-
-                    this.setCredentials(newCreds, true);
                 }),
             )
     }
@@ -377,21 +353,6 @@ export class AuthenticationService {
                         verified,
                         organizations
                     })
-
-                    // After updating store - if we refresh page credentials will have not updated,
-                    // the store will pull data from the data store on local store
-                    // need to update local store with latest verification data
-
-                    const { user, token } = this._credentials;
-                    user.verified = verified;
-                    user.organizations = organizations;
-
-                    const newCreds = {
-                        user,
-                        token
-                    }
-
-                    this.setCredentials(newCreds, true);
                 })
             )
     }
@@ -400,18 +361,18 @@ export class AuthenticationService {
      * Gets the user credentials.
      * @return The user credentials or null if the user is not authenticated.
      */
-    get credentials(): Credentials | null {
-        return this._credentials
-    }
+    // get credentials(): Credentials | null {
+    //     return this._credentials
+    // }
 
-    updateCredentials(user: any) {
-        const { displayName, subscriptions } = user
-        const credentials = this.credentials;
-        credentials.user.subscriptions = subscriptions;
-        credentials.user.displayName = displayName;
+    // updateCredentials(user: any) {
+    //     const { displayName, subscriptions } = user
+    //     const credentials = this.credentials;
+    //     credentials.user.subscriptions = subscriptions;
+    //     credentials.user.displayName = displayName;
 
-        this.setCredentials(credentials, true);
-    }
+    //     this.setCredentials(credentials, true);
+    // }
 
     /**
      * Sets the user credentials.
@@ -420,16 +381,16 @@ export class AuthenticationService {
      * @param credentials The user credentials.
      * @param remember True to remember credentials across sessions.
      */
-    private setCredentials(credentials?: Credentials, remember?: boolean) {
-        this._credentials = credentials || null
-        if (credentials) {
-            const storage = remember ? localStorage : sessionStorage
-            storage.setItem(credentialsKey, JSON.stringify(credentials))
-        } else {
-            sessionStorage.removeItem(credentialsKey)
-            localStorage.removeItem(credentialsKey)
-            this.cookieService.delete(credentialsKey, '/', '.newvote.org')
-        }
-    }
+    // private setCredentials(credentials?: Credentials, remember?: boolean) {
+    //     this._credentials = credentials || null
+    //     if (credentials) {
+    //         const storage = remember ? localStorage : sessionStorage
+    //         storage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     } else {
+    //         sessionStorage.removeItem(credentialsKey)
+    //         localStorage.removeItem(credentialsKey)
+    //         this.cookieService.delete(credentialsKey, '/', '.newvote.org')
+    //     }
+    // }
 
 }

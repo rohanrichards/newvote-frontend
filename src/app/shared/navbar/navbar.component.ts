@@ -114,8 +114,8 @@ export class NavbarComponent implements OnInit {
     }
 
     get username(): string | null {
-        const credentials = this.auth.credentials
-        return credentials ? credentials.user.username : null
+        const { username = null } = this.authQuery.getValue()
+        return username
     }
 
     handleToggle() {

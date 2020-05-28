@@ -131,7 +131,7 @@ export class OrganizationEditComponent implements OnInit {
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
         private admin: AdminService,
-        private authQuery: AuthenticationQuery
+        public authQuery: AuthenticationQuery
     ) {
         this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
             startWith(''),

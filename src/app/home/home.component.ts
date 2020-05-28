@@ -30,6 +30,7 @@ import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { cloneDeep } from 'lodash'
 
 @Component({
     selector: 'app-home',
@@ -168,12 +169,11 @@ export class HomeComponent implements OnInit {
     }
 
     completeTour() {
-        const user = this.auth.credentials.user
+        const user = cloneDeep(this.authQuery.getValue());
         user.completedTour = true
         this.userService.patch({ id: user._id, entity: user })
             .subscribe(
                 () => {
-                    this.auth.saveTourToLocalStorage()
                     this.admin.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err
