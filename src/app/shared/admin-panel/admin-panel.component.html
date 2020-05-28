@@ -2,7 +2,7 @@
     <div 
         class="card-panel"
         [ngClass]="{ notificationPanel: model === 'Notification' }"
-        *ngIf="auth.isModerator() || auth.isCreator(item)">
+        *ngIf="authQuery.isModerator() || authQuery.isCreator(item)">
         <button 
             *ngIf="model !== 'Notification'"
             color="accent"
@@ -90,7 +90,7 @@
 
 <ng-template #viewPanel>
     <div class="admin-panel"
-        *ngIf="repQuery.isRepForOrg() || auth.isCreator(item)"
+        *ngIf="repQuery.isRepForOrg() || authQuery.isCreator(item)"
         fxLayout="column"
         fxLayoutAlign="center end">
             <div class="button-panel">

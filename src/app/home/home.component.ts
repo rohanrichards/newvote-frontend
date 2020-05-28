@@ -29,6 +29,7 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-home',
@@ -68,7 +69,8 @@ export class HomeComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private issueQuery: IssueQuery,
         private organizationQuery: OrganizationQuery,
-        private communityQuery: CommunityQuery
+        private communityQuery: CommunityQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -88,7 +90,6 @@ export class HomeComponent implements OnInit {
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true
-        
 
         const getSolutions = this.solutionService.list({ params })
         const getProposals = this.proposalService.list({ params })

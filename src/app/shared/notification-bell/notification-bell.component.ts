@@ -83,7 +83,11 @@ export class NotificationBellComponent implements OnInit {
             .handleIssueSubscription(userId, this.parent._id)
             .subscribe(
                 res => {
-                    console.log(res, 'this is res on handleSubscription')
+                    const isSubscribed = this.checkSubscription(res);
+                    if (!isSubscribed) {
+                        return this.admin.openSnackBar('You have unsubscribed from this issue.', 'OK');
+                    }
+                    return this.admin.openSnackBar('You are now subscribed to this issue.', 'OK');
                 },
                 err => {
                     console.log(err, 'this is err')
@@ -95,7 +99,6 @@ export class NotificationBellComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(NotificationPopupDialog, {
             width: '300px',
-            height: '400px',
             data: { organization: '', issue: this.parent },
         })
 
@@ -117,7 +120,7 @@ export class NotificationBellComponent implements OnInit {
 
     // Checks a users current subscriptions for the current issue
     checkSubscription(user: IUser) {
-        if (!this.isEnabled) {
+        if (!this.isEnabled || Notification.permission !== 'granted') {
             return false
         }
 

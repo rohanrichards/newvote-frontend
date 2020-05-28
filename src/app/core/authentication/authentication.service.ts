@@ -106,13 +106,13 @@ export class AuthenticationService {
      * @param context The login parameters.
      * @return The user credentials.
      */
-    login(context: LoginContext): Observable<Credentials> {
+    login(context: LoginContext): Observable<IUser> {
         return this.httpClient
-            .post<Credentials>(routes.signin(), context)
+            .post<IUser>(routes.signin(), context)
             .pipe(
-                tap((res) => this.authenticationStore.update(res.user)),
+                tap((res) => this.authenticationStore.update(res)),
                 map((res) => {
-                    this.setCredentials(res, context.remember)
+                    // this.setCredentials(res, context.remember)
                     return res
                 })
             )
@@ -224,23 +224,23 @@ export class AuthenticationService {
      * owner implies admin or organization owner
      * @return True if the user is an admin.
      */
-    isOwner(): boolean {
-        if (this._credentials) {
-            // admin owns everything
-            if (includes(this._credentials.user.roles, 'admin')) {
-                return true
-            }
+    // isOwner(): boolean {
+    //     if (this._credentials) {
+    //         // admin owns everything
+    //         if (includes(this._credentials.user.roles, 'admin')) {
+    //             return true
+    //         }
 
-            // org leaders own any content within their org
-            if (this._org && this._org.owner && this._org.owner._id === this._credentials.user._id) {
-                return true
-            }
+    //         // org leaders own any content within their org
+    //         if (this._org && this._org.owner && this._org.owner._id === this._credentials.user._id) {
+    //             return true
+    //         }
 
-            return false
-        } else {
-            return false
-        }
-    }
+    //         return false
+    //     } else {
+    //         return false
+    //     }
+    // }
 
     /**
      * moderators are on the list of org moderators

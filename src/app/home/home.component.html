@@ -1,4 +1,4 @@
-<div *ngIf="auth.isVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" >
+<div *ngIf="authQuery.isUserVerified() && !auth.tourComplete()" class="tour-container" fxLayout="row" fxLayoutAlign="space-around center" >
 	<div [style.padding-top]="'1rem'" fxLayoutAlign="start center">
 		<h4 joyrideStep="step1"
 			class="mat-title">New to NewVote? Let us help you get started.</h4>

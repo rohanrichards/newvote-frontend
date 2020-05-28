@@ -141,4 +141,13 @@ export class AuthenticationQuery extends Query<IUser> {
         return false
     }
 
+    isCreator(object?: any): boolean {
+        const user = this.getValue();
+        if (!user || !user._id || !object.user || !object.user._id ) return false
+
+        const id = object.user._id || object.user
+        if (id === user._id) return true
+
+        return false
+    }
 }

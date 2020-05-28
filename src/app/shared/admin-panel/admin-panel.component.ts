@@ -22,7 +22,8 @@ export class AdminPanelComponent implements OnInit {
     constructor(
         public admin: AdminService,
         public auth: AuthenticationService,
-        public repQuery: RepQuery
+        public repQuery: RepQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {

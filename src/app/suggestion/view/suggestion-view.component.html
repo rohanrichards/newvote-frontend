@@ -17,7 +17,7 @@
             fxLayout="column"
             [style.background-image]="'url(' + suggestion.imageUrl + ')'">
             <div class="admin-panel"
-                *ngIf="auth.isModerator() || auth.isCreator(suggestion)"
+                *ngIf="authQuery.isModerator() || authQuery.isCreator(suggestion)"
                 fxLayout="column"
                 fxLayoutAlign="center end">
                 <app-admin-panel

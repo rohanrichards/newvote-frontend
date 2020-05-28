@@ -46,7 +46,7 @@
                 <div fxFlex.gt-sm="690px"
                     fxFlex.gt-md="800px">
                     <app-notification-bell
-                        *ngIf="auth.isAuthenticated()"
+                        *ngIf="authQuery.isUserVerified()"
                         [parent]="issue"
                     >
                     </app-notification-bell>
@@ -159,7 +159,7 @@
                                 {{ this.issue.mediaHeading || "Third Party Media"}}
                             </h2>
                             <button 
-                                *ngIf="auth.isModerator()"
+                                *ngIf="authQuery.isModerator()"
                                 mat-icon-button
                                 matTooltip="Edit this Issue"
                                 color="accent"
@@ -170,7 +170,7 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div 
-                        *ngIf="headingEdit && auth.isModerator()"
+                        *ngIf="headingEdit && authQuery.isModerator()"
                         fxLayout="row"
                         fxLayoutAlign="center center"
                         [ngStyle]="{ 'width': '100%'}"
