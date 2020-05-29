@@ -150,6 +150,7 @@ export class NavbarComponent implements OnInit {
 
     handleVerify() {
         // If community is authType 0
+        const userId = this.authQuery.getValue()._id;
         const { authType, url } = this.orgQuery.getValue()
         const canVerify = this.authQuery.canVerify()
 
@@ -160,7 +161,7 @@ export class NavbarComponent implements OnInit {
                 })
             }
 
-            return this.auth.verifyWithCommunity().subscribe(
+            return this.auth.verifyWithCommunity(userId).subscribe(
                 res => {
                     this.admin.openSnackBar(
                         'You have successfully verified with this community.',
@@ -184,14 +185,14 @@ export class NavbarComponent implements OnInit {
             }
         }
 
-        return this.auth.verifyWithCommunity().subscribe(
-            res => {
+        return this.auth.verifyWithCommunity(userId).subscribe(
+            () => {
                 this.admin.openSnackBar(
                     'You have successfully verified with this community.',
                     'OK',
                 )
             },
-            error => {
+            (error: any) => {
                 this.admin.openSnackBar(
                     `Something went wrong: ${error.status} - ${error.statusText}`,
                     'OK',

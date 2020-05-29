@@ -343,9 +343,9 @@ export class AuthenticationService {
             )
     }
 
-    verifyWithCommunity(): Observable<any> {
+    verifyWithCommunity(id: string): Observable<any> {
         return this.httpClient
-            .post(routes.communityVerify(), {})
+            .post(routes.communityVerify(), { id })
             .pipe(
                 tap((res: any) => {
                     const { verified, organizations } = res
