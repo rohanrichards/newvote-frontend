@@ -14,28 +14,28 @@ import { IUser } from '../models/user.model'
 
 export interface Credentials {
     // Customize received credentials here
-    user?: any;
-    token: string;
+    user?: any
+    token: string
 }
 
 export interface LoginContext {
-    username: string;
-    password: string;
+    username: string
+    password: string
 
-    remember?: boolean;
-    organizations?: [Organization];
+    remember?: boolean
+    organizations?: [Organization]
 }
 
 export interface ForgotContext {
-    email: string;
-    recaptchaResponse: string;
+    email: string
+    recaptchaResponse: string
 }
 
 export interface ResetContext {
-    email: string;
-    token: string;
-    newPassword: string;
-    verifyPassword: string;
+    email: string
+    token: string
+    newPassword: string
+    verifyPassword: string
 }
 
 const routes = {
@@ -43,13 +43,14 @@ const routes = {
     signup: (id?: string) => {
         return `/auth/signup${id ? `/${id}` : ''}`
     },
+    signout: () => '/auth/signout',
     forgot: () => '/auth/forgot',
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
     communityVerify: () => '/users/community-verify',
     sso: () => '/auth/jwt',
-    checkAuth: () => '/auth/check-status'
+    checkAuth: () => '/auth/check-status',
 }
 
 const credentialsKey = 'credentials'
@@ -60,9 +61,8 @@ const credentialsKey = 'credentials'
  */
 @Injectable()
 export class AuthenticationService {
-
-    private _credentials: Credentials | null;
-    private _org: Organization;
+    private _credentials: Credentials | null
+    private _org: Organization
 
     // Only use if a user has a verified account and is visiting a new community
 
@@ -71,27 +71,26 @@ export class AuthenticationService {
         private jwt: JwtHelperService,
         private organizationService: OrganizationService,
         private cookieService: CookieService,
-        private authenticationStore: AuthenticationStore
+        private authenticationStore: AuthenticationStore,
     ) {
-
         if (this.isTokenExpired()) {
             this.logout()
         }
 
-        this.organizationService.get().subscribe(org => { this._org = org })
+        this.organizationService.get().subscribe(org => {
+            this._org = org
+        })
 
         // Calls backend with JWT to see if a user has  session and returns a users credentials
-        this.checkStatus()
-            .subscribe(
-                (res) => res,
-                (err) => {
-                    if (err.status === 400) {
-                        this.authenticationStore.update(createInitialState())
-                        // return this.setCredentials()
-                    }
+        this.checkStatus().subscribe(
+            res => res,
+            err => {
+                if (err.status === 400) {
+                    this.authenticationStore.update(createInitialState())
+                    // return this.setCredentials()
                 }
-            )
-
+            },
+        )
     }
 
     /**
@@ -100,27 +99,23 @@ export class AuthenticationService {
      * @return The user credentials.
      */
     login(context: LoginContext): Observable<IUser> {
-        return this.httpClient
-            .post<IUser>(routes.signin(), context)
-            .pipe(
-                tap((res) => this.authenticationStore.update(res)),
-                map((res) => {
-                    // this.setCredentials(res, context.remember)
-                    return res
-                })
-            )
+        return this.httpClient.post<IUser>(routes.signin(), context).pipe(
+            tap(res => this.authenticationStore.update(res)),
+            map(res => {
+                // this.setCredentials(res, context.remember)
+                return res
+            }),
+        )
     }
 
     checkStatus(): Observable<Credentials> {
-        return this.httpClient
-            .get<Credentials>(routes.checkAuth())
-            .pipe(
-                catchError(handleError),
-                tap((res: any) => this.authenticationStore.update(res)),
-                map((res) => {
-                    return res
-                }),
-            )
+        return this.httpClient.get<Credentials>(routes.checkAuth()).pipe(
+            catchError(handleError),
+            tap((res: any) => this.authenticationStore.update(res)),
+            map(res => {
+                return res
+            }),
+        )
     }
 
     /**
@@ -128,16 +123,19 @@ export class AuthenticationService {
      * @param context The signup parameters.
      * @return The user credentials.
      */
-    signup(context: LoginContext, verificationCode?: string): Observable<Credentials> {
+    signup(
+        context: LoginContext,
+        verificationCode?: string,
+    ): Observable<Credentials> {
         context.organizations = [this.organizationService.org]
         return this.httpClient
             .post<Credentials>(routes.signup(verificationCode), context)
             .pipe(
-                tap((res) => this.authenticationStore.update(res.user)),
-                map((res) => {
+                tap(res => this.authenticationStore.update(res.user)),
+                map(res => {
                     // this.setCredentials(res, context.remember)
                     return res
-                })
+                }),
             )
     }
 
@@ -145,10 +143,14 @@ export class AuthenticationService {
      * Logs out the user and clear credentials.
      * @return True if the user was logged out successfully.
      */
-    logout(): Observable<boolean> {
-        this.cookieService.delete('credentials', '/', '.newvote.org')
-        this.authenticationStore.reset()
-        return of(true)
+    logout(): Observable<any> {
+        return this.httpClient.get(routes.signout(), {})
+            .pipe(
+                tap((res) => {
+                    this.authenticationStore.reset()
+                    this.cookieService.delete('credentials', '/', '.newvote.org')
+                }),
+            )
     }
 
     /**
@@ -157,8 +159,7 @@ export class AuthenticationService {
      */
     forgot(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
-        return this.httpClient
-            .post<boolean>(routes.forgot(), context)
+        return this.httpClient.post<boolean>(routes.forgot(), context)
     }
 
     /**
@@ -167,8 +168,7 @@ export class AuthenticationService {
      */
     reset(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
-        return this.httpClient
-            .post<boolean>(routes.reset(), context)
+        return this.httpClient.post<boolean>(routes.reset(), context)
     }
 
     sso(): Observable<boolean> {
@@ -322,39 +322,39 @@ export class AuthenticationService {
 
     // User sends mobile number to backend and is sent a verification code
     sendVerificationCode(number: number): Observable<any> {
-        return this.httpClient
-            .post(routes.sms(), number)
+        return this.httpClient.post(routes.sms(), number)
     }
 
     // User sends verification code to register as user
     verifyMobile(code: number): Observable<any> {
-        return this.httpClient
-            .post(routes.verify(), code)
-            .pipe(
-                tap((res: any) => {
-                    const { verified, organizations, roles, mobileNumber } = res.user
-                    this.authenticationStore.update(state => ({
-                        verified,
-                        organizations,
-                        mobileNumber,
-                        roles
-                    }))
-                }),
-            )
+        return this.httpClient.post(routes.verify(), code).pipe(
+            tap((res: any) => {
+                const {
+                    verified,
+                    organizations,
+                    roles,
+                    mobileNumber,
+                } = res.user
+                this.authenticationStore.update(state => ({
+                    verified,
+                    organizations,
+                    mobileNumber,
+                    roles,
+                }))
+            }),
+        )
     }
 
     verifyWithCommunity(id: string): Observable<any> {
-        return this.httpClient
-            .post(routes.communityVerify(), { id })
-            .pipe(
-                tap((res: any) => {
-                    const { verified, organizations } = res
-                    this.authenticationStore.update({
-                        verified,
-                        organizations
-                    })
+        return this.httpClient.post(routes.communityVerify(), { id }).pipe(
+            tap((res: any) => {
+                const { verified, organizations } = res
+                this.authenticationStore.update({
+                    verified,
+                    organizations,
                 })
-            )
+            }),
+        )
     }
 
     /**
@@ -392,5 +392,4 @@ export class AuthenticationService {
     //         this.cookieService.delete(credentialsKey, '/', '.newvote.org')
     //     }
     // }
-
 }
