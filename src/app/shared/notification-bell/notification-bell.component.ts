@@ -48,11 +48,9 @@ export class NotificationBellComponent implements OnInit {
         // keep track of whether isGranted has been updated
         this.swPush.subscription.subscribe(
             res => {
-                console.log(res, 'this is res on swPush')
                 this.isGranted = Notification.permission === 'granted'
             },
             err => {
-                console.log(err, 'this is err on swPush')
                 return err
             },
         )
@@ -89,9 +87,7 @@ export class NotificationBellComponent implements OnInit {
                     }
                     return this.admin.openSnackBar('You are now subscribed to this issue.', 'OK');
                 },
-                err => {
-                    console.log(err, 'this is err')
-                },
+                err => err,
             )
 
     }
@@ -156,42 +152,3 @@ export class NotificationPopupDialog {
         this.dialogRef.close()
     }
 }
-
-// subscribeToNotifications() {
-//     const userId = this.authQuery.getValue()._id
-
-//     // If a user has enabled notifications in browser but has disabled notifications on the app
-//     // direct them to edit profile settings to enable issue notification
-//     // if (!this.notificationsAllowed) {
-//     //     return this.admin.openSnackBar(
-//     //         'Subscriptions are disabled, visit your profile to enable them.',
-//     //         'OK',
-//     //     )
-//     // }
-
-//     // If user has not given permission for notifications but service worker is enabled
-//     // Do normal Subscribe flow, and on response add the issue subscription
-
-//     if (this.isGranted) {
-//         return this.pushService.subscribeToNotifications(
-//             userId,
-//             this.parent,
-//         )
-//     }
-
-//     // If user has given permission for notifications
-//     // Just subscribe/unscubscribe to the issue
-
-//     if (this.isGranted) {
-//         return this.pushService
-//             .handleIssueSubscription(userId, this.parent._id)
-//             .subscribe(
-//                 res => {
-//                     console.log(res, 'this is res')
-//                 },
-//                 err => {
-//                     console.log(err, 'this is err')
-//                 },
-//             )
-//     }
-// }
