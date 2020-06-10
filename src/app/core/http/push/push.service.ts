@@ -19,12 +19,6 @@ export class PushService {
         private swPush: SwPush,
         private router: Router
     ) {
-        this.swPush.notificationClicks.subscribe((arg) => {
-            console.log(arg, 'this is arg on notification click');
-            const { notification: { data }} = arg;
-
-            this.handleUrl(data)
-        })
     }
 
     subscribeToNotifications(userId: string, parentId?: string) {

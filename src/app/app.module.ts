@@ -53,7 +53,7 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
     imports: [
         ScrollingModule,
         BrowserModule,
-        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('./my-worker.js', { enabled: environment.production }),
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
