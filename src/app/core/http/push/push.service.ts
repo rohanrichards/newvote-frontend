@@ -8,6 +8,7 @@ import { environment } from '@env/environment'
 import { AdminService } from '../admin/admin.service'
 import { UserService } from '../user/user.service'
 import { SwPush } from '@angular/service-worker'
+import { Router } from '@angular/router'
 
 @Injectable()
 export class PushService {
@@ -15,8 +16,16 @@ export class PushService {
     constructor(
         private admin: AdminService,
         private userService: UserService,
-        private swPush: SwPush
-    ) { }
+        private swPush: SwPush,
+        private router: Router
+    ) {
+        this.swPush.notificationClicks.subscribe((arg) => {
+            console.log(arg, 'this is arg on notification click');
+            const { notification: { data }} = arg;
+
+            this.handleUrl(data)
+        })
+    }
 
     subscribeToNotifications(userId: string, parentId?: string) {
         this.swPush.requestSubscription({
@@ -63,5 +72,21 @@ export class PushService {
 
     handleIssueSubscription(id: string, parentId: string) {
         return this.userService.handleIssueSubscription({ id: id }, parentId)
+    }
+
+    private handleUrl(item: any) {
+        const { organization: organizationUrl, url: slug } = item
+        const { hostname } = window.location
+        const [currentUrl, ...rest] = hostname.split('.')
+
+        // same organization just redirect to issue slug
+        if (currentUrl === organizationUrl) {
+            return this.router.navigate(['issues', slug])
+        }
+
+        const newHostName = organizationUrl + '.' + rest.join('.')
+        const notificationUrlPath = `issues/${slug}`
+
+        window.location.href = `http://${newHostName}:${window.location.port}/${notificationUrlPath}`
     }
 }
