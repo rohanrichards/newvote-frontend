@@ -144,13 +144,12 @@ export class AuthenticationService {
      * @return True if the user was logged out successfully.
      */
     logout(): Observable<any> {
-        return this.httpClient.get(routes.signout(), {})
-            .pipe(
-                tap((res) => {
-                    this.authenticationStore.reset()
-                    this.cookieService.delete('credentials', '/', '.newvote.org')
-                }),
-            )
+        return this.httpClient.get(routes.signout(), {}).pipe(
+            tap(res => {
+                this.authenticationStore.reset()
+                this.cookieService.delete('credentials', '/', '.newvote.org')
+            }),
+        )
     }
 
     /**

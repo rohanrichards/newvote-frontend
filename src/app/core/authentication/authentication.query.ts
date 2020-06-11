@@ -118,7 +118,6 @@ export class AuthenticationQuery extends Query<IUser> {
         if (user.roles.includes('guest')) return false
         if (!user.mobileNumber) return false
         if (!user.organizations.length) return false
-       
         return user.organizations.some((userOrganization: any) => {
             if (typeof userOrganization === 'string') return organization._id === userOrganization
             return organization._id === userOrganization._id

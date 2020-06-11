@@ -105,7 +105,9 @@ export class NavbarComponent implements OnInit {
     checkVerify(verified: boolean, loggedIn: boolean): boolean {
         if (!loggedIn) return false
         if (verified) return false
-        if (!verified && !this.hideVerify) return true
+        if (!verified && !this.hideVerify) {
+            return true
+        }
         return false
     }
 
