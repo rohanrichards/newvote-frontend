@@ -198,7 +198,7 @@ export class ProfileEditComponent implements OnInit {
                 (res) => {
                     const { subscriptionsActive } = res
                     if (subscriptionsActive === 'DENIED') {
-                        return this.admin.openSnackBar('Successfully unsubscribed from noitifications', 'OK');
+                        return this.admin.openSnackBar('You have successfully unsubscribed from notifications.', 'OK');
                     }
                     // TODO - need to differentiate between when to subscribe to Notifications again, and when not to
                     this.swPush.subscription

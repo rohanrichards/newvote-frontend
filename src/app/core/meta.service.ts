@@ -55,7 +55,6 @@ export class MetaService {
         //         this.meta.updateTag({ name: 'og:url', content: this.appUrl })
         //         this.meta.updateTag({ property: 'og:image', content: this.appImage })
         //         this.title.setTitle(`${this.appBarTitle} | ${this.appName}`)            
-        //         // console.log('meta service updating with org details');
         //         // this.updateTags({ title: this.pageTitle, description: this.appDescription, image: this.appImage });
             
         //     })

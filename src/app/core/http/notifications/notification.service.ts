@@ -87,7 +87,9 @@ export class NotificationService {
             .post(routes.create(), context.entity, { params })
             .pipe(
                 catchError(handleError),
-                tap((notification: Notification) => this.store.add(notification)),
+                tap((notification: Notification) => {
+                    this.store.add(notification)
+                }),
                 map((res: any) => res)
             )
     }
