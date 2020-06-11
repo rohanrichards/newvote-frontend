@@ -28,7 +28,10 @@ export class ProfileEditComponent implements OnInit {
     userData: IUser
     profileForm: FormGroup = new FormGroup({
         displayName: new FormControl(''),
+        autoUpdates: new FormControl(true),
     })
+
+    autoUpdates = true;
 
     organizations: any[];
     issuesObj: any;

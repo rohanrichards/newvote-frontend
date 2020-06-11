@@ -19,6 +19,13 @@
                 </mat-error>
             </mat-form-field>
 
+            <div fxLayout="row">
+                <p class="mat-subheading text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
+                <div fxFlex fxLayoutAlign="end center">
+                    <mat-slide-toggle formControlName="autoUpdates"></mat-slide-toggle>
+                </div>
+            </div>
+
             <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
                     <h3 [style.margin-bottom]="'0'" class="mat-subheading-2">Subscriptions</h3>

@@ -20,6 +20,7 @@ import { SharedModule } from '@app/shared';
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
+        MaterialFileInputModule,
         SharedModule,
         QuillModule.forRoot({
             modules: {
