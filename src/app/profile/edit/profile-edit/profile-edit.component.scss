@@ -1,5 +1,4 @@
 .container {
-	text-align: center;
 	padding: 1em;
 }
 
@@ -26,11 +25,14 @@
 	color: crimson;
 }
 
-
 .quill-editor-container {
 	margin-top: 25px;
 	margin-bottom: 25px;
 }
+
+// .community-text {
+// 	margin-left: 1rem;
+// }
 
 ::ng-deep {
 	.ql-container {

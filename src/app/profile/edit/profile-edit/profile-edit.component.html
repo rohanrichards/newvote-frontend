@@ -1,6 +1,8 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
-<div class="container"
+<div 
+    *ngIf="loadingState === 'complete'"
+    class="container"
     fxLayoutAlign="center center">
     <mat-card fxFlex.gt-sm="60"
         fxFlex="100">
@@ -8,6 +10,10 @@
             fxLayout="column"
             (ngSubmit)="onSave()"
             novalidate>
+
+            <app-vote-bar
+                [totalVotes]="totalVotes" 
+            ></app-vote-bar>
 
             <mat-form-field>
                 <input matInput
@@ -18,6 +24,19 @@
                     Name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
+            
+            <div>
+                <h4 class="mat-subheading" [style.margin-bottom]="'0.5rem   '">Your Communities</h4>
+                <mat-list>
+                    <mat-list-item *ngFor="let organization of organizations">
+                        <img matListAvatar [src]="organization.iconUrl" alt="Organization Logo">
+                        <p class="community-text" [style.margin-left]="'1rem'" >{{ organization.name }}</p>
+                        <div [style.margin-left]="'auto'">
+                            <button mat-flat-button color="primary" [style.margin-left]="'auto'" (click)="openCommunityUrl(organization.url)">Visit Community</button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
 
             <div fxLayout="row">
                 <p class="mat-subheading text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
@@ -40,7 +59,7 @@
                 <!-- <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button> -->
             </div>
 
-           <app-issue-picker
+           <!-- <app-issue-picker
                 *ngIf="isEnabled && isGranted"
                 [parentForm]="profileForm"
                 [user]="userData"
@@ -48,8 +67,18 @@
                 [organizations]="organizations"
                 [issues]="issuesObj"
            >
-           </app-issue-picker>
+           </app-issue-picker> -->
 
+           <app-profile-issue-list
+                [parentForm]="profileForm"
+                [user]="userData"
+                [isEnabled]="isEnabled"
+                [organization]="organization"
+                [issues]="allIssues"
+                >
+           </app-profile-issue-list>
+
+           
            <button mat-flat-button
             type="submit"
             [disabled]="!profileForm.valid || isLoading"

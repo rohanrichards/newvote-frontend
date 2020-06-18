@@ -16,7 +16,8 @@ const routes = {
     view: (c: VoteContext) => `/votes/${c.id}`,
     create: () => '/votes',
     update: (c: VoteContext) => `/votes/${c.id}`,
-    delete: (c: VoteContext) => `/votes/${c.id}`
+    delete: (c: VoteContext) => `/votes/${c.id}`,
+    totalVotes: () => '/votes/total'
 }
 
 export interface VoteContext {
@@ -106,6 +107,15 @@ export class VoteService {
             .pipe(
                 catchError(handleError),
                 map((res: any) => res),
+            )
+    }
+
+    getTotalVotes(): Observable<any> {
+        return this.httpClient
+            .get(routes.totalVotes())
+            .pipe(
+                catchError(handleError),
+                map((res: any) => res)
             )
     }
 
