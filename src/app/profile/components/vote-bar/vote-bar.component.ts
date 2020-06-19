@@ -19,9 +19,6 @@ export class VoteBarComponent implements OnInit {
             return 0
         }
 
-        console.log(userVotes, entities);
-        console.log(this.totalVotes)
-
         return Math.round((userVotes / entities) * 100)
     }
 

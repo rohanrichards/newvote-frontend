@@ -43,3 +43,20 @@
     height: 250px !important;
   }
 }
+
+.section-container {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid lightgray;
+  border-top: 1px solid lightgray;
+}
+
+.section-top {
+  padding-top: 1rem;
+  border-top: 1px solid lightgray;
+}
+
+.section-bottom {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid lightgray;
+}

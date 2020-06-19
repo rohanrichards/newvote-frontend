@@ -25,7 +25,7 @@
                 [totalVotes]="totalVotes" 
             ></app-vote-bar>
 
-            <div [style.margin-bottom]="'1rem'">
+            <div class="section-top" [style.margin-bottom]="'1rem'">
                 <h4 class="mat-title small-margin">Your Communities</h4>
                 <mat-list>
                     <mat-list-item *ngFor="let organization of organizations">
@@ -38,7 +38,7 @@
                 </mat-list>
             </div>
 
-            <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="section-top" [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
                     <h3 [style.margin-bottom]="'0'" class="mat-title">Subscriptions</h3>
                     <p class="mat-small error" *ngIf="!isGranted">Notifications are disabled on this device.</p>
@@ -50,15 +50,15 @@
                 </div>
             </div>
 
-            <div *ngIf="isEnabled && (subscriptionsActive === 'ACCEPTED' && isGranted)">
+            <div class="section-container" *ngIf="isEnabled && (subscriptionsActive === 'ACCEPTED' && isGranted)">
                 <div fxLayout="row">
                     <p class="mat-subheading-1 text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
                     <div fxFlex fxLayoutAlign="end center">
                         <mat-slide-toggle formControlName="autoUpdates"></mat-slide-toggle>
                     </div>
                 </div>
-    
-                <div fxLayout="row">       
+
+                <div class="section-bottom" fxLayout="row">       
                     <p class="mat-subheading-1 text-left" fxFlex>{{ organization.name }} Announcements</p>
                     <div fxFlex fxLayoutAlign="end center">
                         <mat-slide-toggle formControlName="communityUpdates"></mat-slide-toggle>
