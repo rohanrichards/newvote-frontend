@@ -1,41 +1,45 @@
 .container {
-	padding: 1em;
+  padding: 1em;
 }
 
 .text-left {
-	text-align: left;
+  text-align: left;
 }
 
 .image-select {
-	margin-bottom: 25px;
+  margin-bottom: 25px;
 
-	.image-preview {
-		width: 100%;
-		max-height: 250px;
+  .image-preview {
+    width: 100%;
+    max-height: 250px;
 
-		img {
-			max-width: 100%;
-			max-height: 250px;
-			height: auto;
-		}
-	}
+    img {
+      max-width: 100%;
+      max-height: 250px;
+      height: auto;
+    }
+  }
 }
 
 .error {
-	color: crimson;
+  color: crimson;
 }
 
 .quill-editor-container {
-	margin-top: 25px;
-	margin-bottom: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
 // .community-text {
 // 	margin-left: 1rem;
 // }
 
+.small-margin {
+  margin: 0.5rem 0;
+}
+
 ::ng-deep {
-	.ql-container {
-		height: 250px !important;
-	}
+  .ql-container {
+    height: 250px !important;
+  }
 }

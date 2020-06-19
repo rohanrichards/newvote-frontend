@@ -7,7 +7,7 @@ import { MatSelectionListChange } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
 type Subscription = {
-    isSubscribed: boolean;
+    communityUpdates: boolean;
     issues: string[];
 }
 @Component({

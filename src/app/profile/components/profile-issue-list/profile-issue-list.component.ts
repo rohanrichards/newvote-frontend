@@ -7,7 +7,7 @@ import { IIssue } from '@app/core/models/issue.model';
 
 
 type Subscription = {
-    isSubscribed: boolean;
+    communityUpdates: boolean;
     issues: string[];
 }
 

@@ -37,6 +37,7 @@ export class ProfileEditComponent implements OnInit {
     profileForm: FormGroup = new FormGroup({
         displayName: new FormControl(''),
         autoUpdates: new FormControl(true),
+        communityUpdates: new FormControl(false)
     })
 
     isLoading$ = this.organizationQuery.selectLoading()

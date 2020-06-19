@@ -11,10 +11,6 @@
             (ngSubmit)="onSave()"
             novalidate>
 
-            <app-vote-bar
-                [totalVotes]="totalVotes" 
-            ></app-vote-bar>
-
             <mat-form-field>
                 <input matInput
                     placeholder="Enter a display name for your profile."
@@ -24,9 +20,13 @@
                     Name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
-            
-            <div>
-                <h4 class="mat-subheading" [style.margin-bottom]="'0.5rem   '">Your Communities</h4>
+
+            <app-vote-bar
+                [totalVotes]="totalVotes" 
+            ></app-vote-bar>
+
+            <div [style.margin-bottom]="'1rem'">
+                <h4 class="mat-title small-margin">Your Communities</h4>
                 <mat-list>
                     <mat-list-item *ngFor="let organization of organizations">
                         <img matListAvatar [src]="organization.iconUrl" alt="Organization Logo">
@@ -38,16 +38,9 @@
                 </mat-list>
             </div>
 
-            <div fxLayout="row">
-                <p class="mat-subheading text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
-                <div fxFlex fxLayoutAlign="end center">
-                    <mat-slide-toggle formControlName="autoUpdates"></mat-slide-toggle>
-                </div>
-            </div>
-
             <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
-                    <h3 [style.margin-bottom]="'0'" class="mat-subheading-2">Subscriptions</h3>
+                    <h3 [style.margin-bottom]="'0'" class="mat-title">Subscriptions</h3>
                     <p class="mat-small error" *ngIf="!isGranted">Notifications are disabled on this device.</p>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="flex-end flex-end">
@@ -55,30 +48,33 @@
                     <mat-slide-toggle [disabled]="!isEnabled || disableNotificationSlideToggle" [checked]="subscriptionsActive === 'ACCEPTED' && isGranted" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
                     <!-- <p class="mat-caption">Allow notifications from NewVote</p> -->
                 </div>
-
-                <!-- <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button> -->
             </div>
 
-           <!-- <app-issue-picker
-                *ngIf="isEnabled && isGranted"
-                [parentForm]="profileForm"
-                [user]="userData"
-                [isEnabled]="subscriptionsActive"
-                [organizations]="organizations"
-                [issues]="issuesObj"
-           >
-           </app-issue-picker> -->
+            <div *ngIf="isEnabled && (subscriptionsActive === 'ACCEPTED' && isGranted)">
+                <div fxLayout="row">
+                    <p class="mat-subheading-1 text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
+                    <div fxFlex fxLayoutAlign="end center">
+                        <mat-slide-toggle formControlName="autoUpdates"></mat-slide-toggle>
+                    </div>
+                </div>
+    
+                <div fxLayout="row">       
+                    <p class="mat-subheading-1 text-left" fxFlex>{{ organization.name }} Announcements</p>
+                    <div fxFlex fxLayoutAlign="end center">
+                        <mat-slide-toggle formControlName="communityUpdates"></mat-slide-toggle>
+                    </div>
+                </div>
+    
+               <app-profile-issue-list
+                    [parentForm]="profileForm"
+                    [user]="userData"
+                    [isEnabled]="isEnabled"
+                    [organization]="organization"
+                    [issues]="allIssues"
+                    >
+               </app-profile-issue-list>
+            </div>
 
-           <app-profile-issue-list
-                [parentForm]="profileForm"
-                [user]="userData"
-                [isEnabled]="isEnabled"
-                [organization]="organization"
-                [issues]="allIssues"
-                >
-           </app-profile-issue-list>
-
-           
            <button mat-flat-button
             type="submit"
             [disabled]="!profileForm.valid || isLoading"
