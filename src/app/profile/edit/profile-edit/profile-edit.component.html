@@ -45,12 +45,12 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="flex-end flex-end">
                     <mat-icon [style.margin-bottom]="'1rem'" matTooltip="By activating you will be asked by your device if you want to receive notifications from NewVote. You'll be able to customize what issues you'd like to receive updates from and also whether you would like to receive updates from the community as a whole. This can be turned off at any time by deactivating the toggle.">help</mat-icon>
-                    <mat-slide-toggle [disabled]="!isEnabled || disableNotificationSlideToggle" [checked]="subscriptionsActive === 'ACCEPTED' && isGranted" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
+                    <mat-slide-toggle formControlName="isSubscribed" [checked]="profileForm.value.isSubscribed" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
                     <!-- <p class="mat-caption">Allow notifications from NewVote</p> -->
                 </div>
             </div>
 
-            <div class="section-container" *ngIf="isEnabled && (subscriptionsActive === 'ACCEPTED' && isGranted)">
+            <div class="section-container" *ngIf="isEnabled && isGranted && profileForm.value.isSubscribed">
                 <div fxLayout="row">
                     <p class="mat-subheading-1 text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
                     <div fxFlex fxLayoutAlign="end center">

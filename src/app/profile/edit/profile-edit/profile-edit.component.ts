@@ -36,8 +36,9 @@ export class ProfileEditComponent implements OnInit {
     userData: IUser
     profileForm: FormGroup = new FormGroup({
         displayName: new FormControl(''),
-        autoUpdates: new FormControl(true),
-        communityUpdates: new FormControl(false)
+        isSubscribed: new FormControl(false),
+        autoUpdates: new FormControl(false),
+        communityUpdates: new FormControl(false),
     })
 
     isLoading$ = this.organizationQuery.selectLoading()
@@ -47,15 +48,20 @@ export class ProfileEditComponent implements OnInit {
     organizations: any[]
     organization: IOrganization
     issuesObj: any
-    enablePicker = false
     allIssues: IIssue[]
 
+    // Check to see if push service is active
     isEnabled = this.swPush.isEnabled
+    // Has the browser given permission to receive notifications
     isGranted = Notification.permission === 'granted'
-    subscriptionsActive = 'DEFAULT'
+    // Checks whether a user has an active push subscription
+    // also catch's exception with browsers that allow notifictions
+    // but are unable to receive them (i.e Brave)
+    subscriptionExists = false
+    // subscriptionsActive = 'DEFAULT'
 
     disableNotificationSlideToggle = false
-    totalVotes: any;
+    totalVotes: any
 
     constructor(
         private admin: AdminService,
@@ -70,7 +76,7 @@ export class ProfileEditComponent implements OnInit {
         private organizationQuery: OrganizationQuery,
         private swPush: SwPush,
         private stateService: StateService,
-        private voteService: VoteService
+        private voteService: VoteService,
     ) {
         // set up the file uploader
         const uploaderOptions: FileUploaderOptions = {
@@ -122,11 +128,7 @@ export class ProfileEditComponent implements OnInit {
         this.auth.select().subscribe(res => {
             if (!res) return false
             this.userData = res
-            this.subscriptionsActive = res.subscriptionsActive
-            this.profileForm
-                .get('displayName')
-                .patchValue(res.displayName || '')
-            this.createProfileForm(res)
+            this.setFormValues(res)
             this.fetchOrganizations()
             this.fetchIssues()
             this.subscribeToIssues()
@@ -137,14 +139,18 @@ export class ProfileEditComponent implements OnInit {
                 this.organization = res
                 this.stateService.setLoadingState(AppState.complete)
             })
-            this.voteService.getTotalVotes()
-                .subscribe((res) => {
-                    this.totalVotes = res;
-                })
+            this.voteService.getTotalVotes().subscribe(res => {
+                this.totalVotes = res
+            })
         })
 
         this.swPush.subscription.subscribe(
             res => {
+                if (!res) {
+                    this.subscriptionExists = false
+                    return false
+                }
+                this.subscriptionExists = true
                 // can't access Notification object on the template, so if notifications are 'denied' disable the slide toggle
                 this.disableNotificationSlideToggle =
                     Notification.permission === 'denied'
@@ -152,6 +158,25 @@ export class ProfileEditComponent implements OnInit {
             },
             err => err,
         )
+    }
+
+    setFormValues(user: any) {
+        this.profileForm.get('displayName').patchValue(user.displayName || '')
+        const { _id } = this.organizationQuery.getValue()
+
+        if (!user.subscriptions || !user.subscriptions[_id]) return false
+
+        const {
+            communityUpdates = false,
+            isSubscribed = false,
+            autoUpdates = false,
+        } = user.subscriptions[_id]
+
+        this.profileForm.patchValue({
+            communityUpdates,
+            isSubscribed,
+            autoUpdates,
+        })
     }
 
     fetchIssues() {
@@ -203,12 +228,6 @@ export class ProfileEditComponent implements OnInit {
         })
     }
 
-    createProfileForm(user: IUser) {
-        const profile = {
-            displayName: user.displayName,
-        }
-    }
-
     onSave() {
         const user = cloneDeep(this.profileForm.value) as IProfile
         const { _id: id } = this.auth.getValue()
@@ -233,11 +252,52 @@ export class ProfileEditComponent implements OnInit {
     }
 
     handleSubscriptionToggle(event: any) {
+        // [disabled]="!isEnabled || disableNotificationSlideToggle"
         const user = cloneDeep(this.auth.getValue())
+        // user.subscriptionsActive = event.checked ? 'ACCEPTED' : 'DENIED'
 
-        user.subscriptionsActive = event.checked ? 'ACCEPTED' : 'DENIED'
+        if (!this.isEnabled) {
+            return this.admin.openSnackBar(
+                'Browser does not support push notifications.',
+                'OK',
+            )
+        }
 
-        // toggles the userSubscription property on the user object
+        // If there is no subscription currently attempt to create one
+        if (!this.subscriptionExists) {
+            return this.createSubscription(user)
+        }
+
+        // subscription is in place, just toggle between receiving / not receiving updates
+        return this.patchSubscription(user, event.checked)
+    }
+
+    createSubscription(user: IUser) {
+        return this.pushService
+            .subscribeToNotifications(user._id)
+            .then(data => {
+                this.admin.openSnackBar(
+                    'Successfully subscribed to Notifications.',
+                    'OK',
+                )
+            })
+            .catch(err => {
+                this.profileForm.get('isSubscribed').patchValue(false)
+                this.admin.openSnackBar(
+                    'Unable to subscribe to Notifications.',
+                    'OK',
+                )
+                return err
+            })
+    }
+
+    // Updates a users organization subscription
+
+    patchSubscription(user: IUser, toggleStatus: boolean) {
+        // user.subscriptionsActive = toggleStatus ? 'ACCEPTED' : 'DENIED'
+        const { _id } = this.organizationQuery.getValue()
+        user.subscriptions[_id].isSubscribed = this.profileForm.get('isSubscribed').value
+
         this.userService
             .patchUserSubscription({
                 id: this.auth.getValue()._id,
@@ -245,28 +305,18 @@ export class ProfileEditComponent implements OnInit {
             })
             .subscribe(
                 res => {
-                    const { subscriptionsActive } = res
-                    if (subscriptionsActive === 'DENIED') {
+                    const { subscriptions } = res
+
+                    if (!subscriptions[_id].isSubscribed) {
                         return this.admin.openSnackBar(
                             'You have successfully unsubscribed from notifications.',
                             'OK',
                         )
                     }
-                    // TODO - need to differentiate between when to subscribe to Notifications again, and when not to
-                    this.swPush.subscription.pipe(take(1)).subscribe(
-                        sub => {
-                            if (!sub) {
-                                return this.pushService.subscribeToNotifications(
-                                    user._id,
-                                )
-                            }
 
-                            return this.admin.openSnackBar(
-                                'Subscribed to notifications successfully',
-                                'OK',
-                            )
-                        },
-                        err => err,
+                    return this.admin.openSnackBar(
+                        'Successfully subscribed to Notifications.',
+                        'OK',
                     )
                 },
                 err => err,

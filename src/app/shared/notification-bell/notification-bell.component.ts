@@ -42,7 +42,7 @@ export class NotificationBellComponent implements OnInit {
             this.isSubscribed = this.checkSubscription(res)
 
             // check user is allowing notifications
-            this.notificationState = res.subscriptionsActive;
+            // this.notificationState = res.subscriptionsActive;
         })
 
         // keep track of whether isGranted has been updated

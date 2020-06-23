@@ -17,7 +17,7 @@ export function createInitialState(): IUser {
         roles: [],
         completedTour: false,
         organizations: [],
-        subscriptionsActive: 'DEFAULT',
+        subscriptionsActive: 'DEFAULT'
     }
 }
 
