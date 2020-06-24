@@ -174,7 +174,7 @@ export class ProfileEditComponent implements OnInit {
 
         this.profileForm.patchValue({
             communityUpdates,
-            isSubscribed,
+            isSubscribed: isSubscribed && this.isGranted,
             autoUpdates,
         })
     }

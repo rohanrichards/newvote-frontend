@@ -17,10 +17,16 @@ type Subscription = {
     styleUrls: ['./profile-issue-list.component.scss'],
 })
 export class ProfileIssueListComponent implements OnInit {
+    private _user: IUser
+    
     @Input() parentForm: FormGroup;
     @Input() avatar = 'https://via.placeholder.com/75'
     @Input() organization: Organization;
-    @Input() user: IUser;
+    @Input() set user(user: IUser) {
+        this._user = user
+        this.updateForm(user)
+    }
+
     @Input() isEnabled: boolean;
     @Input() issues: any;
 
@@ -30,7 +36,7 @@ export class ProfileIssueListComponent implements OnInit {
     constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
-        this.initForm(this.user.subscriptions)
+        this.initForm(this._user.subscriptions)
         this.parentForm.addControl('subscriptions', this.subscriptionForm)
     }
 
@@ -44,6 +50,19 @@ export class ProfileIssueListComponent implements OnInit {
         }
 
         this.addControl(organizationId, subscriptions[organizationId])
+    }
+
+    updateForm(user: IUser) {
+        if (!this.subscriptionForm) return false
+
+        const { subscriptions } = user
+        const organizationId = this.organization._id
+        if (!subscriptions || !subscriptions[organizationId]) return false
+
+        this.issueArray.reset()
+        subscriptions[organizationId].issues.forEach((issueId: string) => {
+            this.issueArray.push(new FormControl(issueId))
+        })
     }
 
     addControl(id: string, value?: Subscription): void {
@@ -72,10 +91,6 @@ export class ProfileIssueListComponent implements OnInit {
 
     get issueArray() {
         return this.subscriptionForm.get(`${this.organization._id}.issues`) as FormArray;
-    }
-
-    handleChange(event: MatSelectionListChange): void {
-        (this.subscriptionForm.get(this.selectedItem) as FormGroup).setControl('issues', this.fb.array(event.source._value || []))
     }
 
     handleClick(issue: any) {

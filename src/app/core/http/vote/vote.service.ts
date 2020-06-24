@@ -10,6 +10,7 @@ import { OrganizationService } from '../organization/organization.service'
 import { VoteStore } from './vote.store'
 import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
+import { AuthenticationStore } from '@app/core/authentication/authentication.store'
 
 const routes = {
     list: () => '/votes',
@@ -39,6 +40,7 @@ export class VoteService {
         private httpClient: HttpClient,
         private orgService: OrganizationService,
         private voteStore: VoteStore,
+        private userStore: AuthenticationStore
     ) {
         this.orgService.get().subscribe(org => { this._org = org })
 
@@ -84,7 +86,10 @@ export class VoteService {
                 tap((res: any) => {
                     // votes are assigned via their parent id instread of unique _id
                     // so when updating, update the vote object via it's parent object id
-                    this.voteStore.upsert(res.object, { currentUser: res })
+                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote.user })
+                    if (res.subscriptions) {
+                        this.userStore.update({ subscriptions: res.subscriptions })
+                    }
                 }),
                 catchError(handleError),
                 map((res: any) => res),
@@ -97,6 +102,14 @@ export class VoteService {
             .put(routes.update(context), context.entity)
             .pipe(
                 catchError(handleError),
+                tap((res: any) => {
+                    // votes are assigned via their parent id instread of unique _id
+                    // so when updating, update the vote object via it's parent object id
+                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote.user })
+                    if (res.subscriptions) {
+                        this.userStore.update({ subscriptions: res.subscriptions })
+                    }
+                }),
                 map((res: any) => res),
             )
     }
