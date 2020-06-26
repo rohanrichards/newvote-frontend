@@ -2,13 +2,14 @@
     <mat-list dense>
         <mat-list-item *ngFor="let issue of issues; let i = index">
             <img
+                class="pointer"
                 routerLink="/issues/{{ issue.slug || issue._id }}"
                 matListAvatar
                 [src]="issue.imageUrl"
                 alt="Community Avatar"
             />
             <h3 matLine>
-                <a routerLink="/issues/{{ issue.slug || issue._id }}">{{
+                <a class="pointer" routerLink="/issues/{{ issue.slug || issue._id }}">{{
                     issue.name.length > 40
                         ? (issue.name | slice: 0:40) + '..'
                         : issue.name

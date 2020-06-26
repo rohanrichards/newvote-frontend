@@ -46,7 +46,7 @@ export class VoteService {
 
         this.socket.fromEvent('vote')
             .subscribe((vote: any) => {
-                this.updateStoreVote(vote)
+                this.voteStore.upsert(vote._id, vote)
             })
     }
 
@@ -86,7 +86,14 @@ export class VoteService {
                 tap((res: any) => {
                     // votes are assigned via their parent id instread of unique _id
                     // so when updating, update the vote object via it's parent object id
-                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote.user })
+
+                    // !Important
+                    // The vote store is composed of two main parts - VoteMetaData & VoteUserData
+                    // Websocket updates the voteMetaData entity store and gives total vote numbers
+                    // The vote api request return data contains the individuals voteUserData
+                    // which makes up part of the voteMetaData object
+
+                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote })
                     if (res.subscriptions) {
                         this.userStore.update({ subscriptions: res.subscriptions })
                     }
@@ -105,7 +112,7 @@ export class VoteService {
                 tap((res: any) => {
                     // votes are assigned via their parent id instread of unique _id
                     // so when updating, update the vote object via it's parent object id
-                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote.user })
+                    this.voteStore.upsert(res.vote.object, { currentUser: res.vote })
                     if (res.subscriptions) {
                         this.userStore.update({ subscriptions: res.subscriptions })
                     }
@@ -186,10 +193,6 @@ export class VoteService {
         // Populate redux store
         this.voteStore.add(votes)
         return data
-    }
-
-    updateStoreVote(voteMetaData: any) {
-        this.voteStore.upsert(voteMetaData._id, voteMetaData)
     }
 
 }
