@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
@@ -10,7 +10,7 @@ import { AdminService } from '@app/core/http/admin/admin.service'
     templateUrl: './vote-buttons.component.html',
     styleUrls: ['./vote-buttons.component.scss']
 })
-export class VoteButtonsComponent implements OnInit, OnChanges {
+export class VoteButtonsComponent implements OnInit {
     @Input() item: any;
     @Output() vote = new EventEmitter();
 
@@ -59,10 +59,6 @@ export class VoteButtonsComponent implements OnInit, OnChanges {
                 data: [this.downVotesAsPercent()]
             }
         ]
-    }
-
-    ngOnChanges(x: SimpleChanges) {
-        console.log(x, 'this is x changing')
     }
 
     upVotesAsPercent() {
