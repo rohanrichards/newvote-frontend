@@ -44,16 +44,12 @@ export class PushService {
                         id: userId,
                         subscription,
                     }),
-                    issueSubscription: this.handleIssueSubscription(
-                        userId,
+                    issueSubscription: this.userService.handleIssueSubscription(
+                        { id: userId },
                         parentId,
                     ),
                 }).toPromise()
             })
-    }
-
-    handleIssueSubscription(id: string, parentId: string) {
-        return this.userService.handleIssueSubscription({ id: id }, parentId)
     }
 
     private handleUrl(item: any) {

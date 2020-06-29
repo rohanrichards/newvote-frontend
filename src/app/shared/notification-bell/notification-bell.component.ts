@@ -26,11 +26,11 @@ export class NotificationBellComponent implements OnInit {
     activeTip = 'Click to subscribe to this issue.'
     inactiveTip = 'Notifications are disabled on this device.'
 
-    notificationState = 'DEFAULT'
     constructor(
         private swPush: SwPush,
         private authQuery: AuthenticationQuery,
         private pushService: PushService,
+        private userService: UserService,
         private organizationQuery: OrganizationQuery,
         private admin: AdminService,
         public dialog: MatDialog,
@@ -40,9 +40,6 @@ export class NotificationBellComponent implements OnInit {
         this.authQuery.select().subscribe(res => {
             // No subscriptions
             this.isSubscribed = this.checkSubscription(res)
-
-            // check user is allowing notifications
-            // this.notificationState = res.subscriptionsActive;
         })
 
         // keep track of whether isGranted has been updated
@@ -69,19 +66,15 @@ export class NotificationBellComponent implements OnInit {
             return this.openDialog()
         }
 
-        // User has accepted to receive Notifications in browser but has turned off notifications on their profile page in he app
-        if (Notification.permission === 'granted' && this.notificationState === 'DENIED') {
-            return this.admin.openSnackBar('Notifications are turned off. Visit your Profile to enable them.', 'OK');
-        }
         // If a user has already been prompted & accepts notifications we can subscribe / unsubscribe them from the specific issue they
         // are requesting to sub/unsub to.
         const userId = this.authQuery.getValue()._id
 
-        return this.pushService
-            .handleIssueSubscription(userId, this.parent._id)
+        return this.userService
+            .handleIssueSubscription({ id: userId }, this.parent._id)
             .subscribe(
                 res => {
-                    const isSubscribed = this.checkSubscription(res);
+                    const isSubscribed = this.checkSubscription(res)
                     if (!isSubscribed) {
                         return this.admin.openSnackBar('You have unsubscribed from this issue.', 'OK');
                     }
@@ -111,6 +104,19 @@ export class NotificationBellComponent implements OnInit {
                 userId,
                 this.parent,
             )
+                .then(data => {
+                    this.admin.openSnackBar(
+                        'Successfully subscribed to Notifications.',
+                        'OK',
+                    )
+                })
+                .catch(err => {
+                    this.admin.openSnackBar(
+                        'Unable to subscribe to Notifications.',
+                        'OK',
+                    )
+                    return err
+                })
         })
     }
 
