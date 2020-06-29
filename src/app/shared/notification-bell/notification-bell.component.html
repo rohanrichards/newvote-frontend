@@ -9,7 +9,7 @@
         Notify me
     </button> -->
     <button 
-        [disabled]="!isEnabled || notificationState === 'denied'"
+        [disabled]="!isEnabled"
         mat-raised-button
         [color]="isSubscribed ? 'warn' : ''" 
         (click)="handleSubscription()">
