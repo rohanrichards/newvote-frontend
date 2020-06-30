@@ -36,7 +36,7 @@ export class IssueCreateComponent implements OnInit {
     uploader: FileUploader;
     userImageUpload: boolean;
     issueForm = new FormGroup({
-        name: new FormControl('', [Validators.required]),
+        name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         description: new FormControl('', [Validators.required]),
         topics: new FormControl(''),
         imageUrl: new FormControl('', [])

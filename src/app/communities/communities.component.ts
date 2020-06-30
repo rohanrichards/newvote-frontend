@@ -3,24 +3,26 @@ import { OrganizationService, AuthenticationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CommunityQuery } from '@app/core/http/organization/organization.query'
 import { Observable } from 'rxjs'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-communities',
     templateUrl: './communities.component.html',
-    styleUrls: ['./communities.component.scss']
+    styleUrls: ['./communities.component.scss'],
 })
 export class CommunitiesComponent implements OnInit {
-    organizations: Organization[];
-    organizations$: Observable<Organization[]>;
+    organizations: Organization[]
+    organizations$: Observable<Organization[]>
 
-    opened: boolean;
+    opened: boolean
     isVisible = false
 
     constructor(
         private organizationService: OrganizationService,
         private auth: AuthenticationService,
-        private communityQuery: CommunityQuery
-    ) { }
+        private communityQuery: CommunityQuery,
+        private authQuery: AuthenticationQuery,
+    ) {}
 
     ngOnInit() {
         this.subscribeToCommunitiesStore()
@@ -28,25 +30,23 @@ export class CommunitiesComponent implements OnInit {
     }
 
     fetchData() {
-        const isAdmin = this.auth.isAdmin()
+        const isAdmin = this.authQuery.isAdmin()
 
-        this.organizationService.list({
-            params: {
-                showDeleted: isAdmin ? 'true' : '',
-                showPrivate: isAdmin ? 'true' : 'false'
-            }
-        })
-            .subscribe(
-                res => res,
-                (error) => error
-            )
+        this.organizationService
+            .list({
+                params: {
+                    showDeleted: isAdmin ? 'true' : '',
+                    showPrivate: isAdmin ? 'true' : 'false',
+                },
+            })
+            .subscribe(res => res, error => error)
     }
 
     subscribeToCommunitiesStore() {
-        const isAdmin = this.auth.isAdmin()
+        const isAdmin = this.authQuery.isAdmin()
 
         this.organizations$ = this.communityQuery.selectAll({
-            filterBy: (entity) => isAdmin ? true : entity.privateOrg === false
+            filterBy: entity => (isAdmin ? true : entity.privateOrg === false),
         })
     }
 

@@ -4,7 +4,7 @@ import { AuthenticationService } from '@app/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
-import { MatSidenav, MatSnackBar } from '@angular/material'
+import { MatSidenav } from '@angular/material'
 import { MediaObserver } from '@angular/flex-layout'
 import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'
@@ -13,27 +13,31 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
+import { SwPush } from '@angular/service-worker'
+import { UserService } from '@app/core/http/user/user.service'
 
 @Component({
     selector: 'div[sticky-component]',
     templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+    styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
+    @Input() organization: Organization
+    @Input() sideNavRef: MatSidenav
 
-    @Input() organization: Organization;
-    @Input() sideNavRef: MatSidenav;
-
-    showSearch = false;
-    hideVerify = false;
-    routeLevel: string;
-    isAuthenticated: boolean;
-    showVerify: boolean;
+    showSearch = false
+    hideVerify = false
+    routeLevel: string
+    isAuthenticated: boolean
+    showVerify: boolean
     isRep = false
-    userId: string;
+    userId: string
 
-    VERIFYDELAY = 1000;
-    delayPassed: any;
+    VERIFYDELAY = 1000
+    delayPassed: any
+
+    notificationSubscription = false
+    subDisabled = false
 
     constructor(
         private meta: MetaService,
@@ -41,52 +45,47 @@ export class NavbarComponent implements OnInit {
         public auth: AuthenticationService,
         private router: Router,
         private media: MediaObserver,
-        public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private location: Location,
         public repQuery: RepQuery,
         public authQuery: AuthenticationQuery,
         private admin: AdminService,
         public access: AccessControlQuery,
-        public orgQuery: OrganizationQuery
-    ) { }
+        public orgQuery: OrganizationQuery,
+        private swPush: SwPush,
+        private userService: UserService,
+    ) {}
 
     ngOnInit() {
-        this.authQuery.isLoggedIn$
-            .subscribe((loggedIn: boolean) => {
-                this.isAuthenticated = loggedIn
-                // need to delay the showing on the verification bar
-                // when a user is loggedin and visits the app for the first time, there's a moment whenn
-                // showVerify is false whilst user is loggedIn
-                if (loggedIn && !this.delayPassed) {
-                    setTimeout(() => {
-                        this.delayPassed = true
-                    }, this.VERIFYDELAY)
-                }
-            })
+        this.authQuery.isLoggedIn$.subscribe((loggedIn: boolean) => {
+            this.isAuthenticated = loggedIn
+            // need to delay the showing on the verification bar
+            // when a user is loggedin and visits the app for the first time, there's a moment whenn
+            // showVerify is false whilst user is loggedIn
+            if (loggedIn && !this.delayPassed) {
+                setTimeout(() => {
+                    this.delayPassed = true
+                }, this.VERIFYDELAY)
+            }
+        })
 
-        this.authQuery.isCommunityVerified$
-            .subscribe((verified: boolean) => {
-                this.showVerify = this.checkVerify(verified, this.isAuthenticated)
-            })
+        this.authQuery.isCommunityVerified$.subscribe((verified: boolean) => {
+            this.showVerify = this.checkVerify(verified, this.isAuthenticated)
+        })
 
-        this.meta.routeLevel$
-            .subscribe((res) => {
-                this.routeLevel = res
-            })
+        this.meta.routeLevel$.subscribe(res => {
+            this.routeLevel = res
+        })
 
-        this.repQuery.getRepId()
-            .subscribe((rep: any) => {
-                if (!rep) return false
-                this.userId = rep._id
-            })
+        this.repQuery.getRepId().subscribe((rep: any) => {
+            if (!rep) return false
+            this.userId = rep._id
+        })
 
-        this.repQuery.isRep()
-            .subscribe((res: any) => {
-                if (!res) return false
-                this.isRep = res
-            })
-
+        this.repQuery.isRep().subscribe((res: any) => {
+            if (!res) return false
+            this.isRep = res
+        })
     }
 
     toggleSearch() {
@@ -94,7 +93,8 @@ export class NavbarComponent implements OnInit {
     }
 
     logout() {
-        this.auth.logout()
+        this.auth
+            .logout()
             .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }))
     }
 
@@ -105,7 +105,9 @@ export class NavbarComponent implements OnInit {
     checkVerify(verified: boolean, loggedIn: boolean): boolean {
         if (!loggedIn) return false
         if (verified) return false
-        if (!verified && !this.hideVerify) return true
+        if (!verified && !this.hideVerify) {
+            return true
+        }
         return false
     }
 
@@ -114,8 +116,8 @@ export class NavbarComponent implements OnInit {
     }
 
     get username(): string | null {
-        const credentials = this.auth.credentials
-        return credentials ? credentials.user.username : null
+        const { username = null } = this.authQuery.getValue()
+        return username
     }
 
     handleToggle() {
@@ -123,15 +125,16 @@ export class NavbarComponent implements OnInit {
     }
 
     handleBackClick() {
-        this.route.paramMap.pipe(
-            take(1),
-            map((data) => {
-                return {
-                    params: data,
-                    state: window.history.state
-                }
-            })
-        )
+        this.route.paramMap
+            .pipe(
+                take(1),
+                map(data => {
+                    return {
+                        params: data,
+                        state: window.history.state,
+                    }
+                }),
+            )
             .subscribe(({ state }) => {
                 const redirect = !!state.login
 
@@ -141,7 +144,6 @@ export class NavbarComponent implements OnInit {
 
                 return this.location.back()
             })
-
     }
 
     toggleVerify() {
@@ -150,36 +152,54 @@ export class NavbarComponent implements OnInit {
 
     handleVerify() {
         // If community is authType 0
+        const userId = this.authQuery.getValue()._id;
         const { authType, url } = this.orgQuery.getValue()
+        const canVerify = this.authQuery.canVerify()
+
         if (authType === 0) {
-            if (!this.access.isCommunityVerified()) {
-                return this.router.navigate(['/auth/verify'], { replaceUrl: true })
+            if (!canVerify) {
+                return this.router.navigate(['/auth/verify'], {
+                    replaceUrl: true,
+                })
             }
 
-            return this.auth.verifyWithCommunity()
-                .subscribe(
-                    (res) => {
-                        this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
-                    },
-                    (error) => {
-                        this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                    })
+            return this.auth.verifyWithCommunity(userId).subscribe(
+                res => {
+                    this.admin.openSnackBar(
+                        'You have successfully verified with this community.',
+                        'OK',
+                    )
+                },
+                error => {
+                    this.admin.openSnackBar(
+                        `Something went wrong: ${error.status} - ${error.statusText}`,
+                        'OK',
+                    )
+                },
+            )
         }
 
         if (authType === 1) {
-            if (!this.access.isCommunityVerified()) {
-                return this.router.navigate(['/auth/login'], { replaceUrl: true })
+            if (!canVerify) {
+                return this.router.navigate(['/auth/login'], {
+                    replaceUrl: true,
+                })
             }
         }
 
-        return this.auth.verifyWithCommunity()
-            .subscribe(
-                (res) => {
-                    this.admin.openSnackBar('You have successfully verified with this community.', 'OK')
-                },
-                (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                })
+        return this.auth.verifyWithCommunity(userId).subscribe(
+            () => {
+                this.admin.openSnackBar(
+                    'You have successfully verified with this community.',
+                    'OK',
+                )
+            },
+            (error: any) => {
+                this.admin.openSnackBar(
+                    `Something went wrong: ${error.status} - ${error.statusText}`,
+                    'OK',
+                )
+            },
+        )
     }
-
 }

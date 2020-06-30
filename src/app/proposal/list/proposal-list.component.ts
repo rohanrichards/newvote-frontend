@@ -18,6 +18,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { ActivatedRoute } from '@angular/router'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-proposal',
@@ -61,7 +62,8 @@ export class ProposalListComponent implements OnInit {
         private voteQuery: VotesQuery,
         public admin: AdminService,
         private route: ActivatedRoute,
-        private entityVotes: EntityVotesQuery
+        private entityVotes: EntityVotesQuery,
+        private authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -100,7 +102,7 @@ export class ProposalListComponent implements OnInit {
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         this.isLoading = true
         const params = { softDeleted: isModerator ? true : '' }
 

@@ -7,6 +7,7 @@ import { OrganizationService } from '@app/core/http/organization/organization.se
 import { MetaService } from '@app/core/meta.service'
 
 import { Organization } from '@app/core/models/organization.model'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-organization',
@@ -28,7 +29,8 @@ export class OrganizationClaimComponent implements OnInit {
         public auth: AuthenticationService,
         private route: ActivatedRoute,
         private router: Router,
-        private meta: MetaService
+        private meta: MetaService,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {

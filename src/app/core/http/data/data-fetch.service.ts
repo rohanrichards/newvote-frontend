@@ -7,6 +7,7 @@ import { RepService } from '../rep/rep.service';
 import { SuggestionService } from '../suggestion/suggestion.service';
 import { TopicService } from '../topic/topic.service';
 import { forkJoin } from 'rxjs';
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,7 @@ import { forkJoin } from 'rxjs';
 export class DataFetchService {
 
     constructor(
-        private auth: AuthenticationService,
+        private auth: AuthenticationQuery,
         private topicService: TopicService,
         private issueService: IssueService,
         private solutionService: SolutionService,

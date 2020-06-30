@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Do you want to receive alerts about this Issue?</h1>
+<div mat-dialog-content>
+  <p>Issue alerts allow us to send notifications to your device whenever they receive an update.</p>
+  <p>You can manage what alerts you see on your profile page.</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+</div>

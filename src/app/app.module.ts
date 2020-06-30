@@ -45,14 +45,15 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
-import { FeedModule } from './feed/feed.module'
-import { MomentModule } from 'ngx-moment'
+import { MomentModule } from 'ngx-moment';
+import { ProfileModule } from './profile/profile.module';
+import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
 
 @NgModule({
     imports: [
         ScrollingModule,
         BrowserModule,
-        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('./my-worker.js', { enabled: environment.production }),
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -64,7 +65,6 @@ import { MomentModule } from 'ngx-moment'
         SharedModule,
         ShellModule,
         HomeModule,
-        FeedModule,
         ShareModule,
         InternationalPhoneNumberModule,
         AngularFontAwesomeModule,
@@ -88,13 +88,15 @@ import { MomentModule } from 'ngx-moment'
         environment.production ? [] : AkitaNgDevtools.forRoot(),
         MomentModule,
         AppRoutingModule,
+        ProfileModule,
     ],
     declarations: [
         AppComponent
     ],
     entryComponents: [
         ConfirmDialogComponent,
-        RepModalComponent
+        RepModalComponent,
+        NotificationPopupDialog
     ],
     providers: [
         CookieService,

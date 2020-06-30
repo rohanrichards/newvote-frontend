@@ -14,7 +14,8 @@ const routes: Routes = [
         { path: 'proposals', loadChildren: 'app/proposal/proposal.module#ProposalModule' },
         { path: 'media', loadChildren: 'app/media/media.module#MediaModule' },
         { path: 'communities', loadChildren: 'app/organization/organization.module#OrganizationModule' },
-        { path: 'reps', loadChildren: 'app/reps/reps.module#RepsModule' }
+        { path: 'reps', loadChildren: 'app/reps/reps.module#RepsModule' },
+        { path: 'profile', loadChildren: 'app/profile/profile.module#ProfileModule' }
     ]),
     Landing.childRoutes([
         { path: 'landing', loadChildren: 'app/communities/communities.module#CommunitiesModule' },

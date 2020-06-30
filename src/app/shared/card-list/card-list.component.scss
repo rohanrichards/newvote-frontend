@@ -146,3 +146,11 @@ mat-card-actions {
 .text-left {
     text-align: start;
 }
+
+.line-clamp {
+    max-height: 90px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}

@@ -58,11 +58,11 @@ export class LoginComponent implements OnInit {
                 this.loginForm.markAsPristine()
                 this.isLoading = false
             }))
-            .subscribe(credentials => {
-                log.debug(`${credentials.user.email} successfully logged in`)
+            .subscribe(user => {
+                // log.debug(`${credentials.user.email} successfully logged in`)
                 this.route.queryParams.subscribe(
                     params => {
-                        if (credentials.user.verified) {
+                        if (user.verified) {
                             this.router.navigate([params.redirect || '/'], { replaceUrl: true })
                         } else {
                             this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true })

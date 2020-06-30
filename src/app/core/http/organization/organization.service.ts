@@ -95,6 +95,10 @@ export class OrganizationService {
             params = new HttpParams({ fromObject: context.params })
         }
 
+        if (context.orgs) {
+            params = params.append('orgs', context.orgs.join(','))
+        }
+
         return this.httpClient
             .get(routes.list(), { params })
             .pipe(

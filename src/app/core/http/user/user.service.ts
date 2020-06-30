@@ -1,39 +1,54 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { map, catchError, tap } from 'rxjs/operators'
 
-import { IUser } from '@app/core/models/user.model'
+import { IUser, IProfile } from '@app/core/models/user.model'
+import { handleError } from '../errors'
+import { AuthenticationStore } from '@app/core/authentication/authentication.store'
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
 
 const routes = {
     list: () => '/users',
     count: () => '/users/count',
     // view: (c: UserContext) => `/users/${c.id}`,
     // create: (c: UserContext) => `/users`,
-    // update: (c: UserContext) => `/users/${c.id}`,
+    update: (c: ProfileContext) => `/users/${c.id}/edit`,
     // delete: (c: UserContext) => `/users/${c.id}`
-    patch: (c: UserContext) => `/users/tour/${c.id}`
+    patch: (c: UserContext) => `/users/tour/${c.id}`,
+    patchSubscription: (c: UserContext) => `/users/subscription/${c.id}`,
+    subscribe: (c: UserContext) => `/subscriptions/${c.id}`,
+    unsubscribe: (c: UserContext) => `/subscriptions/${c.id}`,
+    issueSubscription: (c: UserContext) => `/subscriptions/issue/${c.id}`,
 }
 
-export interface UserContext {
+interface ApiContext {
     id?: string; // id of object to find/modify
-    entity?: IUser; // the object being created or edited
     params?: any;
-    forceUpdate?: boolean;
+}
+
+export interface UserContext extends ApiContext {
+    entity?: IUser;
+    subscription?: PushSubscription | null;
+}
+
+export interface ProfileContext extends ApiContext {
+    entity?: IProfile;
 }
 
 @Injectable()
 export class UserService {
-
-    constructor(private httpClient: HttpClient) { }
+    constructor(
+        private httpClient: HttpClient,
+        private store: AuthenticationStore,
+        private authService: AuthenticationService,
+    ) {}
 
     count(): Observable<any> {
-        return this.httpClient
-            .get(routes.count())
-            .pipe(
-                catchError((e) => of([{ error: e }])),
-                map((res: Array<any>) => res),
-            )
+        return this.httpClient.get(routes.count()).pipe(
+            catchError(e => of([{ error: e }])),
+            map((res: Array<any>) => res),
+        )
     }
 
     list(context: UserContext): Observable<any[]> {
@@ -48,15 +63,13 @@ export class UserService {
         }
         const options = {
             withCredentials: true,
-            params
+            params,
         }
 
-        return this.httpClient
-            .get(routes.list(), options)
-            .pipe(
-                catchError((e) => of([{ error: e }])),
-                map((res: Array<any>) => res)
-            )
+        return this.httpClient.get(routes.list(), options).pipe(
+            catchError(e => of([{ error: e }])),
+            map((res: Array<any>) => res),
+        )
     }
 
     // view(context: UserContext): Observable<any> {
@@ -86,14 +99,76 @@ export class UserService {
     //         );
     // }
 
+    update(context: ProfileContext): Observable<any> {
+        return this.httpClient.put(routes.update(context), context.entity).pipe(
+            catchError(e => handleError(e)),
+            tap((res: any) => {
+                const { displayName, subscriptions } = res
+                this.store.update({ displayName, subscriptions })
+            }),
+            map((res: any) => res),
+        )
+    }
+
     patch(context: UserContext): Observable<any> {
         return this.httpClient
             .patch(routes.patch(context), context.entity)
             .pipe(
-                catchError((e) => of({ error: e })),
+                catchError(e => of({ error: e })),
+                tap((e) => { this.store.update({ completedTour: true }) }),
                 map((res: any) => res),
             )
     }
+
+    // Adds a subscription object to the user profile
+    // No need to update store, subscriptions are just for backend
+    addPushSubscriber(context: UserContext) {
+        return this.httpClient
+            .post(routes.subscribe(context), context.subscription)
+            .pipe(
+                catchError(e => handleError(e)),
+                map((res: any) => res),
+            )
+    }
+
+    // removePushSubscriber(context: UserContext) {
+    //     return this.httpClient
+    //         .put(routes.unsubscribe(context), context.subscription)
+    //         .pipe(
+    //             catchError(e => handleError(e)),
+    //             tap((res: any) =>
+    //                 this.store.update({ pushSubscription: null }),
+    //             ),
+    //             map((res: any) => res),
+    //         )
+    // }
+
+    patchUserSubscription(context: UserContext) {
+        return this.httpClient
+            .patch(routes.patchSubscription(context), context.entity)
+            .pipe(
+                catchError(e => handleError(e)),
+                tap((res: any) =>
+                    this.store.update({
+                        subscriptionsActive: res.subscriptionsActive,
+                    }),
+                ),
+                map((res: any) => res),
+            )
+    }
+
+    handleIssueSubscription(context: UserContext, issueId: string) {
+        return this.httpClient
+            .put(routes.issueSubscription(context), { issueId })
+            .pipe(
+                catchError(e => handleError(e)),
+                tap((res: any) => {
+                    this.store.update({ subscriptions: res.subscriptions })
+                }),
+                map((res: any) => res),
+            )
+    }
+
     // delete(context: UserContext): Observable<any> {
     //     return this.httpClient
     //         .delete(routes.delete(context))
@@ -102,5 +177,4 @@ export class UserService {
     //             catchError((e) => of({ error: e }))
     //         );
     // }
-
 }

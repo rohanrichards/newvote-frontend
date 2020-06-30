@@ -29,6 +29,8 @@ import { SolutionQuery } from '@app/core/http/solution/solution.query'
 import { Proposal } from '@app/core/models/proposal.model'
 import { Solution } from '@app/core/models/solution.model'
 import { OrganizationQuery, CommunityQuery } from '@app/core/http/organization/organization.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { cloneDeep } from 'lodash'
 
 @Component({
     selector: 'app-home',
@@ -68,7 +70,8 @@ export class HomeComponent implements OnInit {
         private solutionQuery: SolutionQuery,
         private issueQuery: IssueQuery,
         private organizationQuery: OrganizationQuery,
-        private communityQuery: CommunityQuery
+        private communityQuery: CommunityQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -84,11 +87,10 @@ export class HomeComponent implements OnInit {
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         const params = { showDeleted: isModerator ? true : ' ' }
 
         this.isLoading = true
-        
 
         const getSolutions = this.solutionService.list({ params })
         const getProposals = this.proposalService.list({ params })
@@ -167,12 +169,11 @@ export class HomeComponent implements OnInit {
     }
 
     completeTour() {
-        const user = this.auth.credentials.user
+        const user = cloneDeep(this.authQuery.getValue());
         user.completedTour = true
         this.userService.patch({ id: user._id, entity: user })
             .subscribe(
                 () => {
-                    this.auth.saveTourToLocalStorage()
                     this.admin.openSnackBar('Tour Complete', 'OK')
                 },
                 (err) => err

@@ -40,7 +40,7 @@ export class ProposalEditComponent implements OnInit {
     newImage = false;
     uploader: FileUploader;
     proposalForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
+        title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         description: new FormControl('', [Validators.required]),
         solutions: new FormControl(''),
         imageUrl: new FormControl('', [Validators.required])

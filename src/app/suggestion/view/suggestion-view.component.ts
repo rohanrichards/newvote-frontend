@@ -20,6 +20,7 @@ import { SuggestionQuery } from '@app/core/http/suggestion/suggestion.query'
 
 import { assign } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-suggestion',
@@ -50,6 +51,7 @@ export class SuggestionViewComponent implements OnInit {
         private admin: AdminService,
         private suggestionQuery: SuggestionQuery,
         private entityVotes: EntityVotesQuery,
+        public authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {

@@ -14,6 +14,7 @@
                     placeholder="Enter a name for the action"
                     formControlName="title"
                     required>
+                <mat-hint>50 character limit.</mat-hint>
                 <mat-error *ngIf="proposalForm.hasError('required', ['title'])">
                     Name is <strong>required</strong>
                 </mat-error>

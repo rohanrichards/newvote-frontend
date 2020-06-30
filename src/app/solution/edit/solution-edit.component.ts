@@ -41,7 +41,7 @@ export class SolutionEditComponent implements OnInit {
     newImage = false;
     uploader: FileUploader;
     solutionForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
+        title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         description: new FormControl('', [Validators.required]),
         issues: new FormControl(''),
         imageUrl: new FormControl('', [Validators.required])
