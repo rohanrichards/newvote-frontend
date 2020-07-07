@@ -21,6 +21,7 @@ import { Observable } from 'rxjs'
 import { VotesQuery } from '@app/core/http/vote/vote.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 
 @Component({
     selector: 'app-suggestion',
@@ -61,7 +62,8 @@ export class SuggestionListComponent implements OnInit {
         private voteQuery: VotesQuery,
         public admin: AdminService,
         private route: ActivatedRoute,
-        private authQuery: AuthenticationQuery
+        private authQuery: AuthenticationQuery,
+        private entityVotes: EntityVotesQuery
     ) {}
 
     ngOnInit() {
@@ -83,16 +85,11 @@ export class SuggestionListComponent implements OnInit {
     }
 
     getSuggestions() {
-        this.suggestions$ = this.suggestionQuery.getUsersSuggestions()
+        this.suggestions$ = this.entityVotes.getUsersSuggestions()
     }
 
     fetchData() {
         const isModerator = this.authQuery.isModerator()
-        // let id;
-        // Send user data so we can return only the users suggestions
-        // if (this.auth.credentials && this.auth.credentials.user) {
-        //     id = this.auth.credentials.user._id
-        // }
 
         const options = {
             params: {
