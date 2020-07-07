@@ -104,12 +104,20 @@ export class AuthenticationQuery extends Query<IUser> {
         return toBoolean(this.getValue().verified)
     }
 
+    canVerify() {
+        const user = this.getValue();
+        if (!user.verified) return false
+        if (user.roles.includes('guest')) return false
+        if (!user.mobileNumber) return false
+
+        return true
+    }
+
     isLocalVerified(user: IUser, organization: IOrganization) {
         if (!user.verified) return false
         if (user.roles.includes('guest')) return false
         if (!user.mobileNumber) return false
         if (!user.organizations.length) return false
-
         return user.organizations.some((userOrganization: any) => {
             if (typeof userOrganization === 'string') return organization._id === userOrganization
             return organization._id === userOrganization._id
@@ -132,4 +140,18 @@ export class AuthenticationQuery extends Query<IUser> {
         return false
     }
 
+    isCreator(object?: any): boolean {
+        const user = this.getValue();
+        if (!user || !user._id || !object.user || !object.user._id ) return false
+
+        const id = object.user._id || object.user
+        if (id === user._id) return true
+
+        return false
+    }
+
+    tourComplete(): boolean {
+        const user = this.getValue();
+        return user.completedTour
+    }
 }

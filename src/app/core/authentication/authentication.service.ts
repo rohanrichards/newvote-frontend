@@ -14,27 +14,28 @@ import { IUser } from '../models/user.model'
 
 export interface Credentials {
     // Customize received credentials here
-    user?: any;
-    token: string;
+    user?: any
+    token: string
 }
 
 export interface LoginContext {
-    username: string;
-    password: string;
-    remember?: boolean;
-    organizations?: [Organization];
+    username: string
+    password: string
+
+    remember?: boolean
+    organizations?: [Organization]
 }
 
 export interface ForgotContext {
-    email: string;
-    recaptchaResponse: string;
+    email: string
+    recaptchaResponse: string
 }
 
 export interface ResetContext {
-    email: string;
-    token: string;
-    newPassword: string;
-    verifyPassword: string;
+    email: string
+    token: string
+    newPassword: string
+    verifyPassword: string
 }
 
 const routes = {
@@ -42,13 +43,14 @@ const routes = {
     signup: (id?: string) => {
         return `/auth/signup${id ? `/${id}` : ''}`
     },
+    signout: () => '/auth/signout',
     forgot: () => '/auth/forgot',
     reset: () => '/auth/reset',
     sms: () => '/users/sms',
     verify: () => '/users/verify',
     communityVerify: () => '/users/community-verify',
     sso: () => '/auth/jwt',
-    checkAuth: () => '/auth/check-status'
+    checkAuth: () => '/auth/check-status',
 }
 
 const credentialsKey = 'credentials'
@@ -59,9 +61,8 @@ const credentialsKey = 'credentials'
  */
 @Injectable()
 export class AuthenticationService {
-
-    private _credentials: Credentials | null;
-    private _org: Organization;
+    private _credentials: Credentials | null
+    private _org: Organization
 
     // Only use if a user has a verified account and is visiting a new community
 
@@ -70,35 +71,26 @@ export class AuthenticationService {
         private jwt: JwtHelperService,
         private organizationService: OrganizationService,
         private cookieService: CookieService,
-        private authenticationStore: AuthenticationStore
+        private authenticationStore: AuthenticationStore,
     ) {
-        const savedCredentials = sessionStorage.getItem(credentialsKey) ||
-            localStorage.getItem(credentialsKey) ||
-            cookieService.get(credentialsKey)
-        if (savedCredentials) {
-            const creds: Credentials = JSON.parse(savedCredentials) as Credentials
-            this.setCredentials(creds, true)
-            this.authenticationStore.update(creds.user)
-            if (this.isTokenExpired()) {
-                this.logout()
-            }
+        if (this.isTokenExpired()) {
+            this.logout()
         }
 
-        this.organizationService.get().subscribe(org => { this._org = org })
+        this.organizationService.get().subscribe(org => {
+            this._org = org
+        })
 
-        this.checkStatus()
-            .subscribe(
-                (res) => {
-                    return this.setCredentials(res, true)
-                },
-                (err) => {
-                    if (err.status === 400) {
-                        this.authenticationStore.update(createInitialState())
-                        return this.setCredentials()
-                    }
+        // Calls backend with JWT to see if a user has  session and returns a users credentials
+        this.checkStatus().subscribe(
+            res => res,
+            err => {
+                if (err.status === 400) {
+                    this.authenticationStore.update(createInitialState())
+                    // return this.setCredentials()
                 }
-            )
-
+            },
+        )
     }
 
     /**
@@ -106,27 +98,24 @@ export class AuthenticationService {
      * @param context The login parameters.
      * @return The user credentials.
      */
-    login(context: LoginContext): Observable<Credentials> {
-        return this.httpClient
-            .post<Credentials>(routes.signin(), context)
-            .pipe(
-                tap((res) => this.authenticationStore.update(res.user)),
-                map((res) => {
-                    this.setCredentials(res, context.remember)
-                    return res
-                })
-            )
+    login(context: LoginContext): Observable<IUser> {
+        return this.httpClient.post<IUser>(routes.signin(), context).pipe(
+            tap(res => this.authenticationStore.update(res)),
+            map(res => {
+                // this.setCredentials(res, context.remember)
+                return res
+            }),
+        )
     }
 
     checkStatus(): Observable<Credentials> {
-        return this.httpClient
-            .get<Credentials>(routes.checkAuth())
-            .pipe(
-                catchError(handleError),
-                map((res) => {
-                    return res
-                }),
-            )
+        return this.httpClient.get<Credentials>(routes.checkAuth()).pipe(
+            catchError(handleError),
+            tap((res: any) => this.authenticationStore.update(res)),
+            map(res => {
+                return res
+            }),
+        )
     }
 
     /**
@@ -134,16 +123,19 @@ export class AuthenticationService {
      * @param context The signup parameters.
      * @return The user credentials.
      */
-    signup(context: LoginContext, verificationCode?: string): Observable<Credentials> {
+    signup(
+        context: LoginContext,
+        verificationCode?: string,
+    ): Observable<Credentials> {
         context.organizations = [this.organizationService.org]
         return this.httpClient
             .post<Credentials>(routes.signup(verificationCode), context)
             .pipe(
-                tap((res) => this.authenticationStore.update(res.user)),
-                map((res) => {
-                    this.setCredentials(res, context.remember)
+                tap(res => this.authenticationStore.update(res.user)),
+                map(res => {
+                    // this.setCredentials(res, context.remember)
                     return res
-                })
+                }),
             )
     }
 
@@ -151,15 +143,13 @@ export class AuthenticationService {
      * Logs out the user and clear credentials.
      * @return True if the user was logged out successfully.
      */
-    logout(): Observable<boolean> {
-        // Customize credentials invalidation here
-        this.setCredentials()
-        // reset community verified once no user is there (only shows if logged in)
-        // this.communityVerified = true
-        this.cookieService.delete('credentials')
-        this.authenticationStore.reset()
-
-        return of(true)
+    logout(): Observable<any> {
+        return this.httpClient.get(routes.signout(), {}).pipe(
+            tap(res => {
+                this.authenticationStore.reset()
+                this.cookieService.delete('credentials', '/', '.newvote.org')
+            }),
+        )
     }
 
     /**
@@ -168,8 +158,7 @@ export class AuthenticationService {
      */
     forgot(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
-        return this.httpClient
-            .post<boolean>(routes.forgot(), context)
+        return this.httpClient.post<boolean>(routes.forgot(), context)
     }
 
     /**
@@ -178,8 +167,7 @@ export class AuthenticationService {
      */
     reset(context: ResetContext): Observable<boolean> {
         // Customize credentials invalidation here
-        return this.httpClient
-            .post<boolean>(routes.reset(), context)
+        return this.httpClient.post<boolean>(routes.reset(), context)
     }
 
     sso(): Observable<boolean> {
@@ -192,12 +180,12 @@ export class AuthenticationService {
      */
 
     // TODO: Update service isAuthenticated & JWT check to query
-    isAuthenticated(): boolean {
-        return !!this._credentials && !this.isTokenExpired()
-    }
+    // isAuthenticated(): boolean {
+    //     return !!this._credentials && !this.isTokenExpired()
+    // }
 
     isTokenExpired(): boolean {
-        const token = this._credentials.token
+        const token = this.cookieService.get('credentials')
         if (!token) {
             return true
         }
@@ -212,197 +200,178 @@ export class AuthenticationService {
      * Checks is the user is an admin.
      * @return True if the user is an admin.
      */
-    isAdmin(): boolean {
-        if (this._credentials) {
-            return includes(this._credentials.user.roles, 'admin')
-        } else {
-            return false
-        }
-    }
+    // isAdmin(): boolean {
+    //     if (this._credentials) {
+    //         return includes(this._credentials.user.roles, 'admin')
+    //     } else {
+    //         return false
+    //     }
+    // }
 
     /**
      * owner implies admin or organization owner
      * @return True if the user is an admin.
      */
-    isOwner(): boolean {
-        if (this._credentials) {
-            // admin owns everything
-            if (includes(this._credentials.user.roles, 'admin')) {
-                return true
-            }
+    // isOwner(): boolean {
+    //     if (this._credentials) {
+    //         // admin owns everything
+    //         if (includes(this._credentials.user.roles, 'admin')) {
+    //             return true
+    //         }
 
-            // org leaders own any content within their org
-            if (this._org && this._org.owner && this._org.owner._id === this._credentials.user._id) {
-                return true
-            }
+    //         // org leaders own any content within their org
+    //         if (this._org && this._org.owner && this._org.owner._id === this._credentials.user._id) {
+    //             return true
+    //         }
 
-            return false
-        } else {
-            return false
-        }
-    }
+    //         return false
+    //     } else {
+    //         return false
+    //     }
+    // }
 
     /**
      * moderators are on the list of org moderators
      * also allows through admins or owners
      * @return True if the user is moderator.
      */
-    isModerator(): boolean {
-        // debugger;
+    // isModerator(): boolean {
+    //     // debugger;
 
-        if (!this._credentials || !this._credentials.user || !this._org) {
-            return false
-        }
+    //     if (!this._credentials || !this._credentials.user || !this._org) {
+    //         return false
+    //     }
 
-        // owners and admins are allowed to do anything a moderator can
-        if (this.isOwner()) {
-            return true
-        }
+    //     // owners and admins are allowed to do anything a moderator can
+    //     if (this.isOwner()) {
+    //         return true
+    //     }
 
-        if (!this._org || !this._org.moderators || !this._org.moderators.length) {
-            return false
-        }
+    //     if (!this._org || !this._org.moderators || !this._org.moderators.length) {
+    //         return false
+    //     }
 
-        return this._org.moderators.some((mod: any) => {
-            if (typeof mod === 'string') {
-                return mod === this._credentials.user._id
-            }
+    //     return this._org.moderators.some((mod: any) => {
+    //         if (typeof mod === 'string') {
+    //             return mod === this._credentials.user._id
+    //         }
 
-            return mod._id === this._credentials.user._id
-        })
-    }
+    //         return mod._id === this._credentials.user._id
+    //     })
+    // }
 
     /**
      * check if content is owned by current user
      * @return True if the user is an admin.
      */
-    isCreator(object?: any): boolean {
-        if (!object) {
-            return false
-        }
+    // isCreator(object?: any): boolean {
+    //     if (!object) {
+    //         return false
+    //     }
 
-        if (this._credentials) {
-            if (object.user) {
-                const id = object.user._id || object.user
+    //     if (this._credentials) {
+    //         if (object.user) {
+    //             const id = object.user._id || object.user
 
-                if (id === this._credentials.user._id) {
-                    return true
-                }
-            }
-        } else {
-            return false
-        }
-    }
+    //             if (id === this._credentials.user._id) {
+    //                 return true
+    //             }
+    //         }
+    //     } else {
+    //         return false
+    //     }
+    // }
 
-    hasRole(role: string): boolean {
-        if (this._credentials) {
-            return includes(this._credentials.user.roles, role)
-        }
-    }
+    // hasRole(role: string): boolean {
+    //     if (this._credentials) {
+    //         return includes(this._credentials.user.roles, role)
+    //     }
+    // }
 
     /**
      * check if current user has completed verification
      * @return True if the user is verified.
      */
-    isVerified(): boolean {
-        // debugger;
-        if (this._credentials) {
-            return (this._credentials.user.verified === true)
-        }
-    }
+    // isVerified(): boolean {
+    //     // debugger;
+    //     if (this._credentials) {
+    //         return (this._credentials.user.verified === true)
+    //     }
+    // }
 
-    tourComplete(): boolean {
-        if (this._credentials) {
-            return this._credentials.user.completedTour
-        }
-    }
+    // tourComplete(): boolean {
+    //     if (this._credentials) {
+    //         return this._credentials.user.completedTour
+    //     }
+    // }
 
-    saveTourToLocalStorage() {
-        this.setCredentials(this._credentials, true)
-    }
+    // saveTourToLocalStorage() {
+    //     this.setCredentials(this._credentials, true)
+    // }
 
-    setVerified(credentials: Credentials) {
-        // debugger;
-        if (localStorage.getItem(credentialsKey)) {
-            localStorage.setItem(credentialsKey, JSON.stringify(credentials))
-        } else if (sessionStorage.getItem(credentialsKey)) {
-            sessionStorage.setItem(credentialsKey, JSON.stringify(credentials))
-        }
-        this._credentials = credentials
-    }
+    // setVerified(credentials: Credentials) {
+    //     // debugger;
+    //     if (localStorage.getItem(credentialsKey)) {
+    //         localStorage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     } else if (sessionStorage.getItem(credentialsKey)) {
+    //         sessionStorage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     }
+    //     this._credentials = credentials
+    // }
 
     // User sends mobile number to backend and is sent a verification code
     sendVerificationCode(number: number): Observable<any> {
-        return this.httpClient
-            .post(routes.sms(), number)
+        return this.httpClient.post(routes.sms(), number)
     }
 
     // User sends verification code to register as user
     verifyMobile(code: number): Observable<any> {
-        return this.httpClient
-            .post(routes.verify(), code)
-            .pipe(
-                tap((res: any) => {
-                    const { verified, organizations, roles, mobileNumber } = res.user
-                    this.authenticationStore.update(state => ({
-                        verified,
-                        organizations,
-                        mobileNumber,
-                        roles
-                    }))
-
-                    const { user, token } = this._credentials
-                    user.verified = verified
-                    user.organizations = organizations
-                    user.mobileNumber = mobileNumber
-                    user.roles = roles
-
-                    const newCreds = {
-                        user,
-                        token
-                    }
-
-                    this.setCredentials(newCreds, true);
-                }),
-            )
+        return this.httpClient.post(routes.verify(), code).pipe(
+            tap((res: any) => {
+                const {
+                    verified,
+                    organizations,
+                    roles,
+                    mobileNumber,
+                } = res.user
+                this.authenticationStore.update(state => ({
+                    verified,
+                    organizations,
+                    mobileNumber,
+                    roles,
+                }))
+            }),
+        )
     }
 
-    verifyWithCommunity(): Observable<any> {
-        return this.httpClient
-            .post(routes.communityVerify(), {})
-            .pipe(
-                tap((res: any) => {
-                    const { verified, organizations } = res
-                    this.authenticationStore.update({
-                        verified,
-                        organizations
-                    })
-
-                    // After updating store - if we refresh page credentials will have not updated,
-                    // the store will pull data from the data store on local store
-                    // need to update local store with latest verification data
-
-                    const { user, token } = this._credentials;
-                    user.verified = verified;
-                    user.organizations = organizations;
-
-                    const newCreds = {
-                        user,
-                        token
-                    }
-
-                    this.setCredentials(newCreds, true);
+    verifyWithCommunity(id: string): Observable<any> {
+        return this.httpClient.post(routes.communityVerify(), { id }).pipe(
+            tap((res: any) => {
+                const { verified, organizations } = res
+                this.authenticationStore.update({
+                    verified,
+                    organizations,
                 })
-            )
+            }),
+        )
     }
 
     /**
      * Gets the user credentials.
      * @return The user credentials or null if the user is not authenticated.
      */
-    get credentials(): Credentials | null {
-        return this._credentials
-    }
+    // get credentials(): Credentials | null {
+    //     return this._credentials
+    // }
+
+    // updateCredentials(user: any) {
+    //     const { displayName, subscriptions } = user
+    //     const credentials = this.credentials;
+    //     credentials.user.subscriptions = subscriptions;
+    //     credentials.user.displayName = displayName;
+
+    //     this.setCredentials(credentials, true);
+    // }
 
     /**
      * Sets the user credentials.
@@ -411,16 +380,15 @@ export class AuthenticationService {
      * @param credentials The user credentials.
      * @param remember True to remember credentials across sessions.
      */
-    private setCredentials(credentials?: Credentials, remember?: boolean) {
-        this._credentials = credentials || null
-        if (credentials) {
-            const storage = remember ? localStorage : sessionStorage
-            storage.setItem(credentialsKey, JSON.stringify(credentials))
-        } else {
-            sessionStorage.removeItem(credentialsKey)
-            localStorage.removeItem(credentialsKey)
-            this.cookieService.delete(credentialsKey, '/', '.newvote.org')
-        }
-    }
-
+    // private setCredentials(credentials?: Credentials, remember?: boolean) {
+    //     this._credentials = credentials || null
+    //     if (credentials) {
+    //         const storage = remember ? localStorage : sessionStorage
+    //         storage.setItem(credentialsKey, JSON.stringify(credentials))
+    //     } else {
+    //         sessionStorage.removeItem(credentialsKey)
+    //         localStorage.removeItem(credentialsKey)
+    //         this.cookieService.delete(credentialsKey, '/', '.newvote.org')
+    //     }
+    // }
 }

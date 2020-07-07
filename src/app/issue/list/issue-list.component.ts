@@ -1,5 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    ElementRef,
+    ViewChild,
+    ChangeDetectorRef,
+} from '@angular/core'
 import { MatAutocomplete, MatSnackBar } from '@angular/material'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormControl } from '@angular/forms'
@@ -36,59 +42,62 @@ import { AdminService } from '@app/core/http/admin/admin.service'
 import { AllEntityQuery } from '@app/core/http/mediators/entity.query'
 import { AccessControlQuery } from '@app/core/http/mediators/access-control.query'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-issue',
     templateUrl: './issue-list.component.html',
     styleUrls: ['./issue-list.component.scss'],
-    animations: [
-        trigger('fadeIn', fadeIn(':enter'))
-    ]
+    animations: [trigger('fadeIn', fadeIn(':enter'))],
 })
 export class IssueListComponent implements OnInit {
-    @ViewChild('topicInput', { static: false }) topicInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('topicInput', { static: false }) topicInput: ElementRef<
+        HTMLInputElement
+    >
+    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete
 
-    issues: Array<Issue> = [];
+    issues: Array<Issue> = []
     allTopics: Array<Topic> = []
-    filteredTopics: Observable<Topic[]>;
-    selectedTopics: Array<Topic> = [];
-    organization: Organization;
-    separatorKeysCodes: number[] = [ENTER, COMMA];
-    isLoading: boolean;
-    headerTitle = '';
-    headerText = 'Issues can be any problem in your community that you think needs to be addressed.';
+    filteredTopics: Observable<Topic[]>
+    selectedTopics: Array<Topic> = []
+    organization: Organization
+    separatorKeysCodes: number[] = [ENTER, COMMA]
+    isLoading: boolean
+    headerTitle = ''
+    headerText =
+        'Issues can be any problem in your community that you think needs to be addressed.'
     headerButtons = [
         {
             text: 'New Topic',
             color: 'warn',
             routerLink: '/topics/create',
-            role: 'admin'
+            role: 'admin',
         },
         {
             text: 'View Topics',
             color: 'warn',
             routerLink: '/topics',
-            role: 'admin'
+            role: 'admin',
         },
         {
             text: 'New Issue',
             color: 'warn',
             routerLink: '/issues/create',
-            role: 'rep'
-        }];
+            role: 'rep',
+        },
+    ]
 
-    stepsArray = [...JoyRideSteps];
+    stepsArray = [...JoyRideSteps]
 
-    topicFilter = new FormControl('');
-    topicParam: string; // filtered topics can be preselected via url param
+    topicFilter = new FormControl('')
+    topicParam: string // filtered topics can be preselected via url param
 
-    loadingState: string;
-    suggestions: any[];
-    suggestions$: Observable<ISuggestion[]>;
-    orphanedIssues: any[] = [];
-    isVerified: boolean;
-    isOpen: boolean;
+    loadingState: string
+    suggestions: any[]
+    suggestions$: Observable<ISuggestion[]>
+    orphanedIssues: any[] = []
+    isVerified: boolean
+    isOpen: boolean
 
     constructor(
         private suggestionQuery: SuggestionQuery,
@@ -100,36 +109,34 @@ export class IssueListComponent implements OnInit {
         private issueService: IssueService,
         private topicService: TopicService,
         private organizationService: OrganizationService,
-        public auth: AuthenticationService,
+        public auth: AuthenticationQuery,
         private route: ActivatedRoute,
         private router: Router,
         private meta: MetaService,
-        private topicQuery: TopicQuery,
-        private voteQuery: VotesQuery,
         public admin: AdminService,
         public entities: AllEntityQuery,
         public access: AccessControlQuery,
-        private entityVotes: EntityVotesQuery
+        private entityVotes: EntityVotesQuery,
     ) {
         this.subscribeToSuggestionStore()
         this.subscribeToTopicStore()
 
-        this.access.isCommunityVerified$
-            .subscribe((verified: any) => {
-                this.isVerified = verified
-            })
+        this.access.isCommunityVerified$.subscribe((verified: any) => {
+            this.isVerified = verified
+        })
 
         this.filteredTopics = this.topicFilter.valueChanges.pipe(
             startWith(''),
-            map((topic: string) => topic ? this._filter(topic) : this.allTopics.slice()))
+            map((topic: string) =>
+                topic ? this._filter(topic) : this.allTopics.slice(),
+            ),
+        )
     }
 
     ngOnInit() {
-
-        this.organizationService.get()
-            .subscribe((org) => {
-                this.organization = org
-            })
+        this.organizationService.get().subscribe(org => {
+            this.organization = org
+        })
 
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
@@ -141,13 +148,13 @@ export class IssueListComponent implements OnInit {
             this.topicParam = params.get('topic')
         })
 
-        this.meta.updateTags(
-            {
-                title: 'All Issues',
-                description: 'Issues can be any problem or topic in your community that you think needs to be addressed.'
-            })
+        this.meta.updateTags({
+            title: 'All Issues',
+            description:
+                'Issues can be any problem or topic in your community that you think needs to be addressed.',
+        })
 
-        // this.fetchData()
+        this.fetchData()
         this.stateService.setLoadingState(AppState.complete)
     }
 
@@ -157,28 +164,29 @@ export class IssueListComponent implements OnInit {
 
         const issueObs: Observable<any[]> = this.issueService.list({ params })
         const topicObs: Observable<any[]> = this.topicService.list({ params })
-        const suggestionObs: Observable<any[]> = this.suggestionService.list({ params })
+        const suggestionObs: Observable<any[]> = this.suggestionService.list({
+            params,
+        })
 
         forkJoin({
             issues: issueObs,
             topics: topicObs,
-            suggestions: suggestionObs
-        })
-            .subscribe(
-                () => {
-                    if (this.topicParam) {
-                        const topic = this._filter(this.topicParam)
-                        if (topic.length) {
-                            this.selectedTopics.push(topic[0])
-                        }
+            suggestions: suggestionObs,
+        }).subscribe(
+            () => {
+                if (this.topicParam) {
+                    const topic = this._filter(this.topicParam)
+                    if (topic.length) {
+                        this.selectedTopics.push(topic[0])
                     }
-
-                    this.stateService.setLoadingState(AppState.complete)
-                },
-                () => {
-                    return this.stateService.setLoadingState(AppState.error)
                 }
-            )
+
+                this.stateService.setLoadingState(AppState.complete)
+            },
+            () => {
+                return this.stateService.setLoadingState(AppState.error)
+            },
+        )
     }
 
     subscribeToSuggestionStore() {
@@ -192,12 +200,13 @@ export class IssueListComponent implements OnInit {
                 this.suggestions = res
                 this.isOpen = true
             },
-            (err) => err
+            err => err,
         )
     }
 
     subscribeToTopicStore() {
-        this.entities.populateTopics()
+        this.entities
+            .populateTopics()
             .subscribe(({ topics, orphanedIssues }: any) => {
                 if (!topics || !topics.length) return false
                 this.allTopics = topics
@@ -208,7 +217,9 @@ export class IssueListComponent implements OnInit {
     topicSelected(event: any) {
         const selectedItem = event.option.value
 
-        if (!this.selectedTopics.some(topic => topic._id === selectedItem._id)) {
+        if (
+            !this.selectedTopics.some(topic => topic._id === selectedItem._id)
+        ) {
             this.selectedTopics.push(event.option.value)
             this.topicFilter.setValue('')
             this.topicInput.nativeElement.value = ''
@@ -230,43 +241,64 @@ export class IssueListComponent implements OnInit {
         const suggestion = formData as Suggestion
         suggestion.organizations = this.organization
 
-        this.suggestionService.create({ entity: suggestion })
-            .subscribe(() => {
+        this.suggestionService.create({ entity: suggestion }).subscribe(
+            () => {
                 this.admin.openSnackBar('Succesfully created', 'OK')
             },
-            (error) => {
-                this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-            })
+            error => {
+                this.admin.openSnackBar(
+                    `Something went wrong: ${error.status} - ${error.statusText}`,
+                    'OK',
+                )
+            },
+        )
     }
 
     onVote(voteData: any, model: string) {
         this.isLoading = true
         // when a new entity is dynamically added, the votes section returns as null.
         // Assign votes & currentUser to false as safe default values to prevent errors
-        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
+        const {
+            item,
+            voteValue,
+            item: { votes: { currentUser = false } = false },
+        } = voteData
         const vote = new Vote(item._id, model, voteValue)
         if (currentUser) {
             vote.voteValue = currentUser.voteValue === voteValue ? 0 : voteValue
         }
 
-        this.voteService.create({ entity: vote })
-            .pipe(finalize(() => { this.isLoading = false }))
+        this.voteService
+            .create({ entity: vote })
+            .pipe(
+                finalize(() => {
+                    this.isLoading = false
+                }),
+            )
             .subscribe(
-                (res) => {
+                res => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                (error) => {
+                error => {
                     if (error.status === 401) {
-                        this.admin.openSnackBar('You must be logged in to vote', 'OK')
+                        this.admin.openSnackBar(
+                            'You must be logged in to vote',
+                            'OK',
+                        )
                     } else {
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        this.admin.openSnackBar(
+                            'There was an error recording your vote',
+                            'OK',
+                        )
                     }
-                }
+                },
             )
     }
 
     private _filter(value: any): Topic[] {
-        const filterValue = value.name ? value.name.toLowerCase() : value.toLowerCase()
+        const filterValue = value.name
+            ? value.name.toLowerCase()
+            : value.toLowerCase()
 
         const filterVal = this.allTopics.filter(topic => {
             const name = topic.name.toLowerCase()

@@ -5,13 +5,21 @@ import { combineQueries } from '@datorama/akita'
 import { map } from 'rxjs/operators'
 import { ITopic } from '@app/core/models/topic.model'
 import { Issue, IIssue } from '@app/core/models/issue.model'
+import { NotificationQuery } from '../notifications/notification.query'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { RepQuery } from '../rep/rep.query'
+import { OrganizationQuery } from '../organization/organization.query'
 
 @Injectable()
 
 export class AllEntityQuery {
     constructor(
         private Topics: TopicQuery,
-        private Issues: IssueQuery
+        private Issues: IssueQuery,
+        private Notifications: NotificationQuery,
+        private auth: AuthenticationQuery,
+        private Reps: RepQuery,
+        private orgQuery: OrganizationQuery
     ) { }
 
     populateTopics() {
@@ -88,7 +96,5 @@ export class AllEntityQuery {
                 })
             )
     }
-
-
 
 }

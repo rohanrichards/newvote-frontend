@@ -73,11 +73,23 @@ export class NotificationService {
     }
 
     create(context: NotificationContext): Observable<any> {
+        // create blank params object
+        let params = new HttpParams()
+
+        // if we have params provided in the context, replace with those
+        if (context.params) {
+            // context.params is assumed to have a format similar to
+            // { topicId: [id], search: [search terms], ...}
+            params = new HttpParams({ fromObject: context.params })
+        }
+
         return this.httpClient
-            .post(routes.create(), context.entity)
+            .post(routes.create(), context.entity, { params })
             .pipe(
                 catchError(handleError),
-                tap((notification: Notification) => this.store.add(notification)),
+                tap((notification: Notification) => {
+                    this.store.add(notification)
+                }),
                 map((res: any) => res)
             )
     }

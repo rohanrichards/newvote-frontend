@@ -46,7 +46,7 @@
                             [defaultImage]="getSuggestionIcon(item.type, true)"
                             [lazyLoad]="getSuggestionIcon(item.type)" />
                     </div>
-                    <mat-card-title fxFlex="1 1 80%"
+                    <mat-card-title fxFlex="1 1 100%"
                         class="text-left"
                         translate>
                         {{item.title}}
@@ -65,7 +65,7 @@
                                 Suggestion
                                 Status:
                                 {{item.status === -1 ? 'Rejected' : item.status === 0 ? 'Pending' : 'Approved' }}
-                                <p [innerHtml]="item.description"></p>
+                                <p class="line-clamp" [innerHtml]="item.description"></p>
                         </mat-card-subtitle>
                     </mat-card-title>
                 </div>

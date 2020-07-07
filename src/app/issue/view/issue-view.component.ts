@@ -42,35 +42,41 @@ import { ProgressService, ProgressQuery } from '@app/core/http/progress'
 import { cloneDeep } from 'lodash'
 import { EntityVotesQuery } from '@app/core/http/mediators/entity-votes.query'
 import { NotificationService } from '@app/core/http/notifications/notification.service'
-import { INotification, Notification } from '@app/core/models/notification.model'
+import {
+    INotification,
+    Notification,
+} from '@app/core/models/notification.model'
 import { NotificationQuery } from '@app/core/http/notifications/notification.query'
+import { Rep } from '@app/core/models/rep.model'
 
 @Component({
     selector: 'app-issue',
     templateUrl: './issue-view.component.html',
     styleUrls: ['./issue-view.component.scss'],
-    animations: [
-        trigger('fadeIn', fadeIn(':enter'))
-    ]
+    animations: [trigger('fadeIn', fadeIn(':enter'))],
 })
 export class IssueViewComponent implements OnInit {
+    issue: IIssue
+    solutions: Array<Solution>
+    media: Array<Media>
+    isLoading: boolean
+    voteSnack: any
+    headingEdit = false
+    loadingState: string
+    handleImageUrl = optimizeImage
+    isOpen = false
+    organization: any
+    suggestions: any
+    solutions$: Observable<ISolution[]>
+    suggestions$: Observable<ISuggestion[]>
+    isVerified: boolean
+    progress: any
+    notifications: INotification[]
+    rep: Rep
 
-    issue: IIssue;
-    solutions: Array<Solution>;
-    media: Array<Media>;
-    isLoading: boolean;
-    voteSnack: any;
-    headingEdit = false;
-    loadingState: string;
-    handleImageUrl = optimizeImage;
-    isOpen = false;
-    organization: any;
-    suggestions: any;
-    solutions$: Observable<ISolution[]>;
-    suggestions$: Observable<ISuggestion[]>;
-    isVerified: boolean;
-    progress: any;
-    notifications: INotification[];
+    isAdmin: boolean
+    isModerator: boolean
+    isOwner: boolean
 
     defaultState = {
         _id: '',
@@ -80,17 +86,17 @@ export class IssueViewComponent implements OnInit {
         states: [
             {
                 name: 'Raised',
-                active: true
+                active: true,
             },
             {
                 name: 'In Progress',
-                active: false
+                active: false,
             },
             {
                 name: 'Outcome',
-                active: false
+                active: false,
             },
-        ]
+        ],
     } as Progress
 
     solutionAccordion = false
@@ -125,17 +131,20 @@ export class IssueViewComponent implements OnInit {
         private progressService: ProgressService,
         private entityVotes: EntityVotesQuery,
         private notificationService: NotificationService,
-        private notificationQuery: NotificationQuery
-    ) { }
+        private notificationQuery: NotificationQuery,
+    ) {}
 
     ngOnInit() {
-        this.organizationService.get()
-            .subscribe(
-                (org) => { this.organization = org },
-                (err) => err
-            )
+        this.organizationService.get().subscribe(
+            org => {
+                this.organization = org
+            },
+            err => err,
+        )
 
-        this.stateService.loadingState$.subscribe((state) => { this.loadingState = state })
+        this.stateService.loadingState$.subscribe(state => {
+            this.loadingState = state
+        })
         this.stateService.setLoadingState(AppState.loading)
 
         this.route.paramMap.subscribe(params => {
@@ -144,18 +153,21 @@ export class IssueViewComponent implements OnInit {
             this.subscribeToIssueStore(ID)
         })
 
-        this.access.isCommunityVerified$
-            .subscribe((verified: boolean) => {
-                this.isVerified = verified
-            })
+        this.access.isCommunityVerified$.subscribe((verified: boolean) => {
+            this.isVerified = verified
+        })
 
         this.getSuggestions()
+        this.repQuery.isLoggedInUserRep().subscribe(res => {
+            if (!res.length) return false
+            this.rep = res[0]
+        })
     }
 
     subscribeToSuggestionStore(id: string) {
         this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
-        this.suggestions$.subscribe((res) => {
+        this.suggestions$.subscribe(res => {
             if (!res.length) {
                 this.suggestionAccordion = false
                 return false
@@ -166,10 +178,11 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToProgressStore(parentId: string) {
-        this.progressQuery.selectAll({
-            filterBy: (entity) => entity.parent === parentId
-        })
-            .subscribe((res) => {
+        this.progressQuery
+            .selectAll({
+                filterBy: entity => entity.parent === parentId,
+            })
+            .subscribe(res => {
                 if (!res.length) {
                     this.progress = this.defaultState
                     return false
@@ -179,9 +192,10 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToNotificationStore(parentId: string) {
-        this.notificationQuery.getNotifications(parentId)
+        this.notificationQuery
+            .getNotifications(parentId)
             .subscribe((res: any) => {
-                if (!res.length) { 
+                if (!res.length) {
                     this.notifications = []
                     return false
                 }
@@ -190,22 +204,21 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToIssueStore(id: string) {
+        this.issueQuery.getIssueWithTopic(id).subscribe(
+            (issue: Issue) => {
+                if (!issue) return issue
 
-        this.issueQuery.getIssueWithTopic(id)
-            .subscribe(
-                (issue: Issue) => {
-                    if (!issue) return issue
-
-                    this.issue = issue
-                    this.subscribeToSuggestionStore(issue._id)
-                    this.subscribeToSolutionStore(issue._id)
-                    this.subscribeToMediaStore(issue._id)
-                    this.subscribeToProgressStore(issue._id)
-                    this.subscribeToNotificationStore(issue._id)
-                    this.getMedia(issue._id)
-                    this.stateService.setLoadingState(AppState.complete)
-                },
-                (err) => err)
+                this.issue = issue
+                this.subscribeToSuggestionStore(issue._id)
+                this.subscribeToSolutionStore(issue._id)
+                this.subscribeToMediaStore(issue._id)
+                this.subscribeToProgressStore(issue._id)
+                this.subscribeToNotificationStore(issue._id)
+                this.getMedia(issue._id)
+                this.stateService.setLoadingState(AppState.complete)
+            },
+            err => err,
+        )
     }
 
     subscribeToSolutionStore(issueId: string) {
@@ -221,10 +234,9 @@ export class IssueViewComponent implements OnInit {
     }
 
     subscribeToMediaStore(id: string) {
-        this.mediaQuery.selectIssueMedia(id)
-            .subscribe((media: Media[]) => {
-                this.media = media
-            })
+        this.mediaQuery.selectIssueMedia(id).subscribe((media: Media[]) => {
+            this.media = media
+        })
     }
 
     fetchData(id: string) {
@@ -238,131 +250,135 @@ export class IssueViewComponent implements OnInit {
     }
 
     getTopics() {
-        const isOwner = this.auth.isOwner()
+        const isOwner = this.authQuery.isOwner()
         const params = {
-            showDeleted: isOwner ? true : ''
+            showDeleted: isOwner ? true : '',
         }
 
-        this.topicService.list({ orgs: [], params })
-            .subscribe(
-                res => res,
-                err => err
-            )
+        this.topicService
+            .list({ orgs: [], params })
+            .subscribe(res => res, err => err)
     }
 
     getProgress() {
-        this.progressService.get({})
-            .subscribe((res) => res)
+        this.progressService.get({}).subscribe(res => res)
     }
 
     getNotifications() {
-        this.notificationService.list({})
-            .subscribe(
-                res => res,
-                err => err
-            )
+        this.notificationService.list({}).subscribe(res => res, err => err)
     }
 
     getSuggestions() {
-        const isOwner = this.auth.isOwner()
+        const isOwner = this.authQuery.isOwner()
 
-        this.suggestionService.list({
-            forceUpdate: true,
-            params: {
-                showDeleted: isOwner ? true : ''
-            }
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
+        this.suggestionService
+            .list({
+                forceUpdate: true,
+                params: {
+                    showDeleted: isOwner ? true : '',
+                },
+            })
+            .subscribe(res => res, err => err)
     }
 
     getIssue(id: string) {
-        return this.issueService.view({ id: id, orgs: [] })
-            .subscribe(
-                (issue) => {
-                    const imageUrl = issue.imageUrl.includes('assets') ?
-                        'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/issue-icon-min.png'
-                        : issue.imageUrl
+        return this.issueService.view({ id: id, orgs: [] }).subscribe(
+            issue => {
+                const imageUrl = issue.imageUrl.includes('assets')
+                    ? 'https://s3-ap-southeast-2.amazonaws.com/newvote.frontend.staging/assets/issue-icon-min.png'
+                    : issue.imageUrl
 
-                    this.meta.updateTags(
-                        {
-                            title: issue.name || '',
-                            appBarTitle: 'View Issue',
-                            description: issue.description || '',
-                            image: imageUrl
-                        })
-                },
-                () => {
-                    this.isLoading = false
-                    this.stateService.setLoadingState(AppState.error)
-                }
-            )
+                this.meta.updateTags({
+                    title: issue.name || '',
+                    appBarTitle: 'View Issue',
+                    description: issue.description || '',
+                    image: imageUrl,
+                })
+            },
+            () => {
+                this.isLoading = false
+                this.stateService.setLoadingState(AppState.error)
+            },
+        )
     }
 
     getSolutions() {
-        const isOwner = this.auth.isOwner()
+        const isOwner = this.authQuery.isOwner()
         const params = { showDeleted: isOwner ? true : '' }
 
-        return this.solutionService.list({
-            params
-        })
-            .subscribe(
-                (res: any) => res,
-                (err) => err
-            )
+        return this.solutionService
+            .list({
+                params,
+            })
+            .subscribe((res: any) => res, err => err)
     }
 
     getProposals() {
-        const isOwner = this.auth.isOwner()
+        const isOwner = this.authQuery.isOwner()
         const params = { showDeleted: isOwner ? true : '' }
-        return this.proposalService.list({
-            params
-        })
-            .subscribe(
-                (res) => res,
-                (err) => err
-            )
+        return this.proposalService
+            .list({
+                params,
+            })
+            .subscribe(res => res, err => err)
     }
 
     getMedia(id: string) {
-        const isOwner = this.auth.isOwner()
+        const isOwner = this.authQuery.isOwner()
 
-        this.mediaService.list({
-            params: { issueId: id, showDeleted: isOwner ? true : '' }
-        })
-            .pipe(finalize(() => { this.isLoading = false }))
-            .subscribe(
-                (res) => res,
-                (err) => err
+        this.mediaService
+            .list({
+                params: { issueId: id, showDeleted: isOwner ? true : '' },
+            })
+            .pipe(
+                finalize(() => {
+                    this.isLoading = false
+                }),
             )
+            .subscribe(res => res, err => err)
     }
 
     onVote(voteData: any, model: string) {
-
         this.isLoading = true
-        const { item, voteValue, item: { votes: { currentUser = false } = false } } = voteData
+        const {
+            item,
+            voteValue,
+            item: { votes: { currentUser = false } = false },
+        } = voteData
         let vote = new Vote(item._id, model, voteValue)
 
         if (currentUser) {
             vote = Object.assign({}, currentUser, {
-                voteValue: voteValue === currentUser.voteValue ? 0 : voteValue
+                voteValue: voteValue === currentUser.voteValue ? 0 : voteValue,
             })
         }
 
-        this.voteService.create({ entity: vote })
-            .pipe(finalize(() => { this.isLoading = false }))
+        this.voteService
+            .create({ entity: vote })
+            .pipe(
+                finalize(() => {
+                    this.isLoading = false
+                }),
+            )
             .subscribe(
-                (res) => {
+                res => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                (error) => {
+                error => {
                     if (error) {
-                        if (error.status === 401) this.admin.openSnackBar('You must be logged in to vote', 'OK')
-                        this.admin.openSnackBar('There was an error recording your vote', 'OK')
+                        if (error.status === 401) {
+                            this.admin.openSnackBar(
+                                'You must be logged in to vote',
+                                'OK',
+                            )
+                        }
+
+                        this.admin.openSnackBar(
+                            'There was an error recording your vote',
+                            'OK',
+                        )
                     }
-                }
+                },
             )
     }
 
@@ -371,15 +387,15 @@ export class IssueViewComponent implements OnInit {
     }
 
     handleSubmit(value?: string) {
-
         this.toggleHeader()
         if (!value) {
             return
         }
 
         this.issue.mediaHeading = value
-        this.issueService.update({ id: this.issue._id, entity: this.issue })
-            .subscribe((t) => {
+        this.issueService
+            .update({ id: this.issue._id, entity: this.issue })
+            .subscribe(t => {
                 this.issue = t
             })
     }
@@ -396,51 +412,65 @@ export class IssueViewComponent implements OnInit {
         suggestion.parentType = 'Issue'
         suggestion.parentTitle = this.issue.name
 
-        this.suggestionService.create({ entity: suggestion })
-            .subscribe(
-                () => this.admin.openSnackBar('Succesfully created', 'OK'),
-                (error) => {
-                    this.admin.openSnackBar(`Something went wrong: ${error.status} - ${error.statusText}`, 'OK')
-                }
-            )
+        this.suggestionService.create({ entity: suggestion }).subscribe(
+            () => this.admin.openSnackBar('Succesfully created', 'OK'),
+            error => {
+                this.admin.openSnackBar(
+                    `Something went wrong: ${error.status} - ${error.statusText}`,
+                    'OK',
+                )
+            },
+        )
     }
 
     updateProgress(state: any) {
-
         if (!this.progress._id) {
             this.progress.parent = this.issue._id
             this.updateState(this.progress, state)
-            return this.progressService.create({ entity: this.progress })
-                .subscribe(
-                    (res) => res,
-                    (err) => err
-                )
+            return this.progressService
+                .create({ entity: this.progress })
+                .subscribe(res => res, err => err)
         }
         const updatedProgress = cloneDeep(this.progress)
         this.updateState(updatedProgress, state)
-        return this.progressService.update({ id: this.progress._id, entity: updatedProgress })
-            .subscribe((res) => res)
+        return this.progressService
+            .update({ id: this.progress._id, entity: updatedProgress })
+            .subscribe(res => res)
     }
 
-    addNotification(description: any) {
+    addNotification(notificationObject: {
+        isNotification: boolean;
+        description: string;
+    }) {
+        const { description, isNotification } = notificationObject
+
+        const params = {
+            isNotification,
+        }
+
         const notification = {
             parent: this.issue._id,
             parentType: 'Issue',
             imageUrl: '',
             description,
             organizations: this.organization._id,
-            user: this.authQuery.getValue()._id
+            user: this.authQuery.getValue()._id,
+            rep: this.rep,
+            position: !this.rep ? this.getUserPosition() : '',
         } as INotification
-        return this.notificationService.create({ entity: notification })
+        return this.notificationService
+            .create({ entity: notification, params })
             .subscribe(
-                (res) => {
+                res => {
                     this.admin.openSnackBar('Succesfully created', 'OK')
                 },
-                (err) => {
-                    this.admin.openSnackBar('There was an error while creating your notification', 'OK')
+                err => {
+                    this.admin.openSnackBar(
+                        'There was an error while creating your notification',
+                        'OK',
+                    )
                     return err
-
-                }
+                },
             )
     }
 
@@ -463,7 +493,10 @@ export class IssueViewComponent implements OnInit {
 
     setNotificationToEdit(notification: Notification) {
         // If edit button is hit twice, remove the notification
-        if (this.notificationToEdit && this.notificationToEdit._id === notification._id) {
+        if (
+            this.notificationToEdit &&
+            this.notificationToEdit._id === notification._id
+        ) {
             this.notificationToEdit = null
             return false
         }
@@ -474,16 +507,47 @@ export class IssueViewComponent implements OnInit {
     }
 
     updateNotification(notification: any) {
-        return this.notificationService.update({ id: notification._id, entity: notification, orgs: [this.organization.url] })
+        return this.notificationService
+            .update({
+                id: notification._id,
+                entity: notification,
+                orgs: [this.organization.url],
+            })
             .subscribe(
-                (res) => {
+                res => {
                     this.notificationToEdit = null
                     this.admin.openSnackBar('Succesfully Updated', 'OK')
                 },
-                (err) => {
-                    this.admin.openSnackBar('There was an error updating the notification', 'OK')
+                err => {
+                    this.admin.openSnackBar(
+                        'There was an error updating the notification',
+                        'OK',
+                    )
                     return err
-                }
+                },
             )
+    }
+
+    getUserPosition() {
+        const { _id, roles } = this.authQuery.getValue()
+        const { moderators, owner } = this.organization
+
+        const isModerator = moderators.find((mod: any) => {
+            return mod._id === _id
+        })
+
+        if (owner === _id) {
+            return 'Community Owner'
+        }
+
+        if (roles.includes('admin')) {
+            return 'NewVote Admin'
+        }
+
+        if (isModerator) {
+            return 'Community Moderator'
+        }
+
+        return ''
     }
 }

@@ -32,7 +32,7 @@ export class EntityVotesQuery {
                 mergeMap((solution: ISolution) => {
                     // The original id could be a slug so we wait to get a single solution
                     // before querying for vote data
-                    return this.votes.getVote(solution._id)
+                    return this.votes.getVote(solution._id || false)
                         .pipe(
                             map((votes: any) => {
                                 const [vote] = votes

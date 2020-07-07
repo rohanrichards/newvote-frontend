@@ -17,6 +17,7 @@ import { User } from '@app/core/models/user.model'
 import { MetaService } from '@app/core/meta.service'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-organization',
@@ -129,7 +130,8 @@ export class OrganizationEditComponent implements OnInit {
         private location: Location,
         private meta: MetaService,
         private organizationQuery: OrganizationQuery,
-        private admin: AdminService
+        private admin: AdminService,
+        public authQuery: AuthenticationQuery
     ) {
         this.filteredOwners = this.organizationForm.get('owner').valueChanges.pipe(
             startWith(''),
@@ -152,7 +154,7 @@ export class OrganizationEditComponent implements OnInit {
         this.uploader = new FileUploader(this.uploaderOptions)
         this.uploader.onBuildItemForm = this.buildItemForm()
 
-        if (this.auth.isAdmin()) {
+        if (this.authQuery.isAdmin()) {
             this.userService.list({}).subscribe(users => { this.allUsers = users })
         }
 

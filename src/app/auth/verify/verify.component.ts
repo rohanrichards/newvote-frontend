@@ -67,7 +67,6 @@ export class VerifyComponent implements OnInit {
             }))
             .subscribe((data: any) => {
                 log.debug('verification completed')
-                this.authenticationService.setVerified(data)
                 // route out here
                 this.route.queryParams.subscribe(
                     params => {

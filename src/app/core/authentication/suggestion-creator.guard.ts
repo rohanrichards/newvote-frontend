@@ -3,18 +3,20 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angul
 
 import { AuthenticationService } from './authentication.service'
 import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { AuthenticationQuery } from './authentication.query'
 
 @Injectable()
 export class SuggestionCreatorGuard implements CanActivate {
 
     constructor(
         private authenticationService: AuthenticationService,
-        private suggestionService: SuggestionService
+        private suggestionService: SuggestionService,
+        private authenticationQuery: AuthenticationQuery
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): (Promise<boolean>) {
         const id = route.params.id
-        if (this.authenticationService.isModerator()) {
+        if (this.authenticationQuery.isModerator()) {
             return Promise.resolve(true)
         }
         return new Promise((resolve, reject) => {
@@ -27,7 +29,7 @@ export class SuggestionCreatorGuard implements CanActivate {
                     resolve(false)
                 }
 
-                if (this.authenticationService.isAdmin() || this.authenticationService.isCreator(s)) {
+                if (this.authenticationQuery.isAdmin() || this.authenticationQuery.isCreator(s)) {
                     resolve(true)
                 } else {
                     resolve(false)

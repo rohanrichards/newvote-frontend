@@ -13,6 +13,7 @@ import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { IssueQuery } from '@app/core/http/issue/issue.query'
 import { Issue } from '@app/core/models/issue.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-topic',
@@ -37,7 +38,8 @@ export class TopicViewComponent implements OnInit {
         private meta: MetaService,
         private topicQuery: TopicQuery,
         private issueQuery: IssueQuery,
-        private adminService: AdminService
+        private adminService: AdminService,
+        private authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -91,7 +93,7 @@ export class TopicViewComponent implements OnInit {
     }
 
     getIssues() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         const options = {
             params: { showDeleted: isModerator ? true : '' }
         }

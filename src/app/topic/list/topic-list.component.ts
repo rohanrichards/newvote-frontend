@@ -9,6 +9,7 @@ import { AppState } from '@app/core/models/state.model'
 import { TopicQuery } from '@app/core/http/topic/topic.query'
 import { Topic } from '@app/core/models/topic.model'
 import { AdminService } from '@app/core/http/admin/admin.service'
+import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 
 @Component({
     selector: 'app-topic',
@@ -39,7 +40,8 @@ export class TopicListComponent implements OnInit {
         private router: Router,
         private meta: MetaService,
         private topicQuery: TopicQuery,
-        public admin: AdminService
+        public admin: AdminService,
+        private authQuery: AuthenticationQuery
     ) { }
 
     ngOnInit() {
@@ -59,7 +61,7 @@ export class TopicListComponent implements OnInit {
     }
 
     fetchData() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
         const params = {
             showDeleted: isModerator ? true : ''
         }

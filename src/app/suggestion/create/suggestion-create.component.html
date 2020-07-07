@@ -96,6 +96,7 @@
                         placeholder="e.g Create new content for climate change"
                         formControlName="title"
                         required>
+                    <mat-hint>50 character limit.</mat-hint>
                     <mat-error
                         *ngIf="suggestionForm.hasError('required', ['title'])">
                         Title is <strong>required</strong>
@@ -124,7 +125,7 @@
                     contribution. Aim for 250 words max.
                 </span>
                 <div class="quill-editor-container cf">
-                    <quill-editor formControlName="description"></quill-editor>
+                    <quill-editor [modules]="{toolbar: false}" formControlName="description"></quill-editor>
                 </div>
                 <span class='group-label'>Links to sources</span>
                 <span class="mat-caption group-label">

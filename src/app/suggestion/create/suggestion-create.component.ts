@@ -36,7 +36,7 @@ export class SuggestionCreateComponent implements OnInit {
     state$: Observable<object>;
 
     suggestionForm = new FormGroup({
-        title: new FormControl('', [Validators.required]),
+        title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
         type: new FormControl('', [Validators.required]),
         description: new FormControl('', [Validators.required]),
         media: new FormControl(''),

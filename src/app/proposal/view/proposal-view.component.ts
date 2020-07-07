@@ -126,7 +126,7 @@ export class ProposalViewComponent implements OnInit {
     }
 
     getSuggestions() {
-        const isModerator = this.auth.isModerator()
+        const isModerator = this.authQuery.isModerator()
 
         this.suggestionService.list({
             forceUpdate: true,

@@ -17,11 +17,18 @@ export function createInitialState(): IUser {
         roles: [],
         completedTour: false,
         organizations: [],
+        subscriptionsActive: 'DEFAULT',
     }
 }
 
 @Injectable()
-@StoreConfig({ name: 'auth', resettable: true })
+@StoreConfig({
+    name: 'auth',
+    resettable: true,
+    cache: {
+        ttl: 3600000,
+    },
+})
 export class AuthenticationStore extends Store<IUser> {
     constructor() {
         super(createInitialState())
