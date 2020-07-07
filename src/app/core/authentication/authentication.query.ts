@@ -114,10 +114,11 @@ export class AuthenticationQuery extends Query<IUser> {
             mobileNumber = '',
             providerData = {},
         } = this.getValue()
+        console.log(verified, roles, mobileNumber, providerData);
         const { authType, url } = this.organizationQuery.getValue()
         if (!verified) return false
         if (roles.includes('guest')) return false
-        if (mobileNumber) return false
+        if (!mobileNumber) return false
 
         if (authType === 1) {
             return providerData && providerData[url]
@@ -143,15 +144,6 @@ export class AuthenticationQuery extends Query<IUser> {
         const { url } = organization
 
         return providerData && providerData[url]
-    }
-
-    doesMobileNumberExist() {
-        const number = this.getValue().mobileNumber
-
-        if (number && number.length) {
-            return true
-        }
-        return false
     }
 
     isCreator(object?: any): boolean {
