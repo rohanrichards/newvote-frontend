@@ -195,7 +195,6 @@ export class NavbarComponent implements OnInit {
                 )
             },
             (error: any) => {
-                console.log(error, 'this is err on veify')
                 this.admin.openSnackBar(
                     `Something went wrong: ${error.status} - ${error.statusText}`,
                     'OK',

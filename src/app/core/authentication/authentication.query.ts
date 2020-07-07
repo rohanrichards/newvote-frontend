@@ -114,7 +114,6 @@ export class AuthenticationQuery extends Query<IUser> {
             mobileNumber = '',
             providerData = {},
         } = this.getValue()
-        console.log(verified, roles, mobileNumber, providerData);
         const { authType, url } = this.organizationQuery.getValue()
         if (!verified) return false
         if (roles.includes('guest')) return false

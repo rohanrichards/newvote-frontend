@@ -28,7 +28,9 @@ export class PushService {
                 serverPublicKey: environment.vapidPublicKey,
             })
             .then((subscription: any) => {
-                if (!subscription) throw new Error('No Subscription');
+                if (!subscription) {
+                    throw new Error('No Subscription');
+                }
                 // If no parent Id then we are just saving the subscription object
                 if (!parentId) {
                     return this.userService

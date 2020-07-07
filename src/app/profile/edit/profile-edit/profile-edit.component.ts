@@ -252,10 +252,7 @@ export class ProfileEditComponent implements OnInit {
     }
 
     handleSubscriptionToggle(event: any) {
-        // [disabled]="!isEnabled || disableNotificationSlideToggle"
         const user = cloneDeep(this.auth.getValue())
-        // user.subscriptionsActive = event.checked ? 'ACCEPTED' : 'DENIED'
-
         if (!this.isEnabled) {
             return this.admin.openSnackBar(
                 'Browser does not support push notifications.',
@@ -264,12 +261,14 @@ export class ProfileEditComponent implements OnInit {
         }
 
         // If there is no subscription currently attempt to create one
-        if (!this.subscriptionExists) {
+        if (!this.subscriptionExists && event.checked) {
             return this.createSubscription(user)
         }
 
-        // subscription is in place, just toggle between receiving / not receiving updates
-        return this.patchSubscription(user, event.checked)
+        if (this.subscriptionExists) {
+            // subscription is in place, just toggle between receiving / not receiving updates
+            return this.patchSubscription(user, event.checked)
+        }
     }
 
     createSubscription(user: IUser) {
@@ -296,7 +295,9 @@ export class ProfileEditComponent implements OnInit {
     patchSubscription(user: IUser, toggleStatus: boolean) {
         // user.subscriptionsActive = toggleStatus ? 'ACCEPTED' : 'DENIED'
         const { _id } = this.organizationQuery.getValue()
-        user.subscriptions[_id].isSubscribed = this.profileForm.get('isSubscribed').value
+        user.subscriptions[_id].isSubscribed = this.profileForm.get(
+            'isSubscribed',
+        ).value
 
         this.userService
             .patchUserSubscription({
@@ -306,20 +307,24 @@ export class ProfileEditComponent implements OnInit {
             .subscribe(
                 res => {
                     const { subscriptions } = res
-
                     if (!subscriptions[_id].isSubscribed) {
                         return this.admin.openSnackBar(
                             'You have successfully unsubscribed from notifications.',
                             'OK',
                         )
                     }
-
                     return this.admin.openSnackBar(
                         'Successfully subscribed to Notifications.',
                         'OK',
                     )
                 },
-                err => err,
+                err => {
+                    this.admin.openSnackBar(
+                        'Unable to subscribe to Notifications.',
+                        'OK',
+                    )
+                    return err
+                },
             )
     }
 
