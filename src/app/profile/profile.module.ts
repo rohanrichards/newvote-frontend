@@ -10,9 +10,11 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'ng2-file-upload';
 import { SharedModule } from '@app/shared';
+import { ProfileIssueListComponent } from './components/profile-issue-list/profile-issue-list.component';
+import { VoteBarComponent } from './components/vote-bar/vote-bar.component';
 
 @NgModule({
-    declarations: [ProfileEditComponent],
+    declarations: [ProfileEditComponent, ProfileIssueListComponent, VoteBarComponent],
     imports: [
         CommonModule,
         ProfileRoutingModule,
@@ -20,6 +22,7 @@ import { SharedModule } from '@app/shared';
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
+        MaterialFileInputModule,
         SharedModule,
         QuillModule.forRoot({
             modules: {

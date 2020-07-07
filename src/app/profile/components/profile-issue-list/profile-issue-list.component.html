@@ -1,0 +1,35 @@
+<div [style.margin-bottom.rem]="'1'">
+    <mat-list dense>
+        <mat-list-item *ngFor="let issue of issues; let i = index">
+            <img
+                class="pointer"
+                routerLink="/issues/{{ issue.slug || issue._id }}"
+                matListAvatar
+                [src]="issue.imageUrl"
+                alt="Community Avatar"
+            />
+            <h3 matLine>
+                <a class="pointer" routerLink="/issues/{{ issue.slug || issue._id }}">{{
+                    issue.name.length > 40
+                        ? (issue.name | slice: 0:40) + '..'
+                        : issue.name
+                }}</a>
+            </h3>
+            <mat-icon
+                class="pointer"
+                [color]="
+                    issueArray.value.includes(issue._id)
+                        ? 'primary'
+                        : ''
+                "
+                (click)="handleClick(issue, i)"
+                >{{
+                    issueArray.value.includes(issue._id)
+                        ? 'notifications'
+                        : 'notifications_none'
+                }}</mat-icon
+            >
+        </mat-list-item>
+        <mat-divider></mat-divider>
+    </mat-list>
+</div>

@@ -7,7 +7,7 @@ import { MatSelectionListChange } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
 type Subscription = {
-    isSubscribed: boolean;
+    communityUpdates: boolean;
     issues: string[];
 }
 @Component({
@@ -61,7 +61,7 @@ export class IssuePickerComponent implements OnInit {
 
     createFormGroup(value?: Subscription): FormGroup {
         return this.fb.group({
-            isSubscribed: [(value && value.isSubscribed) || false],
+            communityUpdates: [(value && value.communityUpdates) || false],
             issues: this.fb.array((value && value.issues) || [])
         })
     }
