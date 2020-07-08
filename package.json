@@ -91,7 +91,7 @@
     "eslint-plugin-import": "^2.18.2",
     "hads": "^1.7.0",
     "htmlhint": "^0.10.0",
-    "https-proxy-agent": "^2.0.0",
+    "https-proxy-agent": "^2.2.4",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "^4.1.0",
     "karma": "~3.0.0",
