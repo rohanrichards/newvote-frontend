@@ -68,7 +68,6 @@ import { NotificationBellComponent, NotificationPopupDialog } from './notificati
         TranslateModule,
         CommonModule,
         ShareModule,
-        AngularFontAwesomeModule,
         SwiperModule,
         MatBadgeModule,
         ClipboardModule,
