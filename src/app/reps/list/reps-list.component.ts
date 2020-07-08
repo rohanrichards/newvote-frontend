@@ -32,8 +32,8 @@ import { AppState } from '@app/core/models/state.model';
 })
 
 export class RepsListComponent implements OnInit {
-    @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     isLoading: boolean;
     loadingState: any;

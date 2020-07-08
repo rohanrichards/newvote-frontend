@@ -51,10 +51,10 @@ import { AuthenticationQuery } from '@app/core/authentication/authentication.que
     animations: [trigger('fadeIn', fadeIn(':enter'))],
 })
 export class IssueListComponent implements OnInit {
-    @ViewChild('topicInput', { static: false }) topicInput: ElementRef<
+    @ViewChild('topicInput') topicInput: ElementRef<
         HTMLInputElement
     >
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete
+    @ViewChild('auto') matAutocomplete: MatAutocomplete
 
     issues: Array<Issue> = []
     allTopics: Array<Topic> = []

@@ -12,7 +12,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 })
 export class SwiperWrapperComponent {
 
-    @ViewChild(SwiperComponent, { static: false }) componentRef?: SwiperComponent;
+    @ViewChild(SwiperComponent) componentRef?: SwiperComponent;
     @Input() path: string;
     @Input() model: string;
     @Input() items: Array<any>;

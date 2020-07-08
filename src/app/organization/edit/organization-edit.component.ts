@@ -116,10 +116,10 @@ export class OrganizationEditComponent implements OnInit {
         ]
     };
 
-    @ViewChild('ownerInput', { static: false }) ownerInput: ElementRef<HTMLInputElement>;
-    @ViewChild('ownerAuto', { static: false }) ownerAutocomplete: MatAutocomplete;
-    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<HTMLInputElement>;
-    @ViewChild('repInput', { static: false }) repInput: ElementRef<HTMLInputElement>;
+    @ViewChild('ownerInput') ownerInput: ElementRef<HTMLInputElement>;
+    @ViewChild('ownerAuto') ownerAutocomplete: MatAutocomplete;
+    @ViewChild('moderatorInput') moderatorInput: ElementRef<HTMLInputElement>;
+    @ViewChild('repInput') repInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private userService: UserService,

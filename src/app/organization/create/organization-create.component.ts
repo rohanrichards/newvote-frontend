@@ -96,11 +96,11 @@ export class OrganizationCreateComponent implements OnInit {
         ],
     }
 
-    @ViewChild('userInput', { static: false }) userInput: ElementRef<
+    @ViewChild('userInput') userInput: ElementRef<
         HTMLInputElement
     >
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete
-    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<
+    @ViewChild('auto') matAutocomplete: MatAutocomplete
+    @ViewChild('moderatorInput') moderatorInput: ElementRef<
         HTMLInputElement
     >
 

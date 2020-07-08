@@ -2,7 +2,9 @@ import { QueryEntity } from '@datorama/akita'
 import { TopicState, TopicStore } from './topic.store'
 import { Topic } from '@app/core/models/topic.model'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class TopicQuery extends QueryEntity<TopicState, Topic> {
     // topics$ = this.selectAll({
     //     filterBy: (entity) => {

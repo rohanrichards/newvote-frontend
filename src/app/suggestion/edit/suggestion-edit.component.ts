@@ -45,9 +45,9 @@ export class SuggestionEditComponent implements OnInit {
         parentTitle: new FormControl('')
     });
 
-    @ViewChild('parentInput', { static: false }) parentInput: ElementRef<HTMLInputElement>;
+    @ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
     @ViewChild('mediaInput', { static: true }) mediaInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     constructor(
         private suggestionService: SuggestionService,
