@@ -59,8 +59,14 @@ import { NotificationFeedComponent } from './notification-feed/notification-feed
 import { MomentModule } from 'ngx-moment';
 import { IssuePickerComponent } from './issue-picker/issue-picker.component';
 import { NotificationBellComponent, NotificationPopupDialog } from './notification-bell/notification-bell.component';
+
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome'
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons'
+import { faTwitter, faFacebook, faLinkedin, faReddit } from '@fortawesome/free-brands-svg-icons';
+
 @NgModule({
     imports: [
+        FontAwesomeModule,
         FlexLayoutModule,
         MaterialModule,
         FormsModule,
@@ -167,4 +173,8 @@ import { NotificationBellComponent, NotificationPopupDialog } from './notificati
         
     ]
 })
-export class SharedModule { }
+export class SharedModule { 
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faTwitter, faFacebook, faLinkedin, faReddit, faPaperclip);
+    }
+}
