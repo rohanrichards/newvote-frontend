@@ -67,7 +67,6 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
         HomeModule,
         ShareModule,
         InternationalPhoneNumberModule,
-        AngularFontAwesomeModule,
         HttpClientXsrfModule.withOptions({
             cookieName: 'XSRF-TOKEN',
             headerName: 'X-XSRF-TOKEN',
