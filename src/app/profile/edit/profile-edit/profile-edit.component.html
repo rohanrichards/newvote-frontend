@@ -1,6 +1,8 @@
 <app-loader [isLoading]="isLoading"
     size="1.5"></app-loader>
-<div class="container"
+<div 
+    *ngIf="loadingState === 'complete'"
+    class="container"
     fxLayoutAlign="center center">
     <mat-card fxFlex.gt-sm="60"
         fxFlex="100">
@@ -19,29 +21,59 @@
                 </mat-error>
             </mat-form-field>
 
-            <div [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
+            <app-vote-bar
+                [totalVotes]="totalVotes" 
+            ></app-vote-bar>
+
+            <div class="section-top" [style.margin-bottom]="'1rem'">
+                <h4 class="mat-title small-margin">Your Communities</h4>
+                <mat-list>
+                    <mat-list-item *ngFor="let organization of organizations">
+                        <img matListAvatar [src]="organization.iconUrl" alt="Organization Logo">
+                        <p class="community-text" [style.margin-left]="'1rem'" >{{ organization.name }}</p>
+                        <div [style.margin-left]="'auto'">
+                            <button mat-flat-button color="primary" [style.margin-left]="'auto'" (click)="openCommunityUrl(organization.url)">Visit Community</button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+
+            <div class="section-top" [style.margin-bottom]="'0.5rem'" fxLayout="row" fxLayoutAlign="space-between center">
                 <div fxLayout="column" fxLayoutAlign="flex-start flex-start">
-                    <h3 [style.margin-bottom]="'0'" class="mat-subheading-2">Subscriptions</h3>
+                    <h3 [style.margin-bottom]="'0'" class="mat-title">Subscriptions</h3>
                     <p class="mat-small error" *ngIf="!isGranted">Notifications are disabled on this device.</p>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="flex-end flex-end">
                     <mat-icon [style.margin-bottom]="'1rem'" matTooltip="By activating you will be asked by your device if you want to receive notifications from NewVote. You'll be able to customize what issues you'd like to receive updates from and also whether you would like to receive updates from the community as a whole. This can be turned off at any time by deactivating the toggle.">help</mat-icon>
-                    <mat-slide-toggle [disabled]="!isEnabled || disableNotificationSlideToggle" [checked]="subscriptionsActive === 'ACCEPTED' && isGranted" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
+                    <mat-slide-toggle formControlName="isSubscribed" [checked]="profileForm.value.isSubscribed" (change)="handleSubscriptionToggle($event)"></mat-slide-toggle>
                     <!-- <p class="mat-caption">Allow notifications from NewVote</p> -->
                 </div>
-
-                <!-- <button type="button" mat-stroked-button color="warn" (click)="togglePicker()">{{ enablePicker ? 'Unsubscribe from Notifications' : 'Subscribe To Notifications' }}</button> -->
             </div>
 
-           <app-issue-picker
-                *ngIf="isEnabled && isGranted"
-                [parentForm]="profileForm"
-                [user]="userData"
-                [isEnabled]="subscriptionsActive"
-                [organizations]="organizations"
-                [issues]="issuesObj"
-           >
-           </app-issue-picker>
+            <div class="section-container" *ngIf="isEnabled && isGranted && profileForm.value.isSubscribed">
+                <div fxLayout="row">
+                    <p class="mat-subheading-1 text-left" fxFlex>Automatically receive issue updates if I vote on a solution or action connected to an issue</p>
+                    <div fxFlex fxLayoutAlign="end center">
+                        <mat-slide-toggle formControlName="autoUpdates"></mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="section-bottom" fxLayout="row">       
+                    <p class="mat-subheading-1 text-left" fxFlex>{{ organization.name }} Announcements</p>
+                    <div fxFlex fxLayoutAlign="end center">
+                        <mat-slide-toggle formControlName="communityUpdates"></mat-slide-toggle>
+                    </div>
+                </div>
+    
+               <app-profile-issue-list
+                    [parentForm]="profileForm"
+                    [user]="userData"
+                    [isEnabled]="isEnabled"
+                    [organization]="organization"
+                    [issues]="allIssues"
+                    >
+               </app-profile-issue-list>
+            </div>
 
            <button mat-flat-button
             type="submit"

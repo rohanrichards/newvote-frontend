@@ -3,7 +3,10 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable, of, forkJoin } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 import { handleError } from '@app/core/http/errors'
-import { INotification, Notification } from '@app/core/models/notification.model'
+import {
+    INotification,
+    Notification,
+} from '@app/core/models/notification.model'
 import { environment } from '@env/environment'
 import { AdminService } from '../admin/admin.service'
 import { UserService } from '../user/user.service'
@@ -12,60 +15,43 @@ import { Router } from '@angular/router'
 
 @Injectable()
 export class PushService {
-
     constructor(
         private admin: AdminService,
         private userService: UserService,
         private swPush: SwPush,
-        private router: Router
-    ) {
-    }
+        private router: Router,
+    ) {}
 
     subscribeToNotifications(userId: string, parentId?: string) {
-        this.swPush.requestSubscription({
-            serverPublicKey: environment.vapidPublicKey
-        })
+        return this.swPush
+            .requestSubscription({
+                serverPublicKey: environment.vapidPublicKey,
+            })
             .then((subscription: any) => {
+                if (!subscription) {
+                    throw new Error('No Subscription');
+                }
                 // If no parent Id then we are just saving the subscription object
                 if (!parentId) {
-                    return this.createPushNotification(userId, subscription)
-                        .subscribe(
-                            (res) => {
-                                this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
-                            },
-                            (err) => {
-                                this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
-                                return err
-                            }
-                        )
+                    return this.userService
+                        .addPushSubscriber({
+                            id: userId,
+                            subscription,
+                        })
+                        .toPromise()
                 }
 
                 return forkJoin({
-                    user: this.createPushNotification(userId, subscription),
-                    issueSubscription: this.handleIssueSubscription(userId, parentId)
-                })
-                    .subscribe(
-                        (res) => {
-                            this.admin.openSnackBar('Successfully subscribed to Notifications.', 'OK')
-                        },
-                        (err) => {
-                            this.admin.openSnackBar('Unable to subscribe to Notifications.', 'OK')
-                            return err
-                        }
-                    )
+                    user: this.userService.addPushSubscriber({
+                        id: userId,
+                        subscription,
+                    }),
+                    issueSubscription: this.userService.handleIssueSubscription(
+                        { id: userId },
+                        parentId,
+                    ),
+                }).toPromise()
             })
-            .catch((err) => {
-                this.admin.openSnackBar('Browser does not support push notifications.', 'OK')
-                return err
-            })
-    }
-
-    createPushNotification(id: string, subscription: PushSubscription) {
-        return this.userService.addPushSubscriber({ id, subscription })
-    }
-
-    handleIssueSubscription(id: string, parentId: string) {
-        return this.userService.handleIssueSubscription({ id: id }, parentId)
     }
 
     private handleUrl(item: any) {

@@ -9,19 +9,19 @@ import { Observable } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationQuery extends Query<IUser> {
-    isLoggedIn$ = this.select(state => !!state._id);
+    isLoggedIn$ = this.select(state => !!state._id)
     isCommunityVerified$: Observable<any> = combineQueries([
         this.select(),
-        this.organizationQuery.select()
+        this.organizationQuery.select(),
     ]).pipe(
         map(([user, organization]) => {
             return this.isUserPartOfOrganization(user, organization)
-        })
+        }),
     )
 
     constructor(
         protected store: AuthenticationStore,
-        private organizationQuery: OrganizationQuery
+        private organizationQuery: OrganizationQuery,
     ) {
         super(store)
     }
@@ -48,7 +48,10 @@ export class AuthenticationQuery extends Query<IUser> {
         const user = this.getValue()
         const organization = this.organizationQuery.getValue()
 
-        const organizationOwner = (organization.owner && organization.owner._id) && organization.owner._id === user._id
+        const organizationOwner =
+            organization.owner &&
+            organization.owner._id &&
+            organization.owner._id === user._id
         return !!this.getValue().roles.includes('admin') || !!organizationOwner
     }
 
@@ -95,8 +98,8 @@ export class AuthenticationQuery extends Query<IUser> {
 
     isUserPartOfOrganization(user: IUser, organization: IOrganization) {
         const { authType } = organization
-        return authType === 0 ?
-            this.isLocalVerified(user, organization)
+        return authType === 0
+            ? this.isLocalVerified(user, organization)
             : this.isSSOVerified(user, organization)
     }
 
@@ -105,11 +108,20 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     canVerify() {
-        const user = this.getValue();
-        if (!user.verified) return false
-        if (user.roles.includes('guest')) return false
-        if (!user.mobileNumber) return false
+        const {
+            verified = false,
+            roles = [],
+            mobileNumber = '',
+            providerData = {},
+        } = this.getValue()
+        const { authType, url } = this.organizationQuery.getValue()
+        if (!verified) return false
+        if (roles.includes('guest')) return false
+        if (!mobileNumber) return false
 
+        if (authType === 1) {
+            return providerData && providerData[url]
+        }
         return true
     }
 
@@ -119,7 +131,9 @@ export class AuthenticationQuery extends Query<IUser> {
         if (!user.mobileNumber) return false
         if (!user.organizations.length) return false
         return user.organizations.some((userOrganization: any) => {
-            if (typeof userOrganization === 'string') return organization._id === userOrganization
+            if (typeof userOrganization === 'string') {
+                return organization._id === userOrganization
+            }
             return organization._id === userOrganization._id
         })
     }
@@ -131,18 +145,9 @@ export class AuthenticationQuery extends Query<IUser> {
         return providerData && providerData[url]
     }
 
-    doesMobileNumberExist() {
-        const number = this.getValue().mobileNumber
-
-        if (number && number.length) {
-            return true
-        }
-        return false
-    }
-
     isCreator(object?: any): boolean {
-        const user = this.getValue();
-        if (!user || !user._id || !object.user || !object.user._id ) return false
+        const user = this.getValue()
+        if (!user || !user._id || !object.user || !object.user._id) return false
 
         const id = object.user._id || object.user
         if (id === user._id) return true
@@ -151,7 +156,7 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     tourComplete(): boolean {
-        const user = this.getValue();
+        const user = this.getValue()
         return user.completedTour
     }
 }
