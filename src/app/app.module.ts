@@ -24,13 +24,12 @@ import { CloudinaryModule } from '@cloudinary/angular-5.x'
 export const cloudinaryLib = {
     Cloudinary: Cloudinary
 }
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { environment } from '@env/environment'
 import { CoreModule } from '@app/core'
 import { SharedModule } from '@app/shared'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { ShareModule } from '@ngx-share/core'
-import { AngularFontAwesomeModule } from 'angular-font-awesome'
 import { HomeModule } from './home/home.module'
 import { ShellModule } from './shell/shell.module'
 import { AppComponent } from './app.component'
@@ -55,6 +54,7 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
         BrowserModule,
         ServiceWorkerModule.register('./my-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
         FormsModule,
+        FontAwesomeModule,
         ReactiveFormsModule,
         HttpClientModule,
         HttpClientJsonpModule,

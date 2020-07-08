@@ -2,7 +2,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { FileUploader, FileUploaderOptions, FileItem } from 'ng2-file-upload'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { MatAutocomplete, MatSnackBarConfig, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatSnackBarConfig, MatSnackBar } from '@angular/material/snack-bar';
 import { finalize, startWith, map } from 'rxjs/operators'
 import { IRep, Rep } from '@app/core/models/rep.model'
 import { Observable, forkJoin } from 'rxjs'

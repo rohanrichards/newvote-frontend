@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { finalize, take, map } from 'rxjs/operators'
 import { Router, ActivatedRoute } from '@angular/router'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SolutionService } from '@app/core/http/solution/solution.service'

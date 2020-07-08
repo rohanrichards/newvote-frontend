@@ -9,7 +9,6 @@ import { ClipboardModule } from 'ngx-clipboard'
 import { MaterialModule } from '@app/material.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ShareModule } from '@ngx-share/core'
-import { AngularFontAwesomeModule } from 'angular-font-awesome'
 
 import { QuillModule } from 'ngx-quill'
 import { MinimalQuillSettings } from '@app/shared/quill/quill.settings'

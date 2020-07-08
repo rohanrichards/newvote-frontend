@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { finalize, take, map } from 'rxjs/operators'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'

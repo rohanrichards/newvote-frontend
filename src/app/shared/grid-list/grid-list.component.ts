@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core'
-import { MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { Router } from '@angular/router'

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { VoteMetaData } from '@app/core/http/vote/vote.store'
 import { AuthenticationQuery } from '@app/core/authentication/authentication.query'
 import { IVote } from '@app/core/models/vote.model'

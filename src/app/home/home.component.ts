@@ -18,7 +18,7 @@ import { forkJoin } from 'rxjs'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
 import { JoyrideService } from 'ngx-joyride'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { JoyRideSteps } from '@app/shared/helpers/joyrideSteps'
 import { IssueQuery } from '@app/core/http/issue/issue.query'

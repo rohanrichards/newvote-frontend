@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormControl } from '@angular/forms'
-import { MatAutocomplete } from '@angular/material'
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import { Observable, of } from 'rxjs'
 import { switchMap, debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
 
