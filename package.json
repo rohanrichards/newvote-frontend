@@ -22,19 +22,19 @@
     "generate": "ng generate"
   },
   "dependencies": {
-    "@angular/animations": "^9.1.11",
+    "@angular/animations": "^10.0.2",
     "@angular/cdk": "^9.2.4",
-    "@angular/common": "^9.1.11",
-    "@angular/compiler": "^9.1.11",
-    "@angular/core": "^9.1.11",
+    "@angular/common": "^10.0.2",
+    "@angular/compiler": "^10.0.2",
+    "@angular/core": "^10.0.2",
     "@angular/flex-layout": "8.0.0-beta.27",
-    "@angular/forms": "^9.1.11",
+    "@angular/forms": "^10.0.2",
     "@angular/http": "^7.2.16",
     "@angular/material": "^9.2.4",
-    "@angular/platform-browser": "^9.1.11",
-    "@angular/platform-browser-dynamic": "^9.1.11",
-    "@angular/router": "^9.1.11",
-    "@angular/service-worker": "^9.1.11",
+    "@angular/platform-browser": "^10.0.2",
+    "@angular/platform-browser-dynamic": "^10.0.2",
+    "@angular/router": "^10.0.2",
+    "@angular/service-worker": "^10.0.2",
     "@auth0/angular-jwt": "^2.0.0",
     "@cloudinary/angular-5.x": "^1.0.2",
     "@datorama/akita": "^4.10.2",
@@ -75,8 +75,8 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.10",
     "@angular/cli": "~9.1.10",
-    "@angular/compiler-cli": "^9.1.11",
-    "@angular/language-service": "^9.1.11",
+    "@angular/compiler-cli": "^10.0.2",
+    "@angular/language-service": "^10.0.2",
     "@biesbjerg/ngx-translate-extract": "^2.3.4",
     "@datorama/akita-ngdevtools": "^3.0.2",
     "@ngx-rocket/scripts": "^3.0.0",
@@ -109,7 +109,7 @@
     "stylelint-config-standard": "~18.2.0",
     "stylelint-scss": "~3.3.0",
     "ts-node": "~8.3.0",
-    "typescript": "^3.7.4"
+    "typescript": "^3.9.6"
   },
   "akitaCli": {
     "customFolderName": "true",
