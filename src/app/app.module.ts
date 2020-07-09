@@ -77,7 +77,7 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
             cookieName: 'XSRF-TOKEN',
             headerName: 'X-XSRF-TOKEN',
         }),
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+        Angulartics2Module.forRoot(),
         CloudinaryModule.forRoot(cloudinaryLib, {
             cloud_name: 'newvote',
             upload_preset: 'qhf7z3qa',

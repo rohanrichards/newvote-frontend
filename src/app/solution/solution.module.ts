@@ -21,7 +21,7 @@ import { IssueService } from '@app/core/http/issue/issue.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { SharedModule } from '@app/shared'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 import { JoyrideModule } from 'ngx-joyride'
 
 @NgModule({
@@ -38,9 +38,8 @@ import { JoyrideModule } from 'ngx-joyride'
         FileUploadModule,
         SolutionRoutingModule,
         JoyrideModule.forChild(),
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
+
     ],
     declarations: [
         SolutionListComponent,

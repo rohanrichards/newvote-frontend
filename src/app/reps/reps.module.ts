@@ -11,7 +11,7 @@ import { QuillModule } from 'ngx-quill';
 import { QuillSettings } from '@app/shared/quill/quill.settings';
 import { RepsListComponent } from './list/reps-list.component';
 import { RepsViewComponent } from './view/reps-view.component';
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image';
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image';
 import { RepsEditComponent } from './edit/reps-edit.component';
 import { RepsCreateComponent } from './create/reps-create.component';
 import { FileUploadModule } from 'ng2-file-upload';
@@ -35,9 +35,7 @@ import { RepService } from '@app/core/http/rep/rep.service';
         MaterialModule,
         MaterialFileInputModule,
         QuillModule.forRoot(QuillSettings),
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        }),
+        LazyLoadImageModule.forRoot(ScrollHooks),
         FileUploadModule
     ],
     providers: [

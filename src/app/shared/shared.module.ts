@@ -35,7 +35,7 @@ import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-me
 import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component'
 import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { SortBarComponent } from './sort-bar/sort-bar.component'
@@ -80,9 +80,7 @@ import { faTwitter, faFacebook, faLinkedin, faReddit } from '@fortawesome/free-b
         RouterModule,
         MomentModule,
         QuillModule.forRoot(MinimalQuillSettings),
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
     ],
     declarations: [
         LoaderComponent,

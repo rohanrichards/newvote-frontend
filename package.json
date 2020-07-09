@@ -47,6 +47,7 @@
     "@ionic-native/status-bar": "^5.12.0",
     "@ngx-share/core": "^7.1.2",
     "@ngx-translate/core": "^10.0.1",
+    "@types/quill": "^1.3.10",
     "angulartics2": "^9.1.0",
     "chart.js": "^2.7.3",
     "cloudinary-core": "^2.10.2",
