@@ -7,7 +7,7 @@ import {
     HttpClientJsonpModule,
     HttpClientXsrfModule,
 } from '@angular/common/http'
-import { ServiceWorkerModule } from '@angular/service-worker'
+import { ServiceWorkerModule, SwRegistrationOptions } from '@angular/service-worker'
 import { TranslateModule } from '@ngx-translate/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from './material.module'
@@ -56,10 +56,7 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
     imports: [
         ScrollingModule,
         BrowserModule,
-        ServiceWorkerModule.register('./my-worker.js', {
-            enabled: environment.production,
-            registrationStrategy: 'registerImmediately',
-        }),
+        ServiceWorkerModule.register('./my-worker.js'),
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -110,6 +107,13 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
             provide: SWIPER_CONFIG,
             useValue: DEFAULT_SWIPER_CONFIG,
         },
+        {
+            provide: SwRegistrationOptions,
+            useFactory: () => ({
+                enabled: environment.production,
+                registrationStrategy: 'registerImmediately',
+            })
+        }
     ],
     bootstrap: [AppComponent],
 })
