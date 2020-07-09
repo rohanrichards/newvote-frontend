@@ -178,6 +178,31 @@ export class EntityVotesQuery {
             )
     }
 
+    getUsersSuggestions() {
+        return combineQueries([
+            this.suggestions.getUsersSuggestions(),
+            this.votes.selectAll({ asObject: true }),
+        ]).pipe(
+            map(([suggestions, votes]) => {
+                return suggestions.slice().map((suggestion: ISuggestion) => {
+                    return Object.assign({}, suggestion, {
+                        votes: votes[suggestion._id]
+                    })
+                })
+            }),
+            mergeMap((suggestions: ISuggestion[]) => {
+                return combineQueries([
+                    this.suggestions.selectFilter$,
+                    this.suggestions.selectOrder$
+                ]).pipe(
+                    map(([filter, order]) => {
+                        return this.suggestions.sortSuggestions(filter, order, suggestions)
+                    })
+                )
+            })
+        )
+    }
+
     // Issue: Nested entities do not have the latest vote data
     // breaks nested vote buttons on template
 

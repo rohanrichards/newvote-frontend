@@ -21,4 +21,4 @@ platformBrowserDynamic().bootstrapModule(AppModule)
             navigator.serviceWorker.register('my-worker.js')
         }
     })
-    .catch(err => console.log(err))
+    .catch(err => err)

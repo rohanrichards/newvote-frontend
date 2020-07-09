@@ -127,7 +127,10 @@ export class UserService {
             .post(routes.subscribe(context), context.subscription)
             .pipe(
                 catchError(e => handleError(e)),
-                map((res: any) => res),
+                tap((subscriptions: any) => {
+                    this.store.update({ subscriptions: subscriptions })
+                }),
+                map((res: any) => res)
             )
     }
 
@@ -143,20 +146,24 @@ export class UserService {
     //         )
     // }
 
+    // Updates the profile level subscription to notifications - 
+    // i.e Allows ALL / Blocks ALL notifications
+
     patchUserSubscription(context: UserContext) {
         return this.httpClient
             .patch(routes.patchSubscription(context), context.entity)
             .pipe(
                 catchError(e => handleError(e)),
-                tap((res: any) =>
+                tap((res: any) => {
                     this.store.update({
-                        subscriptionsActive: res.subscriptionsActive,
-                    }),
-                ),
+                        subscriptions: res.subscriptions,
+                    })
+                }),
                 map((res: any) => res),
             )
     }
 
+    // Takes a solution/action and subscribes a user to the entities parent issue
     handleIssueSubscription(context: UserContext, issueId: string) {
         return this.httpClient
             .put(routes.issueSubscription(context), { issueId })

@@ -1,0 +1,13 @@
+::ng-deep {
+  .mat-list-avatar {
+    border-radius: 5px !important;
+  }
+
+  .mat-divider-horizontal {
+    position: static !important;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}

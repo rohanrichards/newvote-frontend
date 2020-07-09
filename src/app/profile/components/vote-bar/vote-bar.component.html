@@ -1,0 +1,14 @@
+<div *ngIf="totalVotes && totalVotes.entities" class="vote-bar-container">
+    <h4 class="mat-subheading-2">Voting Progress</h4>
+    <div class="vote-bar">
+        <div class="vote-overlay" fxLayout="row" fxLayoutAlign="space-between center">
+            <p>{{ votedFor() }}%</p>
+            <p>{{ votedAgainst() }}%</p>
+        </div>
+
+        <div class="voted-for"
+            [style.width.%]="votedFor()">
+        </div>
+    </div>
+    <p class="vote-bar-caption"><small class="mat-caption">You have voted on {{ totalVotes.votes }} of a possible {{ totalVotes.entities }} solutions and actions</small></p>
+</div>

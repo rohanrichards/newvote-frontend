@@ -155,7 +155,6 @@ export class NavbarComponent implements OnInit {
         const userId = this.authQuery.getValue()._id;
         const { authType, url } = this.orgQuery.getValue()
         const canVerify = this.authQuery.canVerify()
-
         if (authType === 0) {
             if (!canVerify) {
                 return this.router.navigate(['/auth/verify'], {
@@ -180,6 +179,7 @@ export class NavbarComponent implements OnInit {
         }
 
         if (authType === 1) {
+
             if (!canVerify) {
                 return this.router.navigate(['/auth/login'], {
                     replaceUrl: true,
