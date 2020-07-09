@@ -6,8 +6,11 @@
     "types": []
   },
   "angularCompilerOptions": {
-    "preserveWhitespaces": true
-  },
+    "preserveWhitespaces": true,
+    "enableIvy": true,
+    "allowEmptyCodegenFiles": true
+  }
+,
   "files": [
     "main.ts",
     "polyfills.ts"
