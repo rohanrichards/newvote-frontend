@@ -57,7 +57,7 @@
                         (vote)="onVote($event, 'Suggestion')">
                     </app-vote-buttons>
                 </div>
-                <div *ngIf="auth.isOwner() && suggestion.status === 1"
+                <div *ngIf="authQuery.isOwner() && suggestion.status === 1"
                     [style.margin-bottom]="'1rem'">
                     <h4 class="mat-headline">Convert Suggestion to Type</h4>
                     <p class="mat-body">You will be redirected to a create page,
