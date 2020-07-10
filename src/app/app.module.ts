@@ -110,8 +110,7 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
         {
             provide: SwRegistrationOptions,
             useFactory: () => ({
-                enabled: environment.production,
-                registrationStrategy: 'registerImmediately',
+                enabled: environment.production
             })
         }
     ],
