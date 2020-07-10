@@ -84,6 +84,10 @@ export class HomeComponent implements OnInit {
         this.subscribeToProposalStore()
         this.subscribeToSolutionStore()
         this.fetchData()
+
+        setTimeout(() => {
+            console.log('Home Setimeout Version 2.0')
+        }, 5000)
     }
 
     fetchData() {

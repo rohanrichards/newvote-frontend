@@ -15,6 +15,8 @@ import { filter, observeOn } from 'rxjs/operators'
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay'
 import { ScrollService } from '@app/core/scroll/scroll.service'
 import { I18nService, AuthenticationService } from '@app/core'
+import { UpdateService } from '@app/core/http/update.service'
+import { SwUpdate } from '@angular/service-worker'
 
 interface ScrollPositionRestore {
     event: Event;
@@ -50,7 +52,7 @@ export class ShellComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private media: MediaObserver
+        private media: MediaObserver,
     ) {
         // Subscribe to the route data from service,
         // Due to outlet not reusing routes, multiple instances of the scroll handlers are listened

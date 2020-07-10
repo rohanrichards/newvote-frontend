@@ -15,6 +15,7 @@ export class UpdateService {
         // App checks CDN for updated versions of the app
         // If found a notification is sent to the user
         if (this.swUpdate.isEnabled) {
+            swUpdate.checkForUpdate()
             interval(60 * 60 * 1000).subscribe(() => {
                 return swUpdate.checkForUpdate()
             })
