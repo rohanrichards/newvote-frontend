@@ -1,8 +1,7 @@
 import { Injectable, ApplicationRef } from '@angular/core'
 import { SwUpdate } from '@angular/service-worker'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { first, mergeMap, concatAll, tap, switchMap } from 'rxjs/operators'
-import { interval, concat, of, scheduled, combineLatest } from 'rxjs'
+import { interval } from 'rxjs'
 
 @Injectable()
 export class UpdateService {
