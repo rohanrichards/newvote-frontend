@@ -15,7 +15,7 @@ export class UpdateService {
         // If found a notification is sent to the user
         if (this.swUpdate.isEnabled) {
             swUpdate.checkForUpdate()
-            interval(60 * 60 * 1000).subscribe(() => {
+            interval(60 * 1000).subscribe(() => {
                 return swUpdate.checkForUpdate()
             })
         }
