@@ -36,7 +36,10 @@ export class ProfileEditComponent implements OnInit {
     userData: IUser
     profileForm: FormGroup = new FormGroup({
         displayName: new FormControl(''),
-        isSubscribed: new FormControl({value: false, disabled: false }, Validators.required),
+        isSubscribed: new FormControl(
+            { value: false, disabled: false },
+            Validators.required,
+        ),
         autoUpdates: new FormControl(false),
         communityUpdates: new FormControl(false),
     })
@@ -120,6 +123,8 @@ export class ProfileEditComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.isServiceWorkerDisabled()
+
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
@@ -152,8 +157,7 @@ export class ProfileEditComponent implements OnInit {
                 }
                 this.subscriptionExists = true
                 // can't access Notification object on the template, so if notifications are 'denied' disable the slide toggle
-                this.disableNotificationSlideToggle =
-                    Notification.permission === 'denied' || !navigator.serviceWorker.controller
+                this.isServiceWorkerDisabled();
 
                 this.isGranted = Notification.permission === 'granted'
             },
@@ -162,6 +166,7 @@ export class ProfileEditComponent implements OnInit {
     }
 
     setFormValues(user: any) {
+        this.profileForm.get('isSubscribed').disable()
         this.profileForm.get('displayName').patchValue(user.displayName || '')
         const { _id } = this.organizationQuery.getValue()
 
@@ -173,24 +178,29 @@ export class ProfileEditComponent implements OnInit {
             autoUpdates = false,
         } = user.subscriptions[_id]
 
-        navigator.serviceWorker.getRegistration().then((reg) => {
+        navigator.serviceWorker.getRegistration().then(reg => {
             // There's an active SW, but no controller for this tab.
             if (reg.active && !navigator.serviceWorker.controller) {
                 // Perform a soft reload to load everything from the SW and get
                 // a consistent set of resources.
                 // window.location.reload();
                 this.disableNotificationSlideToggle = true
- 
+
                 if (this.disableNotificationSlideToggle) {
                     this.profileForm.get('isSubscribed').disable()
                 }
 
+                return false
             }
-        });
+            this.profileForm.get('isSubscribed').enable()
+        })
 
         this.profileForm.patchValue({
             communityUpdates,
-            isSubscribed: isSubscribed && this.isGranted && !this.disableNotificationSlideToggle,
+            isSubscribed:
+                isSubscribed &&
+                this.isGranted &&
+                !this.disableNotificationSlideToggle,
             autoUpdates,
         })
     }
@@ -352,5 +362,11 @@ export class ProfileEditComponent implements OnInit {
 
         const newHostName = splitHostname.join('.')
         window.location.href = `http://${newHostName}:${window.location.port}`
+    }
+
+    private isServiceWorkerDisabled() {
+        return (this.disableNotificationSlideToggle =
+            Notification.permission === 'denied' ||
+            !navigator.serviceWorker.controller)
     }
 }
