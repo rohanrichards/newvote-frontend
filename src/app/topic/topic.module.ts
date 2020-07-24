@@ -20,7 +20,7 @@ import { TopicService } from '@app/core/http/topic/topic.service'
 import { IssueService } from '@app/core/http/issue/issue.service'
 import { SharedModule } from '@app/shared'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 
 @NgModule({
     imports: [
@@ -35,9 +35,7 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
         QuillModule.forRoot(QuillSettings),
         FileUploadModule,
         TopicRoutingModule,
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
     ],
     declarations: [
         TopicListComponent,

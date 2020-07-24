@@ -9,7 +9,6 @@ import { ClipboardModule } from 'ngx-clipboard'
 import { MaterialModule } from '@app/material.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ShareModule } from '@ngx-share/core'
-import { AngularFontAwesomeModule } from 'angular-font-awesome'
 
 import { QuillModule } from 'ngx-quill'
 import { MinimalQuillSettings } from '@app/shared/quill/quill.settings'
@@ -36,7 +35,7 @@ import { SkeletonMediaCardComponent } from './skeleton/skeleton-card/skeleton-me
 import { SkeletonCardComponent } from './skeleton/skeleton-card/skeleton-card.component'
 import { SkeletonPanelComponent } from './skeleton/skeleton-panel/skeleton-panel.component'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 import { ErrorCardComponent } from './error/error-card/error-card.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { SortBarComponent } from './sort-bar/sort-bar.component'
@@ -60,8 +59,14 @@ import { NotificationFeedComponent } from './notification-feed/notification-feed
 import { MomentModule } from 'ngx-moment';
 import { IssuePickerComponent } from './issue-picker/issue-picker.component';
 import { NotificationBellComponent, NotificationPopupDialog } from './notification-bell/notification-bell.component';
+
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome'
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons'
+import { faTwitter, faFacebook, faLinkedin, faReddit } from '@fortawesome/free-brands-svg-icons';
+
 @NgModule({
     imports: [
+        FontAwesomeModule,
         FlexLayoutModule,
         MaterialModule,
         FormsModule,
@@ -69,16 +74,13 @@ import { NotificationBellComponent, NotificationPopupDialog } from './notificati
         TranslateModule,
         CommonModule,
         ShareModule,
-        AngularFontAwesomeModule,
         SwiperModule,
         MatBadgeModule,
         ClipboardModule,
         RouterModule,
         MomentModule,
         QuillModule.forRoot(MinimalQuillSettings),
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
     ],
     declarations: [
         LoaderComponent,
@@ -169,4 +171,8 @@ import { NotificationBellComponent, NotificationPopupDialog } from './notificati
         
     ]
 })
-export class SharedModule { }
+export class SharedModule { 
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faTwitter, faFacebook, faLinkedin, faReddit, faPaperclip);
+    }
+}

@@ -6,7 +6,8 @@ import { ProposalService } from '../proposal/proposal.service'
 import { MediaService } from '../media/media.service'
 import { OrganizationService } from '../organization/organization.service'
 import { assign } from 'lodash'
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material'
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { Issue, IIssue } from '@app/core/models/issue.model'
 import { Media, IMedia } from '@app/core/models/media.model'

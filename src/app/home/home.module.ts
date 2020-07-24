@@ -14,7 +14,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service'
 import { ProposalService } from '@app/core/http/proposal/proposal.service'
 import { UserService } from '@app/core/http/user/user.service'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 import { JoyrideModule } from 'ngx-joyride';
 import { HomeInfoPanelComponent } from './components/home-info-panel/home-info-panel.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -31,9 +31,7 @@ import { IssuesPanelComponent } from './components/issues-panel/issues-panel.com
         Angulartics2Module,
         HomeRoutingModule,
         JoyrideModule.forChild(),
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
     ],
     declarations: [
         HomeComponent,

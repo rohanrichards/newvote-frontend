@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { IUser } from '@app/core/models/user.model';
 import { IOrganization } from '@app/core/models/organization.model';
 import { IIssue } from '@app/core/models/issue.model';
-import { MatSelectionListChange } from '@angular/material';
+import { MatSelectionListChange } from '@angular/material/list';
 import { SelectionModel } from '@angular/cdk/collections';
 
 type Subscription = {

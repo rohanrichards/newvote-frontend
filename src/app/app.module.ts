@@ -2,7 +2,11 @@ import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
-import { HttpClientModule, HttpClientJsonpModule, HttpClientXsrfModule } from '@angular/common/http'
+import {
+    HttpClientModule,
+    HttpClientJsonpModule,
+    HttpClientXsrfModule,
+} from '@angular/common/http'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { TranslateModule } from '@ngx-translate/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -16,13 +20,13 @@ import { SwiperConfigInterface } from 'ngx-swiper-wrapper'
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
     direction: 'horizontal',
     slidesPerView: 3,
-    centeredSlides: false
+    centeredSlides: false,
 }
 
 import { Cloudinary } from 'cloudinary-core'
 import { CloudinaryModule } from '@cloudinary/angular-5.x'
 export const cloudinaryLib = {
-    Cloudinary: Cloudinary
+    Cloudinary: Cloudinary,
 }
 
 import { environment } from '@env/environment'
@@ -30,7 +34,6 @@ import { CoreModule } from '@app/core'
 import { SharedModule } from '@app/shared'
 import { ConfirmDialogComponent } from '@app/shared/confirm-dialog/confirm-dialog.component'
 import { ShareModule } from '@ngx-share/core'
-import { AngularFontAwesomeModule } from 'angular-font-awesome'
 import { HomeModule } from './home/home.module'
 import { ShellModule } from './shell/shell.module'
 import { AppComponent } from './app.component'
@@ -45,15 +48,18 @@ import { SocketIoModule } from 'ngx-socket-io'
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number'
 import { NgxCaptchaModule } from 'ngx-captcha'
 import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
-import { MomentModule } from 'ngx-moment';
-import { ProfileModule } from './profile/profile.module';
+import { MomentModule } from 'ngx-moment'
+import { ProfileModule } from './profile/profile.module'
 import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
 
 @NgModule({
     imports: [
         ScrollingModule,
         BrowserModule,
-        ServiceWorkerModule.register('./my-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
+        ServiceWorkerModule.register('./my-worker.js', {
+            enabled: environment.production,
+            registrationStrategy: 'registerImmediately',
+        }),
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -67,13 +73,15 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
         HomeModule,
         ShareModule,
         InternationalPhoneNumberModule,
-        AngularFontAwesomeModule,
         HttpClientXsrfModule.withOptions({
             cookieName: 'XSRF-TOKEN',
             headerName: 'X-XSRF-TOKEN',
         }),
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-        CloudinaryModule.forRoot(cloudinaryLib, { cloud_name: 'newvote', upload_preset: 'qhf7z3qa' }),
+        Angulartics2Module.forRoot(),
+        CloudinaryModule.forRoot(cloudinaryLib, {
+            cloud_name: 'newvote',
+            upload_preset: 'qhf7z3qa',
+        }),
         SwiperModule,
         LazyLoadImageModule,
         JoyrideModule.forRoot(),
@@ -82,29 +90,27 @@ import { NotificationPopupDialog } from './shared/notification-bell/notification
         SocketIoModule.forRoot({
             url: environment.socketUrl,
             options: {
-                transports: ['websocket']
-            }
+                transports: ['websocket'],
+            },
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
         MomentModule,
         AppRoutingModule,
         ProfileModule,
     ],
-    declarations: [
-        AppComponent
-    ],
+    declarations: [AppComponent],
     entryComponents: [
         ConfirmDialogComponent,
         RepModalComponent,
-        NotificationPopupDialog
+        NotificationPopupDialog,
     ],
     providers: [
         CookieService,
         {
             provide: SWIPER_CONFIG,
-            useValue: DEFAULT_SWIPER_CONFIG
-        }
+            useValue: DEFAULT_SWIPER_CONFIG,
+        },
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

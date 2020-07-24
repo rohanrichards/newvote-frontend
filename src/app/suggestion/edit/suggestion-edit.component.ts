@@ -1,7 +1,8 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-import { MatAutocomplete, MatSnackBar } from '@angular/material'
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { finalize } from 'rxjs/operators'
@@ -45,9 +46,9 @@ export class SuggestionEditComponent implements OnInit {
         parentTitle: new FormControl('')
     });
 
-    @ViewChild('parentInput', { static: false }) parentInput: ElementRef<HTMLInputElement>;
+    @ViewChild('parentInput') parentInput: ElementRef<HTMLInputElement>;
     @ViewChild('mediaInput', { static: true }) mediaInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     constructor(
         private suggestionService: SuggestionService,

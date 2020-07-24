@@ -8,7 +8,7 @@ import { MediaObserver } from '@angular/flex-layout'
 
 import { OrganizationService } from '@app/core/http/organization/organization.service'
 import { MetaService } from '@app/core/meta.service'
-import { MatSidenavContainer } from '@angular/material'
+import { MatSidenavContainer } from '@angular/material/sidenav';
 
 import { asyncScheduler } from 'rxjs'
 import { filter, observeOn } from 'rxjs/operators'

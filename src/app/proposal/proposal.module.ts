@@ -21,7 +21,7 @@ import { SolutionService } from '@app/core/http/solution/solution.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { SharedModule } from '@app/shared'
 
-import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-image'
+import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 
 @NgModule({
     imports: [
@@ -36,9 +36,8 @@ import { LazyLoadImageModule, intersectionObserverPreset } from 'ng-lazyload-ima
         QuillModule.forRoot(QuillSettings),
         FileUploadModule,
         ProposalRoutingModule,
-        LazyLoadImageModule.forRoot({
-            preset: intersectionObserverPreset
-        })
+        LazyLoadImageModule.forRoot(ScrollHooks)
+
     ],
     declarations: [
         ProposalListComponent,

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormControl } from '@angular/forms'
-import { MatAutocomplete } from '@angular/material'
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import { Observable, of } from 'rxjs'
 import { switchMap, debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
 
@@ -21,8 +21,8 @@ export class SearchBarComponent implements OnInit {
     @Output() isVisibleChange = new EventEmitter<boolean>();
     @Output() closeSearch = new EventEmitter();
 
-    @ViewChild('searchInputElement', { static: false }) searchInputElement: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('searchInputElement') searchInputElement: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     searchInputControl = new FormControl('', []);
     public searchResults$: Observable<any>;
