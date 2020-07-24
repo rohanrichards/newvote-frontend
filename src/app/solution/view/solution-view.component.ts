@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take, tap } from 'rxjs/operators'
-import { MatDialog } from '@angular/material'
-import { MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SolutionService } from '@app/core/http/solution/solution.service'
 import { VoteService } from '@app/core/http/vote/vote.service'

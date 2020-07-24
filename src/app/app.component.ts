@@ -11,6 +11,7 @@ import { Logger, I18nService, OrganizationService } from '@app/core'
 import { Organization } from './core/models/organization.model'
 import { MetaService } from './core/meta.service'
 import { DataFetchService } from './core/http/data/data-fetch.service'
+import { UpdateService } from './core/http/update.service'
 
 const log = new Logger('App')
 
@@ -32,9 +33,12 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private dataFetch: DataFetchService) { }
+        private dataFetch: DataFetchService,
+        private updateService: UpdateService) { }
 
     ngOnInit() {
+
+        this.updateService.checkForUpdates();
         // Setup logger
         if (environment.production) {
             Logger.enableProductionMode()

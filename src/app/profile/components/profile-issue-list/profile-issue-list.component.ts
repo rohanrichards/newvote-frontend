@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core'
 import { IOrganization, Organization } from '@app/core/models/organization.model'
 import { IUser } from '@app/core/models/user.model';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
-import { MatSelectionListChange } from '@angular/material';
+import { MatSelectionListChange } from '@angular/material/list';
 import { IIssue } from '@app/core/models/issue.model';
 
 

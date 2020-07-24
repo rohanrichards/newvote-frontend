@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core'
 import { PlatformLocation, Location, DOCUMENT } from '@angular/common'
-
 import { ShareService } from '@ngx-share/core'
 
 @Component({

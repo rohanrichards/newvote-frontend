@@ -9,7 +9,8 @@ import { AdminService } from '@app/core/http/admin/admin.service';
 import { Solution } from '@app/core/models/solution.model';
 import { Issue } from '@app/core/models/issue.model';
 import { Suggestion } from '@app/core/models/suggestion.model';
-import { MatDialogRef, MatDialog, MatAutocomplete } from '@angular/material';
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { RepModalComponent } from '@app/shared/rep-modal/rep-modal.component';
 import { Rep } from '@app/core/models/rep.model';
 import { RepService } from '@app/core/http/rep/rep.service';
@@ -32,8 +33,8 @@ import { AppState } from '@app/core/models/state.model';
 })
 
 export class RepsListComponent implements OnInit {
-    @ViewChild('tagInput', { static: false }) tagInput: ElementRef<HTMLInputElement>;
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+    @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
+    @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     isLoading: boolean;
     loadingState: any;

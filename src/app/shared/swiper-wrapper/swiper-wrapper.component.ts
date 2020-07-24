@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core'
-import { MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
 import { SwiperComponent, SwiperConfigInterface, SwiperPaginationInterface } from 'ngx-swiper-wrapper'
 
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
@@ -12,7 +12,7 @@ import { VotesQuery } from '@app/core/http/vote/vote.query'
 })
 export class SwiperWrapperComponent {
 
-    @ViewChild(SwiperComponent, { static: false }) componentRef?: SwiperComponent;
+    @ViewChild(SwiperComponent) componentRef?: SwiperComponent;
     @Input() path: string;
     @Input() model: string;
     @Input() items: Array<any>;

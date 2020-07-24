@@ -2,7 +2,9 @@ import { QueryEntity } from '@datorama/akita'
 import { MediaState, MediaStore } from './media.store'
 import { Issue } from '@app/core/models/issue.model'
 import { Media } from '@app/core/models/media.model'
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class MediaQuery extends QueryEntity<MediaState> {
     constructor(protected store: MediaStore) {
         super(store)

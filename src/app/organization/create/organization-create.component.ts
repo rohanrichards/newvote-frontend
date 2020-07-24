@@ -1,10 +1,7 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes'
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core'
-import {
-    MatAutocomplete,
-    MatSnackBar,
-    MatSnackBarConfig,
-} from '@angular/material'
+import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload'
@@ -96,11 +93,11 @@ export class OrganizationCreateComponent implements OnInit {
         ],
     }
 
-    @ViewChild('userInput', { static: false }) userInput: ElementRef<
+    @ViewChild('userInput') userInput: ElementRef<
         HTMLInputElement
     >
-    @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete
-    @ViewChild('moderatorInput', { static: false }) moderatorInput: ElementRef<
+    @ViewChild('auto') matAutocomplete: MatAutocomplete
+    @ViewChild('moderatorInput') moderatorInput: ElementRef<
         HTMLInputElement
     >
 

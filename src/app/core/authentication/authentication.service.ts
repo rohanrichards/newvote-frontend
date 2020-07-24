@@ -21,7 +21,6 @@ export interface Credentials {
 export interface LoginContext {
     username: string
     password: string
-
     remember?: boolean
     organizations?: [Organization]
 }
@@ -132,10 +131,7 @@ export class AuthenticationService {
             .post<Credentials>(routes.signup(verificationCode), context)
             .pipe(
                 tap(res => this.authenticationStore.update(res.user)),
-                map(res => {
-                    // this.setCredentials(res, context.remember)
-                    return res
-                }),
+                map(res => res),
             )
     }
 

@@ -40,8 +40,14 @@ import { ProposalQuery } from './http/proposal/proposal.query'
 import { ProposalStore } from './http/proposal/proposal.store'
 import { MediaService } from './http/media/media.service'
 import { AdminService } from './http/admin/admin.service'
-import { OrganizationQuery, CommunityQuery } from './http/organization/organization.query'
-import { OrganizationStore, CommunityStore } from './http/organization/organization.store'
+import {
+    OrganizationQuery,
+    CommunityQuery,
+} from './http/organization/organization.query'
+import {
+    OrganizationStore,
+    CommunityStore,
+} from './http/organization/organization.store'
 import { MediaStore } from './http/media/media.store'
 import { MediaQuery } from './http/media/media.query'
 import { AuthenticationQuery } from './authentication/authentication.query'
@@ -62,9 +68,12 @@ import { NotificationService } from './http/notifications/notification.service'
 import { NotificationStore } from './http/notifications/notification.store'
 import { NotificationQuery } from './http/notifications/notification.query'
 import { PushService } from './http/push/push.service'
+import { UpdateService } from './http/update.service'
 
 export function tokenGetter() {
-    const savedCredentials = sessionStorage.getItem('credentials') || localStorage.getItem('credentials')
+    const savedCredentials =
+        sessionStorage.getItem('credentials') ||
+        localStorage.getItem('credentials')
     if (savedCredentials) {
         const credentialsObject = JSON.parse(savedCredentials)
         return credentialsObject.token
@@ -81,10 +90,14 @@ export function tokenGetter() {
         JwtModule.forRoot({
             config: {
                 tokenGetter: tokenGetter,
-                whitelistedDomains: ['api.newvote.org', 'newvote-staging.herokuapp.com', 'api.staging.newvote.org']
-            }
+                allowedDomains: [
+                    'api.newvote.org',
+                    'newvote-staging.herokuapp.com',
+                    'api.staging.newvote.org',
+                ],
+            },
         }),
-        RouterModule
+        RouterModule,
     ],
     providers: [
         AuthenticationService,
@@ -146,23 +159,24 @@ export function tokenGetter() {
         NotificationService,
         NotificationStore,
         NotificationQuery,
+        UpdateService,
         {
             provide: HttpClient,
-            useClass: HttpService
+            useClass: HttpService,
         },
         {
             provide: RouteReuseStrategy,
-            useClass: RouteReusableStrategy
-        }
-    ]
+            useClass: RouteReusableStrategy,
+        },
+    ],
 })
 export class CoreModule {
-
     constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
         // Import guard
         if (parentModule) {
-            throw new Error(`${parentModule} has already been loaded. Import Core module in the AppModule only.`)
+            throw new Error(
+                `${parentModule} has already been loaded. Import Core module in the AppModule only.`,
+            )
         }
     }
-
 }

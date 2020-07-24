@@ -10,6 +10,7 @@ const initialState = {
 }
 
 Injectable()
+@Injectable()
 @StoreConfig({ name: 'proposals', idKey: '_id' })
 export class ProposalStore extends EntityStore<ProposalState, Proposal> {
     constructor() {

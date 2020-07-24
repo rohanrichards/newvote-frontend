@@ -4,7 +4,7 @@ import { AuthenticationService } from '@app/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { MetaService } from '@app/core/meta.service'
-import { MatSidenav } from '@angular/material'
+import { MatSidenav } from '@angular/material/sidenav';
 import { MediaObserver } from '@angular/flex-layout'
 import { map, take, delay } from 'rxjs/operators'
 import { Location } from '@angular/common'

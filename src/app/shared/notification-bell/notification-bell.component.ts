@@ -6,7 +6,7 @@ import { UserService } from '@app/core/http/user/user.service'
 import { PushService } from '@app/core/http/push/push.service'
 import { IUser } from '@app/core/models/user.model'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { DialogData } from '../confirm-dialog/confirm-dialog.component'
 
 @Component({

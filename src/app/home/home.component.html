@@ -244,55 +244,7 @@
 		(done)="onDone()"
 		[issues]="issues"
 		>
-	</app-issues-panel>
-	<!-- <div *ngSwitchCase="'complete'"
-		joyrideStep="step3"
-		[title]="stepsArray[2].title"
-		[stepContent]="customContent"
-		stepPosition="center"
-		(done)="onDone()"
-		[@fadeIn]=true
-		class="hot-issues-container container text-center"
-		fxLayoutAlign="center center">
-		<div
-			fxFlex.gt-sm="690px"
-			fxFlex.gt-md="800px"
-		 	>
-			<h2 class="mat-h2">What's Hot?</h2>
-			<ng-container 
-				*ngIf="issues.length < 1; then noIssues; else issuesExist">
-			</ng-container>
-		</div>
-	</div>
-
-	<ng-template #noIssues>
-		<h3 class="mat-h3">Currently there are no issues for this Organization</h3>
-		<div *ngIf="auth.isOwner() || auth.isAdmin()">
-			<p>Start engaging your community and create issues.</p>
-			<button mat-button
-			 color="primary"
-			 routerLink="/issues/create">
-				Create Issue
-			</button>
-		</div>
-	</ng-template>
-	<ng-template #issuesExist>
-		<app-grid-list 
-            *ngIf="issues"
-            path="/issues"
-            model="Issue"
-            [itemLimit]="ISSUE_LIMIT"
-            [titleCard]=true
-            [items]=issues
-            (restore)="admin.onRestore($event, 'Issue')"
-            (delete)="admin.onDelete($event, 'Issue')"
-            (softDelete)="admin.onSoftDelete($event, 'Issue')"></app-grid-list>
-		<div>
-			<button mat-button
-			 routerLink="/issues">
-				SEE ALL ></button>
-		</div>
-	</ng-template> -->
+    </app-issues-panel>
 </ng-container>
 
 <ng-container [ngSwitch]="loadingState">
