@@ -8,6 +8,7 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CookieService } from 'ngx-cookie-service'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 
 const log = new Logger('Login')
 
@@ -32,12 +33,13 @@ export class LoginComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private meta: MetaService,
         private organizationService: OrganizationService,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private organizationQuery: OrganizationQuery
     ) {
         this.createForm()
-        this.organizationService.get().subscribe(org => {
-            this.org = org
-        })
+        // this.organizationService.get().subscribe(org => {
+        //     this.org = org
+        // })
     }
 
     ngOnInit() {
@@ -48,6 +50,12 @@ export class LoginComponent implements OnInit {
             })
 
         this.adminLogin = !!this.route.snapshot.queryParamMap.get('admin')
+
+        this.organizationQuery.select(state => {
+            if (!state) return false
+            console.log(state, 'this is state')
+            this.org = state
+        })
     }
 
     login() {
@@ -89,8 +97,9 @@ export class LoginComponent implements OnInit {
 
     loginWithSSO() {
         let url
+        const { url: orgUrl } = this.organizationQuery.getValue()
 
-        this.cookieService.set('orgUrl', this.org.url, null, '/', '.newvote.org')
+        this.cookieService.set('orgUrl', orgUrl, null, '/', '.newvote.org')
         if (this.org.authEntityId) {
             url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
         } else {
