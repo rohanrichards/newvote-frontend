@@ -108,6 +108,7 @@ export class LoginComponent implements OnInit {
     loginWithSSO() {
         let url
 
+        const { url: orgUrl } = this.organizationQuery.getValue()
         this.cookieService.set('orgUrl', orgUrl, null, '/', '.newvote.org', true, 'None')
         if (this.org.authEntityId) {
             url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
