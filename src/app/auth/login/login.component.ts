@@ -8,6 +8,9 @@ import { environment } from '@env/environment'
 import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CookieService } from 'ngx-cookie-service'
+import { OrganizationQuery } from '@app/core/http/organization/organization.query'
+import { StateService } from '@app/core/http/state/state.service'
+import { AppState } from '@app/core/models/state.model'
 
 const log = new Logger('Login')
 
@@ -24,6 +27,7 @@ export class LoginComponent implements OnInit {
     isLoading = false;
     org: Organization;
     adminLogin: boolean;
+    loadingState = ''
 
     constructor(private router: Router,
         private route: ActivatedRoute,
@@ -32,7 +36,9 @@ export class LoginComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private meta: MetaService,
         private organizationService: OrganizationService,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private organizationQuery: OrganizationQuery,
+        private stateService: StateService
     ) {
         this.createForm()
         this.organizationService.get().subscribe(org => {
@@ -48,7 +54,19 @@ export class LoginComponent implements OnInit {
             })
 
         this.adminLogin = !!this.route.snapshot.queryParamMap.get('admin')
-    }
+        
+        this.stateService.loadingState$.subscribe((state: string) => {
+            this.loadingState = state
+        })
+
+        this.stateService.setLoadingState(AppState.loading)
+
+        this.organizationQuery.select()
+            .subscribe((res) => {
+                this.org = res
+                this.stateService.setLoadingState(AppState.complete)
+            })
+    }   
 
     login() {
         this.isLoading = true
@@ -90,7 +108,8 @@ export class LoginComponent implements OnInit {
     loginWithSSO() {
         let url
 
-        this.cookieService.set('orgUrl', this.org.url, null, '/', '.newvote.org')
+        const { url: orgUrl } = this.organizationQuery.getValue()
+        this.cookieService.set('orgUrl', orgUrl, null, '/', '.newvote.org', true, 'None')
         if (this.org.authEntityId) {
             url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
         } else {

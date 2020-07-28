@@ -1,6 +1,7 @@
 <app-loader class="inline-loader"
     [isLoading]="isLoading"></app-loader>
 <div fxFill
+    *ngIf="loadingState === 'complete'"
     fxLayout="column"
     fxLayoutAlign="center center"
     fxLayoutGap="1.5rem"
