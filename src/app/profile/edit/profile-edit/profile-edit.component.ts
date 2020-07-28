@@ -123,14 +123,29 @@ export class ProfileEditComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isServiceWorkerDisabled()
+
+        if (navigator && navigator.serviceWorker) {
+            navigator.serviceWorker.getRegistration().then((reg) => {
+                console.log(reg, 'this is reg')
+                // There's an active SW, but no controller for this tab.
+                if (reg.active && !navigator.serviceWorker.controller) {
+                    // Perform a soft reload to load everything from the SW and get
+                    // a consistent set of resources.
+                    // window.location.reload();
+                    this.isServiceWorkerDisabled()
+                    return false
+                }
+            })
+        } else {
+            this.isServiceWorkerDisabled()
+        }
 
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
         this.stateService.setLoadingState(AppState.loading)
 
-        this.auth.select().subscribe(res => {
+        this.auth.select().subscribe((res) => {
             if (!res) return false
             this.userData = res
             this.setFormValues(res)
@@ -139,34 +154,39 @@ export class ProfileEditComponent implements OnInit {
             this.subscribeToIssues()
             this.subscribeToCommunities()
             this.subscribeToIssues()
-            this.organizationQuery.select().subscribe(res => {
-                if (!res) return false
-                this.organization = res
+            this.organizationQuery.select().subscribe((data) => {
+                if (!data) return false
+                this.organization = data
+                this.isServiceWorkerDisabled()
                 this.stateService.setLoadingState(AppState.complete)
             })
-            this.voteService.getTotalVotes().subscribe(res => {
+            this.voteService.getTotalVotes().subscribe((res) => {
                 this.totalVotes = res
             })
+            
         })
 
         this.swPush.subscription.subscribe(
-            res => {
+            (res) => {
                 if (!res) {
                     this.subscriptionExists = false
                     return false
                 }
+                console.log(res, 'this is subscription')
                 this.subscriptionExists = true
                 // can't access Notification object on the template, so if notifications are 'denied' disable the slide toggle
-                this.isServiceWorkerDisabled();
+                this.isServiceWorkerDisabled()
 
                 this.isGranted = Notification.permission === 'granted'
             },
-            err => err,
+            (err) => {
+                console.log(err, 'swPush subscription error')
+                return err
+            },
         )
     }
 
     setFormValues(user: any) {
-        this.profileForm.get('isSubscribed').disable()
         this.profileForm.get('displayName').patchValue(user.displayName || '')
         const { _id } = this.organizationQuery.getValue()
 
@@ -177,23 +197,6 @@ export class ProfileEditComponent implements OnInit {
             isSubscribed = false,
             autoUpdates = false,
         } = user.subscriptions[_id]
-
-        navigator.serviceWorker.getRegistration().then(reg => {
-            // There's an active SW, but no controller for this tab.
-            if (reg.active && !navigator.serviceWorker.controller) {
-                // Perform a soft reload to load everything from the SW and get
-                // a consistent set of resources.
-                // window.location.reload();
-                this.disableNotificationSlideToggle = true
-
-                if (this.disableNotificationSlideToggle) {
-                    this.profileForm.get('isSubscribed').disable()
-                }
-
-                return false
-            }
-            this.profileForm.get('isSubscribed').enable()
-        })
 
         this.profileForm.patchValue({
             communityUpdates,
@@ -217,7 +220,10 @@ export class ProfileEditComponent implements OnInit {
                     showPrivate: isModerator ? 'true' : '',
                 },
             })
-            .subscribe(res => res, err => err)
+            .subscribe(
+                (res) => res,
+                (err) => err,
+            )
     }
 
     fetchOrganizations() {
@@ -231,7 +237,10 @@ export class ProfileEditComponent implements OnInit {
                     showPrivate: isAdmin ? 'true' : '',
                 },
             })
-            .subscribe(res => res, err => err)
+            .subscribe(
+                (res) => res,
+                (err) => err,
+            )
     }
 
     subscribeToIssues() {
@@ -248,7 +257,7 @@ export class ProfileEditComponent implements OnInit {
 
     subscribeToCommunities() {
         const userCommunities = this.auth.getValue().organizations
-        this.communityQuery.selectMany(userCommunities).subscribe(res => {
+        this.communityQuery.selectMany(userCommunities).subscribe((res) => {
             if (!res.length) return false
             this.organizations = res
         })
@@ -269,7 +278,7 @@ export class ProfileEditComponent implements OnInit {
                     this.admin.openSnackBar('Succesfully updated', 'OK')
                     this.router.navigate(['/'])
                 },
-                error =>
+                (error) =>
                     this.admin.openSnackBar(
                         `Something went wrong: ${error.status} - ${error.statusText}`,
                         'OK',
@@ -279,6 +288,15 @@ export class ProfileEditComponent implements OnInit {
 
     handleSubscriptionToggle(event: any) {
         const user = cloneDeep(this.auth.getValue())
+        console.log(this.swPush.isEnabled, 'this is enabled')
+        console.log(Notification.permission, 'this is permission')
+
+        if (Notification.permission === 'denied') {
+            console.log('PERMISSION DENIED')
+            return false;
+        }
+
+
         if (!this.isEnabled) {
             return this.admin.openSnackBar(
                 'Browser does not support push notifications.',
@@ -288,10 +306,12 @@ export class ProfileEditComponent implements OnInit {
 
         // If there is no subscription currently attempt to create one
         if (!this.subscriptionExists && event.checked) {
+            console.log('sub does not exist')
             return this.createSubscription(user)
         }
 
         if (this.subscriptionExists) {
+            console.log('sub exists')
             // subscription is in place, just toggle between receiving / not receiving updates
             return this.patchSubscription(user, event.checked)
         }
@@ -300,13 +320,14 @@ export class ProfileEditComponent implements OnInit {
     createSubscription(user: IUser) {
         return this.pushService
             .subscribeToNotifications(user._id)
-            .then(data => {
+            .then((data) => {
                 this.admin.openSnackBar(
                     'Successfully subscribed to Notifications.',
                     'OK',
                 )
             })
-            .catch(err => {
+            .catch((err) => {
+                console.log(err, 'this is err')
                 this.profileForm.get('isSubscribed').patchValue(false)
                 this.admin.openSnackBar(
                     'Unable to subscribe to Notifications.',
@@ -331,7 +352,7 @@ export class ProfileEditComponent implements OnInit {
                 entity: user,
             })
             .subscribe(
-                res => {
+                (res) => {
                     const { subscriptions } = res
                     if (!subscriptions[_id].isSubscribed) {
                         return this.admin.openSnackBar(
@@ -344,7 +365,8 @@ export class ProfileEditComponent implements OnInit {
                         'OK',
                     )
                 },
-                err => {
+                (err) => {
+                    console.log(err, 'this is err on patchSubscription')
                     this.admin.openSnackBar(
                         'Unable to subscribe to Notifications.',
                         'OK',
@@ -365,8 +387,28 @@ export class ProfileEditComponent implements OnInit {
     }
 
     private isServiceWorkerDisabled() {
-        return (this.disableNotificationSlideToggle =
-            Notification.permission === 'denied' ||
-            !navigator.serviceWorker.controller)
+
+        console.log(Notification.permission, 'notification permission')
+        console.log(this.swPush.isEnabled, 'swPush isEnabled')
+        if (!navigator || !navigator.serviceWorker || !navigator.serviceWorker.controller) {
+            this.disableNotificationSlideToggle = true
+            this.profileForm.get('isSubscribed').disable()
+            return false
+        }
+
+        if (Notification.permission === 'denied') {
+            this.disableNotificationSlideToggle = true
+            this.profileForm.get('isSubscribed').disable()
+            return false
+        }
+
+        if (!this.swPush.isEnabled) {
+            this.disableNotificationSlideToggle = true
+            this.profileForm.get('isSubscribed').disable()
+            return false
+        }
+
+        this.disableNotificationSlideToggle = false
+        this.profileForm.get('isSubscribed').enable()
     }
 }

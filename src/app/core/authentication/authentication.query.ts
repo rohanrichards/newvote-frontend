@@ -104,7 +104,11 @@ export class AuthenticationQuery extends Query<IUser> {
     }
 
     isUserVerified() {
-        return toBoolean(this.getValue().verified)
+        const user = this.getValue();
+        const organization = this.organizationQuery.getValue()
+
+        return this.isUserPartOfOrganization(user, organization)
+        // return toBoolean(this.getValue().verified)
     }
 
     canVerify() {
