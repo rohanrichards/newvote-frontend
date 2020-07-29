@@ -126,7 +126,6 @@ export class ProfileEditComponent implements OnInit {
 
         if (navigator && navigator.serviceWorker) {
             navigator.serviceWorker.getRegistration().then((reg) => {
-                console.log(reg, 'this is reg')
                 // There's an active SW, but no controller for this tab.
                 if (reg.active && !navigator.serviceWorker.controller) {
                     // Perform a soft reload to load everything from the SW and get
@@ -172,7 +171,6 @@ export class ProfileEditComponent implements OnInit {
                     this.subscriptionExists = false
                     return false
                 }
-                console.log(res, 'this is subscription')
                 this.subscriptionExists = true
                 // can't access Notification object on the template, so if notifications are 'denied' disable the slide toggle
                 this.isServiceWorkerDisabled()
@@ -180,7 +178,6 @@ export class ProfileEditComponent implements OnInit {
                 this.isGranted = Notification.permission === 'granted'
             },
             (err) => {
-                console.log(err, 'swPush subscription error')
                 return err
             },
         )
@@ -288,14 +285,10 @@ export class ProfileEditComponent implements OnInit {
 
     handleSubscriptionToggle(event: any) {
         const user = cloneDeep(this.auth.getValue())
-        console.log(this.swPush.isEnabled, 'this is enabled')
-        console.log(Notification.permission, 'this is permission')
 
         if (Notification.permission === 'denied') {
-            console.log('PERMISSION DENIED')
             return false;
         }
-
 
         if (!this.isEnabled) {
             return this.admin.openSnackBar(
@@ -306,12 +299,10 @@ export class ProfileEditComponent implements OnInit {
 
         // If there is no subscription currently attempt to create one
         if (!this.subscriptionExists && event.checked) {
-            console.log('sub does not exist')
             return this.createSubscription(user)
         }
 
         if (this.subscriptionExists) {
-            console.log('sub exists')
             // subscription is in place, just toggle between receiving / not receiving updates
             return this.patchSubscription(user, event.checked)
         }
@@ -327,7 +318,6 @@ export class ProfileEditComponent implements OnInit {
                 )
             })
             .catch((err) => {
-                console.log(err, 'this is err')
                 this.profileForm.get('isSubscribed').patchValue(false)
                 this.admin.openSnackBar(
                     'Unable to subscribe to Notifications.',
@@ -366,7 +356,6 @@ export class ProfileEditComponent implements OnInit {
                     )
                 },
                 (err) => {
-                    console.log(err, 'this is err on patchSubscription')
                     this.admin.openSnackBar(
                         'Unable to subscribe to Notifications.',
                         'OK',
@@ -387,9 +376,6 @@ export class ProfileEditComponent implements OnInit {
     }
 
     private isServiceWorkerDisabled() {
-
-        console.log(Notification.permission, 'notification permission')
-        console.log(this.swPush.isEnabled, 'swPush isEnabled')
         if (!navigator || !navigator.serviceWorker || !navigator.serviceWorker.controller) {
             this.disableNotificationSlideToggle = true
             this.profileForm.get('isSubscribed').disable()

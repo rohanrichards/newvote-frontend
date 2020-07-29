@@ -29,8 +29,6 @@ export class UpdateService {
 
         // // const everySixHours$ = interval(6 * 60 * 60 * 1000)
         // appIsStable$.subscribe((counter) => {
-        //     console.log(counter, 'this is counter')
-        //     console.log('app is stable and checking update')
         //     this.swUpdate.checkForUpdate()
         // })
     }
@@ -58,7 +56,6 @@ export class UpdateService {
     }
 
     updateToLatest() {
-        console.log('Updating to latest version.')
         this.swUpdate.activateUpdate().then(() => document.location.reload())
     }
 }

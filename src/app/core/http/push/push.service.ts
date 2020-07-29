@@ -28,7 +28,6 @@ export class PushService {
                 serverPublicKey: environment.vapidPublicKey,
             })
             .then((subscription: any) => {
-                console.log(subscription, 'this is subscription')
                 if (!subscription) {
                     throw new Error('No Subscription');
                 }
