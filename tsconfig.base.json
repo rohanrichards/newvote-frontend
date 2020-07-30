@@ -1,27 +1,25 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "module": "es2020",
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "es6",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "baseUrl": "src",
-    "paths": {
-      "@app/*": ["app/*"],
-      "@env/*": ["environments/*"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "commonjs",
+        "typeRoots": ["node_modules/@types"],
+        "lib": ["es2018", "dom"],
+        "baseUrl": "src",
+        "paths": {
+            "@config/*": ["app/config/*"],
+            "@env/*": ["environments/*"],
+            "@shared/*": ["app/shared/*"],
+            "@helpers/*": ["helpers/*"],
+            "@app/*": ["app/*"]
+        }
     }
-  }
 }

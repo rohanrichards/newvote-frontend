@@ -51,10 +51,13 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 import { MomentModule } from 'ngx-moment'
 import { ProfileModule } from './profile/profile.module'
 import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
+import { RouterModule } from '@angular/router'
+
 
 @NgModule({
     imports: [
         ScrollingModule,
+        RouterModule,
         BrowserModule,
         ServiceWorkerModule.register('./my-worker.js'),
         FormsModule,

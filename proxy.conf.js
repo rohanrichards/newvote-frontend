@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const HttpsProxyAgent = require('https-proxy-agent');
+const HttpsProxyAgent = require('https-proxy-agent')
 
 /*
  * API proxy configuration.
@@ -9,32 +9,34 @@ const HttpsProxyAgent = require('https-proxy-agent');
  * For more details and options, see https://github.com/angular/angular-cli#proxy-to-backend
  */
 const proxyConfig = [
-  {
-    context: '/api',
-    target: 'http://localhost:3000',
-    changeOrigin: true,
-    secure: false
-  }
-];
+    {
+        context: '/api',
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+    },
+]
 
 /*
  * Configures a corporate proxy agent for the API proxy if needed.
  */
 function setupForCorporateProxy(proxyConfig) {
-  if (!Array.isArray(proxyConfig)) {
-    proxyConfig = [proxyConfig];
-  }
+    if (!Array.isArray(proxyConfig)) {
+        proxyConfig = [proxyConfig]
+    }
 
-  const proxyServer = process.env.http_proxy || process.env.HTTP_PROXY;
-  let agent = null;
+    const proxyServer = process.env.http_proxy || process.env.HTTP_PROXY
+    let agent = null
 
-  if (proxyServer) {
-    console.log(`Using corporate proxy server: ${proxyServer}`);
-    agent = new HttpsProxyAgent(proxyServer);
-    proxyConfig.forEach(entry => { entry.agent = agent; });
-  }
+    if (proxyServer) {
+        console.log(`Using corporate proxy server: ${proxyServer}`)
+        agent = new HttpsProxyAgent(proxyServer)
+        proxyConfig.forEach((entry) => {
+            entry.agent = agent
+        })
+    }
 
-  return proxyConfig;
+    return proxyConfig
 }
 
-module.exports = setupForCorporateProxy(proxyConfig);
+module.exports = setupForCorporateProxy(proxyConfig)

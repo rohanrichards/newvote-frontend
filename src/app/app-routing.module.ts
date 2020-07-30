@@ -6,7 +6,6 @@ import { Landing } from '@app/landing/landing.service'
 const routes: Routes = [
     Shell.childRoutes([
         { path: 'auth', loadChildren: () => import('app/auth/auth.module').then(m => m.AuthModule) },
-        { path: 'about', loadChildren: () => import('app/about/about.module').then(m => m.AboutModule) },
         { path: 'topics', loadChildren: () => import('app/topic/topic.module').then(m => m.TopicModule) },
         { path: 'issues', loadChildren: () => import('app/issue/issue.module').then(m => m.IssueModule) },
         { path: 'solutions', loadChildren: () => import('app/solution/solution.module').then(m => m.SolutionModule) },
