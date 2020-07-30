@@ -51,7 +51,9 @@ import { RepModalComponent } from './shared/rep-modal/rep-modal.component'
 import { MomentModule } from 'ngx-moment'
 import { ProfileModule } from './profile/profile.module'
 import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
-import { RouterModule } from '@angular/router'
+import { RouterModule } from '@angular/router';
+import { OnboardingComponent } from './onboarding/onboarding.component';
+import { OnboardingModule } from './onboarding/onboarding.module'
 
 
 @NgModule({
@@ -97,8 +99,9 @@ import { RouterModule } from '@angular/router'
         MomentModule,
         AppRoutingModule,
         ProfileModule,
+        OnboardingModule,
     ],
-    declarations: [AppComponent],
+    declarations: [AppComponent, OnboardingComponent],
     entryComponents: [
         ConfirmDialogComponent,
         RepModalComponent,

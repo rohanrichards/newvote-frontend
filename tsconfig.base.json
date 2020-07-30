@@ -16,6 +16,7 @@
         "baseUrl": "src",
         "paths": {
             "@config/*": ["app/config/*"],
+            "@assets/*": ["assets/*"],
             "@env/*": ["environments/*"],
             "@shared/*": ["app/shared/*"],
             "@helpers/*": ["helpers/*"],

@@ -1,0 +1,19 @@
+<div>
+    <img [src]="logo" class="logo" />
+    <a href="#">Download our PDF</a>
+    <mat-horizontal-stepper [linear]="true" #stepper>
+        <mat-step>
+            <h4 class="mat-subheading2">Create an online space for your community to make decisions.</h4>
+            <button mat-button matStepperNext>Next</button>
+        </mat-step>
+        <mat-step>
+            <h4>Crown source suggestions, actions and solutions from Your community.</h4>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+        </mat-step>
+        <mat-step>
+            <h4>Create an online democracy by making a community.</h4>
+            <button mat-button matStepperPrevious>Back</button>
+        </mat-step>
+      </mat-horizontal-stepper>
+</div>

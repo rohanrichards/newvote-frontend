@@ -14,7 +14,8 @@ const routes: Routes = [
         { path: 'media', loadChildren: () => import('app/media/media.module').then(m => m.MediaModule) },
         { path: 'communities', loadChildren: () => import('app/organization/organization.module').then(m => m.OrganizationModule) },
         { path: 'reps', loadChildren: () => import('app/reps/reps.module').then(m => m.RepsModule) },
-        { path: 'profile', loadChildren: () => import('app/profile/profile.module').then(m => m.ProfileModule) }
+        { path: 'profile', loadChildren: () => import('app/profile/profile.module').then(m => m.ProfileModule)},
+        { path: 'onboarding', loadChildren: () => import('app/onboarding/onboarding.module').then((m) => m.OnboardingModule) },
     ]),
     Landing.childRoutes([
         { path: 'landing', loadChildren: () => import('app/communities/communities.module').then(m => m.CommunitiesModule) },
