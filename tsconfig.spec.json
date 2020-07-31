@@ -3,6 +3,8 @@
     "compilerOptions": {
         "outDir": "./out-tsc/spec",
         "types": ["jest", "node"],
+        "target": "es2015",
+        "module": "commonjs",
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
         "experimentalDecorators": true

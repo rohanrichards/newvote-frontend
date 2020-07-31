@@ -52,10 +52,20 @@ import { MomentModule } from 'ngx-moment'
 import { ProfileModule } from './profile/profile.module'
 import { NotificationPopupDialog } from './shared/notification-bell/notification-bell.component'
 import { RouterModule } from '@angular/router';
-import { OnboardingComponent } from './onboarding/onboarding.component';
-import { OnboardingModule } from './onboarding/onboarding.module'
+import { JwtModule } from '@auth0/angular-jwt'
+// import { OnboardingModule } from './onboarding/onboarding.module'
 
-
+export function tokenGetter() {
+    const savedCredentials =
+        sessionStorage.getItem('credentials') ||
+        localStorage.getItem('credentials')
+    if (savedCredentials) {
+        const credentialsObject = JSON.parse(savedCredentials)
+        return credentialsObject.token
+    } else {
+        return null
+    }
+}
 @NgModule({
     imports: [
         ScrollingModule,
@@ -72,8 +82,8 @@ import { OnboardingModule } from './onboarding/onboarding.module'
         CoreModule,
         SharedModule,
         ShellModule,
-        HomeModule,
         ShareModule,
+        MomentModule,
         InternationalPhoneNumberModule,
         HttpClientXsrfModule.withOptions({
             cookieName: 'XSRF-TOKEN',
@@ -89,6 +99,16 @@ import { OnboardingModule } from './onboarding/onboarding.module'
         JoyrideModule.forRoot(),
         LandingModule,
         NgxCaptchaModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                allowedDomains: [
+                    'api.newvote.org',
+                    'newvote-staging.herokuapp.com',
+                    'api.staging.newvote.org',
+                ],
+            },
+        }),
         SocketIoModule.forRoot({
             url: environment.socketUrl,
             options: {
@@ -96,12 +116,9 @@ import { OnboardingModule } from './onboarding/onboarding.module'
             },
         }),
         environment.production ? [] : AkitaNgDevtools.forRoot(),
-        MomentModule,
         AppRoutingModule,
-        ProfileModule,
-        OnboardingModule,
     ],
-    declarations: [AppComponent, OnboardingComponent],
+    declarations: [AppComponent],
     entryComponents: [
         ConfirmDialogComponent,
         RepModalComponent,

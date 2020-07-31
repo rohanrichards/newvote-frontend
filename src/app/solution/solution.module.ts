@@ -48,9 +48,7 @@ import { JoyrideModule } from 'ngx-joyride'
         SolutionEditComponent
     ],
     providers: [
-        SolutionService,
-        VoteService,
-        IssueService
+
     ]
 })
 export class SolutionModule { }

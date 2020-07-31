@@ -24,7 +24,6 @@ import { IssuesPanelComponent } from './components/issues-panel/issues-panel.com
     imports: [
         CommonModule,
         TranslateModule,
-        CoreModule,
         SharedModule,
         FlexLayoutModule,
         MaterialModule,

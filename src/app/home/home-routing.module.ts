@@ -6,10 +6,8 @@ import { HomeComponent } from './home.component'
 import { Shell } from '@app/shell/shell.service'
 
 const routes: Routes = [
-    Shell.childRoutes([
-        { path: 'home', redirectTo: '', pathMatch: 'full' },
-        { path: '', component: HomeComponent, data: { title: extract('NewVote') } }
-    ])
+    { path: 'home', redirectTo: '', pathMatch: 'full' },
+    { path: '', component: HomeComponent, data: { title: extract('NewVote') } }
 ]
 
 @NgModule({

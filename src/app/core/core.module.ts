@@ -69,34 +69,15 @@ import { NotificationStore } from './http/notifications/notification.store'
 import { NotificationQuery } from './http/notifications/notification.query'
 import { PushService } from './http/push/push.service'
 import { UpdateService } from './http/update.service'
-
-export function tokenGetter() {
-    const savedCredentials =
-        sessionStorage.getItem('credentials') ||
-        localStorage.getItem('credentials')
-    if (savedCredentials) {
-        const credentialsObject = JSON.parse(savedCredentials)
-        return credentialsObject.token
-    } else {
-        return null
-    }
-}
+import { SolutionService } from './http/solution/solution.service'
+import { ProposalService } from './http/proposal/proposal.service'
+import { UserService } from './http/user/user.service'
 
 @NgModule({
     imports: [
         CommonModule,
         HttpClientModule,
         TranslateModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: tokenGetter,
-                allowedDomains: [
-                    'api.newvote.org',
-                    'newvote-staging.herokuapp.com',
-                    'api.staging.newvote.org',
-                ],
-            },
-        }),
         RouterModule,
     ],
     providers: [
@@ -149,6 +130,9 @@ export function tokenGetter() {
         RepStore,
         RepService,
         PushService,
+        SolutionService,
+        ProposalService,
+        UserService,
         DataFetchService,
         AllEntityQuery,
         AllEntityStore,
