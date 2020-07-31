@@ -70,13 +70,13 @@ const routes: Routes = [
                     (m) => m.ProfileModule,
                 ),
         },
-        // {
-        //     path: 'onboarding',
-        //     loadChildren: () =>
-        //         import('app/onboarding/onboarding.module').then(
-        //             (m) => m.OnboardingModule,
-        //         ),
-        // },
+        {
+            path: 'onboarding',
+            loadChildren: () =>
+                import('app/onboarding/onboarding.module').then(
+                    (m) => m.OnboardingModule,
+                ),
+        },
     ]),
     Landing.childRoutes([
         {

@@ -6,6 +6,7 @@ import { LazyLoadImageModule, ScrollHooks } from 'ng-lazyload-image'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { OnboardingComponent } from './onboarding.component'
 import { MatStepperModule } from '@angular/material/stepper'
+import { OnboardingRoutingModule } from './onboarding-routing.module'
 
 @NgModule({
     imports: [
@@ -15,6 +16,7 @@ import { MatStepperModule } from '@angular/material/stepper'
         MatStepperModule,
         MaterialModule,
         LazyLoadImageModule.forRoot(ScrollHooks),
+        OnboardingRoutingModule
     ],
     exports: [],
     declarations: [OnboardingComponent],
