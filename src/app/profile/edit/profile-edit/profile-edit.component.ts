@@ -126,6 +126,10 @@ export class ProfileEditComponent implements OnInit {
 
         if (navigator && navigator.serviceWorker) {
             navigator.serviceWorker.getRegistration().then((reg) => {
+
+                if (!reg || !reg.active) {
+                    return false
+                }
                 // There's an active SW, but no controller for this tab.
                 if (reg.active && !navigator.serviceWorker.controller) {
                     // Perform a soft reload to load everything from the SW and get
@@ -135,8 +139,6 @@ export class ProfileEditComponent implements OnInit {
                     return false
                 }
             })
-        } else {
-            this.isServiceWorkerDisabled()
         }
 
         this.stateService.loadingState$.subscribe((state: string) => {
@@ -156,13 +158,11 @@ export class ProfileEditComponent implements OnInit {
             this.organizationQuery.select().subscribe((data) => {
                 if (!data) return false
                 this.organization = data
-                this.isServiceWorkerDisabled()
                 this.stateService.setLoadingState(AppState.complete)
             })
             this.voteService.getTotalVotes().subscribe((res) => {
                 this.totalVotes = res
             })
-            
         })
 
         this.swPush.subscription.subscribe(
