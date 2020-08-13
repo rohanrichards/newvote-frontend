@@ -99,7 +99,9 @@ export class AuthenticationService {
      */
     login(context: LoginContext): Observable<IUser> {
         return this.httpClient.post<IUser>(routes.signin(), context).pipe(
-            tap(res => this.authenticationStore.update(res)),
+            tap((res: any) => {
+                this.authenticationStore.update(res.user)
+            }),
             map(res => {
                 // this.setCredentials(res, context.remember)
                 return res
@@ -110,7 +112,9 @@ export class AuthenticationService {
     checkStatus(): Observable<Credentials> {
         return this.httpClient.get<Credentials>(routes.checkAuth()).pipe(
             catchError(handleError),
-            tap((res: any) => this.authenticationStore.update(res)),
+            tap((res: any) => {
+                this.authenticationStore.update(res)
+            }),
             map(res => {
                 return res
             }),

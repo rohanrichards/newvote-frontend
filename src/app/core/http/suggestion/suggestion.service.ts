@@ -100,6 +100,10 @@ export class SuggestionService {
         this.voteService.populateStore(serverData)
     }
 
+    updateSuggestionVote(id: string, suggestion: any) {
+        this.suggestionStore.update(id, suggestion)
+    }
+
     updateFilter(filter: string) {
         this.suggestionStore.update({ filter })
     }

@@ -1,35 +1,47 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-import { finalize } from 'rxjs/operators'
+import { finalize, take } from 'rxjs/operators'
 import { MetaService } from '@app/core/meta.service'
 
 import { environment } from '@env/environment'
-import { Logger, I18nService, AuthenticationService, OrganizationService } from '@app/core'
+import {
+    Logger,
+    I18nService,
+    AuthenticationService,
+    OrganizationService,
+} from '@app/core'
 import { Organization } from '@app/core/models/organization.model'
 import { CookieService } from 'ngx-cookie-service'
 import { OrganizationQuery } from '@app/core/http/organization/organization.query'
 import { StateService } from '@app/core/http/state/state.service'
 import { AppState } from '@app/core/models/state.model'
+import { VotesQuery } from '@app/core/http/vote/vote.query'
+import { SolutionService } from '@app/core/http/solution/solution.service'
+import { ProposalService } from '@app/core/http/proposal/proposal.service'
+import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
+import { VoteService } from '@app/core/http/vote/vote.service'
+import { VoteMetaData, UserVoteData } from '@app/core/http/vote/vote.store'
+import { IUser } from '@app/core/models/user.model'
 
 const log = new Logger('Login')
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
-    version: string = environment.version;
-    error: string;
-    loginForm: FormGroup;
-    isLoading = false;
-    org: Organization;
-    adminLogin: boolean;
+    version: string = environment.version
+    error: string
+    loginForm: FormGroup
+    isLoading = false
+    org: Organization
+    adminLogin: boolean
     loadingState = ''
 
-    constructor(private router: Router,
+    constructor(
+        private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private i18nService: I18nService,
@@ -38,59 +50,95 @@ export class LoginComponent implements OnInit {
         private organizationService: OrganizationService,
         private cookieService: CookieService,
         private organizationQuery: OrganizationQuery,
-        private stateService: StateService
+        private stateService: StateService,
+        private voteQuery: VotesQuery,
+        private solutionService: SolutionService,
+        private proposalService: ProposalService,
+        private suggestionService: SuggestionService,
+        private voteService: VoteService,
     ) {
         this.createForm()
-        this.organizationService.get().subscribe(org => {
+        this.organizationService.get().subscribe((org) => {
             this.org = org
         })
     }
 
     ngOnInit() {
-        this.meta.updateTags(
-            {
-                title: 'Login',
-                description: 'Fill in your account information to sign in.'
-            })
+        this.meta.updateTags({
+            title: 'Login',
+            description: 'Fill in your account information to sign in.',
+        })
 
         this.adminLogin = !!this.route.snapshot.queryParamMap.get('admin')
-        
+
         this.stateService.loadingState$.subscribe((state: string) => {
             this.loadingState = state
         })
 
         this.stateService.setLoadingState(AppState.loading)
 
-        this.organizationQuery.select()
-            .subscribe((res) => {
-                this.org = res
-                this.stateService.setLoadingState(AppState.complete)
-            })
-    }   
+        this.organizationQuery.select().subscribe((res) => {
+            this.org = res
+            this.stateService.setLoadingState(AppState.complete)
+        })
+    }
 
     login() {
         this.isLoading = true
 
-        this.authenticationService.login(this.loginForm.value)
-            .pipe(finalize(() => {
-                this.loginForm.markAsPristine()
-                this.isLoading = false
-            }))
-            .subscribe(user => {
-                // log.debug(`${credentials.user.email} successfully logged in`)
-                this.route.queryParams.subscribe(
-                    params => {
-                        if (user.verified) {
-                            this.router.navigate([params.redirect || '/'], { replaceUrl: true })
-                        } else {
-                            this.router.navigate([params.redirect || '/auth/verify'], { replaceUrl: true })
-                        }
+        this.authenticationService
+            .login(this.loginForm.value)
+            .pipe(
+                finalize(() => {
+                    this.loginForm.markAsPristine()
+                    this.isLoading = false
+                }),
+            )
+            .subscribe(
+                (data: any) => {
+                    const {
+                        voted,
+                        user,
+                    }: { voted: UserVoteData | null; user: IUser } = data
+                    // If a user attempted to vote before login we pass back an object with a voted property
+                    // that voted property if exists needs to be assigned to an existing vote (assigned to the store via websocket)
+                    // with the current user data
+
+                    if (voted) {
+                        const { object }: { object: string } = voted
+                        this.voteQuery
+                            .selectEntity(object)
+                            .pipe(take(1))
+                            .subscribe(
+                                (storeVote) => {
+                                    this.voteService.updateVoteObjectsCurrentUser(
+                                        storeVote._id,
+                                        voted,
+                                    )
+                                },
+                                (err) => err,
+                            )
                     }
-                )
-            }, error => {
-                log.debug(`Login error: ${error}`)
-                this.error = error
-            })
+
+                    // log.debug(`${credentials.user.email} successfully logged in`)
+                    this.route.queryParams.subscribe((params) => {
+                        if (user.verified) {
+                            this.router.navigate([params.redirect || '/'], {
+                                replaceUrl: true,
+                            })
+                        } else {
+                            this.router.navigate(
+                                [params.redirect || '/auth/verify'],
+                                { replaceUrl: true },
+                            )
+                        }
+                    })
+                },
+                (error) => {
+                    log.debug(`Login error: ${error}`)
+                    this.error = error
+                },
+            )
     }
 
     setLanguage(language: string) {
@@ -107,11 +155,32 @@ export class LoginComponent implements OnInit {
 
     loginWithSSO() {
         let url
-
+        const redirect = this.route.snapshot.queryParams.get('redirect')
         const { url: orgUrl } = this.organizationQuery.getValue()
-        this.cookieService.set('orgUrl', orgUrl, null, '/', '.newvote.org', true, 'None')
+
+        if (redirect) {
+            this.cookieService.set(
+                'redirect',
+                redirect,
+                null,
+                '/',
+                '.newvote.org',
+            )
+        }
+
+        this.cookieService.set(
+            'orgUrl',
+            orgUrl,
+            null,
+            '/',
+            '.newvote.org',
+            true,
+            'None',
+        )
         if (this.org.authEntityId) {
-            url = this.adminLogin ? `${this.org.authUrl}` : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
+            url = this.adminLogin
+                ? `${this.org.authUrl}`
+                : `${this.org.authUrl}?entityID=${this.org.authEntityId}`
         } else {
             url = `${this.org.authUrl}`
         }
@@ -123,8 +192,7 @@ export class LoginComponent implements OnInit {
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
             password: ['', Validators.required],
-            remember: true
+            remember: true,
         })
     }
-
 }

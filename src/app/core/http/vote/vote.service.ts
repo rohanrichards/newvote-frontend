@@ -3,14 +3,15 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { map, catchError, tap } from 'rxjs/operators'
 
-import { Vote } from '@app/core/models/vote.model'
+import { Vote, IVote } from '@app/core/models/vote.model'
 import { handleError } from '@app/core/http/errors'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '../organization/organization.service'
-import { VoteStore } from './vote.store'
+import { VoteStore, VoteMetaData, UserVoteData } from './vote.store'
 import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
 import { AuthenticationStore } from '@app/core/authentication/authentication.store'
+import { CookieService } from 'ngx-cookie-service'
 
 const routes = {
     list: () => '/votes',
@@ -40,7 +41,8 @@ export class VoteService {
         private httpClient: HttpClient,
         private orgService: OrganizationService,
         private voteStore: VoteStore,
-        private userStore: AuthenticationStore
+        private userStore: AuthenticationStore,
+        private cookieService: CookieService
     ) {
         this.orgService.get().subscribe(org => { this._org = org })
 
@@ -83,6 +85,20 @@ export class VoteService {
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
+                catchError((err: any) => {
+                    // catch the error and if it was due to not being logged in create a vote cookie to update
+                    // on next login
+                    if (err.status === 401) {
+                        // remove cookie if it exists, only want one vote
+                        if (this.cookieService.get('vote')) {
+                            this.cookieService.delete('vote');
+                        }
+                        const vote = JSON.stringify(context.entity);
+                        this.cookieService.set('vote', vote, null, '/', '.newvote.org')
+                    }
+
+                    return handleError(err)
+                }),
                 tap((res: any) => {
                     // votes are assigned via their parent id instread of unique _id
                     // so when updating, update the vote object via it's parent object id
@@ -98,7 +114,6 @@ export class VoteService {
                         this.userStore.update({ subscriptions: res.subscriptions })
                     }
                 }),
-                catchError(handleError),
                 map((res: any) => res),
             )
     }
@@ -193,6 +208,15 @@ export class VoteService {
         // Populate redux store
         this.voteStore.add(votes)
         return data
+    }
+
+    updateVoteObjectsCurrentUser(voteId: string, currentUser: UserVoteData) {
+        this.voteStore.update(voteId, (entity: VoteMetaData) => {
+            return {
+                ...entity,
+                currentUser
+            }
+        })
     }
 
 }
