@@ -5,9 +5,15 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { AppModule } from '@app/app.module'
 import { environment } from '@env/environment'
 
+import { persistState } from '@datorama/akita';
+
+const state = persistState({ include: ['auth'] });
+
+const providers = [{ provide: 'persistStorage', useValue: state }];
+
 if (environment.production) {
     enableProdMode()
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic(providers).bootstrapModule(AppModule)
     .catch(err => err)
