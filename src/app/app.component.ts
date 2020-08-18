@@ -3,7 +3,14 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { TranslateService } from '@ngx-translate/core'
 import { merge, asyncScheduler, timer } from 'rxjs'
-import { filter, map, mergeMap, observeOn, takeUntil, delay } from 'rxjs/operators'
+import {
+    filter,
+    map,
+    mergeMap,
+    observeOn,
+    takeUntil,
+    delay,
+} from 'rxjs/operators'
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga'
 
 import { environment } from '@env/environment'
@@ -41,7 +48,7 @@ export class AppComponent implements OnInit {
         private authQuery: AuthenticationQuery,
         private adminService: AdminService,
         private storageService: StorageService,
-        private voteService: VoteService
+        private voteService: VoteService,
     ) {}
 
     ngOnInit() {
@@ -67,32 +74,37 @@ export class AppComponent implements OnInit {
             filter((event) => event instanceof NavigationEnd),
         )
 
-        // For AAF Logins we sometimes redirect the user - if the user is redirected
-        // display toast
-        this.activatedRoute.queryParams
-            .pipe(
-                observeOn(asyncScheduler), takeUntil(timer(10000)))
-            .subscribe((res: any) => {
-                const storageVote = this.storageService.get('vote')
-                const vote = JSON.parse(storageVote)
-                if (vote) {
-                    this.voteService.create(vote)
-                        .subscribe(
-                            (res) => {
-                                this.storageService.remove('vote')
-                                this.adminService.openSnackBar('Your vote was recorded', 'OK')
-                            },
-                            (err) => {
-                                this.storageService.remove('vote')
-                                if (err.status === 401) {
-                                    this.adminService.openSnackBar('You must be logged in to vote', 'OK')
-                                } else {
-                                    this.adminService.openSnackBar('There was an error recording your vote', 'OK')
-                                }
-                            }
+        const user = this.authQuery.select().subscribe((user) => {
+            if (!user) return false
+            console.log(user, 'this is user')
+            if (!user.verified) return false
+
+            const vote = JSON.parse(this.storageService.get('vote'))
+            this.storageService.remove('vote')
+            if (vote) {
+                this.voteService.create(vote).subscribe(
+                    (res) => {
+                        this.adminService.openSnackBar(
+                            'Your vote was recorded',
+                            'OK',
                         )
-                }
-            })
+                    },
+                    (err) => {
+                        if (err.status === 401) {
+                            this.adminService.openSnackBar(
+                                'You must be logged in to vote',
+                                'OK',
+                            )
+                        } else {
+                            this.adminService.openSnackBar(
+                                'There was an error recording your vote',
+                                'OK',
+                            )
+                        }
+                    },
+                )
+            }
+        })
 
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)

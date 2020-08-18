@@ -27,7 +27,6 @@ export class EntityVotesQuery {
                 // query uses selectAll so returns either an empty array or
                 // an array with the single value
                 map((solutions: ISolution[]): ISolution | boolean => {
-                    console.log(solutions, 'this is solutions')
                     if (!solutions.length) return false
                     const [solution] = solutions
                     return solution
@@ -36,7 +35,6 @@ export class EntityVotesQuery {
                     if (!solution) return of(false)
                     // The original id could be a slug so we wait to get a single solution
                     // before querying for vote data
-                    console.log(solution, 'this is solution on entity votes')
                     return this.votes.getVote(solution._id)
                         .pipe(
                             map((votes: any) => {

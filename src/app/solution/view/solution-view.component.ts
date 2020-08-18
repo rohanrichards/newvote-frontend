@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { finalize, take, tap } from 'rxjs/operators'
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { AuthenticationService } from '@app/core/authentication/authentication.service'
 import { SolutionService } from '@app/core/http/solution/solution.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
@@ -75,7 +75,7 @@ export class SolutionViewComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.organizationService.get().subscribe(org => {
+        this.organizationService.get().subscribe((org) => {
             this.organization = org
         })
         this.stateService.loadingState$.subscribe((state: string) => {
@@ -84,7 +84,7 @@ export class SolutionViewComponent implements OnInit {
 
         this.stateService.setLoadingState(AppState.loading)
 
-        this.route.paramMap.subscribe(params => {
+        this.route.paramMap.subscribe((params) => {
             const ID = params.get('id')
             this.getSolution(ID)
             this.getProposals()
@@ -113,7 +113,10 @@ export class SolutionViewComponent implements OnInit {
     }
 
     getProposals() {
-        this.proposalService.list({}).subscribe(res => res, err => err)
+        this.proposalService.list({}).subscribe(
+            (res) => res,
+            (err) => err,
+        )
     }
 
     getSuggestions() {
@@ -125,15 +128,17 @@ export class SolutionViewComponent implements OnInit {
                     showDeleted: isModerator ? true : '',
                 },
             })
-            .subscribe(res => {
-                console.log(res, 'this is res')
-            }, err => err)
+            .subscribe(
+                (res) => {
+                    res
+                },
+                (err) => err,
+            )
     }
 
     subscribeToSolutionStore(id: string) {
         this.entityVotes.getSolution(id).subscribe((solution: ISolution) => {
             if (!solution) return false
-            console.log(solution, 'this is solution')
             this.solution = solution
             this.subscribeToProposalStore(solution._id)
             this.subscribeToSuggestionStore(solution._id)
@@ -162,7 +167,7 @@ export class SolutionViewComponent implements OnInit {
     subscribeToSuggestionStore(id: string) {
         this.suggestions$ = this.entityVotes.getManySuggestions(id, 'parent')
 
-        this.suggestions$.subscribe(res => {
+        this.suggestions$.subscribe((res) => {
             if (!res) return false
             this.suggestions = res
         })
@@ -171,7 +176,7 @@ export class SolutionViewComponent implements OnInit {
     subscribeToProposalStore(id: string) {
         this.proposals$ = this.entityVotes.getManyProposals(id)
 
-        this.proposals$.subscribe(res => {
+        this.proposals$.subscribe((res) => {
             if (!res) return
             this.proposals = res
         })
@@ -199,10 +204,10 @@ export class SolutionViewComponent implements OnInit {
                 }),
             )
             .subscribe(
-                res => {
+                (res) => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                error => error,
+                (error) => error,
             )
     }
 
@@ -218,7 +223,7 @@ export class SolutionViewComponent implements OnInit {
             () => {
                 this.admin.openSnackBar('Succesfully created', 'OK')
             },
-            error => {
+            (error) => {
                 this.admin.openSnackBar(
                     `Something went wrong: ${error.status} - ${error.statusText}`,
                     'OK',
