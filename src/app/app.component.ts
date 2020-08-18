@@ -74,36 +74,39 @@ export class AppComponent implements OnInit {
             filter((event) => event instanceof NavigationEnd),
         )
 
-        const user = this.authQuery.select().subscribe((user) => {
-            if (!user) return false
-            if (!user.verified) return false
+        const user = this.authQuery
+            .select()
+            .pipe(delay(500))
+            .subscribe((user) => {
+                if (!user) return false
+                if (!user.verified) return false
 
-            const vote = JSON.parse(this.storageService.get('vote'))
-            this.storageService.remove('vote')
-            if (vote) {
-                this.voteService.create(vote).subscribe(
-                    (res) => {
-                        this.adminService.openSnackBar(
-                            'Your vote was recorded',
-                            'OK',
-                        )
-                    },
-                    (err) => {
-                        if (err.status === 401) {
+                const vote = JSON.parse(this.storageService.get('vote'))
+                this.storageService.remove('vote')
+                if (vote) {
+                    this.voteService.create(vote).subscribe(
+                        (res) => {
                             this.adminService.openSnackBar(
-                                'You must be logged in to vote',
+                                'Your vote was recorded',
                                 'OK',
                             )
-                        } else {
-                            this.adminService.openSnackBar(
-                                'There was an error recording your vote',
-                                'OK',
-                            )
-                        }
-                    },
-                )
-            }
-        })
+                        },
+                        (err) => {
+                            if (err.status === 401) {
+                                this.adminService.openSnackBar(
+                                    'You must be logged in to vote',
+                                    'OK',
+                                )
+                            } else {
+                                this.adminService.openSnackBar(
+                                    'There was an error recording your vote',
+                                    'OK',
+                                )
+                            }
+                        },
+                    )
+                }
+            })
 
         // Change page title on navigation or language change, based on route data
         merge(this.translateService.onLangChange, onNavigationEnd)
