@@ -76,7 +76,6 @@ export class AppComponent implements OnInit {
 
         const user = this.authQuery.select().subscribe((user) => {
             if (!user) return false
-            console.log(user, 'this is user')
             if (!user.verified) return false
 
             const vote = JSON.parse(this.storageService.get('vote'))
