@@ -21,7 +21,7 @@ export interface UserVoteData {
 export interface VoteMetaDataState extends EntityState<VoteMetaData> { };
 
 @Injectable()
-@StoreConfig({ name: 'votes', idKey: '_id' })
+@StoreConfig({ name: 'votes', idKey: '_id', resettable: true })
 export class VoteStore extends EntityStore<VoteMetaDataState> {
     constructor() {
         super()

@@ -107,9 +107,7 @@ export class SolutionViewComponent implements OnInit {
                 params: options,
             })
             .subscribe(
-                (solution: Solution) => {
-                    return solution
-                },
+                (solution: Solution) => solution,
                 () => this.stateService.setLoadingState(AppState.error),
             )
     }
@@ -127,17 +125,22 @@ export class SolutionViewComponent implements OnInit {
                     showDeleted: isModerator ? true : '',
                 },
             })
-            .subscribe(res => res, err => err)
+            .subscribe(res => {
+                console.log(res, 'this is res')
+            }, err => err)
     }
 
     subscribeToSolutionStore(id: string) {
         this.entityVotes.getSolution(id).subscribe((solution: ISolution) => {
             if (!solution) return false
+            console.log(solution, 'this is solution')
             this.solution = solution
             this.subscribeToProposalStore(solution._id)
             this.subscribeToSuggestionStore(solution._id)
-            this.stateService.setLoadingState(AppState.complete)
             this.updateTags(solution)
+            setTimeout(() => {
+                this.stateService.setLoadingState(AppState.complete)
+            }, 1000)
         })
     }
 
@@ -199,19 +202,7 @@ export class SolutionViewComponent implements OnInit {
                 res => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                error => {
-                    if (error.status === 401) {
-                        this.admin.openSnackBar(
-                            'You must be logged in to vote',
-                            'OK',
-                        )
-                    } else {
-                        this.admin.openSnackBar(
-                            'There was an error recording your vote',
-                            'OK',
-                        )
-                    }
-                },
+                error => error,
             )
     }
 

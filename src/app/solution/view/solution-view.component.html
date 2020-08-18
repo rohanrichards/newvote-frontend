@@ -14,60 +14,61 @@
         <app-skeleton-panel [hasVote]=true>
         </app-skeleton-panel>
     </div>
-    <mat-toolbar color="primary"
-        *ngSwitchCase="'complete'"
-        [@fadeIn]=true
-        class="header-info-panel">
-        <div *ngIf="solution"
-            class="image-container"
-            fxLayout="column"
-            [defaultImage]="handleImageUrl(solution.imageUrl, true)"
-            [lazyLoad]="handleImageUrl(solution.imageUrl)">
-            <app-admin-panel [item]="solution"
-                model="Solution"
-                path="/solutions"
-                redirectRoute="solutions">
-            </app-admin-panel>
-            <div fxLayout="row"
-                fxFlex></div>
-            <!-- <div fxLayout="column"
-				fxLayoutAlign="start start">
-			</div> -->
+    <div  *ngSwitchCase="'complete'">
+        <mat-toolbar color="primary"
+            [@fadeIn]=true
+            class="header-info-panel">
+            <div *ngIf="solution"
+                class="image-container"
+                fxLayout="column"
+                [defaultImage]="handleImageUrl(solution.imageUrl, true)"
+                [lazyLoad]="handleImageUrl(solution.imageUrl)">
+                <app-admin-panel [item]="solution"
+                    model="Solution"
+                    path="/solutions"
+                    redirectRoute="solutions">
+                </app-admin-panel>
+                <div fxLayout="row"
+                    fxFlex></div>
+                <!-- <div fxLayout="column"
+                    fxLayoutAlign="start start">
+                </div> -->
+                <div fxLayout="row wrap"
+                    fxLayoutAlign="center center">
+                    <div fxFlex.gt-sm="690px"
+                        fxFlex.gt-md="800px">
+                        <app-share-buttons></app-share-buttons>
+                    </div>
+                </div>
+            </div>
             <div fxLayout="row wrap"
+                class="description-bar"
                 fxLayoutAlign="center center">
                 <div fxFlex.gt-sm="690px"
                     fxFlex.gt-md="800px">
-                    <app-share-buttons></app-share-buttons>
-                </div>
-            </div>
-        </div>
-        <div fxLayout="row wrap"
-            class="description-bar"
-            fxLayoutAlign="center center">
-            <div fxFlex.gt-sm="690px"
-                fxFlex.gt-md="800px">
-                <div class="mat-display-1"
-                    translate>{{solution.title}}</div>
-                <span class="mat-body">This is a solution for:
-                    <span *ngFor="let parent of solution.issues; let i = index">
-                        <a mat-button
-                            [title]="parent.name || parent.title"
-                            routerLink="/issues/{{parent._id}}">{{parent.title || parent.name | slice:0:30 }}{{ (parent.title || parent.name).length > 30 ? '...' : ''}}</a>
+                    <div class="mat-display-1"
+                        translate>{{solution.title}}</div>
+                    <span class="mat-body">This is a solution for:
+                        <span *ngFor="let parent of solution.issues; let i = index">
+                            <a mat-button
+                                [title]="parent.name || parent.title"
+                                routerLink="/issues/{{parent._id}}">{{parent.title || parent.name | slice:0:30 }}{{ (parent.title || parent.name).length > 30 ? '...' : ''}}</a>
+                        </span>
                     </span>
-                </span>
-                <app-more-less [displayText]="solution.description"
-                    maxHeight="200">
-                </app-more-less>
-                <mat-divider></mat-divider>
-                <p></p>
-                <div class="buttons">
-                    <app-vote-buttons (vote)="onVote($event, 'Solution')"
-                        [item]="solution">
-                    </app-vote-buttons>
+                    <app-more-less [displayText]="solution.description"
+                        maxHeight="200">
+                    </app-more-less>
+                    <mat-divider></mat-divider>
+                    <p></p>
+                    <div class="buttons">
+                        <app-vote-buttons (vote)="onVote($event, 'Solution')"
+                            [item]="solution">
+                        </app-vote-buttons>
+                    </div>
                 </div>
             </div>
-        </div>
-    </mat-toolbar>
+        </mat-toolbar>
+    </div>
 </ng-container>
 
 <ng-container [ngSwitch]="loadingState">

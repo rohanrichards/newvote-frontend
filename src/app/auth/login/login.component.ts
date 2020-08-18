@@ -23,6 +23,8 @@ import { SuggestionService } from '@app/core/http/suggestion/suggestion.service'
 import { VoteService } from '@app/core/http/vote/vote.service'
 import { VoteMetaData, UserVoteData } from '@app/core/http/vote/vote.store'
 import { IUser } from '@app/core/models/user.model'
+import { StorageService } from '@app/core/storage.service'
+import { AdminService } from '@app/core/http/admin/admin.service'
 
 const log = new Logger('Login')
 
@@ -56,6 +58,8 @@ export class LoginComponent implements OnInit {
         private proposalService: ProposalService,
         private suggestionService: SuggestionService,
         private voteService: VoteService,
+        private storageService: StorageService,
+        private admin: AdminService
     ) {
         this.createForm()
         this.organizationService.get().subscribe((org) => {
@@ -96,28 +100,36 @@ export class LoginComponent implements OnInit {
             )
             .subscribe(
                 (data: any) => {
-                    const {
-                        voted,
-                        user,
-                    }: { voted: UserVoteData | null; user: IUser } = data
+                    const { user }: { user: IUser } = data
                     // If a user attempted to vote before login we pass back an object with a voted property
                     // that voted property if exists needs to be assigned to an existing vote (assigned to the store via websocket)
                     // with the current user data
 
-                    if (voted) {
-                        const { object }: { object: string } = voted
-                        this.voteQuery
-                            .selectEntity(object)
-                            .pipe(take(1))
-                            .subscribe(
-                                (storeVote) => {
-                                    this.voteService.updateVoteObjectsCurrentUser(
-                                        storeVote._id,
-                                        voted,
+                    if (this.storageService.get('vote')) {
+                        const vote = this.storageService.get('vote')
+                        this.voteService.create(vote).subscribe(
+                            (res) => {
+                                this.storageService.remove('vote')
+                                this.admin.openSnackBar(
+                                    'Your vote was recorded',
+                                    'OK',
+                                )
+                            },
+                            (err) => {
+                                this.storageService.remove('vote')
+                                if (err.status === 401) {
+                                    this.admin.openSnackBar(
+                                        'You must be logged in to vote',
+                                        'OK',
                                     )
-                                },
-                                (err) => err,
-                            )
+                                } else {
+                                    this.admin.openSnackBar(
+                                        'There was an error recording your vote',
+                                        'OK',
+                                    )
+                                }
+                            },
+                        )
                     }
 
                     // log.debug(`${credentials.user.email} successfully logged in`)
@@ -155,7 +167,7 @@ export class LoginComponent implements OnInit {
 
     loginWithSSO() {
         let url
-        const redirect = this.route.snapshot.queryParams.get('redirect')
+        const redirect = this.route.snapshot.queryParamMap.get('redirect')
         const { url: orgUrl } = this.organizationQuery.getValue()
 
         if (redirect) {
@@ -165,6 +177,8 @@ export class LoginComponent implements OnInit {
                 null,
                 '/',
                 '.newvote.org',
+                true,
+                'None',
             )
         }
 

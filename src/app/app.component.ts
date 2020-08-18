@@ -3,7 +3,7 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router'
 import { Title } from '@angular/platform-browser'
 import { TranslateService } from '@ngx-translate/core'
 import { merge, asyncScheduler, timer } from 'rxjs'
-import { filter, map, mergeMap, observeOn, takeUntil } from 'rxjs/operators'
+import { filter, map, mergeMap, observeOn, takeUntil, delay } from 'rxjs/operators'
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga'
 
 import { environment } from '@env/environment'
@@ -14,6 +14,8 @@ import { DataFetchService } from './core/http/data/data-fetch.service'
 import { UpdateService } from './core/http/update.service'
 import { AuthenticationQuery } from './core/authentication/authentication.query'
 import { AdminService } from './core/http/admin/admin.service'
+import { VoteService } from './core/http/vote/vote.service'
+import { StorageService } from './core/storage.service'
 
 const log = new Logger('App')
 
@@ -35,10 +37,11 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService,
         private organizationService: OrganizationService,
         private meta: MetaService,
-        private dataFetch: DataFetchService,
         private updateService: UpdateService,
         private authQuery: AuthenticationQuery,
-        private adminService: AdminService
+        private adminService: AdminService,
+        private storageService: StorageService,
+        private voteService: VoteService
     ) {}
 
     ngOnInit() {
@@ -67,13 +70,27 @@ export class AppComponent implements OnInit {
         // For AAF Logins we sometimes redirect the user - if the user is redirected
         // display toast
         this.activatedRoute.queryParams
-            .pipe(observeOn(asyncScheduler), takeUntil(timer(5000)))
+            .pipe(
+                observeOn(asyncScheduler), takeUntil(timer(10000)))
             .subscribe((res: any) => {
-                if (res.redirectLogin && this.authQuery.isLoggedIn()) {
-                    this.adminService.openSnackBar(
-                        'You have successfully logged in. Now you can vote on your issue',
-                        'OK',
-                    )
+                const storageVote = this.storageService.get('vote')
+                const vote = JSON.parse(storageVote)
+                if (vote) {
+                    this.voteService.create(vote)
+                        .subscribe(
+                            (res) => {
+                                this.storageService.remove('vote')
+                                this.adminService.openSnackBar('Your vote was recorded', 'OK')
+                            },
+                            (err) => {
+                                this.storageService.remove('vote')
+                                if (err.status === 401) {
+                                    this.adminService.openSnackBar('You must be logged in to vote', 'OK')
+                                } else {
+                                    this.adminService.openSnackBar('There was an error recording your vote', 'OK')
+                                }
+                            }
+                        )
                 }
             })
 

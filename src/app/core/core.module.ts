@@ -69,6 +69,7 @@ import { NotificationStore } from './http/notifications/notification.store'
 import { NotificationQuery } from './http/notifications/notification.query'
 import { PushService } from './http/push/push.service'
 import { UpdateService } from './http/update.service'
+import { StorageService } from './storage.service'
 
 export function tokenGetter() {
     const savedCredentials =
@@ -160,6 +161,7 @@ export function tokenGetter() {
         NotificationStore,
         NotificationQuery,
         UpdateService,
+        StorageService,
         {
             provide: HttpClient,
             useClass: HttpService,

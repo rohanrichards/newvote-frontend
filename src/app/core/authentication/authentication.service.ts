@@ -11,6 +11,8 @@ import { Organization } from '@app/core/models/organization.model'
 import { handleError } from '../http/errors'
 import { AuthenticationStore, createInitialState } from './authentication.store'
 import { IUser } from '../models/user.model'
+import { VotesQuery } from '../http/vote/vote.query'
+import { VoteService } from '../http/vote/vote.service'
 
 export interface Credentials {
     // Customize received credentials here
@@ -71,6 +73,7 @@ export class AuthenticationService {
         private organizationService: OrganizationService,
         private cookieService: CookieService,
         private authenticationStore: AuthenticationStore,
+        private voteService: VoteService
     ) {
         if (this.isTokenExpired()) {
             this.logout()
@@ -146,6 +149,7 @@ export class AuthenticationService {
     logout(): Observable<any> {
         return this.httpClient.get(routes.signout(), {}).pipe(
             tap(res => {
+                this.voteService.resetVotes()
                 this.authenticationStore.reset()
                 this.cookieService.delete('credentials', '/', '.newvote.org')
             }),

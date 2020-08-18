@@ -182,19 +182,7 @@ export class SolutionListComponent implements OnInit {
                 res => {
                     this.admin.openSnackBar('Your vote was recorded', 'OK')
                 },
-                error => {
-                    if (error.status === 401) {
-                        this.admin.openSnackBar(
-                            'You must be logged in to vote',
-                            'OK',
-                        )
-                    } else {
-                        this.admin.openSnackBar(
-                            'There was an error recording your vote',
-                            'OK',
-                        )
-                    }
-                },
+                error => error,
             )
     }
 

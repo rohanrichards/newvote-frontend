@@ -9,6 +9,7 @@ import { ISolution } from "@app/core/models/solution.model";
 import { IProposal, Proposal } from "@app/core/models/proposal.model";
 import { ISuggestion } from "@app/core/models/suggestion.model";
 import { IVote } from "@app/core/models/vote.model";
+import { Observable, ObservableInput, of } from "rxjs";
 
 @Injectable()
 export class EntityVotesQuery {
@@ -25,14 +26,18 @@ export class EntityVotesQuery {
             .pipe(
                 // query uses selectAll so returns either an empty array or
                 // an array with the single value
-                map((solutions: ISolution[]) => {
+                map((solutions: ISolution[]): ISolution | boolean => {
+                    console.log(solutions, 'this is solutions')
+                    if (!solutions.length) return false
                     const [solution] = solutions
                     return solution
                 }),
-                mergeMap((solution: ISolution) => {
+                mergeMap((solution: ISolution): ObservableInput<any> => {
+                    if (!solution) return of(false)
                     // The original id could be a slug so we wait to get a single solution
                     // before querying for vote data
-                    return this.votes.getVote(solution._id || false)
+                    console.log(solution, 'this is solution on entity votes')
+                    return this.votes.getVote(solution._id)
                         .pipe(
                             map((votes: any) => {
                                 const [vote] = votes

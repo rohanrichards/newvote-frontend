@@ -12,6 +12,7 @@ import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
 import { AuthenticationStore } from '@app/core/authentication/authentication.store'
 import { CookieService } from 'ngx-cookie-service'
+import { StorageService } from '@app/core/storage.service'
 
 const routes = {
     list: () => '/votes',
@@ -42,7 +43,8 @@ export class VoteService {
         private orgService: OrganizationService,
         private voteStore: VoteStore,
         private userStore: AuthenticationStore,
-        private cookieService: CookieService
+        private cookieService: CookieService,
+        private storageService: StorageService
     ) {
         this.orgService.get().subscribe(org => { this._org = org })
 
@@ -81,7 +83,9 @@ export class VoteService {
     }
 
     create(context: VoteContext): Observable<any> {
-        context.entity.organizationId = this._org._id
+        if (!context.entity.organizationId) {
+            context.entity.organizationId = this._org._id
+        }
         return this.httpClient
             .post(routes.create(), context.entity)
             .pipe(
@@ -90,11 +94,11 @@ export class VoteService {
                     // on next login
                     if (err.status === 401) {
                         // remove cookie if it exists, only want one vote
-                        if (this.cookieService.get('vote')) {
-                            this.cookieService.delete('vote');
+                        if (this.storageService.get('vote')) {
+                            this.storageService.remove('vote')
                         }
-                        const vote = JSON.stringify(context.entity);
-                        this.cookieService.set('vote', vote, null, '/', '.newvote.org')
+                        const vote = JSON.stringify(context);
+                        this.storageService.set('vote', vote)
                     }
 
                     return handleError(err)
@@ -217,6 +221,10 @@ export class VoteService {
                 currentUser
             }
         })
+    }
+
+    resetVotes(): void {
+        this.voteStore.reset()
     }
 
 }
