@@ -241,8 +241,8 @@ export class IssueViewComponent implements OnInit {
 
     fetchData(id: string) {
         this.getIssue(id)
+        this.getSolutions(id)
         this.getProposals()
-        this.getSolutions()
         this.getSuggestions()
         this.getTopics()
         this.getProgress()
@@ -302,15 +302,17 @@ export class IssueViewComponent implements OnInit {
         )
     }
 
-    getSolutions() {
+    getSolutions(issueId: string) {
         const isOwner = this.authQuery.isOwner()
-        const params = { showDeleted: isOwner ? true : '' }
+        const params = { showDeleted: isOwner ? true : '', issueId }
 
         return this.solutionService
             .list({
                 params,
             })
-            .subscribe((res: any) => res, err => err)
+            .subscribe((res: any) => {
+                console.log(res, 'this is solutions on issues view')
+            }, err => err)
     }
 
     getProposals() {

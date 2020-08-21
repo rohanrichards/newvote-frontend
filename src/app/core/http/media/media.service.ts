@@ -48,9 +48,12 @@ export class MediaService {
             .get(routes.list(), { params })
             .pipe(
                 catchError((e) => of([{ error: e }])),
-                tap((res: Media[]) => {
-                    this.voteService.populateStore(res)
+                tap((res: any) => {
+                    this.voteService.addMetaDataVotes(res.addMetaDataVotes)
                     this.mediaStore.add(res)
+                    if (res.userVoteData) {
+                        this.voteService.addUserVotes(res.userVoteData)
+                    }
                 }),
                 map((res: Array<any>) => res),
             )
@@ -61,9 +64,13 @@ export class MediaService {
             .get(routes.view(context))
             .pipe(
                 catchError((e) => of([{ error: e }])),
-                tap((res: Media) => {
-                    this.voteService.addEntityVote(res)
-                    this.mediaStore.add(res)
+                tap((res: any) => {
+                    const { medias, voteMetaData, userVoteData } = res
+                    this.voteService.addMetaDataVotes(voteMetaData)
+                    this.mediaStore.add(medias)
+                    if (userVoteData) {
+                        this.voteService.addUserVotes(userVoteData)
+                    }
                 }),
                 map((res: any) => res)
             )

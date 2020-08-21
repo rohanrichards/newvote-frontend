@@ -7,6 +7,7 @@ import { ISuggestion, Suggestion } from '@app/core/models/suggestion.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
 import { SuggestionStore } from './suggestion.store'
+import { VoteMetaData, UserVoteData } from '../vote/vote.store'
 
 const routes = {
     list: () => '/suggestions',
@@ -14,6 +15,12 @@ const routes = {
     create: () => '/suggestions',
     update: (c: SuggestionContext) => `/suggestions/${c.id}`,
     delete: (c: SuggestionContext) => `/suggestions/${c.id}`
+}
+
+interface SuggestionListResponse {
+    suggestions: Suggestion[];
+    voteMetaData: VoteMetaData[];
+    userVoteData?: UserVoteData[];
 }
 
 export interface SuggestionContext {
@@ -46,9 +53,12 @@ export class SuggestionService {
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
-                tap((data: Suggestion[]) => {
-                    this.voteService.populateStore(data)
-                    this.suggestionStore.add(data)
+                tap((data: any) => {
+                    this.voteService.addMetaDataVotes(data.voteMetaData)
+                    this.suggestionStore.add(data.suggestions)
+                    if (data.userVoteData) {
+                        this.voteService.addUserVotes(data.userVoteData)
+                    }
                 })
             )
     }
@@ -58,9 +68,13 @@ export class SuggestionService {
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
-                tap((res: Suggestion) => {
-                    this.voteService.addEntityVote(res)
-                    this.suggestionStore.add(res)
+                tap((res: any) => {
+                    const { suggestions, voteMetaData, userVoteData } = res
+                    this.voteService.addMetaDataVotes(voteMetaData)
+                    this.suggestionStore.add(suggestions)
+                    if (userVoteData) {
+                        this.voteService.addUserVotes(userVoteData)
+                    }
                 }),
                 map((res: any) => res)
             )
@@ -94,10 +108,6 @@ export class SuggestionService {
                 tap((res: any) => this.suggestionStore.remove(res._id)),
                 map((res: any) => res),
             )
-    }
-
-    populateStoreMetaData(serverData: any) {
-        this.voteService.populateStore(serverData)
     }
 
     updateSuggestionVote(id: string, suggestion: any) {

@@ -23,8 +23,8 @@ import { ErrorHandlerInterceptor } from './http/error-handler.interceptor'
 import { OganizationHeaderInterceptor } from './http/organization-header.interceptor'
 import { CacheInterceptor } from './http/cache.interceptor'
 import { JwtModule } from '@auth0/angular-jwt'
-import { VoteStore } from './http/vote/vote.store'
-import { VotesQuery } from './http/vote/vote.query'
+import { VoteStore, UserVoteStore } from './http/vote/vote.store'
+import { VotesQuery, UserVoteQuery } from './http/vote/vote.query'
 import { VoteService } from './http/vote/vote.service'
 import { SuggestionStore } from './http/suggestion/suggestion.store'
 import { SuggestionQuery } from './http/suggestion/suggestion.query'
@@ -124,6 +124,8 @@ export function tokenGetter() {
         VoteStore,
         VotesQuery,
         VoteService,
+        UserVoteStore,
+        UserVoteQuery,
         SuggestionStore,
         SuggestionQuery,
         SuggestionService,

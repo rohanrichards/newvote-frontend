@@ -27,3 +27,13 @@ export class VoteStore extends EntityStore<VoteMetaDataState> {
         super()
     }
 }
+
+export interface UserVoteDataState extends EntityState<UserVoteData> { };
+
+@Injectable()
+@StoreConfig({ name: 'uservotes', idKey: '_id', resettable: true})
+export class UserVoteStore extends EntityStore<UserVoteDataState> {
+    constructor() {
+        super()
+    }
+}

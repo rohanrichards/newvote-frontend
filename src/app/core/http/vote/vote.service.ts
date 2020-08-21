@@ -7,7 +7,7 @@ import { Vote, IVote } from '@app/core/models/vote.model'
 import { handleError } from '@app/core/http/errors'
 import { Organization } from '@app/core/models/organization.model'
 import { OrganizationService } from '../organization/organization.service'
-import { VoteStore, VoteMetaData, UserVoteData } from './vote.store'
+import { VoteStore, VoteMetaData, UserVoteData, UserVoteStore } from './vote.store'
 import { cloneDeep } from 'lodash'
 import { Socket } from 'ngx-socket-io'
 import { AuthenticationStore } from '@app/core/authentication/authentication.store'
@@ -44,12 +44,14 @@ export class VoteService {
         private voteStore: VoteStore,
         private userStore: AuthenticationStore,
         private cookieService: CookieService,
-        private storageService: StorageService
+        private storageService: StorageService,
+        private userVotesStore: UserVoteStore
     ) {
         this.orgService.get().subscribe(org => { this._org = org })
 
         this.socket.fromEvent('vote')
             .subscribe((vote: any) => {
+                console.log(vote, 'this is vote')
                 this.voteStore.upsert(vote._id, vote)
             })
     }
@@ -180,39 +182,39 @@ export class VoteService {
         return entity
     }
 
-    populateStore(data: any) {
-        // copy server object to remove references
-        const serverData = cloneDeep(data)
+    // populateStore(data: any) {
+    //     // copy server object to remove references
+    //     const serverData = cloneDeep(data)
 
-        // Reduce starts with an empty array[], and iterates through each
-        // item in the serverData array and appending voteMetaData Objects
+    //     // Reduce starts with an empty array[], and iterates through each
+    //     // item in the serverData array and appending voteMetaData Objects
 
-        // If there is a proposal object, we concat those objects to the main array
-        // resulting in an array of voteMetaData Objects composed from all different entity types
-        const votes = serverData.reduce((previous: any, current: any) => {
-            // either start with or reuse accumulated data
-            let items = previous || []
+    //     // If there is a proposal object, we concat those objects to the main array
+    //     // resulting in an array of voteMetaData Objects composed from all different entity types
+    //     const votes = serverData.reduce((previous: any, current: any) => {
+    //         // either start with or reuse accumulated data
+    //         let items = previous || []
 
-            // if (current.proposals) {
-            //     const proposals = current.proposals.slice().reduce((prev: any, curr: any) => {
-            //         let pItems = prev || [];
-            //         curr.votes._id = curr._id;
-            //         return pItems.concat(curr.votes);
-            //     }, []);
+    //         // if (current.proposals) {
+    //         //     const proposals = current.proposals.slice().reduce((prev: any, curr: any) => {
+    //         //         let pItems = prev || [];
+    //         //         curr.votes._id = curr._id;
+    //         //         return pItems.concat(curr.votes);
+    //         //     }, []);
 
-            //     items = items.concat(proposals);
-            // }
+    //         //     items = items.concat(proposals);
+    //         // }
 
-            //     Entity types can have no vote meta data if newly created so apply here
-            current.votes._id = current._id
-            items = items.concat(current.votes)
-            return items
-        }, [])
+    //         //     Entity types can have no vote meta data if newly created so apply here
+    //         current.votes._id = current._id
+    //         items = items.concat(current.votes)
+    //         return items
+    //     }, [])
 
-        // Populate redux store
-        this.voteStore.add(votes)
-        return data
-    }
+    //     // Populate redux store
+    //     this.voteStore.add(votes)
+    //     return data
+    // }
 
     updateVoteObjectsCurrentUser(voteId: string, currentUser: UserVoteData) {
         this.voteStore.update(voteId, (entity: VoteMetaData) => {
@@ -227,4 +229,11 @@ export class VoteService {
         this.voteStore.reset()
     }
 
+    addUserVotes(userVotes: any[]) {
+        this.userVotesStore.add(userVotes);
+    }
+
+    addMetaDataVotes(metaDataVotes: any[]) {
+        this.voteStore.add(metaDataVotes)
+    }
 }

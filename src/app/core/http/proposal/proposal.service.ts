@@ -49,9 +49,12 @@ export class ProposalService {
             .get(routes.list(), { params })
             .pipe(
                 catchError(handleError),
-                tap((data: Proposal[]) => {
-                    this.voteService.populateStore(data)
+                tap((data: any) => {
+                    this.voteService.addMetaDataVotes(data.voteMetaData)
                     this.proposalStore.add(data)
+                    if (data.userVoteData) {
+                        this.voteService.addMetaDataVotes(data.userVoteData)
+                    }
                 }),
                 map((res: Array<any>) => res),
             )
@@ -62,9 +65,13 @@ export class ProposalService {
             .get(routes.view(context))
             .pipe(
                 catchError(handleError),
-                tap((res: Proposal) => {
-                    this.voteService.addEntityVote(res)
-                    this.proposalStore.add(res)
+                tap((res: any) => {
+                    const { proposals, voteMetaData, userVoteData } = res
+                    this.voteService.addMetaDataVotes(voteMetaData)
+                    this.proposalStore.add(proposals)
+                    if (userVoteData) {
+                        this.voteService.addUserVotes(userVoteData)
+                    }
                 }),
                 map((res: any) => res),
             )

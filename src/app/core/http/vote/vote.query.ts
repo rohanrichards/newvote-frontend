@@ -1,5 +1,5 @@
 import { QueryEntity } from '@datorama/akita'
-import { VoteMetaDataState, VoteStore, VoteMetaData } from './vote.store'
+import { VoteMetaDataState, VoteStore, VoteMetaData, UserVoteDataState, UserVoteStore } from './vote.store'
 import { Injectable } from '@angular/core'
 
 @Injectable()
@@ -12,5 +12,11 @@ export class VotesQuery extends QueryEntity<VoteMetaDataState, VoteMetaData> {
         return this.selectAll({
             filterBy: (vote: any) => vote._id === id
         })
+    }
+}
+@Injectable()
+export class UserVoteQuery extends QueryEntity<UserVoteDataState, UserVoteDataState> {
+    constructor(protected store: UserVoteStore) {
+        super(store)
     }
 }

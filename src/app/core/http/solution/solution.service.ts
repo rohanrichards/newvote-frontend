@@ -7,6 +7,7 @@ import { ISolution, Solution } from '@app/core/models/solution.model'
 import { handleError } from '@app/core/http/errors'
 import { VoteService } from '../vote/vote.service'
 import { SolutionStore } from './solution.store'
+import { VoteMetaData, UserVoteData } from '../vote/vote.store'
 
 const routes = {
     list: () => '/solutions',
@@ -23,6 +24,12 @@ export interface SolutionContext {
     entity?: ISolution; // the object being created or edited
     params?: any;
     forceUpdate?: boolean;
+}
+
+interface SolutionListResponse {
+    solutions: Solution[];
+    voteMetaData: VoteMetaData[];
+    userVoteData?: UserVoteData[];
 }
 
 @Injectable()
@@ -50,8 +57,12 @@ export class SolutionService {
             .pipe(
                 catchError(handleError),
                 tap((data: any) => {
-                    this.voteService.populateStore(data)
-                    this.solutionStore.add(data)
+                    const { solutions, voteMetaData, userVoteData } = data
+                    this.voteService.addMetaDataVotes(voteMetaData)
+                    this.solutionStore.add(solutions)
+                    if (userVoteData) {
+                        this.voteService.addUserVotes(userVoteData)
+                    }
                 }),
                 map((res: Array<any>) => res)
             )
@@ -70,8 +81,12 @@ export class SolutionService {
             .pipe(
                 catchError(handleError),
                 tap((res: any) => {
-                    this.voteService.addEntityVote(res)
-                    this.solutionStore.add(res)
+                    const { solutions, voteMetaData, userVoteData } = res
+                    this.voteService.addMetaDataVotes(voteMetaData)
+                    this.solutionStore.add(solutions)
+                    if (userVoteData) {
+                        this.voteService.addUserVotes(userVoteData)
+                    }
                 }),
                 map((res: any) => res)
             )

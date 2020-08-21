@@ -14,7 +14,7 @@ export class MediaQuery extends QueryEntity<MediaState> {
         return this.selectAll({
             filterBy: (media: Media) => {
                 const { issues } = media
-
+                if (!issues) return false
                 return issues.some((issue: Issue) => {
                     if (typeof issue === 'string') {
                         return issue === id
