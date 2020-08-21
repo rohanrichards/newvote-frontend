@@ -50,6 +50,8 @@
                         [parent]="issue"
                     >
                     </app-notification-bell>
+                    <p class="mat-subheading-2">Issue Created: {{ issue.created | date }}</p>                  
+                    <div class="mat-display-1" translate>{{ issue.name }}</div>
                     <div class="mat-display-1"
                         translate>{{issue.name}}</div>
                     <app-topic-tags [topics]="issue.topics"></app-topic-tags>
