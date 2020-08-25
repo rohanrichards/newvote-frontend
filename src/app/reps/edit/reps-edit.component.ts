@@ -65,7 +65,7 @@ export class RepsEditComponent implements OnInit {
         tags: new FormControl([]),
     });
 
-    DEFAULT_IMAGE = 'assets/logo-no-text.png'
+    DEFAULT_IMAGE = 'assets/portrait-placeholder.png'
 
     @ViewChild('fileInput', { static: true }) fileInput: ElementRef<HTMLInputElement>;
     @ViewChild('solutionInput', { static: true }) solutionInput: ElementRef<HTMLInputElement>;

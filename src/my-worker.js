@@ -38,10 +38,10 @@ function handleUrl(notificationData) {
     // const { hostname } = window.location
     // const [currentUrl, ...rest] = hostname.split('.')
     let url = `https://${organizationUrl}`
-    let urlEnd = 'newvote.org/'
+    let urlEnd = '.newvote.org/'
 
     if (originUrl === 'staging') {
-        url += '.staging.'
+        url += '.staging'
     }
     // const newHostName = organizationUrl + '.' + rest.join('.')
     let hostName = url + urlEnd

@@ -1,12 +1,15 @@
 <ng-container>
     <mat-card class="item-card" [ngClass]="{'soft-deleted': item.softDeleted}"
         (click)="handleUrl(item)">
-        <div mat-card-image class="image-container"
+        <div mat-card-image 
+            [style.position]="'relative'"
+            class="image-container"
             [defaultImage]="handleImageUrl(item.imageUrl, true)"
             [lazyLoad]="handleImageUrl(item.imageUrl)">
             <app-admin-panel [path]="path" [item]="item" [model]="model"
                 isCard=true>
             </app-admin-panel>
+            <p class="date-text">Created: {{ item.created | date }}</p>
         </div>
         <ng-container *ngIf="!titleCard; then noTitle; else isTitle">
         </ng-container>
@@ -24,7 +27,7 @@
                 <mat-card-title class="title-card-header">
                     {{item.name || item.title}}
                 </mat-card-title>
-                <div class="title-card-subheader"
+                <div class="title-card-subheader dont-break-out"
                     [innerHtml]="item.description">
                 </div>
             </mat-card-content>

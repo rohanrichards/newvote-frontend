@@ -65,7 +65,8 @@
                                 Suggestion
                                 Status:
                                 {{item.status === -1 ? 'Rejected' : item.status === 0 ? 'Pending' : 'Approved' }}
-                                <p class="line-clamp" [innerHtml]="item.description"></p>
+                            </p>
+                            <p class="line-clamp dont-break-out" [innerHtml]="item.description"></p>
                         </mat-card-subtitle>
                     </mat-card-title>
                 </div>
